@@ -1,5 +1,7 @@
 # B4mad racing
 
+https://b4mad.racing
+
 ## docker-compose stack
 
 ```
