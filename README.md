@@ -8,10 +8,11 @@ docker-compose up
 ```
 
 ### influx
-https://github.com/InfluxCommunity/InfluxDBv2_Telegraf_Docker
 
 Go to http://localhost:8086/ and login with [configuration.env](docker-compose/configuration.env)
 and explore the racing bucket
+
+* https://github.com/InfluxCommunity/InfluxDBv2_Telegraf_Docker
 
 ### telegraf
 
@@ -29,12 +30,12 @@ docker-compose exec mosquitto mosquitto_pub  -u admin -P admin -t racing -m '{"a
 docker-compose exec mosquitto mosquitto_pub  -u admin -P admin -t racing -m "`cat ../sample-small.json`"
 ```
 
-https://github.com/eclipse/paho.mqtt.python
-https://github.com/kevinboone/mosquitto-openshift
+* https://github.com/eclipse/paho.mqtt.python
+* https://github.com/kevinboone/mosquitto-openshift
 
 ## links
 
-https://github.com/viper4gh/CREST2
+* https://github.com/viper4gh/CREST2
 
 ## TODO
 
