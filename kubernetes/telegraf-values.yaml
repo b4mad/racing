@@ -1,0 +1,103 @@
+replicaCount: 1
+
+image:
+  repo: "telegraf"
+  tag: "1.22-alpine"
+  pullPolicy: IfNotPresent
+
+podAnnotations: {}
+
+podLabels: {}
+
+imagePullSecrets: []
+
+## Configure args passed to Telegraf containers
+args: []
+
+# The name of a secret in the same kubernetes namespace which contains values to
+# be added to the environment (must be manually created)
+# This can be useful for auth tokens, etc.
+
+# envFromSecret: "telegraf-tokens"
+env:
+  - name: HOSTNAME
+    value: "telegraf"
+
+resources:
+  {}
+  # requests:
+  #   memory: 128Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 128Mi
+  #   cpu: 100m
+
+service:
+  enabled: true
+  type: ClusterIP
+  annotations: {}
+
+serviceAccount:
+  create: true
+  name:
+  annotations: {}
+
+config:
+  agent:
+    interval: 1s
+    flush_interval: 2s
+    debug: false
+    quiet: false
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_jitter: "0s"
+    precision: ""
+    logfile: ""
+  outputs:
+    - influxdb_v2:
+        urls:
+          - "http://b4r-test-influxdb2:80"
+        organization: b4mad
+        bucket: racing
+        token: KHxFBLKlcfv3
+  inputs:
+    - statsd:
+        service_address: ":8125"
+        percentiles:
+          - 50
+          - 95
+          - 99
+        metric_separator: "_"
+        allowed_pending_messages: 10000
+        percentile_limit: 1000
+    - mqtt_consumer:
+        servers:
+          - "tcp://b4r-test-mosquitto:1883"
+        topics:
+          - racing/#
+        username: admin
+        password: admin
+        data_format: json
+        tag_keys:
+          - vehicleInformation_mCarName
+        json_string_fields:
+          - vehicleInformation_mCarName
+          - vehicleInformation_mCarClassName
+        json_time_key: time
+        json_time_format: unix
+        json_timezone: UTC
+
+metrics:
+  health:
+    enabled: false
+    service_address: "http://:8888"
+    threshold: 5000.0
+  internal:
+    enabled: true
+    collect_memstats: false
+
+pdb:
+  create: true
+  minAvailable: 1
