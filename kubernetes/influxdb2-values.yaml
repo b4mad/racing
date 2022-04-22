@@ -1,148 +1,58 @@
-iimage:
-  repository: influxdb
-  tag: 2.1.1-alpine
+global:
+  imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+  storageClass: ""
+
+image:
+  registry: docker.io
+  repository: bitnami/influxdb
+  tag: 2.2.0-debian-10-r8
   pullPolicy: IfNotPresent
+  pullSecrets: []
+  debug: false
 
-podAnnotations: {}
+architecture: standalone
 
-nameOverride: ""
-fullnameOverride: ""
+auth:
+  enabled: true
+  usePasswordFiles: false
+  admin:
+    username: admin
+    password: KHxFBLKlcfv3
+    token: KHxFBLKlcfv3
+    org: b4mad
+    bucket: racing
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  createUserToken: false
 
-## Node labels for pod assignment
-## ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
-nodeSelector: {}
+influxdb:
+  podSecurityContext:
+    enabled: false
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: false
+    runAsUser: 1001
+    runAsNonRoot: true
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+    requests:
+      cpu: 1000m
+      memory: 128Mi
 
-## Tolerations for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-##
-tolerations: []
-
-## Affinity for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
-affinity: {}
-
-securityContext: {}
-
-## Customize liveness, readiness and startup probes
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-##
-livenessProbe:
-  {}
-  # path: "/health"
-  # scheme: "HTTP"
-  # initialDelaySeconds: 0
-  # periodSeconds: 10
-  # timeoutSeconds: 1
-  # failureThreshold: 3
-
-readinessProbe:
-  {}
-  # path: "/health"
-  # scheme: "HTTP"
-  # initialDelaySeconds: 0
-  # periodSeconds: 10
-  # timeoutSeconds: 1
-  # successThreshold: 1
-  # failureThreshold: 3
-
-startupProbe:
-  enabled: false
-  # path: "/health"
-  # scheme: "HTTP"
-  # initialDelaySeconds: 30
-  # periodSeconds: 5
-  # timeoutSeconds: 1
-  # failureThreshold: 6
-
-## Extra environment variables to configure influxdb
-## e.g.
-# env:
-#   - name: FOO
-#     value: BAR
-#   - name: BAZ
-#     valueFrom:
-#       secretKeyRef:
-#         name: my-secret
-#         key: my-key
-env: {}
-
-## Create default user through docker entrypoint
-## Defaults indicated below
-##
-adminUser:
-  organization: "b4mad"
-  bucket: "racing"
-  user: "admin"
-  retention_policy: "0s"
-  ## Leave empty to generate a random password and token.
-  ## Or fill any of these values to use fixed values.
-  password: "KHxFBLKlcfv3"
-  token: "KHxFBLKlcfv3"
-
-  ## The password and token are obtained from an existing secret. The expected
-  ## keys are `admin-password` and `admin-token`.
-  ## If set, the password and token values above are ignored.
-  # existingSecret: influxdb-auth
-
-## Persist data to a persistent volume
-##
 persistence:
   enabled: true
-  ## If true will use an existing PVC instead of creating one
-  # useExisting: false
-  ## Name of existing PVC to be used in the influx deployment
-  # name:
-  ## influxdb data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 5Gi
-  mountPath: /var/lib/influxdb2
-  subPath: ""
-
-## Specify a service type
-## ref: http://kubernetes.io/docs/user-guide/services/
-##
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8086
+  existingClaim: ""
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
   annotations: {}
-  labels: {}
-  portName: http
 
 serviceAccount:
-  create: true
-  name:
-  annotations: {}
-
-ingress:
-  enabled: false
-
-pdb:
-  create: true
-  minAvailable: 1
-  # maxUnavailable: 1
+  enabled: true

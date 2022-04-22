@@ -58,7 +58,7 @@ config:
   outputs:
     - influxdb_v2:
         urls:
-          - "http://b4r-test-influxdb2:80"
+          - "http://b4mad-racing-influxdb2.b4mad-racing.svc.cluster.local:8086"
         organization: b4mad
         bucket: racing
         token: KHxFBLKlcfv3
@@ -74,7 +74,7 @@ config:
         percentile_limit: 1000
     - mqtt_consumer:
         servers:
-          - "tcp://b4r-test-mosquitto:1883"
+          - "tcp://mosquitto-ephemeral-tcp:1883"
         topics:
           - racing/#
         username: admin

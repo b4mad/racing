@@ -1,18 +1,17 @@
-  apiVersion: networking.k8s.io/v1                                                                                                                                                                                                                                                                                            
-  kind: Ingress                                                                                                                                                                                                                                                                                                               
-  metadata:                                                                                                                                                                                                                                                                                                                   
-    name: influxdb2-test-localhost 
-  spec:                                                                                                                                                                                                                                                                                                                       
-    ingressClassName: nginx                                                                                                                                                                                                                                                                                                   
-    rules:                                                                                                                                                                                                                                                                                                                    
-      - host: localhost 
-        http:
-          paths:
-            - pathType: Prefix
-              backend:
-                service:
-                  name: b4r-test-influxdb2 
-                  port:
-                    number: 8086
-              path: /
-
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: influxdb2-test-localhost
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: b4mad-racing-influxdb2
+                port:
+                  number: 8086
+            path: /
