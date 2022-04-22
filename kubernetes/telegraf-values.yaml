@@ -72,22 +72,44 @@ config:
         metric_separator: "_"
         allowed_pending_messages: 10000
         percentile_limit: 1000
+
     - mqtt_consumer:
+        username: admin
+        password: admin
+        data_format: json_v2
         servers:
           - "tcp://mosquitto-ephemeral-tcp:1883"
         topics:
-          - racing/#
-        username: admin
-        password: admin
-        data_format: json
-        tag_keys:
-          - vehicleInformation_mCarName
-        json_string_fields:
-          - vehicleInformation_mCarName
-          - vehicleInformation_mCarClassName
-        json_time_key: time
-        json_time_format: unix
-        json_timezone: UTC
+          - racing/+
+        topic_parsing:
+          - topic: racing/durandom
+            tags: _/user
+            types:
+              user: string
+        json_v2:
+          - measurement_name: laps
+            timestamp_path: time
+            timestamp_format: unix_ms
+            timestamp_timezone: UTC
+            tag:
+              - path: userId
+                type: text
+            field:
+              - path: carState.CarCoordinates.0
+                rename: world_x
+              - path: carState.CarCoordinates.1
+                rename: world_z
+              - path: carState.CarCoordinates.2
+                rename: world_y
+            object:
+              - path: carState
+                timestamp_key: time
+                disable_prepend_keys: true
+                excluded_keys:
+                  - CarCoordinates
+                tags:
+                  - CarModel
+                  - CarClass
 
 metrics:
   health:
