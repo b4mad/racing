@@ -14,7 +14,7 @@ services:
   influxdb:
     platform: linux/x86_64
     container_name: influxdb
-    image: influxdb:2.1-alpine
+    image: influxdb:2.2-alpine
     env_file: configuration.env
     ports:
       - '8086:8086'
@@ -23,20 +23,18 @@ services:
       - ./influxdb/data:/var/lib/influxdb2:rw
       # - ./influxdb/config.yml:/etc/influxdb2/config.yml
 
-
-
-  # grafana:
-  #   platform: linux/x86_64
-  #   image: grafana/grafana:8.4.5
-  #   depends_on:
-  #     - influxdb
-  #   env_file: configuration.env
-  #   ports:
-  #     - '127.0.0.1:3000:3000'
-  #   volumes:
-  #     - grafana_data:/var/lib/grafana
-  #     - ./grafana/provisioning/:/etc/grafana/provisioning/
-  #     - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+  grafana:
+    platform: linux/x86_64
+    image: grafana/grafana:8.5.0
+    depends_on:
+      - influxdb
+    env_file: configuration.env
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
 
   mosquitto:
     platform: linux/x86_64
