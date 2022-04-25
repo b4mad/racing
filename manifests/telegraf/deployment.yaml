@@ -4,9 +4,6 @@ metadata:
   creationTimestamp: null
   name: b4mad-racing-telegraf
 spec:
-  progressDeadlineSeconds: 600
-  replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/instance: test
