@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: b4mad-racing-mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: test
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: test
+      name: mosquitto
+    spec:
+      containers:
+        - env:
+            - name: SOLUNAR_WS_LOG_LEVEL
+              value: "1"
+          name: mosquitto
+          image: quay.io/kboone/mosquitto-ephemeral:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 1883
+              protocol: TCP
+            - containerPort: 8883
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 1883
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 1883
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 128Mi
+      serviceAccount: b4mad-racing-mosquitto
+      serviceAccountName: b4mad-racing-mosquitto
