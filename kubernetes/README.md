@@ -14,11 +14,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 helm upgrade --install b4mad-racing-influxdb2 bitnami/influxdb \
   --namespace b4mad-racing --values influxdb2-values.yaml \
   --create-namespace
-helm upgrade --install b4mad-racing-telegraf influxdata/telegraf \
-  --namespace b4mad-racing --values telegraf-values.yaml
 
 oc apply -f https://raw.githubusercontent.com/kevinboone/mosquitto-openshift/main/mosqitto-ephemeral.yaml
-# oc create route passthrough --service=mosquitto-ephemeral-tls --port 8883
+oc create route passthrough --service=mosquitto-ephemeral-tls --port 8883
 
 
 echo $(kubectl get secret b4mad-racing-influxdb2-auth -o "jsonpath={.data['admin-password']}" --namespace b4mad-racing | base64 --decode)
