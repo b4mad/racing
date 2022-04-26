@@ -28,7 +28,6 @@ docker compose restart telegraf
 publish stuff
 
 ```
-pipenv run python ./client_pub_opts.py -t racing -H localhost -u admin -p admin -N 10
 docker-compose exec mosquitto mosquitto_pub  -u admin -P admin -t racing -m '{"a": 5}'
 docker-compose exec mosquitto mosquitto_pub  -u admin -P admin -t racing -m "`cat ../sample-small.json`"
 ```
