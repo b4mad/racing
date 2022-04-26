@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   name: b4mad-racing-telegraf
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: test
@@ -12,6 +13,7 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/instance: test
+      name: telegraf
     spec:
       containers:
         - env:
@@ -19,10 +21,13 @@ spec:
               value: telegraf
           image: telegraf:1.22-alpine
           name: telegraf
-          resources: {}
           volumeMounts:
             - mountPath: /etc/telegraf
               name: config
+          resources:
+            limits:
+              memory: 64Mi
+              cpu: 100m
       restartPolicy: Always
       serviceAccount: b4mad-racing-telegraf
       serviceAccountName: b4mad-racing-telegraf
