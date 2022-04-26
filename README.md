@@ -2,6 +2,23 @@
 
 https://b4mad.racing
 
+## SimHub installation
+
+Install [SimHub](https://www.simhubdash.com/) and install the [MQTT Publisher plugin](https://nightly.link/durandom/SimHub-MQTT-Publisher/workflows/dotnet/main/release-artifact.zip) by unziping the contents into the SimHub folder at `C:\Program Files (x86)\SimHub`
+
+In the plugin settings you should adjust the topic to include your username, i.e. replace `durandom` with your name
+
+```json
+{
+  "Server": "telemetry.b4mad.racing",
+  "Topic": "racing/durandom",
+  "Login": "admin",
+  "Password": "admin",
+  "Port": 31883
+}
+```
+
+
 ## docker-compose stack
 
 ```
@@ -36,6 +53,7 @@ docker-compose exec mosquitto mosquitto_pub  -u admin -P admin -t racing -m "`ca
 subscribe
 ```
 docker-compose exec mosquitto mosquitto_sub  -u admin -P admin -t racing/\# -d
+docker-compose exec mosquitto mosquitto_sub  -p 31883 -h telemetry.b4mad.racing -u admin -P admin -t racing/\# -d
 ```
 
 * https://github.com/eclipse/paho.mqtt.python
