@@ -1,0 +1,14 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: grafana
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  host: pitwall.b4mad.racing
+  to:
+    kind: Service
+    name: grafana-service
+  port:
+    targetPort: 3000
+  wildcardPolicy: None

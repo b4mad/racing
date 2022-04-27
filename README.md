@@ -1,6 +1,6 @@
 # B4mad racing
 
-https://b4mad.racing
+https://b4mad.racing - https://pitwall.b4mad.racing
 
 ## SimHub installation
 

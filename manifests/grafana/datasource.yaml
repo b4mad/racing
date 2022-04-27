@@ -1,0 +1,21 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: datasource
+spec:
+  name: racing-grafanadatasource.yaml
+  datasources:
+    - name: Racing
+      access: proxy
+      editable: true
+      isDefault: true
+      type: influxdb
+      url: 'http://b4mad-racing-influxdb2.b4mad-racing.svc.cluster.local:8086'
+      jsonData:
+        defaultBucket: "racing"
+        httpMode: "POST"
+        organization: "b4mad"
+        version: "Flux"
+        timeInterval: "5s"
+      secureJsonData:
+        token: "KHxFBLKlcfv3"
