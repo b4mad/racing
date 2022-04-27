@@ -1,0 +1,58 @@
+global:
+  imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+  storageClass: ""
+
+image:
+  registry: docker.io
+  repository: bitnami/influxdb
+  tag: 2.2.0-debian-10-r8
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+  debug: false
+
+architecture: standalone
+
+auth:
+  enabled: true
+  usePasswordFiles: false
+  admin:
+    username: admin
+    password: KHxFBLKlcfv3
+    token: KHxFBLKlcfv3
+    org: b4mad
+    bucket: racing
+
+  createUserToken: false
+
+influxdb:
+  podSecurityContext:
+    enabled: false
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: false
+    runAsUser: 1001
+    runAsNonRoot: true
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+    requests:
+      cpu: 1000m
+      memory: 128Mi
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  annotations: {}
+
+serviceAccount:
+  enabled: true
