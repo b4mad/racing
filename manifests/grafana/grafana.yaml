@@ -5,6 +5,8 @@ metadata:
   name: grafana
 spec:
   baseImage: quay.io/operate-first/grafana:8.4.3
+  configMaps:
+    - grafana-landing-page
   config:
     security:
       allow_embedding: true
@@ -22,6 +24,8 @@ spec:
     log:
       level: warn
       mode: console
+    dashboards:
+      default_home_dashboard_path: "/etc/grafana-configmaps/grafana-landing-page/landingpage.json"
   dashboardLabelSelector:
     - matchLabels:
         app: grafana
