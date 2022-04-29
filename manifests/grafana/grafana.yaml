@@ -1,0 +1,35 @@
+---
+apiVersion: integreatly.org/v1alpha1
+kind: Grafana
+metadata:
+  name: grafana
+spec:
+  baseImage: quay.io/operate-first/grafana:8.4.3
+  config:
+    security:
+      allow_embedding: true
+      disable_initial_admin_creation: false
+      admin_user: admin
+      admin_password: b4madracing
+    auth:
+      disable_login_form: false
+    auth.anonymous:
+      enabled: true
+      org_name: Main Org.
+      org_role: Viewer
+    users:
+      allow_sign_up: true
+    log:
+      level: warn
+      mode: console
+  dashboardLabelSelector:
+    - matchLabels:
+        app: grafana
+        public: "true"
+  ingress:
+    enabled: false
+  dataStorage:
+    accessModes:
+      - ReadWriteOnce
+    size: '1Gi'
+    class: ocs-external-storagecluster-ceph-rbd
