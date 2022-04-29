@@ -6,6 +6,7 @@ commonLabels:
   app.kubernetes.io/managed-by: humans
 resources:
   - mosquitto/
+  - grafana/
   - telegraf/
   - telemetry-route.yaml
 generatorOptions:

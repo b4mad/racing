@@ -16,6 +16,6 @@ spec:
         httpMode: "POST"
         organization: "b4mad"
         version: "Flux"
-        timeInterval: "5s"
+        timeInterval: "10ms"
       secureJsonData:
         token: "KHxFBLKlcfv3"
