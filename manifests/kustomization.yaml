@@ -8,6 +8,6 @@ resources:
   - mosquitto/
   - grafana/
   - telegraf/
-  - telemetry-route.yaml
+  - routes.yaml
 generatorOptions:
   disableNameSuffixHash: true
