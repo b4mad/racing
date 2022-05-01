@@ -2,14 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: b4mad-racing-telegraf
-  labels:
-    app.kubernetes.io/instance: test
 spec:
   ports:
     - name: statsd
       port: 8125
       protocol: UDP
       targetPort: 8125
-  selector:
-    app.kubernetes.io/instance: test
   type: ClusterIP

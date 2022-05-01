@@ -55,7 +55,8 @@ serviceAccount:
   enabled: true
 
 metrics:
-  enabled: true
+  # disable as `nable to continue with update: could not get information about the resource: servicemonitors.monitoring.coreos.com "b4mad-racing-influxdb2" is forbidden: User "goern" cannot get resource "servicemonitors" in API group "monitoring.coreos.com" in the namespace "b4mad-racing"`
+  enabled: false
   service:
     type: ClusterIP
     port: 9122

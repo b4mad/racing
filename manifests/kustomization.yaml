@@ -3,7 +3,7 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/name: b4mad-racing
   app.kubernetes.io/version: v0.1.0-dev
-  app.kubernetes.io/managed-by: argocd.operate-first.cloud/applications/racing-smaug
+  app.kubernetes.io/managed-by: humans
 resources:
   - mosquitto/
   - grafana/
