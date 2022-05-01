@@ -32,11 +32,8 @@ auth:
 influxdb:
   podSecurityContext:
     enabled: false
-    fsGroup: 1001
   containerSecurityContext:
     enabled: false
-    runAsUser: 1001
-    runAsNonRoot: true
   resources:
     limits:
       cpu: 8000m
@@ -70,3 +67,20 @@ metrics:
 
   serviceMonitor:
     enabled: true
+
+backup:
+  enabled: true
+  directory: "/backups"
+  retentionDays: 10
+  cronjob:
+    schedule: "0 2 * * *"
+    historyLimit: 1
+    podAnnotations: {}
+    securityContext:
+      enabled: false
+  uploadProviders:
+    aws:
+      enabled: false
+      region: "us-east-1"
+      existingSecret: "b4mad-racing-influxdb-backup"
+      bucketName: "s3://b4mad-racing-smaug/influxdb"
