@@ -56,3 +56,17 @@ persistence:
 
 serviceAccount:
   enabled: true
+
+metrics:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 9122
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.metrics.service.port }}"
+      prometheus.io/path: "/metrics"
+    externalTrafficPolicy: Cluster
+
+  serviceMonitor:
+    enabled: true
