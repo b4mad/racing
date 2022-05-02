@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: telegraf
+spec:
+  endpoints:
+    - interval: 15s
+      port: statsd
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - b4mad-racing
+  selector: {}

@@ -9,5 +9,6 @@ resources:
   - grafana/
   - telegraf/
   - routes.yaml
+  - service_monitor.yaml
 generatorOptions:
   disableNameSuffixHash: true
