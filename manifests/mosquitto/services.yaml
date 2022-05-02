@@ -2,8 +2,6 @@
 kind: Service
 apiVersion: v1
 metadata:
-  labels:
-    app.kubernetes.io/instance: test
   name: mosquitto-tcp
 spec:
   externalTrafficPolicy: Cluster
@@ -14,8 +12,6 @@ spec:
       port: 1883
       protocol: TCP
       targetPort: 1883
-  selector:
-    app.kubernetes.io/instance: test
 ---
 kind: Service
 apiVersion: v1
@@ -23,8 +19,6 @@ metadata:
   annotations:
     service.beta.openshift.io/serving-cert-secret-name: mosquitto-ephemeral
     service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer
-  labels:
-    app.kubernetes.io/instance: test
   name: mosquitto-tls
 spec:
   ports:
@@ -32,5 +26,3 @@ spec:
       port: 8883
       protocol: TCP
       targetPort: 8883
-  selector:
-    app.kubernetes.io/instance: test
