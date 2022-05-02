@@ -81,7 +81,6 @@ backup:
       enabled: false
   uploadProviders:
     aws:
-      enabled: false
-      region: "us-east-1"
+      enabled: true
       existingSecret: "b4mad-racing-influxdb-backup"
       bucketName: "s3://b4mad-racing-smaug/influxdb"
