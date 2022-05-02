@@ -5,14 +5,9 @@ metadata:
   name: b4mad-racing-telegraf
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: test
   template:
     metadata:
       creationTimestamp: null
-      labels:
-        app.kubernetes.io/instance: test
       name: telegraf
     spec:
       containers:

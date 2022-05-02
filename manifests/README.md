@@ -4,7 +4,7 @@
 
 via helm:
 
-```
+```shell
 helm upgrade --install b4mad-racing-influxdb2 bitnami/influxdb \
   --namespace b4mad-racing \
   --values influxdb2-values.yaml
@@ -12,4 +12,5 @@ helm upgrade --install b4mad-racing-influxdb2 bitnami/influxdb \
 
 ## deploy Telegraf and Mosquitto
 
-this is via `kustomize build . | oc apply -f -`
+this is via `kustomize build --enable_alpha_plugins . | oc apply -f -`
+Keep in mind to have the SOPS plugin installed.

@@ -1,0 +1,11 @@
+secrets.yaml
+secrets-*.yaml
+secrets/*
+application_default_credentials.json
+.vscode
+.env
+**.env
+**.crt
+**.key
+ssh-keys/
+gpg-keys/
