@@ -32,11 +32,8 @@ auth:
 influxdb:
   podSecurityContext:
     enabled: false
-    fsGroup: 1001
   containerSecurityContext:
     enabled: false
-    runAsUser: 1001
-    runAsNonRoot: true
   resources:
     limits:
       cpu: 8000m
@@ -56,3 +53,34 @@ persistence:
 
 serviceAccount:
   enabled: true
+
+metrics:
+  # disable as `nable to continue with update: could not get information about the resource: servicemonitors.monitoring.coreos.com "b4mad-racing-influxdb2" is forbidden: User "goern" cannot get resource "servicemonitors" in API group "monitoring.coreos.com" in the namespace "b4mad-racing"`
+  enabled: false
+  service:
+    type: ClusterIP
+    port: 9122
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.metrics.service.port }}"
+      prometheus.io/path: "/metrics"
+    externalTrafficPolicy: Cluster
+
+  serviceMonitor:
+    enabled: true
+
+backup:
+  enabled: true
+  directory: "/backups"
+  retentionDays: 10
+  cronjob:
+    schedule: "0 2 * * *"
+    historyLimit: 1
+    podAnnotations: {}
+    securityContext:
+      enabled: false
+  uploadProviders:
+    aws:
+      enabled: true
+      existingSecret: "b4mad-racing-influxdb-backup"
+      bucketName: "s3://b4mad-racing-smaug/influxdb"

@@ -12,3 +12,5 @@ resources:
   - service_monitor.yaml
 generatorOptions:
   disableNameSuffixHash: true
+generators:
+  - secret-generator.yaml
