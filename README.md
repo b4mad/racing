@@ -2,7 +2,7 @@
 
 https://b4mad.racing - https://pitwall.b4mad.racing
 
-### A telemetry data collection pipeline for simracers.
+### A telemetry data collection pipeline for simracers :racing_car:
 
 The current implementation allows you to collect telemetry data from multiple racing games via a [SimHub](https://www.simhubdash.com/) Plugin, which will send the data to a server in the cloud, where it's stored in a time-series database. You can then visualize the data in a customizable dashboarding tool.
 
@@ -16,7 +16,7 @@ In the plugin settings you should adjust the topic to include your username, i.e
 
 ![simhub](docs/simhub.png)
 
-Now you ready to go and you will send data.
+Now you are ready to go and every time you launch a game you will send data.
 
 ## Visualization
 
