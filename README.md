@@ -12,7 +12,7 @@ The current implementation allows you to collect telemetry data from multiple ra
 
 Install [SimHub](https://www.simhubdash.com/) and install the [MQTT Publisher plugin](https://nightly.link/durandom/SimHub-MQTT-Publisher/workflows/dotnet/main/release-artifact.zip) by unziping the contents into the SimHub folder at `C:\Program Files (x86)\SimHub`
 
-In the plugin settings you should adjust the topic to include your username, i.e. replace `durandom` with your name.
+In the plugin settings you should adjust the topic to include your username, i.e. replace `durandom` with your name. The username is arbitrary, just pick something just with letters and numbers - no special characters like symbols, a slash / or :emoji:
 
 ![simhub](docs/simhub.png)
 
