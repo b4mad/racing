@@ -37,12 +37,13 @@ datasources:
     organization: "b4mad"
     version: "Flux"
     timeInterval: "5s"
-    token: "BILgi2bN5uEx_uq6t3WYk8lZf4zumPozItLFgGAssnu69J8xAw5GKfqV2mrb20zxgHjtQq-AYlfNVMgCnL2LDQ=="
+#    token: "BILgi2bN5uEx_uq6t3WYk8lZf4zumPozItLFgGAssnu69J8xAw5GKfqV2mrb20zxgHjtQq-AYlfNVMgCnL2LDQ=="
 #     graphiteVersion: "1.1"
 #     tlsAuth: false
 #     tlsAuthWithCACert: false
 #  # <string> json object of data that will be encrypted.
-#  secureJsonData:
+  secureJsonData:
+    token: BILgi2bN5uEx_uq6t3WYk8lZf4zumPozItLFgGAssnu69J8xAw5GKfqV2mrb20zxgHjtQq-AYlfNVMgCnL2LDQ==
 #    tlsCACert: "..."
 #    tlsClientCert: "..."
 #    tlsClientKey: "..."
