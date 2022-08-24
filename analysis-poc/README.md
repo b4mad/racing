@@ -8,4 +8,10 @@ The example scripts provide functionalities for
 
 Visualziations and further exploration is available int the jupyter notebooks.
 
+## Installation
+
+```
+pipenv install
+pipenv run jupyter notebook
+````
 
