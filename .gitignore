@@ -9,3 +9,5 @@ application_default_credentials.json
 **.key
 ssh-keys/
 gpg-keys/
+__pycache__
+.ipynb_checkpoints
