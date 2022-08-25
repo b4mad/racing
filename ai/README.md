@@ -1,4 +1,14 @@
-# Driving style changes
+# Machine learning to improve sim racing driving styles
+
+Sim racing is about improving lap times. There are tools that capture telemetry
+and let you compare your telemetry to other drivers.
+
+https://www.youtube.com/watch?v=sGCuP1VCkTU
+
+But how about automtically detecting the best way to improve your driving style
+and giving recommendations *while* you are driving?
+
+## Driving style changes
 
 Implementation of a change should result in an improvement of lap time.
 Changes can be compared by the amount of lap time, or sector time, improvement.
@@ -35,6 +45,10 @@ Not following the racing line
 Input: track position x,y
 
 
+## Geometric approach
+
+See [analysis](analysis/) folder for a geometric approach to the problem.
+This also contains some analysis EDA and visualization for lap data.
 
 ## Reinforcement learning
 We have human driver telemetry data as input and car telemetry data and world positions as output.
