@@ -89,3 +89,18 @@ Given a position on the track, the coach should notify the driver to brake in 10
 
 The model is trained to emit a braking point signal 100m, 50m and now for the given position.
 The model should have some memory for the previous inferences, since we dont know about the frequency of inference, we can only assume that the previous inference is position wise before the current inference.
+
+
+## Resources
+
+https://arxiv.org/abs/2005.05178
+    https://github.com/linklab-uva/deepracing
+https://paperswithcode.com/dataset/torcs
+
+
+https://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html
+https://en.wikipedia.org/wiki/Q-learning
+
+## Offline reinforcement learning
+* https://arxiv.org/abs/2005.01643
+* https://arxiv.org/pdf/2203.01387.pdf
