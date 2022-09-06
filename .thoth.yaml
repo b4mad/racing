@@ -1,36 +1,25 @@
 host: khemenu.thoth-station.ninja
 tls_verify: true
 requirements_format: pipenv
+overlays_dir: overlays
 
 runtime_environments:
-  - name: default
+  - name: analysis
     operating_system:
       name: ubi
       version: "8"
-    python_version: "3.8"
+    python_version: "3.9"
     recommendation_type: latest
 
-
-# https://thoth-station.ninja/docs/developers/kebechet/managers.html#available-managers
 managers:
-  - name: info
-    configuration:
-      enabled: false
-  - name: label-bot
-    configuration:
-      enabled: false
-  - name: pipfile-requirements
-    configuration:
-      enabled: false
   - name: thoth-advise
     configuration:
-      enabled: false
-  - name: thoth-provenance
-    configuration:
-      enabled: false
-  - name: update
-    configuration:
-      enabled: false
+      labels: [bot]
+  - name: info
   - name: version
     configuration:
-      enabled: false
+      assignees:
+        - sesheta
+      labels: [bot]
+      changelog_file: true
+      changelog_smart: true

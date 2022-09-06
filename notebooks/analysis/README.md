@@ -6,7 +6,7 @@ and let you compare your telemetry to other drivers.
 https://www.youtube.com/watch?v=sGCuP1VCkTU
 
 But how about automtically detecting the best way to improve your driving style
-and giving recommendations *while* you are driving?
+and giving recommendations _while_ you are driving?
 
 ## Driving style changes
 
@@ -24,26 +24,30 @@ A more complex scenario might be the combination of successive corners, such as 
 which is usually a left followed by a right, or vice versa.
 
 ## Braking point
+
 You brake too early or too late
 Input: track position percent, brake input
 
 ## Trail braking
+
 Instead of releasing the brake apprubtly, you ease off the brakes while turning the car into a corner.
 Input: rate of change of brake input
 
 ## Acceleration
+
 Instead of going full on the throttle, you ease into the throttle.
 Input: rate of change of throttle input
 
 ## Overlapping brake and throttle
 
 ## Grip
+
 Having the tires not at full grip, i.e. either you are too slow or turning to slow and the tires still have grip available or you are braking too hard or accelerating too much and the tires either block or lose grip.
 
 ## Racing line
+
 Not following the racing line
 Input: track position x,y
-
 
 ## Geometric approach
 
@@ -51,18 +55,16 @@ See [analysis](analysis/) folder for a geometric approach to the problem.
 This also contains some analysis EDA and visualization for lap data.
 
 ## Reinforcement learning
+
 We have human driver telemetry data as input and car telemetry data and world positions as output.
 The function to be maximised is corner time, sector time and lap time.
 The agent inputs are the car telemetry data and the world positions.
 The agent outputs are human driver inputs to the car, such as throttle, brake and steering.
 The world reaction are the car telemetry data, such as tire grip and speed and the world positions, such as percent of track completed.
 
-
 Q: would the agent learn the best combination of all laps used to train the agent? I.e. would we get a better lap than a human selected coach lap?
 
 Q: would we get an agent model that would respond with the best next car input given a current world and car telemetry?
-
-
 
 ## AI Coaching
 
@@ -77,11 +79,9 @@ https://towardsdatascience.com/time-series-clustering-deriving-trends-and-archet
 1. identify which cluster you belong to
 2. find adjacent clusters
 
-
 It also needs to evaluate past behaviour and incorporate changes the driver has made.
 E.g. if you usually brake too early in your previous laps, but now you fixed that behaviour, the coach should not notify you about that anymore.
 So the coach needs to have some memory of some sorts.
-
 
 ## Braking coach
 
@@ -90,17 +90,33 @@ Given a position on the track, the coach should notify the driver to brake in 10
 The model is trained to emit a braking point signal 100m, 50m and now for the given position.
 The model should have some memory for the previous inferences, since we dont know about the frequency of inference, we can only assume that the previous inference is position wise before the current inference.
 
-
 ## Resources
 
 https://arxiv.org/abs/2005.05178
-    https://github.com/linklab-uva/deepracing
+https://github.com/linklab-uva/deepracing
 https://paperswithcode.com/dataset/torcs
-
 
 https://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html
 https://en.wikipedia.org/wiki/Q-learning
 
 ## Offline reinforcement learning
-* https://arxiv.org/abs/2005.01643
-* https://arxiv.org/pdf/2203.01387.pdf
+
+- https://arxiv.org/abs/2005.01643
+- https://arxiv.org/pdf/2203.01387.pdf
+
+# Analysis POC
+
+A proof of concept for analysing and comparing coach an student racing data on a per lap basis
+The example scripts provide functionalities for
+
+- loading and preprocessing data (src/preprocess.py)
+- compare 2 laps (src/compare.py)
+
+Visualziations and further exploration is available int the jupyter notebooks.
+
+## Installation
+
+```
+pipenv install
+pipenv run jupyter notebook
+```

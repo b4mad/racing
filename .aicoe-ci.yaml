@@ -1,0 +1,12 @@
+check:
+  - overlays-build
+overlays_dir: overlays
+overlays:
+  - name: analysis
+    build:
+      base-image: "quay.io/thoth-station/s2i-thoth-ubi8-py38:v0.34.1"
+      build-stratergy: Source
+      registry: quay.io
+      registry-org: thoth-station
+      registry-project: racing
+      registry-secret: thoth-station-thoth-pusher-secret
