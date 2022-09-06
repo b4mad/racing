@@ -42,6 +42,7 @@ percentiles = [
 ]
 service_address = ":8125"
 
+# SimHub
 [[inputs.mqtt_consumer]]
 data_format = "json_v2"
 password = "admin"
@@ -85,3 +86,36 @@ path = "telemetry"
 timestamp_key = "time"
 # excluded_keys = ["CarCoordinates"]
 # tags = ["CarModel", "CarClass"]
+
+# CrewChief
+[[inputs.mqtt_consumer]]
+servers = ["tcp://mosquitto-tcp.b4mad-racing.svc.cluster.local:1883"]
+topics = [
+  "crewchief/#"
+]
+username = "admin"
+password = "admin"
+data_format = "json_v2"
+
+[[inputs.mqtt_consumer.topic_parsing]]
+topic = "crewchief/+/+/+/+/+/+/+"
+tags = "_/user/UserId/SessionId/GameName/TrackCode/CarModel/SessionTypeName"
+[inputs.mqtt_consumer.topic_parsing.types]
+user = "string"
+UserId = "string"
+SessionId = "string"
+GameName = "string"
+TrackCode = "string"
+CarModel = "string"
+SessionTypeName = "string"
+
+[[inputs.mqtt_consumer.json_v2]]
+measurement_name = "laps_cc"
+timestamp_path = "time"
+timestamp_format = "unix_ms"
+timestamp_timezone = "UTC"
+
+[[inputs.mqtt_consumer.json_v2.object]]
+path = "telemetry"
+timestamp_key = "time"
+disable_prepend_keys = true
