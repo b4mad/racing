@@ -12,7 +12,7 @@ can then visualize your telemetry data using our dashboarding tooling.
 
 ## Installation
 
-1. Install [SimHub](https://www.simhubdash.com/) 
+1. Install [SimHub](https://www.simhubdash.com/)
 1. Download the [MQTT Publisher
    plugin](https://nightly.link/durandom/SimHub-MQTT-Publisher/workflows/dotnet/main/release-artifact.zip)
 1. Unzip the contents of the MQTT publisher plugin into the SimHub folder. It is
@@ -94,4 +94,3 @@ Export data sources
 ```
 curl -s "http://localhost:3000/api/datasources" -u admin:admin | jq -c -M '.[]'
 ```
-

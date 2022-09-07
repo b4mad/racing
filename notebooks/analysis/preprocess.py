@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" functions to load data from csv 
+""" functions to load data from csv
 need to :
-* load data from csv , combine the different dumps and transform them 
+* load data from csv , combine the different dumps and transform them
 * figure out the laps
 * split data into laps
 * transform from time domain to space domain
