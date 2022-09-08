@@ -7,4 +7,4 @@ resources:
   - datasource.yaml
   - grafana.yaml
   - grafana-datasource-serviceaccount.yaml
-  - grafana-route.yaml
+  - route.yaml
