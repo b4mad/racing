@@ -12,10 +12,12 @@ omit_hostname = false
 precision = ""
 quiet = false
 round_interval = true
+
 [[processors.enum]]
 [[processors.enum.mapping]]
 dest = "status_code"
 field = "status"
+
 [processors.enum.mapping.value_mappings]
 critical = 3
 healthy = 1
@@ -26,7 +28,7 @@ bucket = "racing"
 organization = "b4mad"
 token = "KHxFBLKlcfv3"
 urls = [
-"http://b4mad-racing-influxdb2.b4mad-racing.svc.cluster.local:8086"
+  "http://b4mad-racing-influxdb2.b4mad-racing.svc.cluster.local:8086",
 ]
 
 [[inputs.statsd]]
@@ -34,39 +36,40 @@ allowed_pending_messages = 10000
 metric_separator = "_"
 percentile_limit = 1000
 percentiles = [
-50.0,
-95.0,
-99.0
+  50.0,
+  95.0,
+  99.0,
 ]
 service_address = ":8125"
 
+# SimHub
 [[inputs.mqtt_consumer]]
+data_format = "json_v2"
+password = "admin"
 servers = ["tcp://mosquitto-tcp.b4mad-racing.svc.cluster.local:1883"]
 topics = [
-"racing/#"
+  "racing/#",
 ]
 username = "admin"
-password = "admin"
-data_format = "json_v2"
 
 [[inputs.mqtt_consumer.topic_parsing]]
 topic = "racing/+/+/+/+/+/+/+"
 # measurement = "measurement/_"
 tags = "_/user/UserId/SessionId/GameName/TrackCode/CarModel/SessionTypeName"
 # fields = "_/_/_/test"
+
 [inputs.mqtt_consumer.topic_parsing.types]
-user = "string"
-UserId = "string"
-SessionId = "string"
-GameName = "string"
-TrackCode = "string"
 CarModel = "string"
-SessionTypeName = "string"
+GameName = "string"
+SessionId = "string"
+TrackCode = "string"
+UserId = "string"
+user = "string"
 
 [[inputs.mqtt_consumer.json_v2]]
 measurement_name = "laps"
-timestamp_path = "time"
 timestamp_format = "unix_ms"
+timestamp_path = "time"
 timestamp_timezone = "UTC"
 
 # [[inputs.mqtt_consumer.json_v2.tag]]
@@ -78,8 +81,41 @@ timestamp_timezone = "UTC"
 # rename = "world_x"
 
 [[inputs.mqtt_consumer.json_v2.object]]
+disable_prepend_keys = true
+path = "telemetry"
+timestamp_key = "time"
+# excluded_keys = ["CarCoordinates"]
+# tags = ["CarModel", "CarClass"]
+
+# CrewChief
+[[inputs.mqtt_consumer]]
+servers = ["tcp://mosquitto-tcp.b4mad-racing.svc.cluster.local:1883"]
+topics = [
+  "crewchief/#"
+]
+username = "admin"
+password = "admin"
+data_format = "json_v2"
+
+[[inputs.mqtt_consumer.topic_parsing]]
+topic = "crewchief/+/+/+/+/+/+/+"
+tags = "_/user/UserId/SessionId/GameName/TrackCode/CarModel/SessionTypeName"
+[inputs.mqtt_consumer.topic_parsing.types]
+user = "string"
+UserId = "string"
+SessionId = "string"
+GameName = "string"
+TrackCode = "string"
+CarModel = "string"
+SessionTypeName = "string"
+
+[[inputs.mqtt_consumer.json_v2]]
+measurement_name = "laps_cc"
+timestamp_path = "time"
+timestamp_format = "unix_ms"
+timestamp_timezone = "UTC"
+
+[[inputs.mqtt_consumer.json_v2.object]]
 path = "telemetry"
 timestamp_key = "time"
 disable_prepend_keys = true
-# excluded_keys = ["CarCoordinates"]
-# tags = ["CarModel", "CarClass"]
