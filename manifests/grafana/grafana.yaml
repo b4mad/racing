@@ -10,7 +10,6 @@ spec:
   config:
     security:
       allow_embedding: true
-      disable_initial_admin_creation: true
     auth:
       disable_login_form: false
     auth.anonymous:
