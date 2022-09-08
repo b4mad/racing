@@ -99,10 +99,9 @@ data_format = "json_v2"
 
 [[inputs.mqtt_consumer.topic_parsing]]
 topic = "crewchief/+/+/+/+/+/+/+"
-tags = "_/user/UserId/SessionId/GameName/TrackCode/CarModel/SessionTypeName"
+tags = "_/user/SessionId/GameName/TrackCode/CarModel/SessionTypeName"
 [inputs.mqtt_consumer.topic_parsing.types]
 user = "string"
-UserId = "string"
 SessionId = "string"
 GameName = "string"
 TrackCode = "string"
