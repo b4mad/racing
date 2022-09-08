@@ -1,7 +1,6 @@
 apiVersion: integreatly.org/v1alpha1
 kind: GrafanaDashboard
 metadata:
-  public: true
   name: details
 spec:
   customFolderName: SimHubDash
