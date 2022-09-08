@@ -15,23 +15,3 @@ spec:
   port:
     targetPort: http
   wildcardPolicy: None
----
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: grafana-route
-  creationTimestamp: null
-  annotations:
-    kubernetes.io/tls-acme: "true"
-spec:
-  host: grafana.b4mad.racing
-  path: /
-  to:
-    kind: Service
-    name: grafana-service
-    weight: 100
-  port:
-    targetPort: 3000
-  tls:
-    termination: edge
-  wildcardPolicy: None
