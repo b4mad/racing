@@ -10,9 +10,7 @@ spec:
   config:
     security:
       allow_embedding: true
-      disable_initial_admin_creation: false
-      admin_user: admin
-      admin_password: b4madracing
+      disable_initial_admin_creation: true
     auth:
       disable_login_form: false
     auth.anonymous:
