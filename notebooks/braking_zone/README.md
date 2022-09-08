@@ -5,7 +5,7 @@ The data is stored in the `racing` bucket and the measurement is `laps`.
 
 ## Flux queries
 
-see [influx_query_sample](../analysis/src/influx_query_sample.ipynb) notebook for
+see [influx_query_sample](../analysis/influx_query_sample.ipynb) notebook for
 example queries.
 
 ## Braking zone detection
@@ -25,7 +25,7 @@ Train a sci-kit learn model to predict braking points.
 The model is trained to emit a braking point signal at 100m, 50m and now for the given position.
 The model should have some memory for the previous inferences, since we dont know about the frequency of inference, we can only assume that the previous inference is position wise before the current inference.
 
-```
+```python
 f(position_current, positions_previous, TrackCode, CarModel) -> (braking_point_100m, braking_point_50m, braking_point_now)
 ```
 
@@ -34,4 +34,4 @@ distance from the positions_current, the second element is true when the braking
 
 The model should be trained on a training subset of the data collected from all laps, with the labeled data being the calculated braking points from the 'Braking zone detection' section. The model should also be trained on artifical data, where the position is an increasing number.
 
-1. Test the model with a testing subset of the data collected from all laps. The model should predict exactly N*3 braking points detected from the previous section.
+1. Test the model with a testing subset of the data collected from all laps. The model should predict exactly N\*3 braking points detected from the previous section.

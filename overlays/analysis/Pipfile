@@ -10,6 +10,7 @@ pandas = "*"
 jupyter = "*"
 influxdb-client = "*"
 seaborn = "*"
+jupyter-book = "*"
 
 [dev-packages]
 

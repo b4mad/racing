@@ -18,7 +18,7 @@ import logging
 log = logging.getLogger("preprocess")
 logging.basicConfig(level=logging.WARNING)
 # create dirs
-for d in "../data/preprocessed", "../data/extracted":
+for d in "../../data/preprocessed", "../../data/extracted":
     if not os.path.exists(d):
         os.mkdir(d)
 
@@ -103,7 +103,7 @@ def compute_spatial_trajectory(lap_df, interpolation_step_size=0.001, segments=1
     return df
 
 
-def extract_laps_from_session_csv(inpath: str, out_dir="../data/extracted/"):
+def extract_laps_from_session_csv(inpath: str, out_dir="../../data/extracted/"):
     """call the lower level functions to load the session data,
     then interpolate lap data
     and store lap data in individual csv files
@@ -125,9 +125,9 @@ def preprocess_lap(inpath: str, outpath: str):
 
 
 if __name__ == "__main__":
-    path = "../data/raw/89db51de-22a6-4033-8201-2fc37a5fe905.csv"
+    path = "../../data/raw/89db51de-22a6-4033-8201-2fc37a5fe905.csv"
     extract_laps_from_session_csv(path)
 
-    for inpath in pathlib.Path().glob("../data/extracted/*lap*.csv"):
-        outpath = f"../data/preprocessed/{inpath.name}"
+    for inpath in pathlib.Path().glob("../../data/extracted/*lap*.csv"):
+        outpath = f"../../data/preprocessed/{inpath.name}"
         preprocess_lap(inpath, outpath)
