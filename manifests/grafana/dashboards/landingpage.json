@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 21,
-  "iteration": 1662661964303,
+  "iteration": 1662663452685,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -401,7 +401,7 @@
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] =~ /^${user:regex}$/ )\n  |> filter(fn: (r) => r[\"SessionTypeName\"] =~ /^${SessionTypeName:regex}$/ )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> first()\n  |> group(columns: [])\n  |> drop(columns: [\"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n",
+          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionTypeName\"] =~ /^${SessionTypeName:regex}$/ )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> first()\n  |> group(columns: [])\n  |> drop(columns: [\"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n",
           "refId": "A"
         }
       ],
@@ -485,7 +485,7 @@
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"CurrentLap\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
+          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionTypeName\"] =~ /^${SessionTypeName:regex}$/ )\n  |> filter(fn: (r) => (r[\"_field\"] == \"CurrentLap\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
           "refId": "A"
         }
       ],
@@ -499,30 +499,6 @@
   "tags": [],
   "templating": {
     "list": [
-      {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
-        "hide": 0,
-        "includeAll": true,
-        "label": "User",
-        "multi": true,
-        "name": "user",
-        "options": [],
-        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
       {
         "current": {
           "selected": true,
@@ -557,6 +533,6 @@
   "timezone": "",
   "title": "B4mad Racing CrewChief",
   "uid": "WyTWukG4k",
-  "version": 7,
+  "version": 8,
   "weekStart": ""
 }
