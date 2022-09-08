@@ -6,7 +6,7 @@ commonLabels:
 # https://github.com/Kuadrant/kcp-glbc/pull/223#issuecomment-1169667848
 # maybe there's a way to just include those dashboard.json files
 configMapGenerator:
-  - name: landingpage
+  - name: grafana-landing-page
     files:
       - landingpage.json
 generatorOptions:
