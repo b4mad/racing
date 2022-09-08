@@ -9,6 +9,8 @@ configMapGenerator:
   - name: landingpage
     files:
       - landingpage.json
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - overview.yaml
   - details.yaml
