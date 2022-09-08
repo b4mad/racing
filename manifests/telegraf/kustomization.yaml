@@ -9,6 +9,6 @@ resources:
 configMapGenerator:
   - name: telegraf-config
     files:
-      - telegraf.toml
+      - telegraf.conf
 generatorOptions:
   disableNameSuffixHash: true
