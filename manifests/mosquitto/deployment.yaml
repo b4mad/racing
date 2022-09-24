@@ -19,7 +19,7 @@ spec:
             - name: SOLUNAR_WS_LOG_LEVEL
               value: "1"
           name: mosquitto
-          image: quay.io/kboone/mosquitto-ephemeral:latest
+          image: docker.io/eclipse-mosquitto:1.6 
           imagePullPolicy: Always
           ports:
             - containerPort: 1883
@@ -47,15 +47,12 @@ spec:
               memory: 32Mi
               cpu: 100m
           volumeMounts:
-            - name: passwd-mount
-              mountPath: /myuser/passwd
-              subPath: passwd
+            - mountPath: /mosquitto/config
+              name: config
       volumes:
-        - name: passwd-mount
-          configMap:
-            name: passwd
-            items:
-              - key: passwd
-                path: passwd
+        - configMap:
+            defaultMode: 420
+            name: mosquitto-config
+          name: config
       serviceAccount: b4mad-racing-mosquitto
       serviceAccountName: b4mad-racing-mosquitto

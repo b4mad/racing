@@ -4,5 +4,10 @@ resources:
   - deployment.yaml
   - services.yaml
   - service_account.yaml
+configMapGenerator:
+  - name: mosquitto-config
+    files:
+      - mosquitto.conf
+      - passwd
 generatorOptions:
   disableNameSuffixHash: true
