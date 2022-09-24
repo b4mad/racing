@@ -1,14 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   name: b4mad-racing-mosquitto
+  labels:
+    app: mosquitto
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
   template:
     metadata:
-      creationTimestamp: null
-      name: mosquitto
+      labels:
+        app: mosquitto
     spec:
       containers:
         - env:
@@ -42,5 +46,16 @@ spec:
             limits:
               memory: 32Mi
               cpu: 100m
+          volumeMounts:
+            - name: passwd-mount
+              mountPath: /myuser/passwd
+              subPath: passwd
+      volumes:
+        - name: passwd-mount
+          configMap:
+            name: passwd
+            items:
+              - key: passwd
+                path: passwd
       serviceAccount: b4mad-racing-mosquitto
       serviceAccountName: b4mad-racing-mosquitto
