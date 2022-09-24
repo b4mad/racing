@@ -6,6 +6,8 @@ metadata:
 spec:
   externalTrafficPolicy: Cluster
   type: NodePort
+  selector:
+    app: mosquitto
   ports:
     - name: mosquitto-tcp
       nodePort: 31883
@@ -21,6 +23,8 @@ metadata:
     service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer
   name: mosquitto-tls
 spec:
+  selector:
+    app: mosquitto
   ports:
     - name: mosquitto-tls
       port: 8883

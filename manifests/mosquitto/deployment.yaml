@@ -1,21 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   name: b4mad-racing-mosquitto
+  labels:
+    app: mosquitto
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
   template:
     metadata:
-      creationTimestamp: null
-      name: mosquitto
+      labels:
+        app: mosquitto
     spec:
       containers:
         - env:
             - name: SOLUNAR_WS_LOG_LEVEL
               value: "1"
           name: mosquitto
-          image: quay.io/kboone/mosquitto-ephemeral:latest
+          image: docker.io/eclipse-mosquitto:1.6 
           imagePullPolicy: Always
           ports:
             - containerPort: 1883
@@ -42,5 +46,13 @@ spec:
             limits:
               memory: 32Mi
               cpu: 100m
+          volumeMounts:
+            - mountPath: /mosquitto/config
+              name: config
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: mosquitto-config
+          name: config
       serviceAccount: b4mad-racing-mosquitto
       serviceAccountName: b4mad-racing-mosquitto
