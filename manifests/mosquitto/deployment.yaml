@@ -2,10 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: b4mad-racing-mosquitto
+  annotations:
+    original-image-tag.thoth-station.ninja: 2.0.15-openssl
   labels:
+    app.kubernetes.io/version: "2.0.15-openssl"
     app: mosquitto
 spec:
   replicas: 1
+  revisionHistoryLimit: 4
   selector:
     matchLabels:
       app: mosquitto
@@ -19,7 +23,7 @@ spec:
             - name: SOLUNAR_WS_LOG_LEVEL
               value: "1"
           name: mosquitto
-          image: docker.io/eclipse-mosquitto:1.6 
+          image: docker.io/eclipse-mosquitto@sha256:4ee2d823259ed813fc3761ac63dcf5a940231017bfb6aa4fa74615f63f1a477f
           imagePullPolicy: Always
           ports:
             - containerPort: 1883
