@@ -6,12 +6,11 @@ commonLabels:
 # https://github.com/Kuadrant/kcp-glbc/pull/223#issuecomment-1169667848
 # maybe there's a way to just include those dashboard.json files
 configMapGenerator:
-  - name: grafana-landing-page
+  - name: grafana-dashboards
     files:
       - landingpage.json
+      - details-crew-chief.json
 generatorOptions:
   disableNameSuffixHash: true
 resources:
-  - overview.yaml
-  - details.yaml
   - details-crew-chief.yaml
