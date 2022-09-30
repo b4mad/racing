@@ -5,9 +5,11 @@ metadata:
 spec:
   endpoints:
     - interval: 15s
-      port: statsd
+      port: metrics
       scheme: http
   namespaceSelector:
     matchNames:
       - b4mad-racing
-  selector: {}
+  selector:
+    matchLabels:
+      app: telegraf

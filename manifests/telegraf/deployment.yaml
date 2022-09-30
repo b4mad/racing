@@ -15,6 +15,9 @@ spec:
               value: telegraf
           image: telegraf:1.22.3
           name: telegraf
+          ports:
+            - name: metrics
+              containerPort: 9090
           volumeMounts:
             - mountPath: /etc/telegraf
               name: config
@@ -30,3 +33,16 @@ spec:
             defaultMode: 420
             name: telegraf-config
           name: config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf-metrics
+spec:
+  selector:
+    app: telegraf
+  ports:
+    - name: metrics
+      port: 9090
+      protocol: TCP
