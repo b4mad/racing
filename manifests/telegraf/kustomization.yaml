@@ -4,8 +4,8 @@ commonLabels:
   app: telegraf
 resources:
   - deployment.yaml
-  - service.yaml
   - service_account.yaml
+  - service_monitor.yaml
 configMapGenerator:
   - name: telegraf-config
     files:
