@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgresql
+spec:
+  endpoints:
+    - interval: 15s
+      port: metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - b4mad-racing
+  selector:
+    matchLabels:
+      app: postgresql

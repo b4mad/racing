@@ -1,0 +1,87 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: pgbouncer
+spec:
+  replicas: 1
+  revisionHistoryLimit: 4
+  selector:
+    service: pgbouncer
+  template:
+    metadata:
+      labels:
+        service: pgbouncer
+    spec:
+      containers:
+        - env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: database-user
+                  name: postgresql
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: database-password
+                  name: postgresql
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database-name
+                  name: postgresql
+            - name: POSTGRES_SERVICE_HOST
+              value: postgresql
+          image: >-
+            quay.io/enterprisedb/pgbouncer@sha256:9daeae8df759d30c32e1cfade4cc7e82ace987d50de5fbafccd78a523db4c940
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            successThreshold: 1
+            tcpSocket:
+              port: 5432
+            timeoutSeconds: 10
+          name: pgbouncer
+          volumeMounts:
+            - mountPath: /etc/pgbouncer
+              name: config
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 5432
+            timeoutSeconds: 10
+          resources:
+            requests:
+              cpu: 500m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 128Mi
+      serviceAccount: postgresql
+      serviceAccountName: postgresql
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: pgbouncer
+          name: config
+  test: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    service: pgbouncer
