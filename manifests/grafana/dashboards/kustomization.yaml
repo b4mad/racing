@@ -3,14 +3,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 commonLabels:
   app: grafana
-# https://github.com/Kuadrant/kcp-glbc/pull/223#issuecomment-1169667848
-# maybe there's a way to just include those dashboard.json files
 configMapGenerator:
   - name: grafana-dashboards
     files:
       - landingpage.json
       - details-crew-chief.json
+      - details-simhub.json
+      - user.json
 generatorOptions:
   disableNameSuffixHash: true
 resources:
   - details-crew-chief.yaml
+  - details-simhub.yaml
+  - user.yaml
+  - landingpage.yaml

@@ -1,0 +1,9 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDashboard
+metadata:
+  name: details-simhub
+spec:
+  customFolderName: SimHubDash
+  configMapRef:
+    name: grafana-dashboards
+    key: details-simhub.json
