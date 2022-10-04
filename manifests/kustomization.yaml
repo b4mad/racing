@@ -6,11 +6,13 @@ kind: Kustomization
 #   app.kubernetes.io/version: v0.1.0-dev
 #   app.kubernetes.io/managed-by: humans
 resources:
-  - mosquitto/
   - grafana/
-  - telegraf/
+  - keycloak/overlays/smaug/
+  - mosquitto/
+  - postgresql/overlays/smaug/
   - routes.yaml
   - service_monitor.yaml
+  - telegraf/
 generatorOptions:
   disableNameSuffixHash: true
 generators:
