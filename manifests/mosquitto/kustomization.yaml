@@ -1,5 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+commonLabels:
+  app.kubernetes.io/component: eclipse-mosquitto
 resources:
   - deployment.yaml
   - services.yaml
@@ -7,7 +9,9 @@ resources:
 configMapGenerator:
   - name: mosquitto-config
     files:
+      - dynamic-security.json
       - mosquitto.conf
-      - passwd
+generators:
+  - secret-generator.yaml
 generatorOptions:
   disableNameSuffixHash: true
