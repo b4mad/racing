@@ -17,6 +17,21 @@ spec:
         - env:
             - name: HOSTNAME
               value: telegraf
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: input-username
+                  name: telegraf
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: input-password
+                  name: telegraf
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: telegraf
           image: telegraf:1.22.3
           name: telegraf
           ports:
