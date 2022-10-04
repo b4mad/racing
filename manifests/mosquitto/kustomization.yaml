@@ -9,7 +9,9 @@ resources:
 configMapGenerator:
   - name: mosquitto-config
     files:
+      - dynamic-security.json
       - mosquitto.conf
-      - passwd
+generators:
+  - secret-generator.yaml
 generatorOptions:
   disableNameSuffixHash: true

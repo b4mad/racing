@@ -19,33 +19,21 @@ spec:
         app: mosquitto
     spec:
       containers:
-        - env:
-            - name: SOLUNAR_WS_LOG_LEVEL
-              value: "1"
-          name: mosquitto
+        - name: mosquitto
           image: docker.io/eclipse-mosquitto@sha256:4ee2d823259ed813fc3761ac63dcf5a940231017bfb6aa4fa74615f63f1a477f
-          imagePullPolicy: Always
           ports:
-            - containerPort: 1883
+            - name: mqtt
+              containerPort: 1883
               protocol: TCP
-            - containerPort: 8883
+            - name: mqtt-tls
+              containerPort: 8883
               protocol: TCP
           livenessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
             tcpSocket:
-              port: 1883
-            timeoutSeconds: 1
+              port: mqtt
           readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
             tcpSocket:
-              port: 1883
-            timeoutSeconds: 1
+              port: mqtt
           resources:
             limits:
               memory: 32Mi
@@ -53,10 +41,16 @@ spec:
           volumeMounts:
             - mountPath: /mosquitto/config
               name: config
+            - mountPath: /mosquitto/password
+              name: password
       volumes:
         - configMap:
             defaultMode: 420
             name: mosquitto-config
           name: config
+        - secret:
+            defaultMode: 420
+            secretName: mosquitto
+          name: password
       serviceAccount: b4mad-racing-mosquitto
       serviceAccountName: b4mad-racing-mosquitto
