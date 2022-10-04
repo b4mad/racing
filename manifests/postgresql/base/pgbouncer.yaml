@@ -1,17 +1,19 @@
 ---
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/component: pgbouncer
   name: pgbouncer
 spec:
   replicas: 1
-  revisionHistoryLimit: 4
   selector:
-    service: pgbouncer
+    matchLabels:
+      app.kubernetes.io/component: pgbouncer
   template:
     metadata:
       labels:
-        service: pgbouncer
+        app.kubernetes.io/component: pgbouncer
     spec:
       containers:
         - env:
@@ -35,29 +37,21 @@ spec:
           image: >-
             quay.io/enterprisedb/pgbouncer@sha256:9daeae8df759d30c32e1cfade4cc7e82ace987d50de5fbafccd78a523db4c940
           imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - killall -INT pgbouncer && sleep 120
           livenessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            successThreshold: 1
             tcpSocket:
               port: 5432
-            timeoutSeconds: 10
-          name: pgbouncer
-          volumeMounts:
-            - mountPath: /etc/pgbouncer
-              name: config
           ports:
             - containerPort: 5432
-              protocol: TCP
           readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
             tcpSocket:
               port: 5432
-            timeoutSeconds: 10
           resources:
             requests:
               cpu: 500m
@@ -65,14 +59,22 @@ spec:
             limits:
               cpu: 1000m
               memory: 128Mi
-      serviceAccount: postgresql
-      serviceAccountName: postgresql
+          serviceAccount: postgresql
+          serviceAccountName: postgresql
+          name: pgbouncer
+          volumeMounts:
+            - mountPath: /etc/pgbouncer
+              name: config
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - all
       volumes:
         - configMap:
             defaultMode: 420
             name: pgbouncer
           name: config
-  test: false
 ---
 apiVersion: v1
 kind: Service
