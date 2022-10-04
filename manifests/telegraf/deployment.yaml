@@ -1,12 +1,16 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: b4mad-racing-telegraf
+  name: telegraf
+  labels:
+    app.kubernetes.io/component: telegraf
 spec:
   replicas: 1
+  revisionHistoryLimit: 4
   selector:
     matchLabels:
-       app: telegraf
+      app.kubernetes.io/component: telegraf
   template:
     spec:
       containers:
@@ -26,23 +30,10 @@ spec:
               memory: 64Mi
               cpu: 100m
       restartPolicy: Always
-      serviceAccount: b4mad-racing-telegraf
-      serviceAccountName: b4mad-racing-telegraf
+      serviceAccount: telegraf
+      serviceAccountName: telegraf
       volumes:
         - configMap:
             defaultMode: 420
             name: telegraf-config
           name: config
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: telegraf-metrics
-spec:
-  selector:
-    app: telegraf
-  ports:
-    - name: metrics
-      port: 9090
-      protocol: TCP
