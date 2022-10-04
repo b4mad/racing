@@ -3,9 +3,9 @@ kind: Kustomization
 #commonLabels:
 # FIXME app.kubernetes.io/component: postgresql
 resources:
-  - route.yaml
   - deployment_config.yaml
   - persistent_volume_claim.yaml
-  - service.yaml
+  - route.yaml
   - service_account.yaml
   - service_monitor.yaml
+  - service.yaml
