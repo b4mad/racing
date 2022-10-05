@@ -3,8 +3,7 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/component: grafana
 resources:
+  - ../../base/
   - dashboards
   - datasource.yaml
-  - grafana.yaml
-  - grafana-datasource-serviceaccount.yaml
   - route.yaml
