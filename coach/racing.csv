@@ -1,4 +1,4 @@
-start,stop,force,gear
+start,end,break_force,gear
 100,250,90,2
 410,510,20,3
 990,1120,90,2

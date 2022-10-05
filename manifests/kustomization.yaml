@@ -15,5 +15,3 @@ resources:
   - telegraf/overlays/smaug/
 generatorOptions:
   disableNameSuffixHash: true
-generators:
-  - secret-generator.yaml
