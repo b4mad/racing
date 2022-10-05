@@ -34,7 +34,7 @@ spec:
     class: ocs-external-storagecluster-ceph-rbd
   deployment:
     env:
-      - name: INFLUX_TOKEN
+      - name: INFLUXDB_TOKEN
         valueFrom:
           secretKeyRef:
             key: admin-user-token # FIXME this should not be an admin!
