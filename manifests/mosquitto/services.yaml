@@ -1,4 +1,3 @@
----
 kind: Service
 apiVersion: v1
 metadata:
@@ -14,19 +13,3 @@ spec:
       port: 1883
       protocol: TCP
       targetPort: 1883
----
-kind: Service
-apiVersion: v1
-metadata:
-  annotations:
-    service.beta.openshift.io/serving-cert-secret-name: mosquitto-ephemeral
-    service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer
-  name: mosquitto-tls
-spec:
-  selector:
-    app: mosquitto
-  ports:
-    - name: mosquitto-tls
-      port: 8883
-      protocol: TCP
-      targetPort: 8883
