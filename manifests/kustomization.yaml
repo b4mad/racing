@@ -6,7 +6,7 @@ kind: Kustomization
 #   app.kubernetes.io/version: v0.1.0-dev
 #   app.kubernetes.io/managed-by: humans
 resources:
-  - grafana/
+  - grafana/overlays/smaug/
   - keycloak/overlays/smaug/
   - mosquitto/
   - postgresql/overlays/smaug/
