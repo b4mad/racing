@@ -30,5 +30,12 @@ spec:
   dataStorage:
     accessModes:
       - ReadWriteOnce
-    size: '1Gi'
+    size: "1Gi"
     class: ocs-external-storagecluster-ceph-rbd
+  deployment:
+    env:
+      - name: INFLUX_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: admin-user-token # FIXME this should not be an admin!
+            key: b4mad-racing-influxdb2
