@@ -12,7 +12,7 @@ resources:
   - postgresql/overlays/smaug/
   - routes.yaml
   - service_monitor.yaml
-  - telegraf/
+  - telegraf/overlays/smaug/
 generatorOptions:
   disableNameSuffixHash: true
 generators:
