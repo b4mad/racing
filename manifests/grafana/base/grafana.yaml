@@ -37,5 +37,5 @@ spec:
       - name: INFLUX_TOKEN
         valueFrom:
           secretKeyRef:
-            name: admin-user-token # FIXME this should not be an admin!
-            key: b4mad-racing-influxdb2
+            key: admin-user-token # FIXME this should not be an admin!
+            name: b4mad-racing-influxdb2
