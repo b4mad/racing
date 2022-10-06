@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from typing import Union
 import os
 import json
 import csv
@@ -12,7 +11,6 @@ import paho.mqtt.client as mqtt
 logging.basicConfig(level=logging.DEBUG)
 
 
-Breakpoint = Union[int, int, int, int]
 brakepoints = []
 previous_response = 0
 brakepoint_idx = 0
