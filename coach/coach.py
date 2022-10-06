@@ -52,7 +52,7 @@ def get_response(meters):
         if distance_to_brakepoint > 150:
             response = brakepoint["gear"]
         elif distance_to_brakepoint > 50:
-            response = brakepoint["force"]
+            response = brakepoint["break_force"]
         else:
             response = 50
 
