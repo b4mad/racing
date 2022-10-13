@@ -1,6 +1,7 @@
 host: khemenu.thoth-station.ninja
 tls_verify: true
 requirements_format: pipenv
+overlays_dir: overlays
 
 runtime_environments:
   - name: default
@@ -10,6 +11,12 @@ runtime_environments:
     python_version: "3.8"
     recommendation_type: latest
 
+  - name: coach
+    operating_system:
+      name: ubi
+      version: "8"
+    python_version: "3.9"
+    recommendation_type: latest
 
 # https://thoth-station.ninja/docs/developers/kebechet/managers.html#available-managers
 managers:
