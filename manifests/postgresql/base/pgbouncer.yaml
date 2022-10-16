@@ -86,4 +86,4 @@ spec:
       protocol: TCP
       targetPort: 5432
   selector:
-    service: pgbouncer
+    app.kubernetes.io/component: pgbouncer
