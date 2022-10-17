@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+
+import logging
+from history import History
+
+logging.basicConfig(level=logging.DEBUG)
+
+
+class Coach:
+    def __init__(self, history: History):
+        self.history = history
+        self.msg = {
+            "msg": None,
+            "at": None,
+            "corner": None,
+        }
+
+    def set_filter(self, filter):
+        self.history.set_filter(filter)
+
+    def gear(self, brakepoint):
+        gear = brakepoint["gear"]
+        gear_h = self.history.gear(brakepoint)
+
+        if not gear_h:
+            return True
+
+        if abs(gear - gear_h) > 0.2:
+            logging.debug(
+                "corner: %s, gear: %s, gear_h: %s", brakepoint["corner"], gear, gear_h
+            )
+            return True
+        return False
+
+    def brake_start(self, brakepoint):
+        start = brakepoint["start"]
+        start_h = self.history.brake_start(brakepoint)
+
+        if not start_h:
+            return True
+
+        if abs(start - start_h) > 0.2:
+            logging.debug(
+                "corner: %s, brake: %s, brake_h: %s",
+                brakepoint["corner"],
+                start,
+                start_h,
+            )
+            return True
+        return False
+
+    def get_response(self, meters):
+        brakepoint = self.history.get_brakepoint(meters)
+
+        if brakepoint is None:
+            return None
+
+        if self.msg["corner"] != brakepoint["corner"]:
+            self.msg["corner"] = brakepoint["corner"]
+            self.msg["msg"] = {}
+
+            # do we have something to say about the current corner?
+            if self.gear(brakepoint):
+                # coach on correct gear
+                at = brakepoint["start"] - 100  # 100 meters before corner
+                self.msg["msg"][at] = "Shift down to gear %s" % brakepoint["gear"]
+
+        # loop over all messages and check the distance, if we have something to say
+        for at in self.msg["msg"]:
+            distance = abs(at - meters)
+            if distance < 2:
+                return self.msg["msg"].pop(at)
+
+        return None
+
+
+if __name__ == "__main__":
+    history = History()
+    history.pickle = True
+    coach = Coach(history)
+
+    track = "okayama full"
+    track_length = 3500
+    track = "summit summit raceway"
+    track_length = 3000
+
+    car = "Ferrari 488 GT3 Evo 2020"
+    filter = {
+        "user": "durandom",
+        "GameName": "iRacing",
+        "TrackCode": track,
+        "CarModel": car,
+    }
+    coach.set_filter(filter)
+    history.init()
+    # history.write_cache_to_file()
+
+    for j in range(1, 4):
+        logging.info("lap %s", j)
+        for i in range(0, track_length):
+            response = coach.get_response(i)
+            # time.sleep(0.2)
+            if response:
+                logging.info("meters: %s, response: %s", i, response)
