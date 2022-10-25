@@ -75,11 +75,11 @@ spec:
             initialDelaySeconds: 30
           resources:
             requests:
-              cpu: "2"
-              memory: 4Gi
+              cpu: "1"
+              memory: 2Gi
             limits:
               cpu: "4"
-              memory: 8Gi
+              memory: 3Gi
           volumeMounts:
             - mountPath: /opt/keycloak/data
               name: keycloak-data
