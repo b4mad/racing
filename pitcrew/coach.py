@@ -37,16 +37,17 @@ class Coach:
         start_h = self.history.brake_start(brakepoint)
 
         if not start_h:
-            return True
+            return 10000
 
-        if abs(start - start_h) > 0.2:
+        distance_to_ideal = start - start_h  # negative if too late
+        if abs(distance_to_ideal) > 10:
             logging.debug(
                 "corner: %s, brake: %s, brake_h: %s",
                 brakepoint["corner"],
                 start,
                 start_h,
             )
-            return True
+            return int(distance_to_ideal)
         return False
 
     def get_response(self, meters):
@@ -64,6 +65,17 @@ class Coach:
                 # coach on correct gear
                 at = brakepoint["start"] - 100  # 100 meters before corner
                 self.msg["msg"][at] = "Shift down to gear %s" % brakepoint["gear"]
+
+            brake = self.brake_start(brakepoint)
+            if brake:
+                # coach on correct gear
+                at = brakepoint["start"] - 500  # 100 meters before corner
+                if abs(brake) > 10:
+                    self.msg["msg"][at] = brakepoint["mark"]
+                elif brake > 0:
+                    self.msg["msg"][at] = "Brake %s meters earlier" % brake
+                else:
+                    self.msg["msg"][at] = "Brake %s meters later" % abs(brake)
 
         # loop over all messages and check the distance, if we have something to say
         for at in self.msg["msg"]:

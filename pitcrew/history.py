@@ -132,7 +132,10 @@ class History:
                 brakepoint = {}
                 for key in row:
                     if row[key]:
-                        brakepoint[key] = int(row[key])
+                        if key == "mark":
+                            brakepoint[key] = row[key]
+                        else:
+                            brakepoint[key] = int(row[key])
                     else:
                         brakepoint[key] = 0
                 brakepoint["corner"] = len(self.brakepoints) + 1
