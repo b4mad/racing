@@ -5,7 +5,7 @@ metadata:
 spec:
   endpoints:
     - interval: 15s
-      port: metrics
+      port: http
       scheme: http
   namespaceSelector:
     matchNames:
