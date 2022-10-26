@@ -7,11 +7,11 @@ kind: Kustomization
 #   app.kubernetes.io/managed-by: humans
 resources:
   - grafana/overlays/smaug/
+  - influxdb/overlays/smaug/
   - keycloak/overlays/smaug/
   - mosquitto/
   - postgresql/overlays/smaug/
   - routes.yaml
-  - service_monitor.yaml
   - telegraf/overlays/smaug/
 generatorOptions:
   disableNameSuffixHash: true
