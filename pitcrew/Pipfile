@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 paho-mqtt = "*"
+influxdb-client = "*"
 
 [dev-packages]
 black = "*"

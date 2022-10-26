@@ -1,0 +1,7 @@
+start,turn,speed,stop,force,gear,mark
+775,885,75,965,90,1,brake at 150 meter mark
+1985,2085,100,2125,90,2,brake at tarmac before 100 meter mark
+2430,2430,140,2525,50,3,brake before the orange barrier on the left
+2770,2800,140,2840,75,3,before the 50 meter mark
+3800,3860,140,3915,75,3,before the 100 meter mark
+4975,5050,145,5135,95,3,brake at the 100 meter mark
