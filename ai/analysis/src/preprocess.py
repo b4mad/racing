@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 """ functions to load data from csv 
 need to :
 * load data from csv , combine the different dumps and transform them 
@@ -8,6 +9,8 @@ need to :
 * split data into laps
 * transform from time domain to space domain
 """
+
+
 import os
 import numpy as np
 import pathlib
@@ -15,8 +18,11 @@ import pandas as pd
 from io import StringIO
 import logging
 
+
 log = logging.getLogger("preprocess")
 logging.basicConfig(level=logging.WARNING)
+
+
 # create dirs
 for d in "../data/preprocessed", "../data/extracted":
     if not os.path.exists(d):

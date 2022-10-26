@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+
 """ compare 2 laps """
+
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
 
 expert_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap11.csv"
 student_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap13.csv"
@@ -61,7 +66,6 @@ def compute_suggestions(expert_df, student_df):
         for feature, sign in zip(selected_features, signs)
     ]
 
-    return pd.DataFrame({"suggestion": suggestions}, index=diff_df.index)
     selected_features = [np.array(diff_df.columns)[selected_features]]
 
     fig, ax = plt.subplots(2, len(diff_df.columns) - 1, sharex=True, sharey=True)
@@ -73,12 +77,9 @@ def compute_suggestions(expert_df, student_df):
         ax[0, i].set_title(c)
         ax[1, i].set_title(c + " diff")
     plt.tight_layout()
-    plt.show()
+    plt.savefig("suggestions.png", dpi=300)
 
-    # improvment possibilities
-
-    plot()
-    plt.show()
+    return pd.DataFrame({"suggestion": suggestions}, index=diff_df.index)
 
 
 def rank_suggestions(metrics, suggestions, n):
