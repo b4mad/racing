@@ -10,7 +10,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/influxdb
-  tag: 2.2.0-debian-10-r8
+  tag: 2.4.0-debian-11-r21
   pullPolicy: IfNotPresent
   pullSecrets: []
   debug: false
