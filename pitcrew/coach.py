@@ -70,7 +70,7 @@ class Coach:
             if brake:
                 # coach on correct gear
                 at = brakepoint["start"] - 500  # 100 meters before corner
-                if abs(brake) > 10:
+                if abs(brake) > 50:
                     self.msg["msg"][at] = brakepoint["mark"]
                 elif brake > 0:
                     self.msg["msg"][at] = "Brake %s meters earlier" % brake

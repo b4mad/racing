@@ -10,13 +10,23 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
+B4MAD_RACING_INFLUX_ORG = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
+B4MAD_RACING_INFLUX_TOKEN = os.environ.get(
+    "B4MAD_RACING_INFLUX_TOKEN",
+    "PFmq_uLsJ8NZXYuq9zBbNsCbxuerXIapE4N_2kjLzyWauLyZqbscrEJRJw25upSJ1-tKJQAJa8GfItx7Sl4SOw==",
+)
+B4MAD_RACING_INFLUX_URL = os.environ.get(
+    "B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/"
+)
+
 
 class History:
     def __init__(self):
-        org = "b4mad"
-        token = "PFmq_uLsJ8NZXYuq9zBbNsCbxuerXIapE4N_2kjLzyWauLyZqbscrEJRJw25upSJ1-tKJQAJa8GfItx7Sl4SOw=="
-        url = "https://telemetry.b4mad.racing/"
-        self.client = InfluxDBClient(url=url, token=token, org=org)
+        self.client = InfluxDBClient(
+            url=B4MAD_RACING_INFLUX_URL,
+            token=B4MAD_RACING_INFLUX_TOKEN,
+            org=B4MAD_RACING_INFLUX_ORG,
+        )
         self.pickle = False
         self.do_init = False
         self.brakepoints = []
