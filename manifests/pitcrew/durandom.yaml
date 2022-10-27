@@ -11,6 +11,8 @@ spec:
   selector:
     matchLabels:
       pitcrew.b4mad.racing/crewchiefname: durandom
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
