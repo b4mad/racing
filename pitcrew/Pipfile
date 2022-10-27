@@ -7,6 +7,10 @@ name = "pypi"
 paho-mqtt = "*"
 influxdb-client = "*"
 sanitize-filename = "*"
+dash = "*"
+pandas = "*"
+plotly-express = "*"
+dash-bootstrap-components = "*"
 
 [dev-packages]
 black = "*"
