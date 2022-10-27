@@ -80,3 +80,8 @@ Export data sources
 ```shell
 curl -s "http://localhost:3000/api/datasources" -u admin:admin | jq -c -M '.[]'
 ```
+
+
+# CD
+
+[![App Status](https://argocd.operate-first.cloud/api/badge?name=racing-smaug&revision=true)](https://argocd.operate-first.cloud/applications/racing-smaug)
