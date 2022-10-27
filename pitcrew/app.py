@@ -57,4 +57,4 @@ if __name__ == "__main__":
     h.start()
 
     # https://stackoverflow.com/a/68851873
-    app.run_server(debug=False)
+    app.run_server(debug=False, port=8050, host="0.0.0.0")
