@@ -7,6 +7,7 @@ import pickle
 import time
 from influxdb_client import InfluxDBClient
 import logging
+from sanitize_filename import sanitize
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -32,13 +33,15 @@ class History:
         self.brakepoints = []
         self.brakepoint_idx = 1
         self.previous_brakepoint_idx = 0
+        self.ready = False
+        self.error = None
         self.clear_cache()
 
     def run(self):
         while True:
             time.sleep(1)
             if self.do_init:
-                self.init()
+                self.ready = self.init()
                 self.do_init = False
 
     def set_filter(self, filter):
@@ -52,15 +55,15 @@ class History:
         }
 
     def init(self):
-        # if time.time() - self.last_refresh > 120: # refresh every 2 minutes
-        #     logging.debug("refreshing history")
-        #     self.filter_from_topic()
         self.clear_cache()
-        self.init_brakepoints()
-        if self.pickle:
-            self.read_cache_from_file()
-        else:
-            self.init_cache()
+        if self.init_brakepoints():
+            if self.pickle:
+                self.read_cache_from_file()
+            else:
+                self.init_cache()
+            self.error = None
+            return True
+        return False
 
     def init_cache(self):
         for brakepoint in self.brakepoints:
@@ -100,10 +103,7 @@ class History:
     def brakepoints(self, brakepoints):
         self._brakepoints = brakepoints
 
-    def get_brakepoint(self, meters):
-        if not self.brakepoints:
-            return None
-
+    def get_brakepoint(self, meters: int) -> dict:
         brakepoint = self.brakepoints[self.brakepoint_idx]
         self.previous_brakepoint = self.brakepoints[self.previous_brakepoint_idx]
 
@@ -126,13 +126,20 @@ class History:
             self.brakepoint_idx = 0
         return self.get_brakepoint(meters)
 
-    def init_brakepoints(self) -> None:
+    def init_brakepoints(self) -> bool:
         """Load the brakepoints from the csv file."""
         # get directory of this file
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        filename = (
-            f"{dir_path}/{self.filter['CarModel']}-{self.filter['TrackCode']}.csv"
-        )
+        file = sanitize(f"{self.filter['CarModel']}-{self.filter['TrackCode']}.csv")
+        filename = f"{dir_path}/{file}"
+        if not os.path.exists(filename):
+            logging.error("no brakepoints found for %s", filename)
+            self.error = "no brakepoints found for %s and %s " % (
+                self.filter["CarModel"],
+                self.filter["TrackCode"],
+            )
+            return False
+
         logging.debug("loading brakepoints from %s", filename)
 
         self.brakepoints = []
@@ -151,6 +158,7 @@ class History:
                 brakepoint["corner"] = len(self.brakepoints) + 1
                 self.brakepoints.append(brakepoint)
         logging.debug("loaded %s brakepoints", len(self.brakepoints))
+        return True
 
     def gear(self, brakepoint):
         return self.cache["gear"].get(brakepoint["corner"])
