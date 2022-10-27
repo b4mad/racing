@@ -19,7 +19,6 @@ spec:
               value: durandom
           image: quay.io/b4mad/pitcrew:main
           name: pitcrew
-          pullPolicy: Always
           resources:
             limits:
               memory: 64Mi
