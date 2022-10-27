@@ -9,8 +9,9 @@ logging.basicConfig(level=logging.DEBUG)
 class Coach:
     def __init__(self, history: History):
         self.history = history
+        self.previous_history_error = None
         self.msg = {
-            "msg": None,
+            "msg": {},
             "at": None,
             "corner": None,
         }
@@ -51,10 +52,14 @@ class Coach:
         return False
 
     def get_response(self, meters):
-        brakepoint = self.history.get_brakepoint(meters)
+        if not self.history.ready:
+            if self.history.error != self.previous_history_error:
+                self.previous_history_error = self.history.error
+                return self.history.error
+            else:
+                return None
 
-        if brakepoint is None:
-            return None
+        brakepoint = self.history.get_brakepoint(meters)
 
         if self.msg["corner"] != brakepoint["corner"]:
             self.msg["corner"] = brakepoint["corner"]

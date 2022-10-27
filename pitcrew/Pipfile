@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 paho-mqtt = "*"
 influxdb-client = "*"
+sanitize-filename = "*"
 
 [dev-packages]
 black = "*"
