@@ -4,13 +4,13 @@ kind: Deployment
 metadata:
   name: pitcrew-durandom
   labels:
-    app.kubernetes.io/component: pitcrew-durandom
+    pitcrew.b4mad.racing/crewchiefname: durandom
 spec:
   replicas: 1
   revisionHistoryLimit: 4
   selector:
     matchLabels:
-      app.kubernetes.io/component: pitcrew-durandom
+      pitcrew.b4mad.racing/crewchiefname: durandom
   template:
     spec:
       containers:
@@ -24,3 +24,18 @@ spec:
               memory: 64Mi
               cpu: 500m
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pitcrew-durandom
+  labels:
+    pitcrew.b4mad.racing/crewchiefname: durandom
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8050
+  type: ClusterIP
+  selector:
+    pitcrew.b4mad.racing/crewchiefname: durandom
