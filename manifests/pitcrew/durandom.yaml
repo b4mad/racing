@@ -28,6 +28,10 @@ spec:
             limits:
               memory: 64Mi
               cpu: 500m
+          ports:
+            - name: dash
+              containerPort: 8050
+              protocol: TCP
       restartPolicy: Always
 ---
 apiVersion: v1
