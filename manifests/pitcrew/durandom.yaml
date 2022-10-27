@@ -57,7 +57,6 @@ metadata:
   name: pitcrew-durandom
   annotations:
     kubernetes.io/tls-acme: "true"
-    haproxy.router.openshift.io/timeout: 45s
 spec:
   host: pitcrew.b4mad.racing
   path: /durandom
