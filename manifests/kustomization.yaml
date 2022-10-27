@@ -10,6 +10,7 @@ resources:
   - influxdb/overlays/smaug/
   - keycloak/overlays/smaug/
   - mosquitto/
+  - pitcrew/
   - postgresql/overlays/smaug/
   - routes.yaml
   - telegraf/overlays/smaug/
