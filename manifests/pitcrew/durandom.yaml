@@ -42,3 +42,20 @@ spec:
   type: ClusterIP
   selector:
     pitcrew.b4mad.racing/crewchiefname: durandom
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    pitcrew.b4mad.racing/crewchiefname: durandom
+  name: pitcrew-durandom
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    haproxy.router.openshift.io/timeout: 45s
+spec:
+  host: pitcrew.b4mad.racing
+  path: /durandom
+  tls:
+    termination: edge
+  to:
+    name: pitcrew-durandom
