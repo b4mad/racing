@@ -4,3 +4,7 @@ commonLabels:
   app.kubernetes.io/component: influxdb
 resources:
   - service_monitor.yaml
+generators:
+  - secret-generator.yaml
+generatorOptions:
+  disableNameSuffixHash: true
