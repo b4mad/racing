@@ -22,7 +22,7 @@ spec:
         - env:
             - name: CREWCHIEF_USERNAME
               value: durandom
-          image: quay.io/b4mad/pitcrew:main
+          image: quay.io/b4mad/pitcrew:latest
           name: pitcrew
           resources:
             limits:
