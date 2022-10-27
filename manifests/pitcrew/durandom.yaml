@@ -12,6 +12,9 @@ spec:
     matchLabels:
       pitcrew.b4mad.racing/crewchiefname: durandom
   template:
+    metadata:
+      labels:
+        pitcrew.b4mad.racing/crewchiefname: durandom
     spec:
       containers:
         - env:
