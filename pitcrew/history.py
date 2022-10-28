@@ -35,10 +35,14 @@ class History:
         self.previous_brakepoint_idx = 0
         self.ready = False
         self.error = None
+        self.do_run = True
         self.clear_cache()
 
+    def stop(self):
+        self.do_run = False
+
     def run(self):
-        while True:
+        while self.do_run:
             time.sleep(1)
             if self.do_init:
                 self.ready = self.init()

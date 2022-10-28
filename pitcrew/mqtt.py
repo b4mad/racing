@@ -27,9 +27,13 @@ class Mqtt:
         self.mqttc = mqttc
         self.coach = coach
         self.topic = ""
+        self.do_disconnect = False
 
     # def __del__(self):
     #     # disconnect from broker
+
+    def disconnect(self):
+        self.do_disconnect = True
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -60,6 +64,10 @@ class Mqtt:
         #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
         # )
         # print('.', end='')
+
+        if self.do_disconnect:
+            logging.debug("stopping MQTT")
+            mqttc.disconnect()
 
         if self.topic != msg.topic:
             logging.debug("new session %s", msg.topic)
