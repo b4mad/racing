@@ -9,7 +9,8 @@ from history import History
 from mqtt import Mqtt
 
 
-from dash import Dash, html, dcc, dependencies
+from dash import Dash, html, dcc
+from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 logging.basicConfig(level=logging.DEBUG)
@@ -19,52 +20,56 @@ class Crew:
     def __init__(self):
         self.power = True
 
-        base_path = os.environ.get("CREWCHIEF_USERNAME")
-        if base_path:
-            base_path = "/" + base_path + "/"
-        else:
-            base_path = "/"
+        self.driver = os.environ.get("CREWCHIEF_USERNAME")
+        base_path = f"/{self.driver}/"
         self.app = Dash(
             __name__,
             external_stylesheets=[dbc.themes.VAPOR],
             url_base_pathname=base_path,
         )
 
-        markdown_text = """
-        # B4MAD Racing Pit Crew
+        self.app.layout = self.serve_layout
+
+        # https://stackoverflow.com/questions/54729529/python-decorator-as-callback-in-dash-using-dash-object-that-is-an-instance-varia
+        self.app.callback(
+            Output("power-state", "children"), [Input("power-switch", "value")]
+        )(self.show_power_state)
+
+    def serve_layout(self):
+        markdown_text = f"""
+        # #B4MAD Racing Pit Crew
+
+        Driver: {self.driver}
         """
 
-        self.app.layout = html.Div(
+        return dbc.Container(
             [
                 dcc.Markdown(children=markdown_text),
-                dcc.RadioItems(
-                    ["on", "off"],
-                    id="power",
-                ),
-                html.Hr(),
+                self.power_switch(),
                 html.Div(id="power-state"),
             ]
         )
 
-        # https://stackoverflow.com/questions/54729529/python-decorator-as-callback-in-dash-using-dash-object-that-is-an-instance-varia
-        self.app.callback(
-            dependencies.Output("power-state", "children"),
-            dependencies.Input("power", "value"),
-        )(self.set_display_children)
-
-    def set_display_children(self, state):
-        if state == "off":
-            self.mqtt.disconnect()
-            self.history.stop()
-            self.power = False
-            logging.debug("power off")
-        else:
-            self.power = True
-            logging.debug("power on")
-
-        return "Power is {}".format(
-            state,
+    def power_switch(self):
+        switch = html.Div(
+            [
+                dbc.Switch(
+                    id="power-switch",
+                    label="Power",
+                    value=self.power,
+                ),
+            ]
         )
+        return switch
+
+    def show_power_state(self, power):
+        self.power = power
+        if power:
+            logging.debug("power on")
+            return "Power is on"
+        else:
+            logging.debug("power off")
+            return "Power is off"
 
     def coach_thread(self):
         while True:
@@ -93,6 +98,12 @@ class Crew:
                 threads.append(c)
                 c.start()
 
+                while self.power:
+                    time.sleep(1)
+
+                self.mqtt.disconnect()
+                self.history.stop()
+
                 for index, thread in enumerate(threads):
                     logging.info("Main    : before joining thread %d.", index)
                     thread.join()
@@ -106,6 +117,8 @@ class Crew:
 
 
 if __name__ == "__main__":
+    if not os.environ.get("CREWCHIEF_USERNAME"):
+        os.environ["CREWCHIEF_USERNAME"] = "durandom"
     logging.debug("Starting up")
     crew = Crew()
     crew.run()
