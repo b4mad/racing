@@ -13,6 +13,7 @@ from influxdb_client import InfluxDBClient
 from sanitize_filename import sanitize
 
 
+daiquiri.setup(level=logging.INFO)
 _LOGGER = logging.getLogger("history")
 if os.getenv("DEBUG", "1") == "1":
     _LOGGER.setLevel(logging.DEBUG)
