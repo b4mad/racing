@@ -111,7 +111,7 @@ from(bucket: "racing")
 from(bucket: "racing")
   |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
   |> filter(fn: (r) => r["_measurement"] == "laps")
-  |> filter(fn: (r) => r["_field"] == "Brake" or r["_field"] == "Clutch" or r["_field"] == "Throttle" 
+  |> filter(fn: (r) => r["_field"] == "Brake" or r["_field"] == "Clutch" or r["_field"] == "Throttle"
                     or contains(value: r._CarModel, set: ${CarModel:json})
                     or contains(value: r._CarClass, set: ${CarClass:json})
                     )
@@ -137,7 +137,7 @@ from(bucket: "racing")
 from(bucket: "racing")
   |> range(start: 2022-04-29T07:28:32.729Z, stop:2022-04-29T07:30:51.993Z)
   |> filter(fn: (r) => r["_measurement"] == "laps")
-  |> filter(fn: (r) => r["_field"] == "Brake" or r["_field"] == "Clutch" or r["_field"] == "Throttle" 
+  |> filter(fn: (r) => r["_field"] == "Brake" or r["_field"] == "Clutch" or r["_field"] == "Throttle"
                     and( contains(value: r.CarModel, set: ["Mazda MX-5 Cup"]) and contains(value: r.CarClass, set: ["MX5 Cup 2016","Rallycross","SBRS"]))
                     )
   |> aggregateWindow(every: 200ms, fn: mean, createEmpty: false)
@@ -147,9 +147,9 @@ from(bucket: "racing")
 from(bucket: "racing")
   |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
   |> filter(fn: (r) => r["_measurement"] == "laps")
-  |> filter(fn: (r) => ( 
+  |> filter(fn: (r) => (
            (r["_field"] == "Brake" or r["_field"] == "Clutch" or r["_field"] == "Throttle")
-       and ( 
+       and (
          contains(value: r.CarModel, set: ${CarModel:json})
         )
        ))
