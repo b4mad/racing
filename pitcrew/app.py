@@ -4,16 +4,20 @@ import os
 import threading
 import logging
 import time
+
+import daiquiri
+
 from coach import Coach
 from history import History
 from mqtt import Mqtt
-
 
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-logging.basicConfig(level=logging.DEBUG)
+
+daiquiri.setup(level=logging.INFO)
+_LOGGER = logging.getLogger("pitcrew")
 
 
 class Crew:
@@ -37,7 +41,7 @@ class Crew:
 
     def serve_layout(self):
         markdown_text = f"""
-        # #B4MAD Racing Pit Crew
+        # #B4mad Racing Pit Crew
 
         Driver: {self.driver}
         """
@@ -86,7 +90,7 @@ class Crew:
                 h = threading.Thread(target=history_thread)
 
                 def mqtt_thread():
-                    logging.info("Coach thread starting")
+                    logging.info("MQTT thread starting")
                     self.mqtt.run()
 
                 c = threading.Thread(target=mqtt_thread)
@@ -105,9 +109,9 @@ class Crew:
                 self.history.stop()
 
                 for index, thread in enumerate(threads):
-                    logging.info("Main    : before joining thread %d.", index)
+                    logging.debug("Main    : before joining thread %d.", index)
                     thread.join()
-                    logging.info("Main    : thread %d done", index)
+                    logging.debug("Main    : thread %d done", index)
 
     def run(self):
         threading.Thread(target=self.coach_thread).start()
@@ -117,8 +121,14 @@ class Crew:
 
 
 if __name__ == "__main__":
+    if os.getenv("DEBUG", "1") == "1":
+        _LOGGER.setLevel(logging.DEBUG)
+        _LOGGER.debug("Debug mode enabled")
+
     if not os.environ.get("CREWCHIEF_USERNAME"):
         os.environ["CREWCHIEF_USERNAME"] = "durandom"
-    logging.debug("Starting up")
+        _LOGGER.warn("CREWCHIEF_USERNAME not set, using default: durandom")
+
+    logging.debug("Starting up the pit crew...")
     crew = Crew()
     crew.run()

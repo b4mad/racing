@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 
+
+import os
+
 import logging
+import daiquiri
+
+
 from history import History
 
-logging.basicConfig(level=logging.DEBUG)
+
+daiquiri.setup(level=logging.INFO)
+_LOGGER = logging.getLogger("coach")
+if os.getenv("DEBUG", "1") == "1":
+    _LOGGER.setLevel(logging.DEBUG)
 
 
 class Coach:
@@ -27,7 +37,7 @@ class Coach:
             return True
 
         if abs(gear - gear_h) > 0.2:
-            logging.debug(
+            _LOGGER.debug(
                 "corner: %s, gear: %s, gear_h: %s", brakepoint["corner"], gear, gear_h
             )
             return True
@@ -42,7 +52,7 @@ class Coach:
 
         distance_to_ideal = start - start_h  # negative if too late
         if abs(distance_to_ideal) > 10:
-            logging.debug(
+            _LOGGER.debug(
                 "corner: %s, brake: %s, brake_h: %s",
                 brakepoint["corner"],
                 start,
@@ -113,9 +123,9 @@ if __name__ == "__main__":
     # history.write_cache_to_file()
 
     for j in range(1, 4):
-        logging.info("lap %s", j)
+        _LOGGER.info("lap %s", j)
         for i in range(0, track_length):
             response = coach.get_response(i)
             # time.sleep(0.2)
             if response:
-                logging.info("meters: %s, response: %s", i, response)
+                _LOGGER.info("meters: %s, response: %s", i, response)
