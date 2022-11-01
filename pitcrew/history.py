@@ -5,11 +5,19 @@ import csv
 import os
 import pickle
 import time
-from influxdb_client import InfluxDBClient
 import logging
+import daiquiri
+
+
+from influxdb_client import InfluxDBClient
 from sanitize_filename import sanitize
 
-logging.basicConfig(level=logging.DEBUG)
+
+daiquiri.setup(level=logging.INFO)
+_LOGGER = logging.getLogger("history")
+if os.getenv("DEBUG", "1") == "1":
+    _LOGGER.setLevel(logging.DEBUG)
+
 
 B4MAD_RACING_INFLUX_ORG = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
 B4MAD_RACING_INFLUX_TOKEN = os.environ.get(
@@ -75,7 +83,7 @@ class History:
                 self.cache["gear"][brakepoint["corner"]] = self.gear_q(
                     brakepoint["start"], brakepoint["stop"]
                 )
-                logging.debug(
+                _LOGGER.debug(
                     "corner %s: avg gear %s",
                     brakepoint["corner"],
                     self.cache["gear"][brakepoint["corner"]],
@@ -84,7 +92,7 @@ class History:
                 self.cache["brake_start"][brakepoint["corner"]] = self.brake_start_q(
                     brakepoint["start"], brakepoint["stop"]
                 )
-                logging.debug(
+                _LOGGER.debug(
                     "corner %s: avg brake_start %s",
                     brakepoint["corner"],
                     self.cache["brake_start"][brakepoint["corner"]],
@@ -95,7 +103,7 @@ class History:
             pickle.dump(self.cache, outfile)
 
     def read_cache_from_file(self):
-        logging.debug("reading historic data from file")
+        _LOGGER.debug("reading historic data from file")
         with open("cache.pickle", "rb") as infile:
             self.cache = pickle.load(infile)
 
@@ -137,14 +145,14 @@ class History:
         file = sanitize(f"{self.filter['CarModel']}-{self.filter['TrackCode']}.csv")
         filename = f"{dir_path}/{file}"
         if not os.path.exists(filename):
-            logging.error("no brakepoints found for %s", filename)
+            _LOGGER.error("no brakepoints found for %s", filename)
             self.error = "no brakepoints found for %s and %s " % (
                 self.filter["CarModel"],
                 self.filter["TrackCode"],
             )
             return False
 
-        logging.debug("loading brakepoints from %s", filename)
+        _LOGGER.debug("loading brakepoints from %s", filename)
 
         self.brakepoints = []
         with open(filename, mode="r") as infile:
@@ -161,7 +169,7 @@ class History:
                         brakepoint[key] = 0
                 brakepoint["corner"] = len(self.brakepoints) + 1
                 self.brakepoints.append(brakepoint)
-        logging.debug("loaded %s brakepoints", len(self.brakepoints))
+        _LOGGER.debug("loaded %s brakepoints", len(self.brakepoints))
         return True
 
     def gear(self, brakepoint):
@@ -193,7 +201,7 @@ class History:
             **vars
         )
 
-        # logging.debug("query:\n %s", q)
+        _LOGGER.debug("query:\n %s", q)
 
         # tables = self.query(q)
         query_api = self.client.query_api()
@@ -232,7 +240,7 @@ class History:
             **vars
         )
 
-        # logging.debug("query:\n %s", q)
+        _LOGGER.debug("query:\n %s", q)
         query_api = self.client.query_api()
 
         tables = query_api.query(q)
@@ -261,11 +269,11 @@ if __name__ == "__main__":
     if threaded:
 
         def history_thread():
-            logging.info("History thread starting")
+            _LOGGER.info("History thread starting")
             history.run()
 
         x = threading.Thread(target=history_thread)
         x.start()
     else:
         history.init()
-        print(history.gear_q(100, 250))
+        _LOGGER.info(history.gear_q(100, 250))

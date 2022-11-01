@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 
 import os
-import paho.mqtt.client as mqtt
 import json
+import daiquiri
 import logging
+
+import paho.mqtt.client as mqtt
+
 from coach import Coach
 from history import History
 
-logging.basicConfig(level=logging.DEBUG)
+
+daiquiri.setup(level=logging.INFO)
+_LOGGER = logging.getLogger("mqtt")
+if os.getenv("DEBUG", "1") == "1":
+    _LOGGER.setLevel(logging.DEBUG)
+
 
 CREWCHIEF_USERNAME = os.environ.get("CREWCHIEF_USERNAME", "durandom")
 B4MAD_RACING_CLIENT_USER = os.environ.get("B4MAD_RACING_CLIENT_USER", "crewchief")
@@ -60,17 +68,16 @@ class Mqtt:
             obj (_type_): the userdata
             msg (_type_): the message received
         """
-        # logging.debug(
-        #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
-        # )
-        # print('.', end='')
+        _LOGGER.debug(
+            "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
+        )
 
         if self.do_disconnect:
-            logging.debug("stopping MQTT")
+            _LOGGER.debug("stopping MQTT")
             mqttc.disconnect()
 
         if self.topic != msg.topic:
-            logging.debug("new session %s", msg.topic)
+            _LOGGER.debug("new session %s", msg.topic)
             self.topic = msg.topic
             self.coach.set_filter(self.filter_from_topic(msg.topic))
 
@@ -80,17 +87,17 @@ class Mqtt:
         meters = telemetry["telemetry"]["DistanceRoundTrack"]
         response = self.coach.get_response(meters)
         if response:
-            logging.debug("meters: %s, response: %s", meters, response)
+            _LOGGER.debug("meters: %s, response: %s", meters, response)
             mqttc.publish(f"/coach/{CREWCHIEF_USERNAME}", response)
 
     def on_connect(self, mqttc, obj, flags, rc):
-        logging.debug("rc: %s", str(rc))
+        _LOGGER.debug("rc: %s", str(rc))
 
     def on_publish(self, mqttc, obj, mid):
-        logging.debug("mid: %s", str(mid))
+        _LOGGER.debug("mid: %s", str(mid))
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
-        logging.debug(
+        _LOGGER.debug(
             "subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos)
         )
 
@@ -103,16 +110,18 @@ class Mqtt:
         topic = f"crewchief/{CREWCHIEF_USERNAME}/#"
         s = self.mqttc.subscribe(topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
-            logging.info(f"Subscribed to {topic}")
+            _LOGGER.info(f"Subscribed to {topic}")
             self.mqttc.loop_forever()
         else:
-            logging.error(f"Failed to subscribe to {topic}")
+            _LOGGER.error(f"Failed to subscribe to {topic}")
             exit(1)
 
 
 if __name__ == "__main__":
-    logging.info("Starting MQTT client")
+    _LOGGER.info("Starting MQTT client")
+
     history = History()
     coach = Coach(history)
+
     m = Mqtt(coach)
     m.run()

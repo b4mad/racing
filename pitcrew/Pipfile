@@ -11,6 +11,7 @@ dash = "*"
 pandas = "*"
 plotly-express = "*"
 dash-bootstrap-components = "*"
+daiquiri = "*"
 
 [dev-packages]
 black = "*"
