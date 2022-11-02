@@ -1,0 +1,12 @@
+check:
+  - overlays-build
+overlays_dir: overlays
+overlays:
+  - name: exploratory_data_analysis
+    build:
+      base-image: quay.io/thoth-station/s2i-thoth-ubi9-py39:v0.35.0
+      build-stratergy: Source
+      registry: quay.io
+      registry-org: b4mad
+      registry-project: racing-datascience
+      registry-secret: b4mad-thoth-pusher-secret
