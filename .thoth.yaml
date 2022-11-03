@@ -4,13 +4,6 @@ requirements_format: pipenv
 overlays_dir: overlays
 
 runtime_environments:
-  - name: default
-    operating_system:
-      name: ubi
-      version: "9"
-    python_version: "3.9"
-    recommendation_type: latest
-
   - name: exploratory_data_analysis
     operating_system:
       name: fedora
