@@ -1,22 +1,25 @@
 kind: Secret
 apiVersion: v1
 metadata:
-    name: b4mad-racing-influxdb-backup
-data:
-    accessKeyID: ENC[AES256_GCM,data:nQAPRYUJYrBMDDw5nNT8TBQS8VLMNQJ77FU4Yg==,iv:cKWYQ7VsE/lml6Zcjnb+L4BY76TN+YwnZdWo3U2Ky+c=,tag:lM3skDiKT7o+0RaVtHZrYA==,type:str]
-    bucketName: ENC[AES256_GCM,data:S/2CPgRx7/Lkgam2lEcuqjN4NTLadEDk8Z6Ivr/g0CQjPWUxmL4oBJ7uzSg=,iv:KpNtcj9veBC7alwo3ja7tRo9sYZblHVNicgW9+upuws=,tag:AxRsZiawrPezOvTiBjCeLw==,type:str]
-    region: ENC[AES256_GCM,data:jJiD+QCU8Wm8bNEN,iv:81lYdhDH7FsXsDhidp0xUdo1lmYR9ISy4vMmbqaPP28=,tag:ylUB5OYIMcvflGODq/Y+bw==,type:str]
-    secretAccessKey: ENC[AES256_GCM,data:CULb9B167DECFnemXiOVAeRs877iMhtjGTE5JrIgp+q693b4KrJ9ATnyREr22E/Y/L5N9MD3MLE=,iv:fkw3ij+HgDLgvdSrz8JoQDMtycxJMld/S592Gm9zxE4=,tag:mxoZiQq1Nb9qjst2d9x51A==,type:str]
+    name: influxdb2-auth
+stringData:
+    admin-user-password: ENC[AES256_GCM,data:gIJMQtRKo0Kag7V+dgURq9c8LNQ=,iv:E3KoZKKp74E9EePmbmwIaye+SOYMUCGF2fQ33DxlY4Y=,tag:UeFlOyTdit23Ryv+DjL/gw==,type:str]
+    admin-user-token: ENC[AES256_GCM,data:ltovOlvMYQGr3CAPjFHnHuY35Pc=,iv:sh1nvlVRRyjLZ+uoqGFmDJNANapDqJA9y3cYUXmfP5Y=,tag:mNdnOCBTL6KccTuWIdAVhQ==,type:str]
+    user-password: ENC[AES256_GCM,data:dUMj9Tgagr2c5pqJK7qF357tOHs=,iv:Kso2d8vVgFQV2mX93SV2oFDheBbU82gJyWihAx1zq7w=,tag:56KdaDk0BRj6Y2Nu7wounQ==,type:str]
+    read-user-password: ENC[AES256_GCM,data:bHz9Z919IVWxczA4eNq0kEiDsAE=,iv:JbkrPxfs8U+Zcql7XRGDFSn4iMCOLNwhJqukGMK06ew=,tag:hLu9vAV/+oTi2Y4L3Pxg4A==,type:str]
+    write-user-password: ENC[AES256_GCM,data:g4XySLvWTXvWYnoO57POXikIDeM=,iv:LByS+st5I43wWyCH2Rt0YwjT8zOgHrxiuRW+lmZ6OJc=,tag:elv2u6TCZthaoVk1oIYNEw==,type:str]
 type: Opaque
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
-    lastmodified: '2022-10-27T12:21:52Z'
-    mac: ENC[AES256_GCM,data:R7JdhhQnH0FNo6yMTc7+DGtORHjC67lsJOKx6+MD2dNeIY4SY7WIhbkVQSiGbGxz66pKuRyz3f2vyLcv9ofw+mf8l/VI6LanQh0goYGoGtzw5vw2UR71yDTI6BS8Wc46dsysxmRK/nyGMQAFpX37lkA5PWH7majKDSxPS1DDYxM=,iv:vV8qIjd2pERP0MJk30sFP+jXTjINzv4/V0ai7ZltLl4=,tag:WDS5+yTlWlFInmL49JMsUg==,type:str]
+    hc_vault: []
+    age: []
+    lastmodified: "2022-11-12T14:56:28Z"
+    mac: ENC[AES256_GCM,data:pLrdfxELm3OJ5BumNfDPY/OAl0Jn8phihj3Z85YsiMhzxJhvHNBeSkBAWQxLo7t5abTKOXx50s1z/IY6aEP5K2cIYdzXcWE4nP0fLzmhhP692Grvv3ZuI/RxjztlBCyxgKvHq+2bBA5F9mHyRph6kUfUb9vfAoNl/rCbSYOlHfE=,iv:tiM2//18lPoggJ7Ul8dYQlW7n2ArjPml1GRE9DaDCg8=,tag:79vCvuOld1IrFazPXt3Kwg==,type:str]
     pgp:
-    -   created_at: '2022-10-27T12:21:52Z'
-        enc: |
+        - created_at: "2022-10-27T12:21:52Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA1gbAjViyxWYARAArPFbc27LcUeJdSvYg4BjuTyOQODQFf9HwGvSY5rHLWCN
@@ -34,9 +37,9 @@ sops:
             YrjPihMDyZLN538cr6CJn93FqSYXRbGz84xlaIq4cBEGk9D/PjZaDLc4gnptZ9E=
             =Dugu
             -----END PGP MESSAGE-----
-        fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
-    -   created_at: '2022-10-27T12:21:52Z'
-        enc: |
+          fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
+        - created_at: "2022-10-27T12:21:52Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA+/WpawS9RPbAQgAkBGMTyu+ex7BR4uPWSbd8Ssn++tXgcQZmUxqcK8VMq+y
@@ -49,9 +52,9 @@ sops:
             UAzzh5/5VD+2MxNi2i3JVPtFMJJ5Cz4VrfqLEx+8bw==
             =rObV
             -----END PGP MESSAGE-----
-        fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
-    -   created_at: '2022-10-27T12:21:52Z'
-        enc: |
+          fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
+        - created_at: "2022-10-27T12:21:52Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA/irrHa183bxAQf5Ab03Dpq0bgKF8/7V694Ebu1pjyg9WukD2gbWmjt8YGk1
@@ -64,9 +67,9 @@ sops:
             HhxSi/X10DY6nuRf7H8KDIwkOaUszHf/F8l5GjfoSQ==
             =6FPY
             -----END PGP MESSAGE-----
-        fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
-    -   created_at: '2022-10-27T12:21:52Z'
-        enc: |
+          fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
+        - created_at: "2022-10-27T12:21:52Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA9aKBcudqifiAQ/+OftX0hUn1Y1faN7RieqWBDXmst6asiIMUJL8+u742ST6
@@ -84,6 +87,6 @@ sops:
             /cMnBCPgGAec0aY/UdftdtL/LKCALTtnVwc5UDKVf2mHLqm3nOuEsYuxOrCfuIA=
             =CmXx
             -----END PGP MESSAGE-----
-        fp: 0508677DD04952D06A943D5B4DC4116D360E3276
+          fp: 0508677DD04952D06A943D5B4DC4116D360E3276
     encrypted_regex: ^(data|stringData|tls)$
-    version: 3.5.0
+    version: 3.7.2

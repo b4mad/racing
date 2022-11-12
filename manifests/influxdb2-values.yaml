@@ -19,14 +19,16 @@ architecture: standalone
 
 auth:
   enabled: true
+  existingSecret: "influxdb2-auth"
   usePasswordFiles: false
   admin:
     username: admin
-    password: KHxFBLKlcfv3
-    token: KHxFBLKlcfv3
     org: b4mad
     bucket: racing
-
+  readUser:
+    username: reader
+  writeUser:
+    username: writer
   createUserToken: false
 
 influxdb:
@@ -82,5 +84,5 @@ backup:
   uploadProviders:
     aws:
       enabled: true
-      existingSecret: "b4mad-racing-influxdb-backup"
+      existingSecret: "influxdb2-backup"
       bucketName: "s3://b4mad-racing-smaug/influxdb"

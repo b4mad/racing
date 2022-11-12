@@ -5,7 +5,7 @@
 via helm:
 
 ```shell
-helm upgrade --install b4mad-racing-influxdb2 bitnami/influxdb \
+helm upgrade --install influxdb2 bitnami/influxdb \
   --namespace b4mad-racing \
   --values influxdb2-values.yaml
 ```

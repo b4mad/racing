@@ -10,7 +10,7 @@ spec:
       editable: true
       isDefault: true
       type: influxdb
-      url: "http://b4mad-racing-influxdb2.b4mad-racing.svc.cluster.local:8086"
+      url: "http://influxdb2.b4mad-racing.svc.cluster.local:8086"
       jsonData:
         defaultBucket: "racing"
         httpMode: "POST"
@@ -18,4 +18,4 @@ spec:
         version: "Flux"
         timeInterval: "10ms"
       secureJsonData:
-        token: "${INFLUXDB_TOKEN}"
+        token: "${INFLUX_GRAFANA_READER_TOKEN}"

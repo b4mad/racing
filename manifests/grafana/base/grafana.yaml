@@ -33,9 +33,14 @@ spec:
     size: "1Gi"
     class: ocs-external-storagecluster-ceph-rbd
   deployment:
+    skipCreateAdminAccount: true
+    envFrom:
+      - secretRef:
+          name: grafana-credentials
     env:
-      - name: INFLUXDB_TOKEN
+      - name: INFLUX_GRAFANA_READER_TOKEN
         valueFrom:
           secretKeyRef:
-            key: admin-user-token # FIXME this should not be an admin!
-            name: b4mad-racing-influxdb2
+            # create this via the influx UI as a reader token for the racing bucket
+            name: grafana-credentials
+            key: INFLUX_GRAFANA_READER_TOKEN

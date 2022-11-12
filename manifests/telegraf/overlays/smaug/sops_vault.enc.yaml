@@ -1,8 +1,9 @@
 apiVersion: v1
-data:
-    input-password: ENC[AES256_GCM,data:Ll8GZ8f+KAQgvzfM,iv:jyJ8iIxDU84VOTxjuQ0u4oVUBQuIZIizAiGts2hiYDg=,tag:WGFjlbWsdbjVfg9SIPo1kQ==,type:str]
-    input-username: ENC[AES256_GCM,data:ELfEgixNDiY7Ggcn,iv:/DKKhoEKvCd+tM/nRzi+XvYuV5Q6OtaEzqU+z3qd5+0=,tag:QcGKf1zkGo4DOwmXGv+Dpg==,type:str]
-    token: ENC[AES256_GCM,data:8MelBfdcHh/CvZi9FIXNZQ==,iv:F86q2etXC4VW9gRkMBlI+kzbF0So3j7dsmX2/4wE0/U=,tag:pzcJY0jj/RoCNcwMDpsmHA==,type:str]
+stringData:
+    input-password: ENC[AES256_GCM,data:JziSGXbTOPue,iv:Z4n4AOiTT3VabA1UP5SBcRM0a6miQp4RTqwZe3qqMYg=,tag:HM/Ad48YY3+oGGg7o1kvcQ==,type:str]
+    input-username: ENC[AES256_GCM,data:MBjdRw8GMqo1,iv:AJFngug/DtCLd+ImSNh0QZQCWnVUlc5UP+0rfWK6uIM=,tag:q+UlLz+nf5hp4Ed+RFq8Xw==,type:str]
+    #ENC[AES256_GCM,data:aQSnxkSgk9+4JooCFoW53nL9gG7ecOJKTifQOjwRTP+JowHhKRRBKeyVMgE3YvQDJnyVoh/+LAVSy7pIznCohEBPn6/chw==,iv:AaIOcx4OdIbiZION6vPueACp9LpO3Xb8wzrTypMWYqA=,tag:FDEsF4txSfynb/Nh+E/N+g==,type:comment]
+    influx-token: ENC[AES256_GCM,data:zPpmj1D/OJLRf0GaeiD20RZ5G0micTEVLHlMVP16QX4XMEw4jAqSO2zAIR1Cks7NcGflq8amrACtHRedGyp8XnnLI7j7pAmqEdjppy5GIxwDiMp9F9fajA==,iv:3Rc46AxOnO+68XVQ4dAxPCNqGeNcCsZWQ27NYE0IwT0=,tag:aruvTlJ37Ehj9yWM1wd/eA==,type:str]
 kind: Secret
 metadata:
     creationTimestamp: null
@@ -11,11 +12,13 @@ sops:
     kms: []
     gcp_kms: []
     azure_kv: []
-    lastmodified: '2022-10-04T20:30:51Z'
-    mac: ENC[AES256_GCM,data:NQ7T/5GxKVuCIr93+m10WJR3tbB8zSOfoiV33BIQDrYRSfaV/YmYnouKrkeY4g+SiJLqfB6aYQ9sRCkGxlBAZXtQHDc+BF894f9KxW2+XbXVPG9UqKs09pwaNeSLF0Xb7HgqUEf0bUMViDr4Wxv+aoQJTOz8gLBDBhPwZbNdAYY=,iv:bWnQL04QpnzoiFx6EgDliVPDlCL+i4PK/E9I+k1vrzc=,tag:ZhmJGi5cxX8q/eRoy6GPrA==,type:str]
+    hc_vault: []
+    age: []
+    lastmodified: "2022-11-12T15:46:47Z"
+    mac: ENC[AES256_GCM,data:qqJ1kYOTPbzNd1c5lF/MjHJEKQ/FB1qbHu+ypLiUg/eZlm9MD3BvcC4M0CzBQSPwQmxXk/CDko83vHn4TA5XdFC5/iwR9S3EooNrI7TSJ2P8srJqTt4Gq9S9wLe8dsvTgQ6OOtSMVGVMLTI4BhgVOfzPuHCBmN0C846Wo0FPsII=,iv:AdNTFvXwO9ulHBbBnYd3F/NuOnzuDdjY+p8pwBDreyw=,tag:WBBeH9bG1ubfF/JYytoPTg==,type:str]
     pgp:
-    -   created_at: '2022-10-04T20:30:50Z'
-        enc: |
+        - created_at: "2022-10-04T20:30:50Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA1gbAjViyxWYARAAqLyE0nOqjLAM2/Xhxmqp0IcMJ+cKW3NqBJE8unZ1Z96I
@@ -33,9 +36,9 @@ sops:
             UAcPsr71uwPUqBUfCo7uclu+rZ+PBBklCuHnJUclreD1Vu1vLEPE/3+OHrN2
             =B0xs
             -----END PGP MESSAGE-----
-        fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
-    -   created_at: '2022-10-04T20:30:50Z'
-        enc: |
+          fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
+        - created_at: "2022-10-04T20:30:50Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA+/WpawS9RPbAQf/Y2SXn27f0IQNeV79cZf7E4DXCTmSdVIBh2Uht/dyOWf6
@@ -48,9 +51,9 @@ sops:
             LwDiexm1I2zS3SKf0ITz32q2ex0EKIVaXd+hX/Y=
             =ttIv
             -----END PGP MESSAGE-----
-        fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
-    -   created_at: '2022-10-04T20:30:50Z'
-        enc: |
+          fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
+        - created_at: "2022-10-04T20:30:50Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA/irrHa183bxAQf6AtzZrCAOmS/HkKpSZk9UJyMIDwqSnSd0hHuuxXimjvuQ
@@ -63,9 +66,9 @@ sops:
             jeXjZN7wmSEqh9eDHK84e7GGCbeywpurHgUsSXc=
             =g1aO
             -----END PGP MESSAGE-----
-        fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
-    -   created_at: '2022-10-04T20:30:50Z'
-        enc: |
+          fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
+        - created_at: "2022-10-04T20:30:50Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA9aKBcudqifiAQ/+IYw1yI7P+XncWcWodDch236cPrE+zATzzusO3RrmabF6
@@ -83,6 +86,6 @@ sops:
             lzOUWRBp6cWX56mAyaGOOPfin9tBKDsAmfdegUuCkfIXdedzUoQNI/rY4Rwx
             =kasi
             -----END PGP MESSAGE-----
-        fp: 0508677DD04952D06A943D5B4DC4116D360E3276
+          fp: 0508677DD04952D06A943D5B4DC4116D360E3276
     encrypted_regex: ^(data|stringData|tls)$
-    version: 3.5.0
+    version: 3.7.2
