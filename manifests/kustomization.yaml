@@ -5,12 +5,13 @@ kind: Kustomization
 #   app.kubernetes.io/name: b4mad-racing
 #   app.kubernetes.io/version: v0.1.0-dev
 #   app.kubernetes.io/managed-by: humans
+namespace: b4mad-racing
 resources:
   - grafana/overlays/smaug/
   - influxdb/overlays/smaug/
   - mosquitto/
   - pitcrew/
-  - postgresql/overlays/smaug/
+  - postgresql/
   - routes.yaml
   - telegraf/overlays/smaug/
 generatorOptions:
