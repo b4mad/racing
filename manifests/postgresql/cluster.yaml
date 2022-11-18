@@ -51,3 +51,7 @@ spec:
         - fp1
         - fp2
       options: "NOSUPERUSER"
+    - name: telegraf
+      databases:
+        - stats
+      options: "NOSUPERUSER"
