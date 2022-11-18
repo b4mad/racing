@@ -47,6 +47,22 @@ and explore the racing bucket
 
 - https://github.com/InfluxCommunity/InfluxDBv2_Telegraf_Docker
 
+#### connecting to influx
+
+```shell
+# create a config with a reader token
+influx config create --active -n b4mad_reader -u https://telemetry.b4mad.racing -t "citqAMr66LLb25hvaaZm2LezOc88k2ocOFJcJDR6QB-RmLJa_-sAr9kYB4vSFYaz8bt26lm7SokVgpQKdgKFKA==" -o b4mad
+
+# count the number of sessions in the last 24 hours
+influx query 'from(bucket:"racing") |> range(start:-1d) |> keep(columns: ["SessionId"])|> group()|> distinct(column: "SessionId") |> count()'
+Result: _result
+Table: keys: []
+                _value:int
+--------------------------
+                      1788
+
+``
+
 ### telegraf
 
 ```shell

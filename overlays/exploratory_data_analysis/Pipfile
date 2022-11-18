@@ -10,6 +10,8 @@ matplotlib = "*"
 numpy = "*"
 pandas = "*"
 seaborn = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 mypy = "*"
