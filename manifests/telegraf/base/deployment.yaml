@@ -27,10 +27,11 @@ spec:
                 secretKeyRef:
                   key: input-password
                   name: telegraf
-            - name: TOKEN
+            - name: INFLUX_TOKEN
+              # create this via the influx UI as a writer token for the racing bucket
               valueFrom:
                 secretKeyRef:
-                  key: token
+                  key: influx-token
                   name: telegraf
           image: telegraf:1.22.3
           name: telegraf
