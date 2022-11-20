@@ -43,8 +43,8 @@ spec:
               name: config
           resources:
             limits:
-              memory: 64Mi
-              cpu: 100m
+              memory: 512Mi
+              cpu: 200m
       restartPolicy: Always
       serviceAccount: telegraf
       serviceAccountName: telegraf
