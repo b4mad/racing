@@ -25,12 +25,15 @@ class Crew:
         self.power = True
 
         self.driver = os.environ.get("CREWCHIEF_USERNAME")
-        base_path = f"/{self.driver}/"
+        # lower case and dashify driver
+        driver_path = self.driver.lower().replace(" ", "-")
+        base_path = f"/{driver_path}/"
         self.app = Dash(
             __name__,
             external_stylesheets=[dbc.themes.VAPOR],
             url_base_pathname=base_path,
         )
+        _LOGGER.info(f"Base path: {base_path}")
 
         self.app.layout = self.serve_layout
 
