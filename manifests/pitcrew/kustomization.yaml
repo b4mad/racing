@@ -5,3 +5,4 @@ commonLabels:
 resources:
   - durandom.yaml
   - goern.yaml
+  - tim-a-holmes.yaml
