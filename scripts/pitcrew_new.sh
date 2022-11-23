@@ -15,7 +15,7 @@ CONFIG=${PAYLOAD_PATH:-data.yaml}
 if [ -z "$WORKING_DIR" ]; then
     REPO=$(pwd)
 else
-    REPO=${WORKING_DIR}/apps
+    REPO=${WORKING_DIR}/racing
 fi
 ORG_NAME=${ORG_NAME:-b4mad}
 SOURCE_REPO=${SOURCE_REPO:-racing}
