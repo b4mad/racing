@@ -3,6 +3,7 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/component: pitcrew
 resources:
-  - durandom.yaml
-  - goern.yaml
-  - tim-a-holmes.yaml
+- durandom.yaml
+- goern.yaml
+- tim-a-holmes.yaml
+- nikki-lauda.yaml

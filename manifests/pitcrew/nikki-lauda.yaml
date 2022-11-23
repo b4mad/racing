@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  labels:
+    pitcrew.b4mad.racing/crewchiefname: nikki-lauda
+  name: pitcrew-nikki-lauda
+spec:
+  host: pitcrew.b4mad.racing
+  path: /nikki-lauda
+  tls:
+    termination: edge
+  to:
+    name: pitcrew-nikki-lauda
