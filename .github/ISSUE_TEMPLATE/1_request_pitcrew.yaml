@@ -1,0 +1,16 @@
+name: Request Pitcrew
+description: Request a Pitcrew
+title: "Pitcrew request: <name>"
+labels: [kind/onboarding, "script:scripts/pitcrew_new.sh", "task-type:bash", "repo:racing"]
+assignees: [first-operator]
+body:
+  - type: input
+    id: driver-name
+    attributes:
+      label: Driver name
+      description: |
+        Your driver name, as configured in CrewChief
+
+      placeholder: Jim
+    validations:
+      required: true
