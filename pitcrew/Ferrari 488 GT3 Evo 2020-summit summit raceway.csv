@@ -1,4 +1,4 @@
-start,turn,speed,stop,force,gear,mark
+brake,turn_in,speed,accelerate,force,gear,mark
 410,490,85,600,80,1,
 1100,1030,170,1110,50,3,
 1560,1625,80,1750,90,1,

@@ -1,4 +1,4 @@
-start,turn,speed,stop,force,gear,mark
+brake,turn_in,speed,accelerate,force,gear,mark
 775,885,75,965,90,1,brake at 150 meter mark
 1985,2085,100,2125,90,2,brake at tarmac before 100 meter mark
 2430,2430,140,2525,50,3,brake before the orange barrier on the left

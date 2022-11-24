@@ -1,4 +1,4 @@
-start,turn,speed,stop,force,gear,mark
+brake,turn_in,speed,accelerate,force,gear,mark
 360,360,80,575,75,1,brake at tarmac entrance
 900,900,90,1025,90,1,brake at lights post
 1410,1350,160,1560,0,3,turn at yellow tires
