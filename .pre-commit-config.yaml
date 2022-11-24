@@ -6,7 +6,7 @@ repos:
       - id: remove-tabs
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
         args: ['--maxkb=2048']
@@ -56,8 +56,8 @@ repos:
   #   hooks:
   #     - id: check-manifest
 
-  - repo: https://gitlab.com/PyCQA/flake8
-    rev: "3.9.2"
+  - repo: https://github.com/PyCQA/flake8
+    rev: "6.0.0"
     hooks:
       - id: flake8
         additional_dependencies: ["pep8-naming"]
