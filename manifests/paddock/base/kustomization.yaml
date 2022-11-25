@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+#commonLabels:
+# FIXME app.kubernetes.io/component: postgresql
+resources:
+  - deployment_config.yaml
+  - route.yaml
+  - service_account.yaml
+  - service_monitor.yaml
+  - service.yaml

@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-m@azq(w=7f-e79a1t@h3m_r5&k4&_51nor(uk==9ni1#63)y0!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "paddock.b4mad.racing"]
 
 
 # Application definition
