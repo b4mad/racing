@@ -12,15 +12,17 @@ spec:
     - name: instance1
       dataVolumeClaimSpec:
         accessModes:
-        - "ReadWriteOnce"
+          - "ReadWriteOnce"
         resources:
           requests:
             storage: 2Gi
       resources:
         limits:
-          cpu: 300m
+          cpu: 2000m
+          memory: 2Gi
         requests:
-          cpu: 200m
+          cpu: 2000m
+          memory: 2Gi
   backups:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0
@@ -35,19 +37,19 @@ spec:
           requests:
             cpu: 200m
       repos:
-      - name: repo1
-        schedules:
-          # Every sunday at 01:00 full backup
-          full: "0 1 * * 0"
-          # Monday through saturday at 01:00 differential backup
-          differential: "0 1 * * 1-6"
-        volume:
-          volumeClaimSpec:
-            accessModes:
-            - "ReadWriteOnce"
-            resources:
-              requests:
-                storage: 2Gi
+        - name: repo1
+          schedules:
+            # Every sunday at 01:00 full backup
+            full: "0 1 * * 0"
+            # Monday through saturday at 01:00 differential backup
+            differential: "0 1 * * 1-6"
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 2Gi
   users:
     - name: free-practice
       databases:
@@ -56,5 +58,10 @@ spec:
       options: "NOSUPERUSER"
     - name: telegraf
       databases:
+        - stats
+      options: "NOSUPERUSER"
+    - name: paddock
+      databases:
+        - paddock
         - stats
       options: "NOSUPERUSER"
