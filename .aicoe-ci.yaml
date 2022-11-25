@@ -1,2 +1,9 @@
 check:
   - thoth-build
+build:
+  build-stratergy: Containerfile
+  dockerfile-path: paddock/Containerfile
+  registry: quay.io
+  registry-org: b4mad
+  registry-project: paddock
+  registry-secret: b4mad-aicoeci-pusher-pull-secret

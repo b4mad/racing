@@ -16,7 +16,33 @@ spec:
       name: paddock
     spec:
       containers:
-        - image: quay.io/b4mad/paddock:main
+        - env:
+            - name: DB_ADDR
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: port
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: dbname
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: password
+          image: quay.io/b4mad/paddock:main
           imagePullPolicy: Always
           name: paddock
           ports:
