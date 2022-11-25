@@ -3,7 +3,7 @@ kind: PostgresCluster
 metadata:
   name: b4mad-racing
 spec:
-  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.2-1
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.5-1
   postgresVersion: 14
   service:
     type: NodePort
@@ -25,7 +25,7 @@ spec:
           memory: 2Gi
   backups:
     pgbackrest:
-      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.40-0
       global:
         # Save backups for 14 days, this means 2 full backups with 6 differential ones in between
         repo1-retention-full: "1"
@@ -50,6 +50,10 @@ spec:
               resources:
                 requests:
                   storage: 2Gi
+  proxy:
+    pgBouncer:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1
+      replicas: 1
   users:
     - name: free-practice
       databases:
