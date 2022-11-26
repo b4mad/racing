@@ -10,6 +10,7 @@ resources:
   - grafana/overlays/smaug/
   - influxdb/overlays/smaug/
   - mosquitto/
+  - paddock/overlays/smaug/
   - pitcrew/
   - postgresql/
   - routes.yaml
