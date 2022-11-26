@@ -17,31 +17,11 @@ spec:
     spec:
       containers:
         - env:
-            - name: DB_ADDR
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: b4mad-racing-pguser-paddock
-                  key: host
-            - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
-                  key: port
-            - name: DB_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
-                  key: dbname
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
-                  key: user
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
-                  key: password
+                  key: uri
           image: paddock:latest
           imagePullPolicy: Always
           name: paddock
