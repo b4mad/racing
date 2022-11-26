@@ -10,6 +10,7 @@ influxdb-client = "*"
 daiquiri = "*"
 django = "*"
 celery = "*"
+django-environ = "*"
 
 [dev-packages]
 
