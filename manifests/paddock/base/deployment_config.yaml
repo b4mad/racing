@@ -22,6 +22,9 @@ spec:
                 secretKeyRef:
                   name: b4mad-racing-pguser-paddock
                   key: uri
+          envFrom:
+            - secretRef:
+                name: paddock-settings
           image: paddock:latest
           imagePullPolicy: Always
           name: paddock
@@ -42,6 +45,15 @@ spec:
         - name: django-manage-migrate
           image: paddock:latest
           imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: uri
+          envFrom:
+            - secretRef:
+                name: paddock-settings
           command:
             - /bin/bash
             - -c

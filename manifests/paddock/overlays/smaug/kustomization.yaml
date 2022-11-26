@@ -10,3 +10,5 @@ images:
     newTag: latest
 patchesStrategicMerge:
   - image_stream_tag.yaml
+generators:
+  - secret-generator.yaml
