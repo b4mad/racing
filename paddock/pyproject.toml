@@ -1,0 +1,7 @@
+name = "b4mad-racing-paddock"
+version = "0.1.0"
+description = "This is the #B4mad Racing Paddock."
+license = "GPL-3.0-or-later"
+authors = [
+  "Marcel Hild <durandom@b4mad.net>"
+]
