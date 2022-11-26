@@ -9,6 +9,6 @@ ssh-keys/
 gpg-keys/
 __pycache__
 .ipynb_checkpoints
-.thoth_latest_analysis_id
+**/.thoth_last_analysis_id
 _build
 db.sqlite3
