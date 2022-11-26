@@ -4,7 +4,7 @@ requirements_format: pipenv
 overlays_dir: overlays
 
 runtime_environments:
-  - name: exploratory_data_analysis
+  - name: paddock
     operating_system:
       name: fedora
       version: "35"
