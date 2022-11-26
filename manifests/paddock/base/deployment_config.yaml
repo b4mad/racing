@@ -42,7 +42,7 @@ spec:
                 secretKeyRef:
                   name: b4mad-racing-pguser-paddock
                   key: password
-          image: quay.io/b4mad/paddock:main
+          image: paddock:latest
           imagePullPolicy: Always
           name: paddock
           ports:
@@ -59,8 +59,8 @@ spec:
       serviceAccount: paddock
       serviceAccountName: paddock
       initContainers:
-        - name: django-init
-          image: quay.io/b4mad/paddock:main
+        - name: django-manage-migrate
+          image: paddock:latest
           imagePullPolicy: Always
           command:
             - /bin/bash

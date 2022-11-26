@@ -1,0 +1,13 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: paddock
+spec:
+  tags:
+    - name: latest
+      from:
+        kind: DockerImage
+        name: quay.io/b4mad/paddock:v0.1.0
+      importPolicy: {}
+      referencePolicy:
+        type: Local

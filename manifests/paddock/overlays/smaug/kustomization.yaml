@@ -4,3 +4,9 @@ resources:
   - ../../base
 generatorOptions:
   disableNameSuffixHash: true
+images:
+  - name: paddock
+    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
+    newTag: latest
+patchesStrategicMerge:
+  - image_stream_tag.yaml
