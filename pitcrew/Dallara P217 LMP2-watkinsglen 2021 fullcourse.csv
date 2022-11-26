@@ -1,7 +1,7 @@
 brake,turn_in,speed,accelerate,force,gear,mark
-200,10,236,250,80,1,turn one,
-1750,20,182,1900,100,3,turn two,
-2600,30,161,2750,80,3,mark three,
+200,10,236,250,80,1,turn one
+1750,20,182,1900,100,3,turn two
+2600,30,161,2750,80,3,mark three
 3100,40,200,3300,70,3,mark four
 3750,40,154,3900,60,3,mark five
 4200,49,190,4400,80,3,mark six
