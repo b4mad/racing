@@ -7,7 +7,7 @@ spec:
     - name: latest
       from:
         kind: DockerImage
-        name: quay.io/b4mad/paddock:v0.1.7
+        name: quay.io/b4mad/paddock:v0.1.9
       importPolicy: {}
       referencePolicy:
         type: Local
