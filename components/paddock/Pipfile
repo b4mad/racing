@@ -7,11 +7,13 @@ name = "pypi"
 psycopg2-binary = "*"
 sqlalchemy = "*"
 influxdb-client = "*"
-daiquiri = "*"
 django = "*"
 celery = "*"
 django-environ = "*"
 uwsgi = "*"
+paho-mqtt = "*"
+sanitize-filename = "*"
+pandas = "*"
 
 [dev-packages]
 
