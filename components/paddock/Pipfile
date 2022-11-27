@@ -11,6 +11,7 @@ daiquiri = "*"
 django = "*"
 celery = "*"
 django-environ = "*"
+uwsgi = "*"
 
 [dev-packages]
 
