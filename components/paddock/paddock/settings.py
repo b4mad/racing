@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 For configuration see
 https://django-environ.readthedocs.io/en/latest/quickstart.html
 https://djangostars.com/blog/configuring-django-settings-best-practices/
+https://www.architect.io/blog/2022-08-04/deploy-python-django-kubernetes/
 """
 
 import environ
 import os
+from pathlib import Path
 
 env = environ.Env(
     # set casting, default value
@@ -23,7 +25,7 @@ env = environ.Env(
 )
 
 # Set the project base directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -35,7 +37,12 @@ DEBUG = env("DEBUG")
 # exception if SECRET_KEY not in os.environ
 SECRET_KEY = env("SECRET_KEY")
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "paddock.b4mad.racing"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "paddock.b4mad.racing",
+    os.environ.get("ALLOWED_HOST", ""),
+]
 
 
 # Application definition
@@ -65,7 +72,7 @@ ROOT_URLCONF = "paddock.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -128,6 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = ["https://*.b4mad.racing"]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -145,6 +153,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
