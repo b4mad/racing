@@ -12,6 +12,7 @@ stringData:
     B4MAD_RACING_INFLUX_ORG: ENC[AES256_GCM,data:dlcymLM=,iv:4tJsUkD6nXzvvRO7NqZEidTEjzhvr4ERY1r88OhMffk=,tag:/IIwK7Og7f0cdXl16ze9UA==,type:str]
     B4MAD_RACING_INFLUX_TOKEN: ENC[AES256_GCM,data:QmJu4GuED4YFJIUjarp2lwJeVYMhD8MUBKEaQSWHDB3SAPmiUA5qekirqJvZzitmnUSdQ65FUHpyxsbaFLt15sjp9yV04bc4rLWS1Q8pMzykar9Sy3skTA==,iv:7SiyFE78pgRuq8GgUVqud/tsL+W/W8mn9kkWcyCviA0=,tag:Gdkyf114tEgCfuZEqa7clg==,type:str]
     B4MAD_RACING_INFLUX_URL: ENC[AES256_GCM,data:4+fekYQh6LDNoSush1W6LUv6PIy8XAT7zsJzsSk5kQ==,iv:23/JZS+QHht43/P289IGmVmPh6mB4RnIALByCyGd2kE=,tag:aYTzlL10kwA08ZQpUS7tZA==,type:str]
+    READONLY_DATABASE_URL: ENC[AES256_GCM,data:lvNRzNyXvjU5cO/CpL5/Oe75nvv0PuArfnGEspZAI59yWuOScZ+MGV/+q380oWasdY2zTPMTZs6FYMoO5F6XGr44aDwOJPgfwdibvF7bFApTWPdv6wmJMAkvpPHEaJDSkMFQGeZYWMFbNBMl8IncW6yvPw==,iv:rlHndHc7dxQQZzuy++/vuR2EoMTu3tzzVx6LZ7S9W0U=,tag:z1nkcIqzj2NDCFvm3EEm7w==,type:str]
 type: Opaque
 sops:
     kms: []
@@ -19,8 +20,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-11-27T16:19:15Z"
-    mac: ENC[AES256_GCM,data:zC2QHK6OAJXqdciwqDCjoMexhnq7mc65vRv7fNZLdS8uGVPRFAjOpF5Y3w1IrTunk5Ia6wPnOb/eiHCnPX9ek8CxADmQcreOmBGZw40TDVoVrNh4aUZuK3I2vZoEtLIDadACV3ZDO7DrivA6AL1hegzpEtft9vQMbl+wP8VHAn0=,iv:lwUHruV9rMqJO4i04mXbKx8h4kX+B79PZq9eJ2g3kxo=,tag:DY7fFyyIL6K2jzNWj5Ct6A==,type:str]
+    lastmodified: "2022-11-27T19:13:05Z"
+    mac: ENC[AES256_GCM,data:D8bJ+/6tsMjn+wHmjjz0vbgmi+PyR7Pv/YsmNa3ZWs+om1ErUISYi8jSSjRthd6MMm6IFTkKW5lwaWym58KO/XUQ3oM6AsEN6rYBV2wCd+8+SpG2l4sD3nPRbwgZ8s6Q2Rh6SHsNWPpid0CDzQuQbPjBs/nFKsBUxq+27r8opm4=,iv:nl1xQq3l++aKHquK9vu3kOP9/uxKBxGg349VdN/C2cE=,tag:wT8rFOPerEboeZ3k6BYbcA==,type:str]
     pgp:
         - created_at: "2022-10-27T12:21:52Z"
           enc: |

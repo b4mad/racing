@@ -15,6 +15,7 @@ paho-mqtt = "*"
 sanitize-filename = "*"
 pandas = "*"
 django-admin-relation-links = "*"
+django-sql-explorer = "*"
 
 [dev-packages]
 
