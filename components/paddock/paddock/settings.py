@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "explorer",
 ]
 
 MIDDLEWARE = [
@@ -99,6 +100,7 @@ DATABASES = {
     #
     # The db() method is an alias for db_url().
     "default": env.db(),
+    "readonly": env.db_url("READONLY_DATABASE_URL"),
 }
 
 # DATABASES = {
@@ -186,3 +188,6 @@ LOGGING = {
         },
     },
 }
+
+EXPLORER_CONNECTIONS = {"Default": "readonly"}
+EXPLORER_DEFAULT_CONNECTION = "readonly"

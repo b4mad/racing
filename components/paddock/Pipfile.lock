@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "211a0013783ebe469c04f043574b921bb375416098c200e24a48eeff3e38d363"
+            "sha256": "6d8beee2a2a2cfcc0a1f76d9bf2429c0c6220d39bc753b738a9ddf1e1504a10d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -107,6 +107,14 @@
             ],
             "index": "pypi",
             "version": "==0.9.0"
+        },
+        "django-sql-explorer": {
+            "hashes": [
+                "sha256:8767c384926dca6ecc869186a40540bcd1504e34dde7bc1ceb460b6fad5a8675",
+                "sha256:be6439b67aac3bdb87795e60f749d0564b0f62b56af0bd8ab3e1cfdbae9f87a2"
+            ],
+            "index": "pypi",
+            "version": "==2.5"
         },
         "influxdb-client": {
             "hashes": [
