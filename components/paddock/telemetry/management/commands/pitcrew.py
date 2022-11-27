@@ -41,7 +41,7 @@ class Command(BaseCommand):
                         }
                         for key in row:
                             if row[key]:
-                                if key == "mark":
+                                if key == "mark" or key == "turn":
                                     brakepoint[key] = row[key]
                                 else:
                                     brakepoint[key] = int(row[key])

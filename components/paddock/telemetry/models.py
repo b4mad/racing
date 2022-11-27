@@ -96,4 +96,6 @@ class FastLapSegment(models.Model):
     speed = models.IntegerField(default=0)
     mark = models.CharField(max_length=256, default="")
 
-    fast_lap = models.ForeignKey(FastLap, on_delete=models.CASCADE)
+    fast_lap = models.ForeignKey(
+        FastLap, related_name="fast_lap_segments", on_delete=models.CASCADE
+    )

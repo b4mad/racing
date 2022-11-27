@@ -25,7 +25,10 @@ class Command(BaseCommand):
         for session_id in i.sessions():
             print(session_id)
             records = i.session(session_id)
-            record = next(records)
+            try:
+                record = next(records)
+            except StopIteration:
+                continue
             print(record)
 
             game, created = Game.objects.get_or_create(name=record["GameName"])
