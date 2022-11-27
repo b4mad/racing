@@ -70,3 +70,30 @@ class Lap(models.Model):
 
     class Meta:
         unique_together = ("session", "start")
+
+
+## coach data
+class FastLap(models.Model):
+
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.game} {self.car} {self.track}"
+
+
+class FastLapSegment(models.Model):
+    turn = models.CharField(max_length=200)
+    start = models.IntegerField(default=0)
+    end = models.IntegerField(default=0)
+    brake = models.IntegerField(default=0)
+    turn_in = models.IntegerField(default=0)
+    force = models.IntegerField(default=0)
+    gear = models.IntegerField(default=0)
+    stop = models.IntegerField(default=0)
+    accelerate = models.IntegerField(default=0)
+    speed = models.IntegerField(default=0)
+    mark = models.CharField(max_length=256, default="")
+
+    fast_lap = models.ForeignKey(FastLap, on_delete=models.CASCADE)

@@ -182,7 +182,7 @@ LOGGING = {
         },
         "django.db": {
             # django also has database level logging
-            "level": "DEBUG"
+            "level": "INFO"
         },
     },
 }
