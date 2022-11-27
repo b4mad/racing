@@ -60,6 +60,5 @@ spec:
                 name: paddock-settings
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py makemigrations --noinput;
-              python /opt/app-root/src/manage.py migrate --noinput;
+            - python /opt/app-root/src/manage.py migrate telemetry --noinput;
               python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
