@@ -4,6 +4,9 @@ metadata:
     name: paddock-settings
 stringData:
     SECRET_KEY: ENC[AES256_GCM,data:OIuvKOfGv7eJ+FiMHLDqreqK9YJ0/S4Gt24DGl4IZwld2oxOZGDDLA==,iv:672ny0yFOVGYR2MG/RIAN5XQLYFRIY5IpJ17l5+5UkU=,tag:04g1eFfBrbniqxaNRkeQGw==,type:str]
+    DJANGO_SUPERUSER_PASSWORD: ENC[AES256_GCM,data:1VF/dBHL5kXY3MOANDjQT/cOxco=,iv:rSGQtzQ5hl1rehO/MMrB2bSZBT+cbLV8BOxkhZNhRR8=,tag:UH0t68U9WtucXraiCKeEbw==,type:str]
+    DJANGO_SUPERUSER_EMAIL: ENC[AES256_GCM,data:HaPxQgQAY1Boi98cVUTK6UE=,iv:gvFmRGXTBx78gqYKHO+mb5+vWXyxQvm4vIEVDl+Z7VE=,tag:zcJetfb+q5R3nTovvxqLvw==,type:str]
+    DJANGO_SUPERUSER_USERNAME: ENC[AES256_GCM,data:1zyzVgE=,iv:chE+jpahZUYB5samQByVIq9K/8r/FeifXdKpuG0aciI=,tag:8ajTippBEz/eD80tA6PQZg==,type:str]
 type: Opaque
 sops:
     kms: []
@@ -11,8 +14,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-11-26T21:01:43Z"
-    mac: ENC[AES256_GCM,data:P+0fK7rlEfVZ+FbggdJwdO57U+6d3qEyYTZPXJEqiBdwlo/6X3v/MFwjdC07UKvHOdFgtVFaldH6MLtXfxHl5gYl3cPxxZu8jVrdO6LT7RIOXwu9f9eHR90JmK2YpE9w980lIgs9zr+0ACXnYndWCQLbjdTEbw83RywhF+TZF6w=,iv:Nqpzf+nNZ3hMDA9ZKhI0PNjKVtwpqzhshtSmfRazE08=,tag:D6g/GEK3cf6GNhpOvoJguA==,type:str]
+    lastmodified: "2022-11-27T09:35:31Z"
+    mac: ENC[AES256_GCM,data:8rgWal6Fb9OTg3qxM0s2m3OrW832aVREFT2yWl5tSR8p/vzushsr0/HepP/llQ9fxQZdcwRTJhWXyVCElvV0ZLgpbvNBzvEnmcgSW2NshMMAQ0iJPI8Hi+fJMhlOW3NZYv2VtFYVWJh040rqlkjUofRwgJye39gpU/om/u1o7fM=,iv:e+Z/GbaSr3k25SEJVMSJX5SeLPTli3ygD9Qeopn7X5U=,tag:INIcHgeJ+bDtIxxdV9oPOQ==,type:str]
     pgp:
         - created_at: "2022-10-27T12:21:52Z"
           enc: |

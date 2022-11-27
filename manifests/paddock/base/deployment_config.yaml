@@ -28,6 +28,10 @@ spec:
           image: paddock:latest
           imagePullPolicy: Always
           name: paddock
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py collectstatic --noinput;
+              uwsgi --http "0.0.0.0:8000" --module paddock.wsgi:application --master --processes 4 --threads 2 --static-map /static=/opt/app-root/src/static
           ports:
             - containerPort: 8000
               name: django-http
@@ -54,7 +58,8 @@ spec:
           envFrom:
             - secretRef:
                 name: paddock-settings
-          command:
-            - /bin/bash
-            - -c
-            - "python /opt/app-root/src/manage.py migrate --noinput"
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py makemigrations --noinput;
+              python /opt/app-root/src/manage.py migrate --noinput;
+              python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
