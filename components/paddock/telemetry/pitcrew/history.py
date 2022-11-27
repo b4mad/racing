@@ -131,7 +131,7 @@ class History:
         """Load the brakepoints from DB."""
         game = Game.objects.filter(name=self.filter["GameName"]).first()
         if not game:
-            self.error = f"no brakepoints found for {self.filter['GameName']}"
+            self.error = f"Game {self.filter['GameName']} not found"
             _LOGGER.error(self.error)
             return False
 
@@ -151,6 +151,13 @@ class History:
             return False
 
         fast_lap = FastLap.objects.filter(track=track, car=car, game=game).first()
+        if not fast_lap:
+            self.error = (
+                f"no brakepoints found for {self.filter['GameName']} {self.filter['TrackCode']}"
+                + f"- {self.filter['CarModel']}"
+            )
+            _LOGGER.error(self.error)
+            return False
 
         _LOGGER.debug("loading brakepoints for %s %s - %s", game, track, car)
 

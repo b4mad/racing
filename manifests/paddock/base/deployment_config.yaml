@@ -43,6 +43,28 @@ spec:
             requests:
               cpu: 100m
               memory: 256Mi
+        - env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: uri
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          image: paddock:latest
+          imagePullPolicy: Always
+          name: pitcrew
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py pitcrew
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
       serviceAccount: paddock
       serviceAccountName: paddock
       initContainers:
@@ -60,5 +82,5 @@ spec:
                 name: paddock-settings
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py migrate telemetry --noinput;
+            - python /opt/app-root/src/manage.py migrate --noinput;
               python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
