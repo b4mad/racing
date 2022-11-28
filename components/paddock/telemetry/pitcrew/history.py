@@ -35,7 +35,7 @@ class History:
         self.do_run = True
         self.clear_cache()
 
-    def stop(self):
+    def disconnect(self):
         self.do_run = False
 
     def run(self):

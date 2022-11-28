@@ -16,6 +16,11 @@ sanitize-filename = "*"
 pandas = "*"
 django-admin-relation-links = "*"
 django-sql-explorer = "*"
+django-plotly-dash = "*"
+dash-bootstrap-components = "*"
+django-bootstrap4 = "*"
+dpd-static-support = "*"
+whitenoise = "*"
 
 [dev-packages]
 

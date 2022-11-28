@@ -54,7 +54,14 @@ class Session(models.Model):
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("driver", "session_id")
+        unique_together = (
+            "driver",
+            "session_id",
+            "session_type",
+            "game",
+            "car",
+            "track",
+        )
 
     def __str__(self):
         return self.session_id
@@ -99,3 +106,17 @@ class FastLapSegment(models.Model):
     fast_lap = models.ForeignKey(
         FastLap, related_name="fast_lap_segments", on_delete=models.CASCADE
     )
+
+
+class Coach(models.Model):
+    driver = models.OneToOneField(
+        Driver,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+
+    error = models.CharField(max_length=200, unique=True)
+    enabled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.driver.name
