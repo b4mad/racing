@@ -1,4 +1,4 @@
-FROM quay.io/thoth-station/s2i-thoth-f35-py310@sha256:f2fbf1e0ff31c6f8b1f8ceaccb8b2ada80681d5f9f3f4a157af5dd81ae98b5f5
+FROM quay.io/thoth-station/s2i-thoth-f35-py310:v0.35.1
 
 USER 0
 ADD . /tmp/src
