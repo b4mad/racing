@@ -36,7 +36,7 @@ class Mqtt:
     #     # disconnect from broker
 
     def disconnect(self):
-        self.do_disconnect = True
+        self.mqttc.disconnect()
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -67,9 +67,9 @@ class Mqtt:
         #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
         # )
 
-        if self.do_disconnect:
-            _LOGGER.debug("stopping MQTT")
-            mqttc.disconnect()
+        # if self.do_disconnect:
+        #     _LOGGER.debug("stopping MQTT")
+        #     mqttc.disconnect()
 
         if self.topic != msg.topic:
             _LOGGER.debug("new session %s", msg.topic)

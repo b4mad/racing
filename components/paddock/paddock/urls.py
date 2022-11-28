@@ -15,11 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+
+# from django.views.generic import TemplateView
+
 from . import views
 
+import paddock.pitcrew_app  # noqa: F401
+
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("stewards/", include("stewards.urls")),
+    path("", views.index, name="home"),
+    # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
+    path("pitcrew", views.pitcrew_view, name="pitcrew"),
+    # path("stewards/", include("stewards.urls")),
     path("admin/", admin.site.urls),
     path("explorer/", include("explorer.urls")),
+    path("django_plotly_dash/", include("django_plotly_dash.urls")),
 ]

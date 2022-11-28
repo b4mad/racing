@@ -56,15 +56,21 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "explorer",
+    "django_plotly_dash.apps.DjangoPlotlyDashConfig",
+    "bootstrap4",
+    "dpd_static_support",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django_plotly_dash.middleware.BaseMiddleware",
+    "django_plotly_dash.middleware.ExternalRedirectionMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -73,7 +79,9 @@ ROOT_URLCONF = "paddock.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [
+            os.path.join(BASE_DIR, "paddock", "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -156,6 +164,17 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "django_plotly_dash.finders.DashAssetFinder",
+    "django_plotly_dash.finders.DashComponentFinder",
+    "django_plotly_dash.finders.DashAppDirectoryFinder",
+]
+STATICFILES_DIRS = [
+    BASE_DIR / "paddock/assets/",
+    "/var/www/static/",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -191,3 +210,38 @@ LOGGING = {
 
 EXPLORER_CONNECTIONS = {"Default": "readonly"}
 EXPLORER_DEFAULT_CONNECTION = "readonly"
+
+# for plotly dash
+X_FRAME_OPTIONS = "SAMEORIGIN"
+PLOTLY_DASH = {
+    # Route used for the message pipe websocket connection
+    "ws_route": "dpd/ws/channel",
+    # Route used for direct http insertion of pipe messages
+    "http_route": "dpd/views",
+    # Flag controlling existince of http poke endpoint
+    "http_poke_enabled": True,
+    # Insert data for the demo when migrating
+    "insert_demo_migrations": False,
+    # Timeout for caching of initial arguments in seconds
+    "cache_timeout_initial_arguments": 60,
+    # Name of view wrapping function
+    "view_decorator": None,
+    # Flag to control location of initial argument storage
+    "cache_arguments": True,
+    # Flag controlling local serving of assets
+    "serve_locally": False,
+}
+
+
+# Plotly components containing static content that should
+# be handled by the Django staticfiles infrastructure
+
+PLOTLY_COMPONENTS = [
+    # Common components (ie within dash itself) are automatically added
+    # django-plotly-dash components
+    "dpd_components",
+    # static support if serving local assets
+    "dpd_static_support",
+    # Other components, as needed
+    "dash_bootstrap_components",
+]

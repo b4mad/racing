@@ -4,11 +4,12 @@ import datetime
 import os
 import threading
 import logging
+import time
 import paho.mqtt.client as mqtt
-from telemetry.models import Game, Driver, Car, Track, SessionType
+from telemetry.models import Game, Driver, Car, Track, SessionType, Coach
 import json
 
-from .coach import Coach
+from .coach import Coach as PitCrewCoach
 from .history import History
 from .mqtt import Mqtt
 
@@ -28,8 +29,9 @@ class Crew:
             os.environ.get("B4MAD_RACING_CLIENT_PASSWORD", ""),
         )
         self.mqttc = mqttc
-        self.active_topics = list()
-        self.active_coaches = list()
+        self.active_topics = set()
+        self.active_drivers = set()
+        self.active_coaches = {}
 
     def on_message(self, mqttc, obj, msg):
         """Handle incoming messages, we are only interested in the telemetry.
@@ -49,7 +51,7 @@ class Crew:
             prefix, driver, session, game, track, car, session_type = msg.topic.split(
                 "/"
             )
-            self.active_topics.append(msg.topic)
+            self.active_topics.add(msg.topic)
 
             record = json.loads(msg.payload.decode("utf-8"))
             print(record)
@@ -74,10 +76,11 @@ class Crew:
             # maybe already create a lap?
 
             if driver.lower() != "jim":
-                if driver not in self.active_coaches:
+                if driver not in self.active_drivers:
                     print(f"New coach for {driver}")
-                    self.active_coaches.append(driver)
-                    self.start_coach(driver)
+                    if not rdriver.coach:
+                        Coach.objects.create(driver=driver)
+                    self.active_drivers.add(rdriver)
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("rc: %s", str(rc))
@@ -94,20 +97,43 @@ class Crew:
         # print(string)
         pass
 
+    def watch_coaches(self):
+        while True:
+            time.sleep(10)
+            _LOGGER.info("checking coaches")
+            coaches = Coach.objects.filter(driver__in=self.active_drivers)
+            for coach in coaches:
+                _LOGGER.info(f"checking coach for {coach.driver}")
+                if coach.enabled:
+                    if coach.driver.name not in self.active_coaches.keys():
+                        _LOGGER.debug(f"activating coach for {coach.driver}")
+                        self.start_coach(coach.driver.name)
+                else:
+                    if coach.driver.name in self.active_coaches.keys():
+                        _LOGGER.debug(f"deactivating coach for {coach.driver}")
+                        self.stop_coach(coach.driver)
+
+    def stop_coach(self, driver):
+        self.active_coaches[driver.name][0].disconnect()
+        self.active_coaches[driver.name][1].disconnect()
+        del self.active_coaches[driver.name]
+
     def start_coach(self, driver):
         history = History()
-        coach = Coach(history)
+        coach = PitCrewCoach(history)
         mqtt = Mqtt(coach, driver)
 
         def history_thread():
-            logging.info("History thread starting")
+            _LOGGER.info(f"History thread starting for {driver}")
             history.run()
+            _LOGGER.info(f"History thread stopped for {driver}")
 
         h = threading.Thread(target=history_thread)
 
         def mqtt_thread():
-            logging.info("MQTT thread starting")
+            _LOGGER.info(f"MQTT thread starting for {driver}")
             mqtt.run()
+            _LOGGER.info(f"MQTT thread stopped for {driver}")
 
         c = threading.Thread(target=mqtt_thread)
 
@@ -116,13 +142,16 @@ class Crew:
         threads.append(c)
         c.start()
         h.start()
+        self.active_coaches[driver] = [history, mqtt]
 
     def run(self):
         self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)
         topic = "crewchief/#"
         s = self.mqttc.subscribe(topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
+            threading.Thread(target=self.watch_coaches).start()
             _LOGGER.info(f"Subscribed to {topic}")
+
             self.mqttc.loop_forever()
         else:
             _LOGGER.error(f"Failed to subscribe to {topic}")
