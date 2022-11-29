@@ -1,4 +1,5 @@
 from django.db import models
+from dirtyfields import DirtyFieldsMixin
 import datetime
 
 
@@ -42,7 +43,7 @@ class SessionType(models.Model):
         return self.type
 
 
-class Session(models.Model):
+class Session(DirtyFieldsMixin, models.Model):
     session_id = models.CharField(max_length=200)
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
@@ -67,7 +68,7 @@ class Session(models.Model):
         return self.session_id
 
 
-class Lap(models.Model):
+class Lap(DirtyFieldsMixin, models.Model):
     number = models.IntegerField()
     start = models.DateTimeField(default=datetime.datetime.now)
     time = models.FloatField(default=0)
@@ -115,7 +116,7 @@ class Coach(models.Model):
         primary_key=True,
     )
 
-    error = models.CharField(max_length=200, unique=True)
+    error = models.CharField(max_length=200, default="")
     enabled = models.BooleanField(default=False)
 
     def __str__(self):
