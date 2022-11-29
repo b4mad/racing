@@ -174,7 +174,6 @@ STATICFILES_FINDERS = [
 ]
 STATICFILES_DIRS = [
     BASE_DIR / "paddock/assets/",
-    "/var/www/static/",
 ]
 
 # Default primary key field type
