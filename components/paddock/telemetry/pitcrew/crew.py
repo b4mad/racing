@@ -8,6 +8,7 @@ import time
 import paho.mqtt.client as mqtt
 from telemetry.models import Game, Driver, Car, Track, SessionType, Coach
 import json
+from django.utils.timezone import make_aware
 
 from .coach import Coach as PitCrewCoach
 from .history import History
@@ -29,7 +30,8 @@ class Crew:
             os.environ.get("B4MAD_RACING_CLIENT_PASSWORD", ""),
         )
         self.mqttc = mqttc
-        self.active_topics = set()
+        self.active_sessions = set()
+        self.session_cache = {}
         self.active_drivers = set()
         self.active_coaches = {}
 
@@ -46,12 +48,10 @@ class Crew:
         #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
         # )
 
-        if msg.topic not in self.active_topics:
-            print(f"New topic: {msg.topic}")
-            prefix, driver, session, game, track, car, session_type = msg.topic.split(
-                "/"
-            )
-            self.active_topics.add(msg.topic)
+        prefix, driver, session, game, track, car, session_type = msg.topic.split("/")
+        if session not in self.active_sessions:
+            print(f"New session: {msg.topic}")
+            self.active_sessions.add(session)
 
             record = json.loads(msg.payload.decode("utf-8"))
             print(record)
@@ -63,7 +63,7 @@ class Crew:
             rsession_type, created = SessionType.objects.get_or_create(
                 type=session_type
             )
-            t = datetime.datetime.fromtimestamp(record["time"] / 1000)
+            t = make_aware(datetime.datetime.fromtimestamp(record["time"] / 1000))
 
             rsession, created = rdriver.session_set.get_or_create(
                 session_id=session,
@@ -73,14 +73,46 @@ class Crew:
                 game=rgame,
                 defaults={"start": t, "end": t},
             )
-            # maybe already create a lap?
+            self.session_cache[session] = {"session": rsession, "laps": {}}
 
             if driver.lower() != "jim":
                 if driver not in self.active_drivers:
                     print(f"New coach for {driver}")
-                    if not rdriver.coach:
-                        Coach.objects.create(driver=driver)
+                    Coach.objects.get_or_create(driver=rdriver)
                     self.active_drivers.add(rdriver)
+
+        payload = json.loads(msg.payload.decode("utf-8"))
+        self.analyze(payload, session)
+
+    def analyze(self, payload, session_id):
+        telemetry = payload["telemetry"]
+        lap_number = telemetry["CurrentLap"]
+        session = self.session_cache[session_id]["session"]
+        lap = self.session_cache[session_id]["laps"].get(lap_number, None)
+        if not lap:
+            lap, created = session.lap_set.get_or_create(
+                number=lap_number,
+                start=make_aware(
+                    datetime.datetime.fromtimestamp(payload["time"] / 1000)
+                ),
+            )
+            self.session_cache[session_id]["laps"][lap_number] = lap
+
+        lap.end = make_aware(datetime.datetime.fromtimestamp(payload["time"] / 1000))
+        session.end = lap.end
+        lap.time = telemetry["CurrentLapTime"]
+        lap.length = telemetry["DistanceRoundTrack"]
+
+    def save_sessions(self):
+        while True:
+            time.sleep(10)
+            _LOGGER.info("saving sessions")
+            for session in self.session_cache.values():
+                # if session['session'].is_dirty():
+                session["session"].save_dirty_fields()
+
+                for lap in session["laps"].values():
+                    lap.save_dirty_fields()
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("rc: %s", str(rc))
@@ -150,6 +182,7 @@ class Crew:
         s = self.mqttc.subscribe(topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             threading.Thread(target=self.watch_coaches).start()
+            threading.Thread(target=self.save_sessions).start()
             _LOGGER.info(f"Subscribed to {topic}")
 
             self.mqttc.loop_forever()

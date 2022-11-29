@@ -21,6 +21,7 @@ dash-bootstrap-components = "*"
 django-bootstrap4 = "*"
 dpd-static-support = "*"
 whitenoise = "*"
+django-dirtyfields = "*"
 
 [dev-packages]
 
