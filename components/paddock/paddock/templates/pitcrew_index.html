@@ -1,0 +1,21 @@
+{%extends "base.html"%}
+{%load plotly_dash%}
+
+{%block title%}Pit Crew{%endblock%}
+
+{%block content%}
+<h1>#B4mad Racing Pit Crew</h1>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          {% for driver in drivers %}
+            <li><a href="/pitcrew/{{ driver.name }}">{{ driver.name }}</a></li>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}

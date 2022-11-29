@@ -2,14 +2,16 @@
 
 import logging
 from .history import History
+from telemetry.models import Coach as DbCoach
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class Coach:
-    def __init__(self, history: History):
+    def __init__(self, history: History, db_coach: DbCoach):
         self.history = history
         self.previous_history_error = None
+        self.db_coach = db_coach
         self.msg = {
             "msg": {},
             "at": None,
@@ -55,6 +57,8 @@ class Coach:
         if not self.history.ready:
             if self.history.error != self.previous_history_error:
                 self.previous_history_error = self.history.error
+                self.db_coach.error = self.history.error
+                self.db_coach.save()
                 return self.history.error
             else:
                 return None

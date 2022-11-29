@@ -107,7 +107,7 @@ class Crew:
                 if coach.enabled:
                     if coach.driver.name not in self.active_coaches.keys():
                         _LOGGER.debug(f"activating coach for {coach.driver}")
-                        self.start_coach(coach.driver.name)
+                        self.start_coach(coach.driver.name, coach)
                 else:
                     if coach.driver.name in self.active_coaches.keys():
                         _LOGGER.debug(f"deactivating coach for {coach.driver}")
@@ -118,9 +118,9 @@ class Crew:
         self.active_coaches[driver.name][1].disconnect()
         del self.active_coaches[driver.name]
 
-    def start_coach(self, driver):
+    def start_coach(self, driver, coach):
         history = History()
-        coach = PitCrewCoach(history)
+        coach = PitCrewCoach(history, coach)
         mqtt = Mqtt(coach, driver)
 
         def history_thread():

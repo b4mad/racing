@@ -45,8 +45,6 @@ class Mqtt:
         game = frags[3]
         track = frags[4]
         car = frags[5]
-        # track = "summit summit raceway"
-        # car = "Ferrari 488 GT3 Evo 2020"
         filter = {
             "user": user,
             "GameName": game,

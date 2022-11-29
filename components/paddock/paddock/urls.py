@@ -25,7 +25,8 @@ import paddock.pitcrew_app  # noqa: F401
 urlpatterns = [
     path("", views.index, name="home"),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
-    path("pitcrew", views.pitcrew_view, name="pitcrew"),
+    path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
+    path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
     # path("stewards/", include("stewards.urls")),
     path("admin/", admin.site.urls),
     path("explorer/", include("explorer.urls")),
