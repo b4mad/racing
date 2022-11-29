@@ -21,7 +21,8 @@ from pathlib import Path
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    LOGGING_DB_LEVEL=(str, "INFO"),
 )
 
 # Set the project base directory
@@ -203,7 +204,7 @@ LOGGING = {
         },
         "django.db": {
             # django also has database level logging
-            "level": "DEBUG"
+            "level": env("LOGGING_DB_LEVEL")
         },
     },
 }
