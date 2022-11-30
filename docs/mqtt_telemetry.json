@@ -1,0 +1,79 @@
+{
+    "Server": "telemetry.b4mad.racing",
+    "Topic": "crewchief",
+    "Login": "crewchief",
+    "Password": "crewchief",
+    "Port": 31883,
+    "UpdateRateLimit": 0,
+    "SubscribeTopic": "/coach",
+    "Channels": [
+        {
+            "CrewChiefField": "ControlData.ClutchPedal",
+            "TelemetryField": "Clutch"
+        },
+        {
+            "CrewChiefField": "ControlData.BrakePedal",
+            "TelemetryField": "Brake"
+        },
+        {
+            "CrewChiefField": "ControlData.ThrottlePedal",
+            "TelemetryField": "Throttle"
+        },
+        {
+            "CrewChiefField": "ControlData.HandBrake",
+            "TelemetryField": "Handbrake"
+        },
+        {
+            "CrewChiefField": "ControlData.SteeringWheelAngle",
+            "TelemetryField": "SteeringAngle"
+        },
+        {
+            "CrewChiefField": "EngineData.EngineRpm",
+            "TelemetryField": "Rpms"
+        },
+        {
+            "CrewChiefField": "TransmissionData.Gear",
+            "TelemetryField": "Gear"
+        },
+        {
+            "CrewChiefField": "PositionAndMotionData.CarSpeed",
+            "TelemetryField": "SpeedMs"
+        },
+        {
+            "CrewChiefField": "PositionAndMotionData.DistanceRoundTrack",
+            "TelemetryField": "DistanceRoundTrack"
+        },
+        {
+            "CrewChiefField": "PositionAndMotionData.WorldPosition[0]",
+            "TelemetryField": "WorldPosition_x"
+        },
+        {
+            "CrewChiefField": "PositionAndMotionData.WorldPosition[1]",
+            "TelemetryField": "WorldPosition_y"
+        },
+        {
+            "CrewChiefField": "PositionAndMotionData.WorldPosition[2]",
+            "TelemetryField": "WorldPosition_z"
+        },
+        {
+            "CrewChiefField": "SessionData.LapCount",
+            "TelemetryField": "CurrentLap"
+        },
+        {
+            "CrewChiefField": "SessionData.LapTimeCurrent",
+            "TelemetryField": "LapTimeCurrent"
+        },
+        {
+            "CrewChiefField": "SessionData.LapTimePrevious",
+            "TelemetryField": "LapTimePrevious"
+        },
+        {
+            "CrewChiefField": "SessionData.CurrentLapIsValid",
+            "TelemetryField": "CurrentLapIsValid"
+        },
+        {
+            "CrewChiefField": "SessionData.PreviousLapWasValid",
+            "TelemetryField": "PreviousLapWasValid"
+        }
+    ]
+}

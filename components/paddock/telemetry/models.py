@@ -79,6 +79,9 @@ class Lap(DirtyFieldsMixin, models.Model):
     class Meta:
         unique_together = ("session", "start")
 
+    def __str__(self):
+        return f"{self.number}"
+
 
 ## coach data
 class FastLap(models.Model):
@@ -104,9 +107,7 @@ class FastLapSegment(models.Model):
     speed = models.IntegerField(default=0)
     mark = models.CharField(max_length=256, default="")
 
-    fast_lap = models.ForeignKey(
-        FastLap, related_name="fast_lap_segments", on_delete=models.CASCADE
-    )
+    fast_lap = models.ForeignKey(FastLap, on_delete=models.CASCADE)
 
 
 class Coach(models.Model):

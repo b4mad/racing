@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+
+{%block title%}Paddock{%endblock%}
+
+{%block content%}
+<h1>#B4mad Racing Paddock</h1>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Resources</h3>
+          <ul>
+            <li>Read the <a href="https://github.com/b4mad/racing#installation">installation instructions</a></li>
+            <li>Enable coaching in the <a href="{%url "pitcrew_index"%}">drivers</a> section</li>
+            <li>Start contributing at <a href="https://github.com/b4mad/racing">GitHub.com/b4mad/racing</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}

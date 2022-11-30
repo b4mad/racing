@@ -36,7 +36,7 @@ class Coach:
         return False
 
     def brake_start(self, brakepoint):
-        start = brakepoint["start"]
+        start = brakepoint["brake"]
         start_h = self.history.brake_start(brakepoint)
 
         if not start_h:
@@ -62,6 +62,7 @@ class Coach:
                 return self.history.error
             else:
                 return None
+        # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
         brakepoint = self.history.get_brakepoint(meters)
 
@@ -72,19 +73,23 @@ class Coach:
             # do we have something to say about the current corner?
             if self.gear(brakepoint):
                 # coach on correct gear
-                at = brakepoint["start"] - 100  # 100 meters before corner
+                # FIXME: edge case when start <= 100
+                at = abs(brakepoint["brake"] - 50)
                 self.msg["msg"][at] = "Shift down to gear %s" % brakepoint["gear"]
+                _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
             brake = self.brake_start(brakepoint)
             if brake:
                 # coach on correct gear
-                at = brakepoint["start"] - 500  # 100 meters before corner
+                # FIXME: edge case when start <= 500
+                at = meters + 10
                 if abs(brake) > 50:
                     self.msg["msg"][at] = brakepoint["mark"]
                 elif brake > 0:
                     self.msg["msg"][at] = "Brake %s meters earlier" % brake
                 else:
                     self.msg["msg"][at] = "Brake %s meters later" % abs(brake)
+                _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
         # loop over all messages and check the distance, if we have something to say
         for at in self.msg["msg"]:

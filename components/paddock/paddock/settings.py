@@ -227,7 +227,7 @@ PLOTLY_DASH = {
     # Name of view wrapping function
     "view_decorator": None,
     # Flag to control location of initial argument storage
-    "cache_arguments": True,
+    "cache_arguments": False,
     # Flag controlling local serving of assets
     "serve_locally": False,
 }
