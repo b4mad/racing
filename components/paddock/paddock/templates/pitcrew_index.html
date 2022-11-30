@@ -1,5 +1,4 @@
 {%extends "base.html"%}
-{%load plotly_dash%}
 
 {%block title%}Pit Crew{%endblock%}
 
@@ -10,8 +9,25 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
+          <h3>Drivers</h3>
+
           {% for driver in drivers %}
             <li><a href="/pitcrew/{{ driver.name }}">{{ driver.name }}</a></li>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Coaches</h3>
+
+          {% for lap in fast_laps %}
+            <li><a href="/fastlap/{{ lap.pk }}">{{ lap }}</a></li>
           {% endfor %}
         </div>
       </div>

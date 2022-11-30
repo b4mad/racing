@@ -70,7 +70,7 @@ class History:
         for brakepoint in self.brakepoints:
             if brakepoint["corner"] not in self.cache["gear"]:
                 self.cache["gear"][brakepoint["corner"]] = self.gear_q(
-                    brakepoint["start"], brakepoint["stop"]
+                    brakepoint["start"], brakepoint["end"]
                 )
                 _LOGGER.debug(
                     "corner %s: avg gear %s",
@@ -79,7 +79,7 @@ class History:
                 )
             if brakepoint["corner"] not in self.cache["brake_start"]:
                 self.cache["brake_start"][brakepoint["corner"]] = self.brake_start_q(
-                    brakepoint["start"], brakepoint["stop"]
+                    brakepoint["start"], brakepoint["end"]
                 )
                 _LOGGER.debug(
                     "corner %s: avg brake_start %s",
@@ -110,14 +110,14 @@ class History:
 
         if self.previous_brakepoint_idx < self.brakepoint_idx:
             if (
-                meters >= self.previous_brakepoint["stop"]
-                and meters < brakepoint["stop"]
+                meters >= self.previous_brakepoint["accelerate"]
+                and meters < brakepoint["accelerate"]
             ):
                 return brakepoint
         else:
             if (
-                meters >= self.previous_brakepoint["stop"]
-                or meters < brakepoint["stop"]
+                meters >= self.previous_brakepoint["accelerate"]
+                or meters < brakepoint["accelerate"]
             ):
                 return brakepoint
 
@@ -168,6 +168,11 @@ class History:
             self.brakepoints.append(brakepoint)
 
         _LOGGER.debug("loaded %s brakepoints", len(self.brakepoints))
+
+        self.error = (
+            f"start coaching for {self.filter['GameName']} {self.filter['TrackCode']}"
+            + f"- {self.filter['CarModel']}"
+        )
         return True
 
     def gear(self, brakepoint):
@@ -199,7 +204,8 @@ class History:
             **vars
         )
 
-        _LOGGER.debug("query:\n %s", q)
+        # _LOGGER.debug("query:\n %s", q)
+        _LOGGER.debug("querying gear for %s - %s", start, stop)
 
         # tables = self.query(q)
         query_api = self.client.query_api()
@@ -238,7 +244,9 @@ class History:
             **vars
         )
 
-        _LOGGER.debug("query:\n %s", q)
+        # _LOGGER.debug("query:\n %s", q)
+        _LOGGER.debug("querying brake_start for %s - %s", start, stop)
+
         query_api = self.client.query_api()
 
         tables = query_api.query(q)

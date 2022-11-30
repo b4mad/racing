@@ -1,10 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from telemetry.models import Driver, Coach
+from telemetry.models import Driver, Coach, FastLap
 
 
 def index(request):
     return HttpResponse("Paddock is up and running!")
+
+
+def fastlap_view(request, template_name="fastlap.html", fastlap_id="", **kwargs):
+    fastlap = get_object_or_404(FastLap, pk=fastlap_id)
+    context = {"fastlap": fastlap, "segments": fastlap.fastlapsegment_set.all()}
+    return render(request, template_name=template_name, context=context)
 
 
 def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs):
@@ -32,6 +38,10 @@ def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs
 def pitcrew_index(request, template_name="pitcrew_index.html", **kwargs):
 
     drivers = Driver.objects.all()
-    context = {"drivers": drivers}
+    fast_laps = FastLap.objects.all()
+    context = {
+        "drivers": drivers,
+        "fast_laps": fast_laps,
+    }
 
     return render(request, template_name=template_name, context=context)

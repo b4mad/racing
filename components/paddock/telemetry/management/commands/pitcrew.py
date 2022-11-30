@@ -48,10 +48,11 @@ class Command(BaseCommand):
                             else:
                                 brakepoint[key] = 0
                         print(brakepoint)
-                        segment, created = fast_lap.fastlapsegment_set.get_or_create(
+                        segment, created = fast_lap.fast_lap_segments.get_or_create(
                             start=brakepoint["start"],
                             end=brakepoint["end"],
                             mark=brakepoint["mark"],
+                            gear=brakepoint["gear"],
                             force=brakepoint["force"],
                             speed=brakepoint["speed"],
                             stop=brakepoint["stop"],

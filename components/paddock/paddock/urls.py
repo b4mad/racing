@@ -15,16 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
-# from django.views.generic import TemplateView
+from django.views.generic import TemplateView
 
 from . import views
 
 import paddock.pitcrew_app  # noqa: F401
 
 urlpatterns = [
-    path("", views.index, name="home"),
+    # path("", views.index, name="home"),
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
+    path("fastlap/<int:fastlap_id>", views.fastlap_view, name="fastlap"),
     path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
     # path("stewards/", include("stewards.urls")),

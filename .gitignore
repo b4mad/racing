@@ -12,3 +12,4 @@ __pycache__
 **/.thoth_last_analysis_id
 _build
 db.sqlite3
+/data/
