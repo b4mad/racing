@@ -16,6 +16,11 @@ runtime_environments:
       version: "9"
     python_version: "3.9"
     recommendation_type: latest
+  - name: notebooks
+    operating_system:
+      name: ubi
+      version: "9"
+    python_version: "3.9"
 
 # https://thoth-station.ninja/docs/developers/kebechet/managers.html#available-managers
 managers:
