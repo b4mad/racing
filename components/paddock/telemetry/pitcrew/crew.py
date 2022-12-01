@@ -63,17 +63,20 @@ class Crew:
             rsession_type, created = SessionType.objects.get_or_create(
                 type=session_type
             )
-            t = make_aware(datetime.datetime.fromtimestamp(record["time"] / 1000))
 
+            t = make_aware(datetime.datetime.fromtimestamp(record["time"] / 1000))
             rsession, created = rdriver.session_set.get_or_create(
                 session_id=session,
                 session_type=rsession_type,
-                car=rcar,
-                track=rtrack,
                 game=rgame,
                 defaults={"start": t, "end": t},
             )
-            self.session_cache[session] = {"session": rsession, "laps": {}}
+            self.session_cache[session] = {
+                "session": rsession,
+                "laps": {},
+                "car": rcar,
+                "track": rtrack,
+            }
 
             if driver.lower() != "jim":
                 if driver not in self.active_drivers:
@@ -88,10 +91,14 @@ class Crew:
         telemetry = payload["telemetry"]
         lap_number = telemetry["CurrentLap"]
         session = self.session_cache[session_id]["session"]
+        car = self.session_cache[session_id]["car"]
+        track = self.session_cache[session_id]["track"]
         lap = self.session_cache[session_id]["laps"].get(lap_number, None)
         if not lap:
-            lap, created = session.lap_set.get_or_create(
+            lap, created = session.laps.get_or_create(
                 number=lap_number,
+                car=car,
+                track=track,
                 start=make_aware(
                     datetime.datetime.fromtimestamp(payload["time"] / 1000)
                 ),
@@ -110,9 +117,15 @@ class Crew:
             for session in self.session_cache.values():
                 # if session['session'].is_dirty():
                 session["session"].save_dirty_fields()
+                track = session["track"]
 
                 for lap in session["laps"].values():
                     lap.save_dirty_fields()
+                    if lap.length > track.length:
+                        track.refresh_from_db()
+                        if lap.length > track.length:
+                            track.length = lap.length
+                            track.save()
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("rc: %s", str(rc))

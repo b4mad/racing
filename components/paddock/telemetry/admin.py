@@ -28,6 +28,11 @@ class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     change_links = []
 
 
+class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["name"]
+    changelist_links = ["tracks", "cars"]
+
+
 # class CoachInline(admin.TabularInline):
 #     model = Coach
 
@@ -40,7 +45,8 @@ class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 #     inlines = [CoachInline, ]
 
 
-admin.site.register([Game, Car, Track, Session, SessionType, Lap])
+admin.site.register([Car, Track, Session, SessionType, Lap])
+admin.site.register(Game, GameAdmin)
 admin.site.register(Driver)
 admin.site.register(FastLap, FastLapAdmin)
 admin.site.register(FastLapSegment, FastLapSegmentAdmin)
