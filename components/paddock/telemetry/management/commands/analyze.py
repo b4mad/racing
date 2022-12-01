@@ -18,6 +18,12 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
+        for track in Track.objects.all():
+            for lap in track.laps.all():
+                print(lap)
+                exit()
+
+    def handle_inlfux(self, *args, **options):
         # Driver.objects.all().delete()
         # Game.objects.all().delete()
         i = Influx()

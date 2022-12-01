@@ -9,7 +9,7 @@ def index(request):
 
 def fastlap_view(request, template_name="fastlap.html", fastlap_id="", **kwargs):
     fastlap = get_object_or_404(FastLap, pk=fastlap_id)
-    context = {"fastlap": fastlap, "segments": fastlap.fastlapsegment_set.all()}
+    context = {"fastlap": fastlap, "segments": fastlap.fast_lap_segments.all()}
     return render(request, template_name=template_name, context=context)
 
 
