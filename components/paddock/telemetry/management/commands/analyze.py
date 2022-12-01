@@ -46,7 +46,7 @@ class Command(BaseCommand):
             session_type, created = SessionType.objects.get_or_create(
                 type=record["SessionTypeName"]
             )
-            session, created = driver.session_set.get_or_create(
+            session, created = driver.sessions.get_or_create(
                 session_id=record["SessionId"],
                 session_type=session_type,
                 car=car,
@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 game=game,
                 defaults={"start": record["_time"], "end": record["_time"]},
             )
-            lap, created = session.lap_set.get_or_create(
+            lap, created = session.laps.get_or_create(
                 number=record["CurrentLap"],
                 start=record["_time"],
             )
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     lap.length = r["DistanceRoundTrack"]
                     lap.save()
 
-                    lap, created = session.lap_set.get_or_create(
+                    lap, created = session.laps.get_or_create(
                         number=record["CurrentLap"],
                         start=record["_time"],
                     )

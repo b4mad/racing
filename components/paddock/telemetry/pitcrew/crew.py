@@ -65,7 +65,7 @@ class Crew:
             )
 
             t = make_aware(datetime.datetime.fromtimestamp(record["time"] / 1000))
-            rsession, created = rdriver.session_set.get_or_create(
+            rsession, created = rdriver.sessions.get_or_create(
                 session_id=session,
                 session_type=rsession_type,
                 game=rgame,
