@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
-from telemetry.models import Game, Driver, Car, Track, SessionType
+from telemetry.models import Game, Driver, Car, Track, SessionType, Lap
 from telemetry.influx import Influx
+import logging
+from django.db import connection
 
 
 class Command(BaseCommand):
@@ -18,10 +20,29 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-        for track in Track.objects.all():
-            for lap in track.laps.all():
-                print(lap)
-                exit()
+        sql = "select count(id) as c, track_id, car_id from telemetry_lap group by track_id, car_id order by c desc"
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            for row in cursor.fetchall():
+                count, track_id, car_id = row
+                car = Car.objects.get(id=car_id)
+                track = Track.objects.get(id=track_id)
+                game = car.game
+                logging.info(
+                    f"{count} laps for {game.name} / {track.name} / {car.name}"
+                )
+                for lap in Lap.objects.filter(
+                    track=track, car=car, length__gt=track.length - 5, time__gt=0
+                ).order_by("time"):
+                    logging.info(
+                        f"{lap.pk} - time: {lap.time} [{lap.session.session_id}]"
+                    )
+
+        # for track in Track.objects.all():
+        #     logging.info(f"{track.name}")
+
+        #     for lap in track.laps.all():
+        #         print(lap.length)
 
     def handle_inlfux(self, *args, **options):
         # Driver.objects.all().delete()

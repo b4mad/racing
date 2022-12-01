@@ -61,7 +61,7 @@
         },
         {
             "CrewChiefField": "SessionData.LapTimeCurrent",
-            "TelemetryField": "LapTimeCurrent"
+            "TelemetryField": "CurrentLapTime"
         },
         {
             "CrewChiefField": "SessionData.LapTimePrevious",
