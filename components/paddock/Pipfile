@@ -22,6 +22,8 @@ django-bootstrap4 = "*"
 dpd-static-support = "*"
 whitenoise = "*"
 django-dirtyfields = "*"
+matplotlib = "*"
+scipy = "*"
 
 [dev-packages]
 black = "*"

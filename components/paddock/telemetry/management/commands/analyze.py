@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from telemetry.models import Game, Driver, Car, Track, SessionType, Lap
 from telemetry.influx import Influx
+from telemetry.fast_lap_analyzer import FastLapAnalyzer
 import logging
 from django.db import connection
 
@@ -9,40 +10,60 @@ class Command(BaseCommand):
     help = "Closes the specified poll for voting"
 
     def add_arguments(self, parser):
-        pass
-        # parser.add_argument('poll_ids', nargs='+', type=int)
-
-        # # Named (optional) arguments
-        # parser.add_argument(
-        #     '--delete',
-        #     action='store_true',
-        #     help='Delete poll instead of closing it',
-        # )
+        # add argument for list of lap ids as integers separated by commas
+        parser.add_argument(
+            "-l",
+            "--lap-ids",
+            nargs="+",
+            type=int,
+            default=None,
+            help="list of lap ids to analyze",
+        )
 
     def handle(self, *args, **options):
-        sql = "select count(id) as c, track_id, car_id from telemetry_lap group by track_id, car_id order by c desc"
+        if options["lap_ids"]:
+            laps = Lap.objects.filter(pk__in=options["lap_ids"])
+            fl = FastLapAnalyzer(laps)
+            fl.analyze()
+            exit(0)
+
+        sql = "select count(id) as c, track_id, car_id from telemetry_lap group by track_id, car_id"
         with connection.cursor() as cursor:
             cursor.execute(sql)
-            for row in cursor.fetchall():
-                count, track_id, car_id = row
-                car = Car.objects.get(id=car_id)
-                track = Track.objects.get(id=track_id)
-                game = car.game
+            rows = cursor.fetchall()
+
+        for count, track_id, car_id in rows:
+            car = Car.objects.get(id=car_id)
+            track = Track.objects.get(id=track_id)
+            game = car.game
+            logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
+
+            if game.name == "RaceRoom":
+                logging.info("RaceRoom not supported, because no SteeringAngle")
+                continue
+            if game.name == "Assetto Corsa Competizione":
                 logging.info(
-                    f"{count} laps for {game.name} / {track.name} / {car.name}"
+                    "Assetto Corsa Competizione not supported, because no SteeringAngle"
                 )
-                for lap in Lap.objects.filter(
-                    track=track, car=car, length__gt=track.length - 5, time__gt=0
-                ).order_by("time"):
-                    logging.info(
-                        f"{lap.pk} - time: {lap.time} number: {lap.number} id: {lap.session.session_id}"
-                    )
+                continue
 
-        # for track in Track.objects.all():
-        #     logging.info(f"{track.name}")
+            laps = Lap.objects.filter(
+                track=track, car=car, length__gt=track.length - 5, time__gt=10
+            ).order_by("time")[:10]
 
-        #     for lap in track.laps.all():
-        #         print(lap.length)
+            if laps.count() > 0:
+                lap = laps[0]
+                fast_time = lap.time
+                fast_laps = [lap]
+                # threshold is 120% of the fastest lap
+                threshold = fast_time * 1.2
+
+                for lap in laps[1:]:
+                    if lap.time <= threshold:
+                        fast_laps.append(lap)
+
+                fl = FastLapAnalyzer(laps)
+                fl.analyze()
 
     def handle_inlfux(self, *args, **options):
         # Driver.objects.all().delete()
