@@ -35,7 +35,7 @@ class Command(BaseCommand):
                     track=track, car=car, length__gt=track.length - 5, time__gt=0
                 ).order_by("time"):
                     logging.info(
-                        f"{lap.pk} - time: {lap.time} [{lap.session.session_id}]"
+                        f"{lap.pk} - time: {lap.time} number: {lap.number} id: {lap.session.session_id}"
                     )
 
         # for track in Track.objects.all():
