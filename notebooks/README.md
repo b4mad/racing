@@ -101,6 +101,7 @@ https://paperswithcode.com/dataset/torcs
 https://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html
 https://en.wikipedia.org/wiki/Q-learning
 
+https://theoehrly.github.io/Fast-F1/
 ## Offline reinforcement learning
 * https://arxiv.org/abs/2005.01643
 * https://arxiv.org/pdf/2203.01387.pdf
