@@ -105,17 +105,24 @@ class Crew:
             )
             self.session_cache[session_id]["laps"][lap_number] = lap
 
-        lap.end = make_aware(datetime.datetime.fromtimestamp(payload["time"] / 1000))
-        session.end = lap.end
-        lap.time = telemetry["CurrentLapTime"]
-        lap.length = telemetry["DistanceRoundTrack"]
+        # only update if we are more than 500m into the lap
+        # since at the start of the lap the values are not accurate
+        if telemetry["DistanceRoundTrack"] > 500:
+            # only update if the time increases
+            # the time can reset to zero at the end of the lap
+            if telemetry["CurrentLapTime"] > lap.time:
+                lap.time = telemetry["CurrentLapTime"]
+                lap.length = telemetry["DistanceRoundTrack"]
+                lap.end = make_aware(
+                    datetime.datetime.fromtimestamp(payload["time"] / 1000)
+                )
+                session.end = lap.end
 
     def save_sessions(self):
         while True:
             time.sleep(10)
             _LOGGER.info("saving sessions")
             for session in self.session_cache.values():
-                # if session['session'].is_dirty():
                 session["session"].save_dirty_fields()
                 track = session["track"]
 
@@ -127,24 +134,9 @@ class Crew:
                             track.length = lap.length
                             track.save()
 
-    def on_connect(self, mqttc, obj, flags, rc):
-        _LOGGER.debug("rc: %s", str(rc))
-
-    def on_publish(self, mqttc, obj, mid):
-        _LOGGER.debug("mid: %s", str(mid))
-
-    def on_subscribe(self, mqttc, obj, mid, granted_qos):
-        _LOGGER.debug(
-            "subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos)
-        )
-
-    def on_log(self, mqttc, obj, level, string):
-        # print(string)
-        pass
-
     def watch_coaches(self):
         while True:
-            time.sleep(10)
+            time.sleep(11)
             _LOGGER.info("checking coaches")
             coaches = Coach.objects.filter(driver__in=self.active_drivers)
             for coach in coaches:
@@ -188,6 +180,20 @@ class Crew:
         c.start()
         h.start()
         self.active_coaches[driver] = [history, mqtt]
+
+    def on_connect(self, mqttc, obj, flags, rc):
+        _LOGGER.debug("rc: %s", str(rc))
+
+    def on_publish(self, mqttc, obj, mid):
+        _LOGGER.debug("mid: %s", str(mid))
+
+    def on_subscribe(self, mqttc, obj, mid, granted_qos):
+        _LOGGER.debug(
+            "subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos)
+        )
+
+    def on_log(self, mqttc, obj, level, string):
+        pass
 
     def run(self):
         self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)

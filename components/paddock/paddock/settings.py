@@ -107,8 +107,7 @@ DATABASES = {
     # read os.environ['DATABASE_URL'] and raises
     # ImproperlyConfigured exception if not found
     #
-    # The db() method is an alias for db_url().
-    "default": env.db(),
+    "default": env.db_url("DATABASE_URL"),
     "readonly": env.db_url("READONLY_DATABASE_URL"),
 }
 
