@@ -34,7 +34,6 @@ class History:
         self.error = None
         self.do_run = True
         self.driver = None
-        self.clear_cache()
 
     def disconnect(self):
         self.do_run = False
@@ -50,14 +49,12 @@ class History:
         self.filter = filter
         self.do_init = True
 
-    def clear_cache(self):
-        self.cache = {
-            "gear": {},
-            "brake_start": {},
-        }
-
     def init(self):
-        self.clear_cache()
+        self.driver = Driver.objects.get(name=self.filter["Driver"])
+        self.car = Car.objects.get(name=self.filter["CarModel"])
+        self.game = Game.objects.get(name=self.filter["GameName"])
+        self.track = Track.objects.get(name=self.filter["TrackCode"])
+
         success = self.init_segments()
         if not success:
             return False
@@ -67,30 +64,23 @@ class History:
         else:
             self.init_cache()
 
-        self.driver = Driver.objects.get(name=self.filter["driver"])
         self.error = None
         return True
 
     def init_cache(self):
-        for brakepoint in self.brakepoints:
-            if brakepoint["corner"] not in self.cache["gear"]:
-                self.cache["gear"][brakepoint["corner"]] = self.gear_q(
-                    brakepoint["start"], brakepoint["end"]
-                )
-                _LOGGER.debug(
-                    "corner %s: avg gear %s",
-                    brakepoint["corner"],
-                    self.cache["gear"][brakepoint["corner"]],
-                )
-            if brakepoint["corner"] not in self.cache["brake_start"]:
-                self.cache["brake_start"][brakepoint["corner"]] = self.brake_start_q(
-                    brakepoint["start"], brakepoint["end"]
-                )
-                _LOGGER.debug(
-                    "corner %s: avg brake_start %s",
-                    brakepoint["corner"],
-                    self.cache["brake_start"][brakepoint["corner"]],
-                )
+        self.cache = {}
+        fast_lap, created = FastLap.objects.get_or_create(
+            car=self.car, track=self.track, game=self.game, driver=self.driver
+        )
+        # check if fast_lap has any fast_lap_segments
+        if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
+            _LOGGER.error("no history found for %s", fast_lap)
+            # initialize with segments from fast_lap
+            for segment in self.segments:
+                FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)
+
+        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
+            self.cache[segment.turn] = segment
 
     def write_cache_to_file(self):
         with open("cache.pickle", "wb") as outfile:
@@ -185,6 +175,9 @@ class History:
             + f"- {self.filter['CarModel']}"
         )
         return True
+
+    def gear(self, segment):
+        return self.cache[segment.turn].gear
 
     def off_gear(self, brakepoint):
         return self.cache["gear"].get(brakepoint["corner"])
