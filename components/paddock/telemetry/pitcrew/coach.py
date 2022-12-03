@@ -64,27 +64,27 @@ class Coach:
                 return None
         # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
-        brakepoint = self.history.get_brakepoint(meters)
+        segment = self.history.segment(meters)
 
-        if self.msg["corner"] != brakepoint["corner"]:
-            self.msg["corner"] = brakepoint["corner"]
+        if self.msg["corner"] != segment["corner"]:
+            self.msg["corner"] = segment["corner"]
             self.msg["msg"] = {}
 
             # do we have something to say about the current corner?
-            if self.gear(brakepoint):
+            if self.gear(segment):
                 # coach on correct gear
                 # FIXME: edge case when start <= 100
-                at = abs(brakepoint["brake"] - 50)
-                self.msg["msg"][at] = "Shift down to gear %s" % brakepoint["gear"]
+                at = abs(segment["brake"] - 50)
+                self.msg["msg"][at] = "Shift down to gear %s" % segment["gear"]
                 _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
-            brake = self.brake_start(brakepoint)
+            brake = self.brake_start(segment)
             if brake:
                 # coach on correct gear
                 # FIXME: edge case when start <= 500
                 at = meters + 10
                 if abs(brake) > 50:
-                    self.msg["msg"][at] = brakepoint["mark"]
+                    self.msg["msg"][at] = segment["mark"]
                 elif brake > 0:
                     self.msg["msg"][at] = "Brake %s meters earlier" % brake
                 else:

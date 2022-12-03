@@ -91,6 +91,9 @@ class FastLap(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    driver = models.ForeignKey(
+        Driver, on_delete=models.CASCADE, default=None, related_name="fast_laps"
+    )
 
     def __str__(self):
         return f"{self.game} {self.car} {self.track}"

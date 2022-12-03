@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from telemetry.models import Game, Driver, Car, Track, SessionType, Lap
+from telemetry.models import Game, Driver, Car, Track, SessionType, Lap, FastLap
 from telemetry.influx import Influx
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
 import logging
@@ -24,7 +24,14 @@ class Command(BaseCommand):
         if options["lap_ids"]:
             laps = Lap.objects.filter(pk__in=options["lap_ids"])
             fl = FastLapAnalyzer(laps)
-            fl.analyze()
+            track_info = fl.analyze()
+            if track_info:
+                self.save_fastlap(
+                    track_info,
+                    car=laps[0].car,
+                    track=laps[0].track,
+                    game=laps[0].track.game,
+                )
             exit(0)
 
         sql = "select count(id) as c, track_id, car_id from telemetry_lap group by track_id, car_id"
@@ -63,9 +70,33 @@ class Command(BaseCommand):
                         fast_laps.append(lap)
 
                 fl = FastLapAnalyzer(laps)
-                fl.analyze()
+                track_info = fl.analyze()
+                if track_info:
+                    self.save_fastlap(track_info, car=car, track=track, game=game)
 
-    def handle_inlfux(self, *args, **options):
+    def save_fastlap(self, track_info, car=None, track=None, game=None):
+        fast_lap, created = FastLap.objects.get_or_create(
+            car=car, track=track, game=game
+        )
+        fast_lap.fast_lap_segments.all().delete()
+        i = 1
+        for brakepoint in track_info:
+            print(brakepoint)
+            segment, created = fast_lap.fast_lap_segments.get_or_create(
+                turn=i,
+                start=brakepoint["start"],
+                end=brakepoint["end"],
+                brake=brakepoint["brake"],
+                force=brakepoint["force"],
+                gear=brakepoint["gear"],
+                speed=brakepoint["speed"],
+                stop=brakepoint["stop"],
+                accelerate=brakepoint["accelerate"],
+                # mark=brakepoint["mark"],
+            )
+            i += 1
+
+    def handle_influx(self, *args, **options):
         # Driver.objects.all().delete()
         # Game.objects.all().delete()
         i = Influx()

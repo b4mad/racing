@@ -200,13 +200,8 @@ class FastLapAnalyzer:
             if seg[0].size > 0:
                 j = seg[0][0]
                 track_info[i]["brake"] = segment_data["DistanceRoundTrack"][i][j]
-
-        # Average DistanceRoundTrack when brake is pressed the first time
-        for i in range(track_segment_count):
-            seg = np.where(segment_data["Brake"][i] > 0)
-            if seg[0].size > 0:
-                j = seg[0][0]
-                track_info[i]["brake"] = segment_data["DistanceRoundTrack"][i][j]
+            else:
+                track_info[i]["brake"] = 0
 
         # Average brake force during the turn
         for i in range(track_segment_count):
@@ -238,3 +233,4 @@ class FastLapAnalyzer:
         # convert track_info, which is an array of dict, to a pandas dataframe
         df = pd.DataFrame(track_info)
         logging.info(df.style.format(precision=1).to_string())
+        return track_info
