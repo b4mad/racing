@@ -29,7 +29,7 @@ class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 
 class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
-    list_display = ["id", "length", "time", "session", "number"]
+    list_display = ["id", "length", "time", "session", "valid", "number"]
     changelist_links = ["laps"]
 
 

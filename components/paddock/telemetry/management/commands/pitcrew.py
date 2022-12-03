@@ -10,7 +10,6 @@ class Command(BaseCommand):
     help = "start pitcrew"
 
     def add_arguments(self, parser):
-        # Named (optional) arguments
         parser.add_argument("-i", "--import-csv", nargs="*", type=str, default=None)
 
     def handle(self, *args, **options):

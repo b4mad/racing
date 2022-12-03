@@ -5,7 +5,7 @@ import os
 import pickle
 import time
 import logging
-from telemetry.models import Game, Car, Track, FastLap, FastLapSegment
+from telemetry.models import Game, Car, Track, FastLap, FastLapSegment, Driver
 
 from influxdb_client import InfluxDBClient
 
@@ -27,13 +27,13 @@ class History:
         )
         self.pickle = False
         self.do_init = False
-        self.brakepoints = []
-        self.brakepoint_idx = 1
-        self.previous_brakepoint_idx = 0
+        self.segments = []
+        self.segment_idx = 1
+        self.previous_segment_idx = 0
         self.ready = False
         self.error = None
         self.do_run = True
-        self.clear_cache()
+        self.driver = None
 
     def disconnect(self):
         self.do_run = False
@@ -49,43 +49,38 @@ class History:
         self.filter = filter
         self.do_init = True
 
-    def clear_cache(self):
-        self.cache = {
-            "gear": {},
-            "brake_start": {},
-        }
-
     def init(self):
-        self.clear_cache()
-        if self.init_brakepoints():
-            if self.pickle:
-                self.read_cache_from_file()
-            else:
-                self.init_cache()
-            self.error = None
-            return True
-        return False
+        self.driver = Driver.objects.get(name=self.filter["Driver"])
+        self.car = Car.objects.get(name=self.filter["CarModel"])
+        self.game = Game.objects.get(name=self.filter["GameName"])
+        self.track = Track.objects.get(name=self.filter["TrackCode"])
+
+        success = self.init_segments()
+        if not success:
+            return False
+
+        if self.pickle:
+            self.read_cache_from_file()
+        else:
+            self.init_cache()
+
+        self.error = None
+        return True
 
     def init_cache(self):
-        for brakepoint in self.brakepoints:
-            if brakepoint["corner"] not in self.cache["gear"]:
-                self.cache["gear"][brakepoint["corner"]] = self.gear_q(
-                    brakepoint["start"], brakepoint["end"]
-                )
-                _LOGGER.debug(
-                    "corner %s: avg gear %s",
-                    brakepoint["corner"],
-                    self.cache["gear"][brakepoint["corner"]],
-                )
-            if brakepoint["corner"] not in self.cache["brake_start"]:
-                self.cache["brake_start"][brakepoint["corner"]] = self.brake_start_q(
-                    brakepoint["start"], brakepoint["end"]
-                )
-                _LOGGER.debug(
-                    "corner %s: avg brake_start %s",
-                    brakepoint["corner"],
-                    self.cache["brake_start"][brakepoint["corner"]],
-                )
+        self.cache = {}
+        fast_lap, created = FastLap.objects.get_or_create(
+            car=self.car, track=self.track, game=self.game, driver=self.driver
+        )
+        # check if fast_lap has any fast_lap_segments
+        if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
+            _LOGGER.error("no history found for %s", fast_lap)
+            # initialize with segments from fast_lap
+            for segment in self.segments:
+                FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)
+
+        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
+            self.cache[segment.turn] = segment
 
     def write_cache_to_file(self):
         with open("cache.pickle", "wb") as outfile:
@@ -96,39 +91,45 @@ class History:
         with open("cache.pickle", "rb") as infile:
             self.cache = pickle.load(infile)
 
-    @property
-    def brakepoints(self):
-        return self._brakepoints
+    def segment(self, meters: int) -> FastLapSegment:
+        segment = self.segments[self.segment_idx]
 
-    @brakepoints.setter
-    def brakepoints(self, brakepoints):
-        self._brakepoints = brakepoints
+        # check if meters is between .start and .end
+        if segment.start <= meters < segment.end:
+            return segment
 
-    def get_brakepoint(self, meters: int) -> dict:
-        brakepoint = self.brakepoints[self.brakepoint_idx]
-        self.previous_brakepoint = self.brakepoints[self.previous_brakepoint_idx]
+        # try the next segment
+        self.segment_idx += 1
+        if self.segment_idx >= len(self.segments):
+            self.segment_idx = 0
 
-        if self.previous_brakepoint_idx < self.brakepoint_idx:
-            if (
-                meters >= self.previous_brakepoint["accelerate"]
-                and meters < brakepoint["accelerate"]
-            ):
-                return brakepoint
-        else:
-            if (
-                meters >= self.previous_brakepoint["accelerate"]
-                or meters < brakepoint["accelerate"]
-            ):
-                return brakepoint
+        return self.segment(meters)
 
-        self.previous_brakepoint_idx = self.brakepoint_idx
-        self.brakepoint_idx += 1
-        if self.brakepoint_idx >= len(self.brakepoints):
-            self.brakepoint_idx = 0
-        return self.get_brakepoint(meters)
+    # def segment_old(self, meters: int) -> dict:
+    #     segment = self.segments[self.segment_idx]
+    #     self.previous_segment = self.segments[self.previous_segment_idx]
 
-    def init_brakepoints(self) -> bool:
-        """Load the brakepoints from DB."""
+    #     if self.previous_segment_idx < self.segment_idx:
+    #         if (
+    #             meters >= self.previous_segment["accelerate"]
+    #             and meters < segment["accelerate"]
+    #         ):
+    #             return segment
+    #     else:
+    #         if (
+    #             meters >= self.previous_segment["accelerate"]
+    #             or meters < segment["accelerate"]
+    #         ):
+    #             return segment
+
+    #     self.previous_segment_idx = self.segment_idx
+    #     self.segment_idx += 1
+    #     if self.segment_idx >= len(self.segments):
+    #         self.segment_idx = 0
+    #     return self.segment(meters)
+
+    def init_segments(self) -> bool:
+        """Load the segments from DB."""
         game = Game.objects.filter(name=self.filter["GameName"]).first()
         if not game:
             self.error = f"Game {self.filter['GameName']} not found"
@@ -137,14 +138,14 @@ class History:
 
         track = Track.objects.filter(game=game, name=self.filter["TrackCode"]).first()
         if not game:
-            self.error = f"no brakepoints found for {self.filter['GameName']} {self.filter['TrackCode']}"
+            self.error = f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
             _LOGGER.error(self.error)
             return False
 
         car = Car.objects.filter(game=game, name=self.filter["CarModel"]).first()
         if not car:
             self.error = (
-                f"no brakepoints found for {self.filter['GameName']} {self.filter['TrackCode']}"
+                f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
                 + f"- {self.filter['CarModel']}"
             )
             _LOGGER.error(self.error)
@@ -153,21 +154,21 @@ class History:
         fast_lap = FastLap.objects.filter(track=track, car=car, game=game).first()
         if not fast_lap:
             self.error = (
-                f"no brakepoints found for {self.filter['GameName']} {self.filter['TrackCode']}"
+                f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
                 + f"- {self.filter['CarModel']}"
             )
             _LOGGER.error(self.error)
             return False
 
-        _LOGGER.debug("loading brakepoints for %s %s - %s", game, track, car)
+        _LOGGER.debug("loading segments for %s %s - %s", game, track, car)
 
-        self.brakepoints = []
-        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
-            brakepoint = segment.__dict__
-            brakepoint["corner"] = len(self.brakepoints) + 1
-            self.brakepoints.append(brakepoint)
+        self.segments = []
+        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by(
+            "turn"
+        ):
+            self.segments.append(segment)
 
-        _LOGGER.debug("loaded %s brakepoints", len(self.brakepoints))
+        _LOGGER.debug("loaded %s segments", len(self.segments))
 
         self.error = (
             f"start coaching for {self.filter['GameName']} {self.filter['TrackCode']}"
@@ -175,10 +176,13 @@ class History:
         )
         return True
 
-    def gear(self, brakepoint):
+    def gear(self, segment):
+        return self.cache[segment.turn].gear
+
+    def off_gear(self, brakepoint):
         return self.cache["gear"].get(brakepoint["corner"])
 
-    def gear_q(self, start, stop):
+    def off_gear_q(self, start, stop):
         vars = self.filter.copy()
         vars.update({"start": start - 20, "stop": stop})
         q = """

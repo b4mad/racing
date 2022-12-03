@@ -40,13 +40,13 @@ class Mqtt:
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
-        user = frags[1]
+        driver = frags[1]
         # session = frags[2]
         game = frags[3]
         track = frags[4]
         car = frags[5]
         filter = {
-            "user": user,
+            "Driver": driver,
             "GameName": game,
             "TrackCode": track,
             "CarModel": car,
@@ -75,12 +75,14 @@ class Mqtt:
             self.coach.set_filter(self.filter_from_topic(msg.topic))
 
         # print('.', end='')
-        telemetry = json.loads(msg.payload.decode("utf-8"))
+        telemetry = json.loads(msg.payload.decode("utf-8"))["telemetry"]
 
-        meters = telemetry["telemetry"]["DistanceRoundTrack"]
-        response = self.coach.get_response(meters)
+        # meters = telemetry["telemetry"]["DistanceRoundTrack"]
+        response = self.coach.get_response(telemetry)
         if response:
-            _LOGGER.debug("meters: %s, response: %s", meters, response)
+            _LOGGER.debug(
+                "meters: %s, response: %s", telemetry["DistanceRoundTrack"], response
+            )
             mqttc.publish(f"/coach/{self.driver}", response)
 
     def on_connect(self, mqttc, obj, flags, rc):
