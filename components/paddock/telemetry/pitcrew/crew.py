@@ -157,12 +157,14 @@ class Crew:
                 # if we travel more than 5 times the expected meters at current speed, we are in the pits
                 if length - lap.length > distance_meter:
                     _LOGGER.info(
-                        f"lap {lap.pk} is invalid: jumping from {lap.length} to {length} \
-                        is larger than {distance_meter} (5 * {speed}m/s * {time_delta}s )"
+                        f"lap {lap.pk} is invalid: jumping from {lap.length} to {length} "
+                        + f"is larger than {distance_meter} (5 * {speed}m/s * {time_delta}s )"
                     )
                     lap.valid = False
-                else:
-                    lap.length = length
+
+            if lap.valid and time > lap.time:
+                lap.length = length
+                lap.time = time
 
     def save_sessions(self):
         while True:
