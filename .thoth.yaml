@@ -19,8 +19,8 @@ runtime_environments:
   - name: notebooks
     operating_system:
       name: ubi
-      version: "9"
-    python_version: "3.9"
+      version: "8"
+    python_version: "3.8"
 
 # https://thoth-station.ninja/docs/developers/kebechet/managers.html#available-managers
 managers:
@@ -35,7 +35,7 @@ managers:
       enabled: false
   - name: thoth-advise
     configuration:
-      enabled: false
+      enabled: true
   - name: thoth-provenance
     configuration:
       enabled: false
@@ -44,4 +44,13 @@ managers:
       enabled: false
   - name: version
     configuration:
-      enabled: false
+      enabled: true
+      labels:
+        - bot
+        - area/rel-eng
+      maintainers:
+        - durandom
+        - goern
+      assignees:
+        - sesheta
+      changelog_file: true
