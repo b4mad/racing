@@ -67,21 +67,11 @@ class Session(DirtyFieldsMixin, models.Model):
     def __str__(self):
         return self.session_id
 
-    def new_lap(self, start=start, number=0, car=None, track=None, length=0, time=0):
-        lap, created = self.laps.get_or_create(
-            number=number,
-            car=car,
-            track=track,
-            start=start,
-            length=length,
-            time=time,
-        )
-        return lap
-
 
 class Lap(DirtyFieldsMixin, models.Model):
     number = models.IntegerField()
     start = models.DateTimeField(default=datetime.datetime.now)
+    end = models.DateTimeField(default=datetime.datetime.now)
     time = models.FloatField(default=0)
     length = models.IntegerField(default=0)
     valid = models.BooleanField(default=False)
@@ -94,7 +84,10 @@ class Lap(DirtyFieldsMixin, models.Model):
         unique_together = ("session", "start")
 
     def __str__(self):
-        return f"{self.number}"
+        return (
+            f"{self.number}: {self.start.strftime('%H:%M:%S')} - {self.end.strftime('%H:%M:%S')} "
+            + f"{self.time}s {self.length}m valid: {self.valid}"
+        )
 
 
 ## coach data
