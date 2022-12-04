@@ -108,59 +108,65 @@ class Crew:
 
         # first lap in this session, new lap
         if len(lookup["laps"]) == 0:
-            lap = session.new_lap(number=lap_number, car=car, track=track, start=now)
+            lap = session.new_lap(
+                number=lap_number, car=car, track=track, start=now, length=length
+            )
             lookup["laps"].append(lap)
             _LOGGER.info(f"New lap: {lap.pk} for {session_id}")
 
         lap = lookup["laps"][-1]
 
-        # DistanceRoundTrack is reset to 0 or the pits, new lap
-        # driving backwards at least 50 meters
-        distance_since_previous_tick = length - lap.length
-        if distance_since_previous_tick < -50:
-            previous_lap_length = lap.length
-            lap = session.new_lap(number=lap_number, car=car, track=track, start=now)
-            lookup["laps"].append(lap)
-            _LOGGER.info(
-                f"New lap: {lap.pk} for {session_id}, length drop from {previous_lap_length} to {length}"
-            )
+        if lap.length > 0:
+            # New lap because DistanceRoundTrack has dropped because
+            #  * we passed the finish line   0[finish] - 5000[track length] = -5000
+            #  * we reset to the pits:       50[pit]   - 4000[somewhere]    = -3950
+            #  * ignore a spin, i.e. we drive a little bit backwards
+            #                                1000[spin] - 4000[track length] = -3000
+            distance_since_previous_tick = length - lap.length
+            if distance_since_previous_tick < -50:
+                previous_lap_length = lap.length
+                lap = session.new_lap(
+                    number=lap_number, car=car, track=track, start=now, length=length
+                )
+                lookup["laps"].append(lap)
+                _LOGGER.info(
+                    f"New lap: {lap.pk} for {session_id}, length drop from {previous_lap_length} to {length}"
+                )
 
         # set timing
         lap.end = now
         session.end = lap.end
 
         # lap is valid if started from the beginning, otherwise it is maybe an outlap
-        if not lap.valid and 0 <= lap.length < 50:
-            _LOGGER.info(f"Marking lap {lap.pk} as valid")
+        if 0 <= lap.length < 50 and not lap.valid:
+            _LOGGER.info(f"Marking lap {lap.pk} as valid at length {lap.length}")
             lap.valid = True
 
         # only start measuring the lap time if length is larger than the threshold
-        if lap.valid and (length > lookup["threshold"]):
-
+        if length > lookup["threshold"]:
             # we just start measuring the lap time
-            if lap.time == 0:
+            if lap.time == 0 and time > 0:
                 _LOGGER.info(
-                    f"start measuring time for {lap.pk} at length {length} (threshold {lookup['threshold']})"
+                    f"start measuring time for {lap.pk} at length {length} and time {time} (threshold {lookup['threshold']}m)"  # noqa: E501
                 )
-                lap.time = time + 0.001  # add 1ms to avoid start measuring again
+                lap.time = time
                 lap.length = length
 
             # Detect if reset to the pits, then we see a jump in distance
             # how far do we travel since the last tick
-            speed = telemetry["SpeedMs"]
-            time_delta = time - lap.time
-
             # only check if we have a time delta larger than 0.1s
-            if time_delta > 0.1:
-                distance_meter = (speed * time_delta) * 5
+            # speed = telemetry["SpeedMs"]
+            # time_delta = time - lap.time
+            # if time_delta > 0.1:
+            #     distance_meter = (speed * time_delta) * 5
 
-                # if we travel more than 5 times the expected meters at current speed, we are in the pits
-                if length - lap.length > distance_meter:
-                    _LOGGER.info(
-                        f"lap {lap.pk} is invalid: jumping from {lap.length} to {length} "
-                        + f"is larger than {distance_meter} (5 * {speed}m/s * {time_delta}s )"
-                    )
-                    lap.valid = False
+            #     # if we travel more than 5 times the expected meters at current speed, we are in the pits
+            #     if length - lap.length > distance_meter:
+            #         _LOGGER.info(
+            #             f"lap {lap.pk} is invalid: jumping from {lap.length} to {length} "
+            #             + f"is larger than {distance_meter} (5 * {speed}m/s * {time_delta}s )"
+            #         )
+            #         lap.valid = False
 
             if lap.valid and time > lap.time:
                 lap.length = length
@@ -171,25 +177,37 @@ class Crew:
             time.sleep(10)
             _LOGGER.info("saving sessions")
             sessions = self.session_cache.values()
-            for session in sessions:
-                session["session"].save_dirty_fields()
-                track = session["track"]
+            try:
+                for session in sessions:
+                    session["session"].save_dirty_fields()
+                    track = session["track"]
 
-                for lap in session["laps"]:
-                    lap.save_dirty_fields()
+                    for lap in session["laps"]:
+                        lap.save_dirty_fields()
 
-                    # if the lap is longer than the track, update the track length
-                    # this way we gradually get the correct length
-                    lap_length = int(lap.length)
-                    if lap.valid and lap_length > track.length:
-                        track.refresh_from_db()
-                        if lap_length > track.length:
-                            _LOGGER.info(
-                                f"updating {track.name} length from {track.length} to {lap_length}"
-                            )
-                            track.length = lap_length
-                            track.save()
-                            session["threshold"] = track.length * 0.1
+                        # FIXME: detect if lap is valid
+                        #  * started from the beginning
+                        #  * full distance
+
+                        # if the lap is longer than the track, update the track length
+                        # this way we gradually get the correct length
+                        lap_length = int(lap.length)
+                        if lap.valid and lap_length > track.length:
+                            track.refresh_from_db()
+                            if lap_length > track.length:
+                                _LOGGER.info(
+                                    f"updating {track.name} length from {track.length} to {lap_length}"
+                                )
+                                track.length = lap_length
+                                track.save()
+
+                                threshold = 500
+                                if track.length > 100:
+                                    threshold = track.length * 0.1
+                                session["threshold"] = threshold
+            except RuntimeError as e:
+                # RuntimeError: dictionary changed size during iteration
+                _LOGGER.error(e)
 
     def watch_coaches(self):
         while True:
