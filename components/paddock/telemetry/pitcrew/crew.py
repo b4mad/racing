@@ -212,13 +212,14 @@ class Crew:
                 for i, lap in enumerate(session["laps"]):
                     if lap["finished"]:
                         # check if lap length is within 98% of the track length
-                        track_length = rtrack.length
+                        track = session["track"]
+                        track_length = track.length
 
                         if lap["length"] > track_length * 0.98:
                             lap_record = session_record.laps.create(
                                 number=lap["number"],
                                 car=session["car"],
-                                track=session["track"],
+                                track=track,
                                 start=lap["start"],
                                 end=lap["end"],
                                 length=lap["length"],
@@ -239,7 +240,6 @@ class Crew:
                         delete_laps.append(i)
 
                         lap_length = int(lap["length"])
-                        track = session["track"]
                         if lap_length > track.length:
                             track.refresh_from_db()
                             if lap_length > track.length:
