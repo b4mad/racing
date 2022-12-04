@@ -24,6 +24,7 @@ whitenoise = "*"
 django-dirtyfields = "*"
 matplotlib = "*"
 scipy = "*"
+locked-dict = "*"
 
 [dev-packages]
 black = "*"
