@@ -65,25 +65,53 @@ class Crew:
                 "laps": [],
             }
 
-            prefix, driver, session_id, game, track, car, session_type = session.split(
-                "/"
-            )
+            try:
+                (
+                    prefix,
+                    driver,
+                    session_id,
+                    game,
+                    track,
+                    car,
+                    session_type,
+                ) = session.split("/")
+            except ValueError:
+                # ignore invalid session
+                return
+
             if driver.lower() != "jim":
                 if driver not in self.active_drivers:
                     rdriver, created = Driver.objects.get_or_create(name=driver)
-                    print(f"New coach for {driver}")
-                    Coach.objects.get_or_create(driver=rdriver)
+                    try:
+                        coach, created = Coach.objects.get_or_create(driver=rdriver)
+                        if created:
+                            logging.info(f"New coach for {driver}")
+                    except Exception as e:
+                        logging.error("Error creating coach: %s", e)
+                        return
                     self.active_drivers.add(rdriver)
 
-        payload = json.loads(msg.payload.decode("utf-8")).get("telemetry")
+        try:
+            payload = json.loads(msg.payload.decode("utf-8")).get("telemetry")
+        except Exception as e:
+            logging.error("Error decoding payload: %s", e)
+            return
         self.analyze(payload, session, now)
 
     def analyze(self, telemetry, session_id, now):
         session = self.sessions.get(session_id)
         session["end"] = now
-        length = telemetry["DistanceRoundTrack"]
-        speed = telemetry["SpeedMs"]
-        lap_time = telemetry["CurrentLapTime"]
+        length = telemetry.get("DistanceRoundTrack", None)
+        speed = telemetry.get("SpeedMs", None)
+        lap_time = telemetry.get("CurrentLapTime", None)
+        current_lap = telemetry.get("CurrentLap", None)
+
+        if not (length and speed and lap_time and current_lap):
+            logging.error("Invalid telemetry: %s", telemetry)
+            logging.error(
+                f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}"
+            )
+            return
 
         threshold = speed * 0.5
         new_lap = False
@@ -114,7 +142,7 @@ class Crew:
                 "length": length,
                 "time": lap_time,
                 "finished": False,
-                "number": telemetry["CurrentLap"],
+                "number": current_lap,
                 "active": lap_time < 5,  # if time is less than 5 seconds, lap is active
             }
             session["laps"].append(lap)
@@ -122,6 +150,11 @@ class Crew:
                 f"{session_id}\n\t new lap length {length} < threshold {threshold}"
                 + f" and < previous lap length {previous_length}, active: {lap['active']}, time: {lap_time}"
             )
+
+            # get the length of the session['laps'] list and count down the index
+            for i in range(len(session["laps"]) - 1, -1, -1):
+                if session["laps"][i].get("delete", False):
+                    del session["laps"][i]
             return
 
         if len(session["laps"]) > 0:
@@ -188,27 +221,30 @@ class Crew:
                 # save session to database
                 session_record = session.get("record", None)
                 if session_record is None:
-                    rdriver, created = Driver.objects.get_or_create(name=driver)
-                    rgame, created = Game.objects.get_or_create(name=game)
-                    rsession_type, created = SessionType.objects.get_or_create(
-                        type=session_type
-                    )
-                    rcar, created = Car.objects.get_or_create(name=car, game=rgame)
-                    rtrack, created = Track.objects.get_or_create(
-                        name=track, game=rgame
-                    )
-                    session_record, created = rdriver.sessions.get_or_create(
-                        session_id=session_number,
-                        session_type=rsession_type,
-                        game=rgame,
-                        defaults={"start": session["start"], "end": session["end"]},
-                    )
-                    session["record"] = session_record
-                    session["car"] = rcar
-                    session["track"] = rtrack
+                    try:
+                        rdriver, created = Driver.objects.get_or_create(name=driver)
+                        rgame, created = Game.objects.get_or_create(name=game)
+                        rsession_type, created = SessionType.objects.get_or_create(
+                            type=session_type
+                        )
+                        rcar, created = Car.objects.get_or_create(name=car, game=rgame)
+                        rtrack, created = Track.objects.get_or_create(
+                            name=track, game=rgame
+                        )
+                        session_record, created = rdriver.sessions.get_or_create(
+                            session_id=session_number,
+                            session_type=rsession_type,
+                            game=rgame,
+                            defaults={"start": session["start"], "end": session["end"]},
+                        )
+                        session["record"] = session_record
+                        session["car"] = rcar
+                        session["track"] = rtrack
+                    except Exception as e:
+                        logging.error(f"Error saving session {session_number}: {e}")
+                        continue
 
                 # iterate over laps with index
-                delete_laps = []
                 for i, lap in enumerate(session["laps"]):
                     if lap["finished"]:
                         # check if lap length is within 98% of the track length
@@ -216,19 +252,24 @@ class Crew:
                         track_length = track.length
 
                         if lap["length"] > track_length * 0.98:
-                            lap_record = session_record.laps.create(
-                                number=lap["number"],
-                                car=session["car"],
-                                track=track,
-                                start=lap["start"],
-                                end=lap["end"],
-                                length=lap["length"],
-                                valid=True,
-                                time=lap["time"],
-                            )
-                            _LOGGER.info(
-                                f"Saving lap {lap_record} for session {session_id}"
-                            )
+                            try:
+                                lap_record = session_record.laps.create(
+                                    number=lap["number"],
+                                    car=session["car"],
+                                    track=track,
+                                    start=lap["start"],
+                                    end=lap["end"],
+                                    length=lap["length"],
+                                    valid=True,
+                                    time=lap["time"],
+                                )
+                                _LOGGER.info(
+                                    f"Saving lap {lap_record} for session {session_id}"
+                                )
+                                session_record.end = session["end"]
+                                session_record.save_dirty_fields()
+                            except Exception as e:
+                                logging.error(f"Error saving lap {lap['number']}: {e}")
                         else:
                             lstring = (
                                 f"{lap['number']}: {lap['time']}s {lap['length']}m"
@@ -236,8 +277,7 @@ class Crew:
                             _LOGGER.info(
                                 f"Discard lap {lstring} for session {session_id} - track length {track_length}m"
                             )
-
-                        delete_laps.append(i)
+                        lap["delete"] = True
 
                         lap_length = int(lap["length"])
                         if lap_length > track.length:
@@ -248,12 +288,6 @@ class Crew:
                                 )
                                 track.length = lap_length
                                 track.save()
-
-                if len(delete_laps) > 0:
-                    session_record.end = session["end"]
-                    session_record.save_dirty_fields()
-                    for i in sorted(delete_laps, reverse=True):
-                        del session["laps"][i]
 
     # def on_message_old(self, mqttc, obj, msg):
     #     """Handle incoming messages, we are only interested in the telemetry.
