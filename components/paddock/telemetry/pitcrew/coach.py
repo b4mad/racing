@@ -8,15 +8,15 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Coach:
-    def __init__(self, history: History, db_coach: DbCoach):
+    def __init__(self, history: History, db_coach: DbCoach, debug=False):
         self.history = history
         self.previous_history_error = None
         self.db_coach = db_coach
         self.msg = {
             "msg": {},
-            "at": None,
-            "corner": None,
+            "turn": None,
         }
+        self.debug = debug
 
     def set_filter(self, filter):
         self.history.set_filter(filter)
@@ -62,32 +62,41 @@ class Coach:
         # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
         meters = telemetry["DistanceRoundTrack"]
+        speed = telemetry["SpeedMs"]
         segment = self.history.segment(meters)
+        if not segment:
+            return None
 
         if self.msg["turn"] != segment.turn:
             self.msg["turn"] = segment.turn
             self.msg["msg"] = {}
 
+            # announce segment start if debugging
+            if self.debug:
+                self.msg["msg"][meters + 5] = f"Turn {segment.turn}"
+
             # do we have something to say about the current segment?
             if self.gear(segment):
                 # coach on correct gear
-                # FIXME: check if still in segment bounds
+
                 at = segment.start + 100
-                self.msg["msg"][at] = "Shift down to gear %s" % segment.gear
+                self.msg["msg"][at] = "Gear %s" % segment.gear
                 _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
-            # brake = self.brake_start(segment)
-            # if brake:
-            #     # coach on correct gear
-            #     # FIXME: edge case when start <= 500
-            #     at = meters + 10
-            #     if abs(brake) > 50:
-            #         self.msg["msg"][at] = segment["mark"]
-            #     elif brake > 0:
-            #         self.msg["msg"][at] = "Brake %s meters earlier" % brake
-            #     else:
-            #         self.msg["msg"][at] = "Brake %s meters later" % abs(brake)
-            #     _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
+            brake = self.brake_start(segment)
+            if brake and self.debug:
+                # calculate where we are in 5.3 seconds
+                travel_distance = speed * 5.3
+                # print(f"travel_distance: {travel_distance} at speed: {speed}")
+                at = segment.brake - travel_distance
+                self.msg["msg"][at] = "Brake in 3 .. 2 .. 1 .. brake"
+                # if abs(brake) > 50:
+                #     self.msg["msg"][at] = segment["mark"]
+                # elif brake > 0:
+                #     self.msg["msg"][at] = "Brake %s meters earlier" % brake
+                # else:
+                #     self.msg["msg"][at] = "Brake %s meters later" % abs(brake)
+                _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
         # loop over all messages and check the distance, if we have something to say
         for at in self.msg["msg"]:
