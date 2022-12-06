@@ -39,9 +39,12 @@ class FastLapAnalyzer:
             logging.info(
                 f"Getting data for SessionId: {lap.session.session_id} / {lap.number}"
             )
+            # format datetime to flux format
+            start = lap.start.strftime("%Y-%m-%dT%H:%M:%SZ")
+            end = lap.end.strftime("%Y-%m-%dT%H:%M:%SZ")
             query = f"""
                 from(bucket: "racing")
-                |> range(start: -10y)
+                |> range(start: {start}, stop: {end})
                 |> filter(fn: (r) => r["_measurement"] == "laps_cc")
                 |> filter(fn: (r) => r["SessionId"] == "{lap.session.session_id}")
                 |> filter(fn: (r) => r["GameName"] == "{lap.session.game.name}")
@@ -53,9 +56,9 @@ class FastLapAnalyzer:
             """
             # Open the data frame corresponding to session
             try:
-                df = self.influx.query_api.query_data_frame(query=query)
                 # print(query)
-                # print(df.to_string())
+                df = self.influx.query_api.query_data_frame(query=query)
+                # print(df["SteeringAngle"].to_string())
                 for feature in features:
                     feature_values[feature].append(df[feature].values)
             except Exception as e:
@@ -79,15 +82,13 @@ class FastLapAnalyzer:
         # rather than the previous dictionnary that was containing lists
         data_arrays = {}
         for feature in features:
-            data_arrays[feature] = np.zeros(
-                (self.laps.count(), max_number_of_datapoints)
-            )
+            data_arrays[feature] = np.zeros((len(self.laps), max_number_of_datapoints))
 
         # Better to have ones for Throttle instead of zeros
-        data_arrays["Throttle"] = np.ones((self.laps.count(), max_number_of_datapoints))
+        data_arrays["Throttle"] = np.ones((len(self.laps), max_number_of_datapoints))
 
         # Fill the dictionnary with data
-        for i in range(self.laps.count()):
+        for i in range(len(self.laps)):
             for feature in features:
                 data_arrays[feature][i][
                     : feature_values[feature][i].size
@@ -133,12 +134,13 @@ class FastLapAnalyzer:
         for i, m in enumerate(msk2[:-1]):
             # select SteeringAngle for the i turn
             steer_tmp = steer[idx[msk2][i] : idx[msk2][i + 1]]
-            # find index of the extrema of SteeringAngle
-            extrema_idx_tmp = np.argmax(np.abs(steer_tmp))
-            # add idx offset to find the index in the full SteeringAngle array
-            extrema_idx_truth = extrema_idx_tmp + idx[msk2][i]
-            # add to list
-            extrema_idx.append(extrema_idx_truth)
+            if steer_tmp.size:
+                # find index of the extrema of SteeringAngle
+                extrema_idx_tmp = np.argmax(np.abs(steer_tmp))
+                # add idx offset to find the index in the full SteeringAngle array
+                extrema_idx_truth = extrema_idx_tmp + idx[msk2][i]
+                # add to list
+                extrema_idx.append(extrema_idx_truth)
 
         extrema_idx = np.array(extrema_idx)
 

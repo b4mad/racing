@@ -91,42 +91,25 @@ class History:
         with open("cache.pickle", "rb") as infile:
             self.cache = pickle.load(infile)
 
-    def segment(self, meters: int) -> FastLapSegment:
-        segment = self.segments[self.segment_idx]
+    def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
+        # stop the recursion if we are too deep
+        if depth > len(self.segments):
+            return None
+
+        if idx is None:
+            idx = self.segment_idx
+
+        if idx >= len(self.segments):
+            idx = 0
+
+        segment = self.segments[idx]
 
         # check if meters is between .start and .end
         if segment.start <= meters < segment.end:
+            self.segment_idx = idx
             return segment
 
-        # try the next segment
-        self.segment_idx += 1
-        if self.segment_idx >= len(self.segments):
-            self.segment_idx = 0
-
-        return self.segment(meters)
-
-    # def segment_old(self, meters: int) -> dict:
-    #     segment = self.segments[self.segment_idx]
-    #     self.previous_segment = self.segments[self.previous_segment_idx]
-
-    #     if self.previous_segment_idx < self.segment_idx:
-    #         if (
-    #             meters >= self.previous_segment["accelerate"]
-    #             and meters < segment["accelerate"]
-    #         ):
-    #             return segment
-    #     else:
-    #         if (
-    #             meters >= self.previous_segment["accelerate"]
-    #             or meters < segment["accelerate"]
-    #         ):
-    #             return segment
-
-    #     self.previous_segment_idx = self.segment_idx
-    #     self.segment_idx += 1
-    #     if self.segment_idx >= len(self.segments):
-    #         self.segment_idx = 0
-    #     return self.segment(meters)
+        return self.segment(meters, idx=idx + 1, depth=depth + 1)
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
@@ -220,8 +203,9 @@ class History:
         else:
             return 0
 
-    def brake_start(self, brakepoint):
-        return self.cache["brake_start"].get(brakepoint["corner"])
+    def brake_start(self, segment):
+        return self.cache[segment.turn].brake
+        # return self.cache["brake_start"].get(brakepoint["corner"])
 
     def brake_start_q(self, start, stop):
         vars = self.filter.copy()

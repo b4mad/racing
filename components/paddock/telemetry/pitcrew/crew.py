@@ -24,7 +24,6 @@ class Crew:
         mqttc.on_connect = self.on_connect
         mqttc.on_publish = self.on_publish
         mqttc.on_subscribe = self.on_subscribe
-        # mqttc.username_pw_set(env('B4MAD_RACING_CLIENT_USER'), env('B4MAD_RACING_CLIENT_PASSWORD'))
         mqttc.username_pw_set(
             os.environ.get("B4MAD_RACING_CLIENT_USER", ""),
             os.environ.get("B4MAD_RACING_CLIENT_PASSWORD", ""),
@@ -289,183 +288,6 @@ class Crew:
                                 track.length = lap_length
                                 track.save()
 
-    # def on_message_old(self, mqttc, obj, msg):
-    #     """Handle incoming messages, we are only interested in the telemetry.
-
-    #     Args:
-    #         mqttc (_type_): the mqtt client
-    #         obj (_type_): the userdata
-    #         msg (_type_): the message received
-    #     """
-
-    #     # _LOGGER.debug(
-    #     #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
-    #     # )
-
-    #     prefix, driver, session, game, track, car, session_type = msg.topic.split("/")
-    #     if session not in self.active_sessions:
-    #         logging.info(f"New session: {msg.topic}")
-    #         self.active_sessions.add(session)
-
-    #         # record = json.loads(msg.payload.decode("utf-8"))
-    #         # logging.debug(record)
-
-    #         rgame, created = Game.objects.get_or_create(name=game)
-    #         rdriver, created = Driver.objects.get_or_create(name=driver)
-    #         rcar, created = Car.objects.get_or_create(name=car, game=rgame)
-    #         rtrack, created = Track.objects.get_or_create(name=track, game=rgame)
-    #         rsession_type, created = SessionType.objects.get_or_create(
-    #             type=session_type
-    #         )
-
-    #         now = django.utils.timezone.now()
-    #         rsession, created = rdriver.sessions.get_or_create(
-    #             session_id=session,
-    #             session_type=rsession_type,
-    #             game=rgame,
-    #             defaults={"start": now, "end": now},
-    #         )
-
-    #         threshold = 500
-    #         if rtrack.length > 100:
-    #             threshold = rtrack.length * 0.1
-
-    #         self.session_cache[session] = {
-    #             "session": rsession,
-    #             "laps": [],
-    #             "car": rcar,
-    #             "track": rtrack,
-    #             "threshold": threshold,
-    #         }
-
-    #         if driver.lower() != "jim":
-    #             if driver not in self.active_drivers:
-    #                 print(f"New coach for {driver}")
-    #                 Coach.objects.get_or_create(driver=rdriver)
-    #                 self.active_drivers.add(rdriver)
-
-    #     payload = json.loads(msg.payload.decode("utf-8"))
-    #     self.analyze(payload, session)
-
-    # def analyze_old(self, payload, session_id):
-    #     now = django.utils.timezone.now()
-    #     telemetry = payload["telemetry"]
-    #     lap_number = telemetry["CurrentLap"]
-    #     lookup = self.session_cache[session_id]
-    #     session = lookup["session"]
-    #     session.end = now
-    #     car = lookup["car"]
-    #     track = lookup["track"]
-    #     length = telemetry["DistanceRoundTrack"]
-    #     time = telemetry["CurrentLapTime"]
-    #     if time < 0:
-    #         time = 0
-
-    #     # first lap in this session, new lap
-    #     if len(lookup["laps"]) == 0:
-    #         lap = session.new_lap(
-    #             number=lap_number, car=car, track=track, start=now, length=length
-    #         )
-    #         lookup["laps"].append(lap)
-    #         _LOGGER.info(f"New lap: {lap.pk} for {session_id}")
-
-    #     lap = lookup["laps"][-1]
-
-    #     if lap.length > 0:
-    #         # New lap because DistanceRoundTrack has dropped because
-    #         #  * we passed the finish line   0[finish] - 5000[track length] = -5000
-    #         #  * we reset to the pits:       50[pit]   - 4000[somewhere]    = -3950
-    #         #  * ignore a spin, i.e. we drive a little bit backwards
-    #         #                                1000[spin] - 4000[track length] = -3000
-    #         distance_since_previous_tick = length - lap.length
-    #         if distance_since_previous_tick < -50:
-    #             previous_lap_length = lap.length
-    #             lap = session.new_lap(
-    #                 number=lap_number, car=car, track=track, start=now, length=length
-    #             )
-    #             lookup["laps"].append(lap)
-    #             _LOGGER.info(
-    #                 f"New lap: {lap.pk} for {session_id}, length drop from {previous_lap_length} to {length}"
-    #             )
-
-    #     # set timing
-    #     lap.end = now
-    #     session.end = lap.end
-
-    #     # lap is valid if started from the beginning, otherwise it is maybe an outlap
-    #     if 0 <= lap.length < 50 and not lap.valid:
-    #         _LOGGER.info(f"Marking lap {lap.pk} as valid at length {lap.length}")
-    #         lap.valid = True
-
-    #     # only start measuring the lap time if length is larger than the threshold
-    #     if length > lookup["threshold"]:
-    #         # we just start measuring the lap time
-    #         if lap.time == 0 and time > 0:
-    #             _LOGGER.info(
-    #                 f"start measuring time for {lap.pk} at length {length} and time {time} (threshold {lookup['threshold']}m)"  # noqa: E501
-    #             )
-    #             lap.time = time
-    #             lap.length = length
-
-    #         # Detect if reset to the pits, then we see a jump in distance
-    #         # how far do we travel since the last tick
-    #         # only check if we have a time delta larger than 0.1s
-    #         # speed = telemetry["SpeedMs"]
-    #         # time_delta = time - lap.time
-    #         # if time_delta > 0.1:
-    #         #     distance_meter = (speed * time_delta) * 5
-
-    #         #     # if we travel more than 5 times the expected meters at current speed, we are in the pits
-    #         #     if length - lap.length > distance_meter:
-    #         #         _LOGGER.info(
-    #         #             f"lap {lap.pk} is invalid: jumping from {lap.length} to {length} "
-    #         #             + f"is larger than {distance_meter} (5 * {speed}m/s * {time_delta}s )"
-    #         #         )
-    #         #         lap.valid = False
-
-    #         if lap.valid and time > lap.time:
-    #             lap.length = length
-    #             lap.time = time
-
-    # def save_sessions(self):
-    #     while True:
-    #         time.sleep(10)
-    #         continue
-    #         _LOGGER.info("saving sessions")
-    #         # FIXME: purge old sessions
-    #         sessions = self.session_cache.values()
-    #         try:
-    #             for session in sessions:
-    #                 session["session"].save_dirty_fields()
-    #                 track = session["track"]
-
-    #                 for lap in session["laps"]:
-    #                     lap.save_dirty_fields()
-
-    #                     # FIXME: detect if lap is valid
-    #                     #  * started from the beginning
-    #                     #  * full distance
-
-    #                     # if the lap is longer than the track, update the track length
-    #                     # this way we gradually get the correct length
-    #                     lap_length = int(lap.length)
-    #                     if lap.valid and lap_length > track.length:
-    #                         track.refresh_from_db()
-    #                         if lap_length > track.length:
-    #                             _LOGGER.info(
-    #                                 f"updating {track.name} length from {track.length} to {lap_length}"
-    #                             )
-    #                             track.length = lap_length
-    #                             track.save()
-
-    #                             threshold = 500
-    #                             if track.length > 100:
-    #                                 threshold = track.length * 0.1
-    #                             session["threshold"] = threshold
-    #         except RuntimeError as e:
-    #             # RuntimeError: dictionary changed size during iteration
-    #             _LOGGER.error(e)
-
     def watch_coaches(self):
         while True:
             time.sleep(11)
@@ -487,9 +309,9 @@ class Crew:
         self.active_coaches[driver.name][1].disconnect()
         del self.active_coaches[driver.name]
 
-    def start_coach(self, driver, coach):
+    def start_coach(self, driver, coach, debug=False):
         history = History()
-        coach = PitCrewCoach(history, coach)
+        coach = PitCrewCoach(history, coach, debug=debug)
         mqtt = Mqtt(coach, driver)
 
         def history_thread():
