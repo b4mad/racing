@@ -92,6 +92,8 @@ class History:
             self.cache = pickle.load(infile)
 
     def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
+        if len(self.segments) == 0:
+            return None
         # stop the recursion if we are too deep
         if depth > len(self.segments):
             return None

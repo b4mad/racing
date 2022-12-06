@@ -64,6 +64,7 @@ class Coach:
         meters = telemetry["DistanceRoundTrack"]
         speed = telemetry["SpeedMs"]
         segment = self.history.segment(meters)
+        # logging.debug(f"{meters}: {segment}")
         if not segment:
             return None
 
