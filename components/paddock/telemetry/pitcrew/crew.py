@@ -105,7 +105,7 @@ class Crew:
         lap_time = telemetry.get("CurrentLapTime", None)
         current_lap = telemetry.get("CurrentLap", None)
 
-        if not (length and speed and lap_time and current_lap):
+        if length is None or speed is None or lap_time is None or current_lap is None:
             logging.error("Invalid telemetry: %s", telemetry)
             logging.error(
                 f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}"
@@ -142,7 +142,9 @@ class Crew:
                 "time": lap_time,
                 "finished": False,
                 "number": current_lap,
-                "active": lap_time < 5,  # if time is less than 5 seconds, lap is active
+                "active": lap_time
+                < 5,  # if time is less than 5 seconds, lap is active,
+                "inactive_log_time": now,
             }
             session["laps"].append(lap)
             _LOGGER.info(
@@ -195,7 +197,8 @@ class Crew:
                 lap["length"] = length
                 lap["time"] = lap_time
             else:
-                if (lap_time + 1) % 10 < 0.1:
+                if (now - lap["inactive_log_time"]).seconds > 120:
+                    lap["inactive_log_time"] = now
                     _LOGGER.info(
                         f"{session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}"
                     )
