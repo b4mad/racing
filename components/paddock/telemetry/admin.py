@@ -33,6 +33,16 @@ class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     changelist_links = ["laps"]
 
 
+class DriverAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["name"]
+    changelist_links = ["sessions"]
+
+
+class SessionAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["session_id", "start", "end", "game", "session_type"]
+    changelist_links = ["laps"]
+
+
 class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name"]
     changelist_links = ["laps"]
@@ -55,11 +65,12 @@ class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 #     inlines = [CoachInline, ]
 
 
-admin.site.register([Car, Session, SessionType])
+admin.site.register([Car, SessionType])
 admin.site.register(Lap, LapAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Game, GameAdmin)
-admin.site.register(Driver)
+admin.site.register(Driver, DriverAdmin)
+admin.site.register(Session, SessionAdmin)
 admin.site.register(FastLap, FastLapAdmin)
 admin.site.register(FastLapSegment, FastLapSegmentAdmin)
 admin.site.register(Coach)
