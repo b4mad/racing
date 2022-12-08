@@ -43,17 +43,22 @@ class History:
             time.sleep(1)
             if self.do_init:
                 self.ready = self.init()
-                self.do_init = False
+                if self.ready:
+                    self.do_init = False
 
     def set_filter(self, filter):
         self.filter = filter
         self.do_init = True
 
     def init(self):
-        self.driver = Driver.objects.get(name=self.filter["Driver"])
-        self.car = Car.objects.get(name=self.filter["CarModel"])
-        self.game = Game.objects.get(name=self.filter["GameName"])
-        self.track = Track.objects.get(name=self.filter["TrackCode"])
+        try:
+            self.driver = Driver.objects.get(name=self.filter["Driver"])
+            self.car = Car.objects.get(name=self.filter["CarModel"])
+            self.game = Game.objects.get(name=self.filter["GameName"])
+            self.track = Track.objects.get(name=self.filter["TrackCode"])
+        except Exception as e:
+            _LOGGER.error(e)
+            return False
 
         success = self.init_segments()
         if not success:

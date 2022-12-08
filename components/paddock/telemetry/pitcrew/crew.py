@@ -112,6 +112,11 @@ class Crew:
             )
             return
 
+        # get the length of the session['laps'] list and count down the index
+        for i in range(len(session["laps"]) - 1, -1, -1):
+            if session["laps"][i].get("delete", False):
+                del session["laps"][i]
+
         threshold = speed * 0.5
         new_lap = False
         previous_length = -1
@@ -151,11 +156,6 @@ class Crew:
                 f"{session_id}\n\t new lap length {length} < threshold {threshold}"
                 + f" and < previous lap length {previous_length}, active: {lap['active']}, time: {lap_time}"
             )
-
-            # get the length of the session['laps'] list and count down the index
-            for i in range(len(session["laps"]) - 1, -1, -1):
-                if session["laps"][i].get("delete", False):
-                    del session["laps"][i]
             return
 
         if len(session["laps"]) > 0:
