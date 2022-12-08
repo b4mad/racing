@@ -253,7 +253,9 @@ class Crew:
                         track = session["track"]
                         track_length = track.length
 
-                        if lap["length"] > track_length * 0.98:
+                        if lap["length"] > track_length * 0.98 and not lap.get(
+                            "save_error", False
+                        ):
                             try:
                                 lap_record = session_record.laps.create(
                                     number=lap["number"],
@@ -272,6 +274,9 @@ class Crew:
                                 session_record.save_dirty_fields()
                             except Exception as e:
                                 logging.error(f"Error saving lap {lap['number']}: {e}")
+                                lap[
+                                    "save_error"
+                                ] = True  # don't try to save this lap again
                         else:
                             lstring = (
                                 f"{lap['number']}: {lap['time']}s {lap['length']}m"
@@ -312,10 +317,10 @@ class Crew:
         self.active_coaches[driver.name][1].disconnect()
         del self.active_coaches[driver.name]
 
-    def start_coach(self, driver, coach, debug=False):
+    def start_coach(self, driver, coach, debug=False, replay=False):
         history = History()
         coach = PitCrewCoach(history, coach, debug=debug)
-        mqtt = Mqtt(coach, driver)
+        mqtt = Mqtt(coach, driver, replay=replay)
 
         def history_thread():
             _LOGGER.info(f"History thread starting for {driver}")

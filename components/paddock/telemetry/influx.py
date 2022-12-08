@@ -28,7 +28,7 @@ class Influx:
         for record in records:
             yield record["_value"]
 
-    def session(self, session_id):
+    def session(self, session_id, lap_ids=[]):
         query = f"""
             from(bucket: "racing")
             |> range(start: -10y, stop: now())
@@ -36,6 +36,15 @@ class Influx:
             |> filter(fn: (r) => r["SessionId"] == "{session_id}")
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
         """
+
+        lap_filter = []
+        if lap_ids:
+            for lap_id in lap_ids:
+                lap_filter.append(f'r["CurrentLap"] == "{lap_id}"')
+
+            query += f"|> filter(fn: (r) => {' or '.join(lap_filter)})"
+
+        # print(query)
 
         records = self.query_api.query_stream(query=query)
         for record in records:

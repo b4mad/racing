@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import time
 from .history import History
 from telemetry.models import Coach as DbCoach
 
@@ -16,6 +17,7 @@ class Coach:
             "msg": {},
             "turn": None,
         }
+        self.messages = {}
         self.debug = debug
 
     def set_filter(self, filter):
@@ -60,6 +62,36 @@ class Coach:
             else:
                 return None
         # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
+
+        now = time.time()
+        # build self.messages from fast laps segments
+        if not self.messages:
+            for segment in self.history.segments:
+                at = segment.brake - 50
+                msg = f"gear {segment.gear}"
+
+                # wrap around track length
+                if at <= 0:
+                    at = self.history.track.length - at
+                elif at >= self.history.track.length:
+                    at = at - self.history.track.length
+
+                self.messages[at] = {
+                    "msg": msg,
+                    "read": 0,
+                }
+            logging.debug(f"loaded messages: {self.messages}")
+
+        # loop over all messages and check the distance, if we have something to say
+        meters = telemetry["DistanceRoundTrack"]
+        for at in self.messages:
+            distance = abs(at - meters)
+            # only read every 20 seconds and if we are close
+            if distance < 2 and now - self.messages[at]["read"] > 20:
+                self.messages[at]["read"] = now
+                return self.messages[at]["msg"]
+
+        return None
 
         meters = telemetry["DistanceRoundTrack"]
         speed = telemetry["SpeedMs"]

@@ -15,11 +15,18 @@ class Command(BaseCommand):
     help = "Closes the specified poll for voting"
 
     def add_arguments(self, parser):
-        # add argument for list of lap ids as integers separated by commas
         parser.add_argument(
             "-s",
             "--session-ids",
             nargs="+",
+            type=int,
+            default=None,
+            help="list of sessions to replay",
+        )
+        parser.add_argument(
+            "-l",
+            "--lap-ids",
+            nargs="*",
             type=int,
             default=None,
             help="list of lap ids to analyze",
@@ -35,7 +42,7 @@ class Command(BaseCommand):
 
         for session_id in options["session_ids"]:
             logging.info(f"Replaying session {session_id}")
-            for record in i.session(session_id):
+            for record in i.session(session_id, lap_ids=options["lap_ids"]):
                 topic = record["topic"]
                 _time = record["_time"]
                 values = record.values.copy()
