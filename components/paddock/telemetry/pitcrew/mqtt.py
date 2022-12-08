@@ -19,7 +19,7 @@ B4MAD_RACING_CLIENT_PASSWORD = os.environ.get(
 
 
 class Mqtt:
-    def __init__(self, coach: Coach, driver: str):
+    def __init__(self, coach: Coach, driver: str, replay: bool = False):
         mqttc = mqtt.Client()
         mqttc.on_message = self.on_message
         mqttc.on_connect = self.on_connect
@@ -31,6 +31,7 @@ class Mqtt:
         self.topic = ""
         self.do_disconnect = False
         self.driver = driver
+        self.replay = replay
 
     # def __del__(self):
     #     # disconnect from broker
@@ -70,9 +71,14 @@ class Mqtt:
         #     mqttc.disconnect()
 
         if self.topic != msg.topic:
+            topic = msg.topic
+            if self.replay:
+                # remove replay/ prefix from session
+                topic = topic[7:]
+
             _LOGGER.debug("new session %s", msg.topic)
             self.topic = msg.topic
-            self.coach.set_filter(self.filter_from_topic(msg.topic))
+            self.coach.set_filter(self.filter_from_topic(topic))
 
         # print('.', end='')
         telemetry = json.loads(msg.payload.decode("utf-8"))["telemetry"]
@@ -103,6 +109,9 @@ class Mqtt:
     def run(self):
         self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)
         topic = f"crewchief/{self.driver}/#"
+        if self.replay:
+            topic = f"replay/{topic}"
+
         s = self.mqttc.subscribe(topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             _LOGGER.info(f"Subscribed to {topic}")
