@@ -10,12 +10,6 @@ runtime_environments:
       version: "35"
     python_version: "3.10"
     recommendation_type: latest
-  - name: pitcrew
-    operating_system:
-      name: ubi
-      version: "9"
-    python_version: "3.9"
-    recommendation_type: latest
   - name: notebooks
     operating_system:
       name: ubi
