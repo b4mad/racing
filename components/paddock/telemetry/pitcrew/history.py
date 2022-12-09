@@ -122,32 +122,27 @@ class History:
         """Load the segments from DB."""
         game = Game.objects.filter(name=self.filter["GameName"]).first()
         if not game:
-            self.error = f"Game {self.filter['GameName']} not found"
-            _LOGGER.error(self.error)
+            self.error = f"init_segments: game {self.filter['GameName']} not found"
             return False
 
         track = Track.objects.filter(game=game, name=self.filter["TrackCode"]).first()
-        if not game:
-            self.error = f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
-            _LOGGER.error(self.error)
+        if not track:
+            self.error = f"init_segments: track {self.filter['TrackCode']} not found"
+            self.error += f" game: {self.filter['GameName']}"
             return False
 
         car = Car.objects.filter(game=game, name=self.filter["CarModel"]).first()
         if not car:
-            self.error = (
-                f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
-                + f"- {self.filter['CarModel']}"
-            )
-            _LOGGER.error(self.error)
+            self.error = f"init_segments: car {self.filter['CarModel']} not found"
+            self.error += f" game: {self.filter['GameName']}"
+            self.error += f" track: {self.filter['TrackCode']}"
             return False
 
         fast_lap = FastLap.objects.filter(track=track, car=car, game=game).first()
         if not fast_lap:
-            self.error = (
-                f"no data found for {self.filter['GameName']} {self.filter['TrackCode']}"
-                + f"- {self.filter['CarModel']}"
-            )
-            _LOGGER.error(self.error)
+            self.error = f"no data found for game {self.filter['GameName']}"
+            self.error += f"on track {self.filter['TrackCode']}"
+            self.error += f"in car {self.filter['CarModel']}"
             return False
 
         _LOGGER.debug("loading segments for %s %s - %s", game, track, car)
@@ -160,10 +155,9 @@ class History:
 
         _LOGGER.debug("loaded %s segments", len(self.segments))
 
-        self.error = (
-            f"start coaching for {self.filter['GameName']} {self.filter['TrackCode']}"
-            + f"- {self.filter['CarModel']}"
-        )
+        self.error = f"start coaching for game {self.filter['GameName']}"
+        self.error += f"on track {self.filter['TrackCode']}"
+        self.error += f"in car {self.filter['CarModel']}"
         return True
 
     def gear(self, segment):
