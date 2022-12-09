@@ -34,6 +34,7 @@ class Crew:
         self.active_drivers = set()
         self.active_coaches = {}
         self.replay = False
+        self.clear_sessions_tick = django.utils.timezone.now()
 
     def on_message(self, mqttc, obj, msg):
         """Handle incoming messages, we are only interested in the telemetry.
@@ -54,6 +55,9 @@ class Crew:
             session = session[7:]
 
         now = django.utils.timezone.now()
+        if (now - self.clear_sessions_tick).seconds > 60:
+            self.clear_sessions_tick = now
+            self.clear_sessions(now)
 
         if session not in self.active_sessions:
             logging.info(f"New session: {session}")
@@ -97,6 +101,27 @@ class Crew:
             return
         self.analyze(payload, session, now)
 
+    def clear_sessions(self, now):
+        delete_sessions = []
+        for topic, session in self.sessions.items():
+            # delete session without updates for 10 minutes
+            if (now - session["end"]).seconds > 600:
+                delete_sessions.append(topic)
+
+            # get the length of the session['laps'] list and count down the index
+            # and delete the lap if it has the delete flag set
+            for i in range(len(session["laps"]) - 1, -1, -1):
+                lap = session["laps"][i]
+                if lap.get("delete", False):
+                    logging.debug(f"{topic}\n\t deleting lap {lap['number']}")
+                    del session["laps"][i]
+
+        # delete all sessions by iterating over delete_sessions
+        for topic in delete_sessions:
+            del self.sessions[topic]
+            self.active_sessions.remove(topic)
+            logging.debug(f"{topic}\n\t deleting inactive session")
+
     def analyze(self, telemetry, session_id, now):
         session = self.sessions.get(session_id)
         session["end"] = now
@@ -111,11 +136,6 @@ class Crew:
                 f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}"
             )
             return
-
-        # get the length of the session['laps'] list and count down the index
-        for i in range(len(session["laps"]) - 1, -1, -1):
-            if session["laps"][i].get("delete", False):
-                del session["laps"][i]
 
         threshold = speed * 0.5
         new_lap = False
@@ -247,7 +267,7 @@ class Crew:
                         continue
 
                 # iterate over laps with index
-                for i, lap in enumerate(session["laps"]):
+                for lap in session["laps"]:
                     if lap["finished"]:
                         # check if lap length is within 98% of the track length
                         track = session["track"]
