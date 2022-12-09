@@ -6,7 +6,7 @@ spec:
   tags:
   - from:
       kind: DockerImage
-      name: quay.io/b4mad/paddock:v0.1.32
+      name: quay.io/b4mad/paddock:v0.1.33
     importPolicy: {}
     name: latest
     referencePolicy:
