@@ -105,3 +105,8 @@ https://theoehrly.github.io/Fast-F1/
 ## Offline reinforcement learning
 * https://arxiv.org/abs/2005.01643
 * https://arxiv.org/pdf/2203.01387.pdf
+
+
+## Explaining a race track
+
+https://www.formula1-dictionary.net/corners.html

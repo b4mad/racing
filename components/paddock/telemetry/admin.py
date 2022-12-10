@@ -29,8 +29,22 @@ class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 
 class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
-    list_display = ["id", "length", "time", "session", "valid", "number"]
-    changelist_links = ["laps"]
+    list_display = [
+        "id",
+        "length",
+        "time",
+        "session",
+        "valid",
+        "number",
+        "get_driver",
+        "track",
+        "car",
+    ]
+
+    # https://stackoverflow.com/questions/163823/can-list-display-in-a-django-modeladmin-display-attributes-of-foreignkey-field
+    @admin.display(ordering="session__driver", description="Driver")
+    def get_driver(self, obj):
+        return obj.session.driver
 
 
 class DriverAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
