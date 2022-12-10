@@ -10,6 +10,7 @@ matplotlib = "*"
 numpy = "*"
 pandas = "*"
 seaborn = "*"
+nbconvert = {extras = ["webpdf"], version = "*"}
 
 [dev-packages]
 mypy = "*"
