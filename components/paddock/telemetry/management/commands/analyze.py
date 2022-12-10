@@ -48,6 +48,9 @@ class Command(BaseCommand):
             help="car name to analyze",
         )
         parser.add_argument("-i", "--import-csv", nargs="*", type=str, default=None)
+        parser.add_argument(
+            "-n", "--new", action="store_true", help="only analyze new coaches"
+        )
 
     def import_csv(self, options):
         for csv_file in options["import_csv"]:
@@ -143,8 +146,6 @@ class Command(BaseCommand):
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
             game = car.game
-            logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
-
             if game.name == "RaceRoom":
                 logging.info("RaceRoom not supported, because no SteeringAngle")
                 continue
@@ -156,6 +157,17 @@ class Command(BaseCommand):
             if car.name == "Unknown":
                 logging.info(f"Car {car.name} not supported, skipping")
                 continue
+
+            if options["new"]:
+                if FastLap.objects.filter(
+                    car=car, track=track, game=game, driver=None
+                ).exists():
+                    logging.info(
+                        f"Fastlap already exists for {game.name} / {track.name} / {car.name}"
+                    )
+                    continue
+
+            logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
 
             laps = Lap.objects.filter(
                 track=track, car=car, length__gt=track.length - 20, time__gt=20
@@ -180,7 +192,7 @@ class Command(BaseCommand):
 
     def save_fastlap(self, track_info, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(
-            car=car, track=track, game=game
+            car=car, track=track, game=game, driver=None
         )
         fast_lap.fast_lap_segments.all().delete()
         i = 1
