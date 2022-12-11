@@ -110,3 +110,7 @@ https://theoehrly.github.io/Fast-F1/
 ## Explaining a race track
 
 https://www.formula1-dictionary.net/corners.html
+
+## Extracing features
+
+[Information about iRacing tracks](https://github.com/SIMRacingApps/SIMRacingApps/issues/242)

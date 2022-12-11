@@ -51,6 +51,14 @@ class Command(BaseCommand):
         parser.add_argument(
             "-n", "--new", action="store_true", help="only analyze new coaches"
         )
+        parser.add_argument(
+            "-s",
+            "--save-csv",
+            nargs="?",
+            type=str,
+            default=None,
+            help="save to csv",
+        )
 
     def import_csv(self, options):
         for csv_file in options["import_csv"]:
@@ -105,6 +113,20 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **options):
+        if options["save_csv"]:
+            csv_file = open(options["save_csv"], "w")
+            # open a file for appending
+            csv_writer = csv.DictWriter(
+                csv_file,
+                fieldnames=[
+                    "session",
+                    "lap",
+                    "track",
+                    "game",
+                ],
+            )
+            csv_writer.writeheader()
+
         if options["import_csv"]:
             self.import_csv(options["import_csv"])
 
@@ -146,17 +168,17 @@ class Command(BaseCommand):
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
             game = car.game
-            if game.name == "RaceRoom":
-                logging.info("RaceRoom not supported, because no SteeringAngle")
-                continue
-            if game.name == "Assetto Corsa Competizione":
-                logging.info(
-                    "Assetto Corsa Competizione not supported, because no SteeringAngle"
-                )
-                continue
-            if car.name == "Unknown":
-                logging.info(f"Car {car.name} not supported, skipping")
-                continue
+            # if game.name == "RaceRoom":
+            #     logging.info("RaceRoom not supported, because no SteeringAngle")
+            #     continue
+            # if game.name == "Assetto Corsa Competizione":
+            #     logging.info(
+            #         "Assetto Corsa Competizione not supported, because no SteeringAngle"
+            #     )
+            #     continue
+            # if car.name == "Unknown":
+            #     logging.info(f"Car {car.name} not supported, skipping")
+            #     continue
 
             if options["new"]:
                 if FastLap.objects.filter(
@@ -185,10 +207,23 @@ class Command(BaseCommand):
                         # print(f"{lap.time} is <= {threshold}")
                         fast_laps.append(lap)
 
-                fl = FastLapAnalyzer(fast_laps)
-                track_info = fl.analyze()
-                if track_info:
-                    self.save_fastlap(track_info, car=car, track=track, game=game)
+                if options["save_csv"]:
+                    for lap in fast_laps:
+                        row = {
+                            "session": lap.session.session_id,
+                            "lap": lap.number,
+                            "track": track.name,
+                            "game": game.name,
+                        }
+                        csv_writer.writerow(row)
+                else:
+                    fl = FastLapAnalyzer(fast_laps)
+                    track_info = fl.analyze()
+                    if track_info:
+                        self.save_fastlap(track_info, car=car, track=track, game=game)
+
+        if options["save_csv"]:
+            csv_file.close()
 
     def save_fastlap(self, track_info, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(
