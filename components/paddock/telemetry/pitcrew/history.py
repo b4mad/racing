@@ -52,10 +52,10 @@ class History:
 
     def init(self):
         try:
-            self.driver = Driver.objects.get(name=self.filter["Driver"])
-            self.car = Car.objects.get(name=self.filter["CarModel"])
             self.game = Game.objects.get(name=self.filter["GameName"])
-            self.track = Track.objects.get(name=self.filter["TrackCode"])
+            self.driver = Driver.objects.get(name=self.filter["Driver"])
+            self.car = self.game.cars.get(name=self.filter["CarModel"])
+            self.track = self.game.tracks.get(name=self.filter["TrackCode"])
         except Exception as e:
             _LOGGER.error(e)
             return False

@@ -5,7 +5,7 @@ import threading
 import logging
 import time
 import paho.mqtt.client as mqtt
-from telemetry.models import Game, Driver, Car, Track, SessionType, Coach
+from telemetry.models import Game, Driver, SessionType, Coach
 import json
 import django.utils.timezone
 import locked_dict.locked_dict as locked_dict
@@ -249,10 +249,8 @@ class Crew:
                         rsession_type, created = SessionType.objects.get_or_create(
                             type=session_type
                         )
-                        rcar, created = Car.objects.get_or_create(name=car, game=rgame)
-                        rtrack, created = Track.objects.get_or_create(
-                            name=track, game=rgame
-                        )
+                        rcar, created = rgame.cars.get_or_create(name=car)
+                        rtrack, created = rgame.tracks.get_or_create(name=track)
                         session_record, created = rdriver.sessions.get_or_create(
                             session_id=session_number,
                             session_type=rsession_type,
