@@ -266,14 +266,13 @@ class Crew:
 
                 # iterate over laps with index
                 for lap in session["laps"]:
-                    if lap["finished"]:
+                    if lap["finished"] and not lap.get("delete", False):
                         # check if lap length is within 98% of the track length
                         track = session["track"]
                         track_length = track.length
+                        lap["delete"] = True  # mark lap for deletion
 
-                        if lap["length"] > track_length * 0.98 and not lap.get(
-                            "save_error", False
-                        ):
+                        if lap["length"] > track_length * 0.98:
                             try:
                                 lap_record = session_record.laps.create(
                                     number=lap["number"],
@@ -292,9 +291,6 @@ class Crew:
                                 session_record.save_dirty_fields()
                             except Exception as e:
                                 logging.error(f"Error saving lap {lap['number']}: {e}")
-                                lap[
-                                    "save_error"
-                                ] = True  # don't try to save this lap again
                         else:
                             lstring = (
                                 f"{lap['number']}: {lap['time']}s {lap['length']}m"
@@ -302,7 +298,6 @@ class Crew:
                             _LOGGER.info(
                                 f"Discard lap {lstring} for session {session_id} - track length {track_length}m"
                             )
-                        lap["delete"] = True
 
                         lap_length = int(lap["length"])
                         if lap_length > track.length:
