@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 21,
-  "iteration": 1664793044905,
+  "iteration": 1670846321650,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -590,7 +590,9 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "_value": true
+            },
             "indexByName": {
               "CarModel": 6,
               "GameName": 4,
