@@ -32,6 +32,8 @@ auth:
   createUserToken: false
 
 influxdb:
+  updateStrategy:
+    type: Recreate
   podSecurityContext:
     enabled: false
   containerSecurityContext:
@@ -50,7 +52,7 @@ persistence:
   storageClass: ""
   accessModes:
     - ReadWriteOnce
-  size: 24Gi
+  size: 768Gi
   annotations: {}
 
 serviceAccount:
@@ -72,7 +74,7 @@ metrics:
     enabled: true
 
 backup:
-  enabled: true
+  enabled: false
   directory: "/backups"
   retentionDays: 10
   cronjob:
