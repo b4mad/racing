@@ -50,7 +50,7 @@ persistence:
   storageClass: ""
   accessModes:
     - ReadWriteOnce
-  size: 8Gi
+  size: 24Gi
   annotations: {}
 
 serviceAccount:
