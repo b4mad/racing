@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,12 +24,15 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 24,
-  "iteration": 1664787503413,
+  "id": 8,
   "links": [],
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P64B7521F1D8D151A"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -71,7 +77,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "9.1.1",
       "targets": [
         {
           "datasource": {
@@ -86,6 +92,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P64B7521F1D8D151A"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -93,7 +103,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -129,14 +140,14 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "9.1.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "from(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> group(columns: [\"GameName\"])\n  |> distinct(column: \"GameName\")\n  |> filter(fn: (r) => contains(value: r.GameName, set: [${GameName:doublequote}]) )\n  |> keep(columns: [\"_value\"])\n",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"GameName\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
           "refId": "A"
         }
       ],
@@ -144,6 +155,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P64B7521F1D8D151A"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -151,7 +166,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -187,14 +203,14 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "9.1.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "from(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> group(columns: [\"GameName\", \"TrackCode\"])\n  |> distinct(column: \"TrackCode\")\n  |> filter(fn: (r) => contains(value: r.GameName, set: [${GameName:doublequote}]) )\n  |> keep(columns: [\"_value\"])\n",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"TrackCode\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
           "refId": "A"
         }
       ],
@@ -202,6 +218,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P64B7521F1D8D151A"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -209,7 +229,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -245,14 +266,14 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "9.1.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "from(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> group(columns: [\"GameName\", \"CarModel\"])\n  |> distinct(column: \"CarModel\")\n  |> filter(fn: (r) => contains(value: r.GameName, set: [${GameName:doublequote}]) )\n  |> keep(columns: [\"_value\"])\n",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"CarModel\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)\n",
           "refId": "A"
         }
       ],
@@ -260,6 +281,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P64B7521F1D8D151A"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -269,7 +294,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -422,14 +448,14 @@
           }
         ]
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "9.1.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P64B7521F1D8D151A"
           },
-          "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\nfrom(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> max()\n  |> group()\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> sort(columns: [\"End\"], desc: true)\n",
+          "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\nfrom(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> last()\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n",
           "refId": "A"
         }
       ],
@@ -438,7 +464,9 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "_value": true
+            },
             "indexByName": {
               "CarModel": 6,
               "GameName": 4,
@@ -461,16 +489,20 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 35,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P64B7521F1D8D151A"
         },
         "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
         "hide": 0,
@@ -488,9 +520,13 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "Jim",
-          "value": "Jim"
+          "selected": false,
+          "text": "durandom",
+          "value": "durandom"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P64B7521F1D8D151A"
         },
         "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
         "hide": 0,
@@ -508,9 +544,13 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P64B7521F1D8D151A"
         },
         "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
         "hide": 0,

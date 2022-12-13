@@ -3,7 +3,7 @@ kind: Grafana
 metadata:
   name: grafana
 spec:
-  baseImage: quay.io/operate-first/grafana:8.4.3
+  baseImage: quay.io/operate-first/grafana:9.1.1
   configMaps:
     - grafana-dashboards
   config:
@@ -34,6 +34,9 @@ spec:
     class: ocs-external-storagecluster-ceph-rbd
   deployment:
     skipCreateAdminAccount: true
+    # otherwise it's rolling update, which doesnt work with RWO storage, cant be attached multiple times
+    strategy:
+      type: Recreate
     envFrom:
       - secretRef:
           name: grafana-credentials
