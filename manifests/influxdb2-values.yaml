@@ -10,7 +10,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/influxdb
-  tag: 2.4.0-debian-11-r21
+  tag: 2.5.1-debian-11-r7
   pullPolicy: IfNotPresent
   pullSecrets: []
   debug: false
@@ -32,6 +32,8 @@ auth:
   createUserToken: false
 
 influxdb:
+  updateStrategy:
+    type: Recreate
   podSecurityContext:
     enabled: false
   containerSecurityContext:
@@ -50,7 +52,7 @@ persistence:
   storageClass: ""
   accessModes:
     - ReadWriteOnce
-  size: 8Gi
+  size: 768Gi
   annotations: {}
 
 serviceAccount:
@@ -72,7 +74,7 @@ metrics:
     enabled: true
 
 backup:
-  enabled: true
+  enabled: false
   directory: "/backups"
   retentionDays: 10
   cronjob:
