@@ -168,17 +168,17 @@ class Command(BaseCommand):
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
             game = car.game
-            # if game.name == "RaceRoom":
-            #     logging.info("RaceRoom not supported, because no SteeringAngle")
-            #     continue
-            # if game.name == "Assetto Corsa Competizione":
-            #     logging.info(
-            #         "Assetto Corsa Competizione not supported, because no SteeringAngle"
-            #     )
-            #     continue
-            # if car.name == "Unknown":
-            #     logging.info(f"Car {car.name} not supported, skipping")
-            #     continue
+            if game.name == "RaceRoom":
+                logging.info("RaceRoom not supported, because no SteeringAngle")
+                continue
+            if game.name == "Assetto Corsa Competizione":
+                logging.info(
+                    "Assetto Corsa Competizione not supported, because no SteeringAngle"
+                )
+                continue
+            if car.name == "Unknown":
+                logging.info(f"Car {car.name} not supported, skipping")
+                continue
 
             if options["new"]:
                 if FastLap.objects.filter(

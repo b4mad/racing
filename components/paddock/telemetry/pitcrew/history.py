@@ -5,11 +5,9 @@ import os
 import pickle
 import time
 import logging
-from telemetry.models import Game, Car, Track, FastLap, FastLapSegment, Driver
+from telemetry.models import Game, FastLap, FastLapSegment, Driver
 
 from influxdb_client import InfluxDBClient
-
-_LOGGER = logging.getLogger(__name__)
 
 B4MAD_RACING_INFLUX_ORG = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
 B4MAD_RACING_INFLUX_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN", "")
@@ -40,11 +38,11 @@ class History:
 
     def run(self):
         while self.do_run:
-            time.sleep(1)
             if self.do_init:
                 self.ready = self.init()
                 if self.ready:
                     self.do_init = False
+            time.sleep(60)
 
     def set_filter(self, filter):
         self.filter = filter
@@ -52,12 +50,15 @@ class History:
 
     def init(self):
         try:
-            self.game = Game.objects.get(name=self.filter["GameName"])
             self.driver = Driver.objects.get(name=self.filter["Driver"])
+            self.game = Game.objects.get(name=self.filter["GameName"])
             self.car = self.game.cars.get(name=self.filter["CarModel"])
             self.track = self.game.tracks.get(name=self.filter["TrackCode"])
         except Exception as e:
-            _LOGGER.error(e)
+            error = f"Error init {self.filter['Driver']} / {self.filter['GameName']}"
+            error += f" / {self.filter['CarModel']}/  {self.filter['TrackCode']} - {e}"
+            self.error = error
+            logging.error(error)
             return False
 
         success = self.init_segments()
@@ -79,7 +80,7 @@ class History:
         )
         # check if fast_lap has any fast_lap_segments
         if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
-            _LOGGER.error("no history found for %s", fast_lap)
+            logging.error("no history found for %s", fast_lap)
             # initialize with segments from fast_lap
             for segment in self.segments:
                 FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)
@@ -92,7 +93,7 @@ class History:
             pickle.dump(self.cache, outfile)
 
     def read_cache_from_file(self):
-        _LOGGER.debug("reading historic data from file")
+        logging.debug("reading historic data from file")
         with open("cache.pickle", "rb") as infile:
             self.cache = pickle.load(infile)
 
@@ -120,32 +121,18 @@ class History:
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
-        game = Game.objects.filter(name=self.filter["GameName"]).first()
-        if not game:
-            self.error = f"init_segments: game {self.filter['GameName']} not found"
-            return False
-
-        track = Track.objects.filter(game=game, name=self.filter["TrackCode"]).first()
-        if not track:
-            self.error = f"init_segments: track {self.filter['TrackCode']} not found"
-            self.error += f" game: {self.filter['GameName']}"
-            return False
-
-        car = Car.objects.filter(game=game, name=self.filter["CarModel"]).first()
-        if not car:
-            self.error = f"init_segments: car {self.filter['CarModel']} not found"
-            self.error += f" game: {self.filter['GameName']}"
-            self.error += f" track: {self.filter['TrackCode']}"
-            return False
-
-        fast_lap = FastLap.objects.filter(track=track, car=car, game=game).first()
+        fast_lap = FastLap.objects.filter(
+            track=self.track, car=self.car, game=self.game
+        ).first()
         if not fast_lap:
             self.error = f"no data found for game {self.filter['GameName']}"
             self.error += f"on track {self.filter['TrackCode']}"
             self.error += f"in car {self.filter['CarModel']}"
             return False
 
-        _LOGGER.debug("loading segments for %s %s - %s", game, track, car)
+        logging.debug(
+            "loading segments for %s %s - %s", self.game, self.track, self.car
+        )
 
         self.segments = []
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by(
@@ -153,7 +140,7 @@ class History:
         ):
             self.segments.append(segment)
 
-        _LOGGER.debug("loaded %s segments", len(self.segments))
+        logging.debug("loaded %s segments", len(self.segments))
 
         self.error = f"start coaching for game {self.filter['GameName']}"
         self.error += f"on track {self.filter['TrackCode']}"
@@ -192,8 +179,8 @@ class History:
             **vars
         )
 
-        # _LOGGER.debug("query:\n %s", q)
-        _LOGGER.debug("querying gear for %s - %s", start, stop)
+        # logging.debug("query:\n %s", q)
+        logging.debug("querying gear for %s - %s", start, stop)
 
         # tables = self.query(q)
         query_api = self.client.query_api()
@@ -233,8 +220,8 @@ class History:
             **vars
         )
 
-        # _LOGGER.debug("query:\n %s", q)
-        _LOGGER.debug("querying brake_start for %s - %s", start, stop)
+        # logging.debug("query:\n %s", q)
+        logging.debug("querying brake_start for %s - %s", start, stop)
 
         query_api = self.client.query_api()
 
@@ -264,11 +251,11 @@ if __name__ == "__main__":
     if threaded:
 
         def history_thread():
-            _LOGGER.info("History thread starting")
+            logging.info("History thread starting")
             history.run()
 
         x = threading.Thread(target=history_thread)
         x.start()
     else:
         history.init()
-        _LOGGER.info(history.gear_q(100, 250))
+        logging.info(history.gear_q(100, 250))

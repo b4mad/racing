@@ -14,8 +14,6 @@ from .coach import Coach as PitCrewCoach
 from .history import History
 from .mqtt import Mqtt
 
-_LOGGER = logging.getLogger("pitcrew")
-
 
 class Crew:
     def __init__(self):
@@ -36,6 +34,8 @@ class Crew:
         self.replay = False
         self.clear_sessions_tick = django.utils.timezone.now()
 
+        self.session_save_interval = 10
+
     def on_message(self, mqttc, obj, msg):
         """Handle incoming messages, we are only interested in the telemetry.
 
@@ -45,7 +45,7 @@ class Crew:
             msg (_type_): the message received
         """
 
-        # _LOGGER.debug(
+        # logging.debug(
         #     "%s: qos='%s',payload='%s'", msg.topic, str(msg.qos), str(msg.payload)
         # )
 
@@ -55,6 +55,7 @@ class Crew:
             session = session[7:]
 
         now = django.utils.timezone.now()
+        # clear sessions has to be done in this thread, because we are manipulating the sessions dict
         if (now - self.clear_sessions_tick).seconds > 60:
             self.clear_sessions_tick = now
             self.clear_sessions(now)
@@ -152,7 +153,7 @@ class Crew:
             previous_length = lap["length"]
             # start a new lap if cross the finish line
             if length < threshold and length < lap["length"]:
-                _LOGGER.info(
+                logging.info(
                     f"{session_id}\n\t finishing lap at length {previous_length}"
                     + f" and time {lap['time']}"
                 )
@@ -172,7 +173,7 @@ class Crew:
                 "inactive_log_time": now,
             }
             session["laps"].append(lap)
-            _LOGGER.info(
+            logging.info(
                 f"{session_id}\n\t new lap length {length} < threshold {threshold}"
                 + f" and < previous lap length {previous_length}, active: {lap['active']}, time: {lap_time}"
             )
@@ -185,7 +186,7 @@ class Crew:
                 # mark not active if we jump back more than 50 meters
                 distance_since_previous_tick = length - lap["length"]
                 if distance_since_previous_tick < -50:
-                    _LOGGER.info(
+                    logging.info(
                         f"{session_id}\n\t lap not active, jump {distance_since_previous_tick}m\n"
                         + f"\t\t lap length {lap['length']} jumped to length {length}"
                     )
@@ -196,7 +197,7 @@ class Crew:
 
                 previous_lap_time = lap["time"]
                 if lap_time < previous_lap_time:
-                    _LOGGER.info(
+                    logging.info(
                         f"{session_id}\n\t stop measuring time at {lap_time}s for {previous_lap_time}s / {length}m"
                     )
                     lap["active"] = False
@@ -209,7 +210,7 @@ class Crew:
             ]:
                 # start measuring time if we're past the threshold and the time started
                 #  some games have a delay on CurrentLapTime
-                _LOGGER.info(
+                logging.info(
                     f"{session_id}\n\t start measuring time at lap.time {lap['time']} / time {lap_time}"
                 )
                 lap["active"] = True
@@ -219,13 +220,13 @@ class Crew:
             else:
                 if (now - lap["inactive_log_time"]).seconds > 120:
                     lap["inactive_log_time"] = now
-                    _LOGGER.info(
+                    logging.info(
                         f"{session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}"
                     )
 
     def save_sessions(self):
         while True:
-            time.sleep(10)
+            time.sleep(self.session_save_interval)
             # FIXME: purge old sessions
             session_ids = self.sessions.keys()
             for session_id in session_ids:
@@ -284,7 +285,7 @@ class Crew:
                                     valid=True,
                                     time=lap["time"],
                                 )
-                                _LOGGER.info(
+                                logging.info(
                                     f"Saving lap {lap_record} for session {session_id}"
                                 )
                                 session_record.end = session["end"]
@@ -295,7 +296,7 @@ class Crew:
                             lstring = (
                                 f"{lap['number']}: {lap['time']}s {lap['length']}m"
                             )
-                            _LOGGER.info(
+                            logging.info(
                                 f"Discard lap {lstring} for session {session_id} - track length {track_length}m"
                             )
 
@@ -303,7 +304,7 @@ class Crew:
                         if lap_length > track.length:
                             track.refresh_from_db()
                             if lap_length > track.length:
-                                _LOGGER.info(
+                                logging.info(
                                     f"updating {track.name} length from {track.length} to {lap_length}"
                                 )
                                 track.length = lap_length
@@ -311,18 +312,19 @@ class Crew:
 
     def watch_coaches(self):
         while True:
-            time.sleep(11)
-            # _LOGGER.info("checking coaches")
+            # sleep longer than save_sessions, to make sure all DB objects are initialized
+            time.sleep((self.session_save_interval * 2) + 1)
+            # logging.info("checking coaches")
             coaches = Coach.objects.filter(driver__in=self.active_drivers)
             for coach in coaches:
-                # _LOGGER.info(f"checking coach for {coach.driver}")
+                # logging.info(f"checking coach for {coach.driver}")
                 if coach.enabled:
                     if coach.driver.name not in self.active_coaches.keys():
-                        _LOGGER.debug(f"activating coach for {coach.driver}")
+                        logging.debug(f"activating coach for {coach.driver}")
                         self.start_coach(coach.driver.name, coach)
                 else:
                     if coach.driver.name in self.active_coaches.keys():
-                        _LOGGER.debug(f"deactivating coach for {coach.driver}")
+                        logging.debug(f"deactivating coach for {coach.driver}")
                         self.stop_coach(coach.driver)
 
     def stop_coach(self, driver):
@@ -336,16 +338,16 @@ class Crew:
         mqtt = Mqtt(coach, driver, replay=replay)
 
         def history_thread():
-            _LOGGER.info(f"History thread starting for {driver}")
+            logging.info(f"History thread starting for {driver}")
             history.run()
-            _LOGGER.info(f"History thread stopped for {driver}")
+            logging.info(f"History thread stopped for {driver}")
 
         h = threading.Thread(target=history_thread)
 
         def mqtt_thread():
-            _LOGGER.info(f"MQTT thread starting for {driver}")
+            logging.info(f"MQTT thread starting for {driver}")
             mqtt.run()
-            _LOGGER.info(f"MQTT thread stopped for {driver}")
+            logging.info(f"MQTT thread stopped for {driver}")
 
         c = threading.Thread(target=mqtt_thread)
 
@@ -357,13 +359,13 @@ class Crew:
         self.active_coaches[driver] = [history, mqtt]
 
     def on_connect(self, mqttc, obj, flags, rc):
-        _LOGGER.debug("rc: %s", str(rc))
+        logging.debug("rc: %s", str(rc))
 
     def on_publish(self, mqttc, obj, mid):
-        _LOGGER.debug("mid: %s", str(mid))
+        logging.debug("mid: %s", str(mid))
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
-        _LOGGER.debug(
+        logging.debug(
             "subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos)
         )
 
@@ -381,9 +383,9 @@ class Crew:
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             threading.Thread(target=self.watch_coaches).start()
             threading.Thread(target=self.save_sessions).start()
-            _LOGGER.info(f"Subscribed to {topic}")
+            logging.info(f"Subscribed to {topic}")
 
             self.mqttc.loop_forever()
         else:
-            _LOGGER.error(f"Failed to subscribe to {topic}")
+            logging.error(f"Failed to subscribe to {topic}")
             exit(1)
