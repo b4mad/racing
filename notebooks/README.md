@@ -114,3 +114,11 @@ https://www.formula1-dictionary.net/corners.html
 ## Extracing features
 
 [Information about iRacing tracks](https://github.com/SIMRacingApps/SIMRacingApps/issues/242)
+
+## track processing
+
+* https://github.com/TUMFTM/racetrack-database
+* https://github.com/TUMFTM/global_racetrajectory_optimization
+
+# plotly rendering
+* https://github.com/plotly/plotly.py/issues/931#issuecomment-819502866

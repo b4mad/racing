@@ -1,681 +1,622 @@
-session,lap,track,game
-1670215352,1,simtraxx_zeran:rally1,Assetto Corsa (64 bit)
-1670193938,2,Portimao Circuit,RaceRoom
-1670193938,1,Portimao Circuit,RaceRoom
-1670193938,3,Portimao Circuit,RaceRoom
-1670193938,1,Portimao Circuit,RaceRoom
-1670193938,1,Portimao Circuit,RaceRoom
-1670193938,1,Portimao Circuit,RaceRoom
-1670222575,5,pocono 2016,iRacing
-1670222575,3,pocono 2016,iRacing
-1670222575,11,pocono 2016,iRacing
-1670222575,8,pocono 2016,iRacing
-1670222575,4,pocono 2016,iRacing
-1670222575,9,pocono 2016,iRacing
-1670222575,7,pocono 2016,iRacing
-1670222575,2,pocono 2016,iRacing
-1670222575,1,pocono 2016,iRacing
-1670222575,10,pocono 2016,iRacing
-1670305708,9,martinsville,iRacing
-1670305708,6,martinsville,iRacing
-1670305708,3,martinsville,iRacing
-1670305708,10,martinsville,iRacing
-1670305708,7,martinsville,iRacing
-1670305708,1,martinsville,iRacing
-1670305708,12,martinsville,iRacing
-1670305708,8,martinsville,iRacing
-1670305708,2,martinsville,iRacing
-1670308279,14,vegas oval,iRacing
-1670308279,15,vegas oval,iRacing
-1670308279,1,vegas oval,iRacing
-1670308279,2,vegas oval,iRacing
-1670308279,13,vegas oval,iRacing
-1670308279,4,vegas oval,iRacing
-1670308279,3,vegas oval,iRacing
-1670308279,11,vegas oval,iRacing
-1670308279,10,vegas oval,iRacing
-1670308279,9,vegas oval,iRacing
-1670324692,6,eldora,iRacing
-1670324692,4,eldora,iRacing
-1670210068,6,Imola:track config,Assetto Corsa Competizione
-1670610257,6,monza:,Assetto Corsa (64 bit)
-1670610257,1,monza:,Assetto Corsa (64 bit)
-1670238596,1,southernnational,iRacing
-1670242083,34,southernnational,iRacing
-1670238097,1,southernnational,iRacing
-1670237631,16,southernnational,iRacing
-1670609176,1,okayama short,iRacing
-1670609176,7,okayama short,iRacing
-1670315039,24,spa combined,iRacing
-1670607186,2,mount_panorama:track config,Assetto Corsa Competizione
-1670532200,7,oran gp,iRacing
-1670532200,4,oran gp,iRacing
-1670532200,11,oran gp,iRacing
-1670532200,12,oran gp,iRacing
-1670532200,6,oran gp,iRacing
-1670532200,14,oran gp,iRacing
-1670532200,13,oran gp,iRacing
-1670532200,3,oran gp,iRacing
-1670532200,5,oran gp,iRacing
-1670532200,8,oran gp,iRacing
-1670525280,3,Spa:track config,Assetto Corsa Competizione
-1670182003,5,Spa:track config,Assetto Corsa Competizione
-1670177339,9,Spa:track config,Assetto Corsa Competizione
-1670177339,8,Spa:track config,Assetto Corsa Competizione
-1670182003,3,Spa:track config,Assetto Corsa Competizione
-1670177339,6,Spa:track config,Assetto Corsa Competizione
-1670182003,2,Spa:track config,Assetto Corsa Competizione
-1670177339,5,Spa:track config,Assetto Corsa Competizione
-1670183835,3,Spa:track config,Assetto Corsa Competizione
-1670183835,6,Spa:track config,Assetto Corsa Competizione
-1670355483,1,SpaFrancorchamps:Spa_Francorchamps_1970,Automobilista 2
-1670355748,1,SpaFrancorchamps:Spa_Francorchamps_1970,Automobilista 2
-1670226294,3,lagunaseca,iRacing
-1670226294,2,lagunaseca,iRacing
-1670226294,1,lagunaseca,iRacing
-1670334313,3,lilski_watkins_glen:boot,Assetto Corsa (64 bit)
-1670334313,2,lilski_watkins_glen:boot,Assetto Corsa (64 bit)
-1670334313,1,lilski_watkins_glen:boot,Assetto Corsa (64 bit)
-1670232306,1,Nordschleife,RaceRoom
-1670232306,2,Nordschleife,RaceRoom
-1670232306,1,Nordschleife,RaceRoom
-1670287161,2,spielberg gp,iRacing
-1670287161,5,spielberg gp,iRacing
-1670287161,3,spielberg gp,iRacing
-1670287161,7,spielberg gp,iRacing
-1670287161,6,spielberg gp,iRacing
-1670287161,4,spielberg gp,iRacing
-1670584820,3,Nurburgring_2020:Nurb_GP_2020_Veedol,Automobilista 2
-1670584820,2,Nurburgring_2020:Nurb_GP_2020_Veedol,Automobilista 2
-1670355905,41,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,24,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,23,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,73,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,42,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,40,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,35,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,20,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,70,Fontana:Fontana_OVAL,Automobilista 2
-1670355905,37,Fontana:Fontana_OVAL,Automobilista 2
-1670310761,20,daytona 2011 oval,iRacing
-1670310761,12,daytona 2011 oval,iRacing
-1670310761,11,daytona 2011 oval,iRacing
-1670309528,7,daytona 2011 oval,iRacing
-1670310761,19,daytona 2011 oval,iRacing
-1670309528,5,daytona 2011 oval,iRacing
-1670309528,6,daytona 2011 oval,iRacing
-1670309528,3,daytona 2011 oval,iRacing
-1670309528,2,daytona 2011 oval,iRacing
-1670309528,4,daytona 2011 oval,iRacing
-1670249050,3,monza:,Assetto Corsa (64 bit)
-1670249050,2,monza:,Assetto Corsa (64 bit)
-1670249050,1,monza:,Assetto Corsa (64 bit)
-1670526851,4,Interlagos,Race Room
-1670526851,2,Interlagos,Race Room
-1670526851,5,Interlagos,Race Room
-1670525262,7,Interlagos,Race Room
-1670525262,4,Interlagos,Race Room
-1670525262,10,Interlagos,Race Room
-1670525262,6,Interlagos,Race Room
-1670526851,7,Interlagos,Race Room
-1670525262,5,Interlagos,Race Room
-1670526851,3,Interlagos,Race Room
-1670332852,28,Hungaroring:track config,Assetto Corsa Competizione
-1670420174,3,Hungaroring:track config,Assetto Corsa Competizione
-1670332852,13,Hungaroring:track config,Assetto Corsa Competizione
-1670332852,26,Hungaroring:track config,Assetto Corsa Competizione
-1670420174,12,Hungaroring:track config,Assetto Corsa Competizione
-1670332852,36,Hungaroring:track config,Assetto Corsa Competizione
-1670332852,16,Hungaroring:track config,Assetto Corsa Competizione
-1670420174,21,Hungaroring:track config,Assetto Corsa Competizione
-1670256361,3,Hungaroring:track config,Assetto Corsa Competizione
-1670420174,14,Hungaroring:track config,Assetto Corsa Competizione
-1670318037,1,Motorsport Arena Oschersleben,RaceRoom
-1670270711,3,roadamerica full,iRacing
-1670266040,5,roadamerica full,iRacing
-1670270711,2,roadamerica full,iRacing
-1670266040,4,roadamerica full,iRacing
-1670272422,1,roadamerica full,iRacing
-1670273262,2,roadamerica full,iRacing
-1670266040,3,roadamerica full,iRacing
-1670266040,2,roadamerica full,iRacing
-1670273262,4,roadamerica full,iRacing
-1670273262,9,roadamerica full,iRacing
-1670308697,1,oulton island,iRacing
-1670611605,1,spa:,Assetto Corsa (64 bit)
-1670249576,1,lagunaseca,iRacing
-1670586533,1,Silverstone Circuit,RaceRoom
-1670586533,1,Silverstone Circuit,RaceRoom
-1670586533,1,Silverstone Circuit,RaceRoom
-1670589009,1,Silverstone Circuit,RaceRoom
-1670589009,1,Silverstone Circuit,RaceRoom
-1670586533,1,Silverstone Circuit,RaceRoom
-1670586533,1,Silverstone Circuit,RaceRoom
-1670586533,1,Silverstone Circuit,RaceRoom
-1670365959,2,Silverstone Circuit,RaceRoom
-1670365959,1,Silverstone Circuit,RaceRoom
-1670238139,1,spa up,iRacing
-1670238752,15,spa up,iRacing
-1670238139,2,spa up,iRacing
-1670238752,16,spa up,iRacing
-1670238752,18,spa up,iRacing
-1670238752,17,spa up,iRacing
-1670238752,19,spa up,iRacing
-1670238752,9,spa up,iRacing
-1670238752,20,spa up,iRacing
-1670238752,3,spa up,iRacing
-1670195814,4,summit summit raceway,iRacing
-1670616676,5,Red Bull Ring Spielberg,RaceRoom
-1670350343,7,Red Bull Ring Spielberg,RaceRoom
-1670268213,5,Red Bull Ring Spielberg,RaceRoom
-1670350343,9,Red Bull Ring Spielberg,RaceRoom
-1670616676,4,Red Bull Ring Spielberg,RaceRoom
-1670350343,7,Red Bull Ring Spielberg,RaceRoom
-1670349742,3,Red Bull Ring Spielberg,RaceRoom
-1670268213,3,Red Bull Ring Spielberg,RaceRoom
-1670616126,4,Red Bull Ring Spielberg,RaceRoom
-1670615165,7,Red Bull Ring Spielberg,RaceRoom
-1670319127,2,Circuit Zandvoort 2019,RaceRoom
-1670319127,1,Circuit Zandvoort 2019,RaceRoom
-1670228763,52,brands_hatch:track config,Assetto Corsa Competizione
-1670228763,45,brands_hatch:track config,Assetto Corsa Competizione
-1670228763,47,brands_hatch:track config,Assetto Corsa Competizione
-1670228763,48,brands_hatch:track config,Assetto Corsa Competizione
-1670228763,51,brands_hatch:track config,Assetto Corsa Competizione
-1670228763,43,brands_hatch:track config,Assetto Corsa Competizione
-1670307141,11,daytona 2011 oval,iRacing
-1670307141,8,daytona 2011 oval,iRacing
-1670307141,2,daytona 2011 oval,iRacing
-1670307141,12,daytona 2011 oval,iRacing
-1670305048,3,daytona 2011 oval,iRacing
-1670306607,2,daytona 2011 oval,iRacing
-1670306607,1,daytona 2011 oval,iRacing
-1670307141,7,daytona 2011 oval,iRacing
-1670305048,1,daytona 2011 oval,iRacing
-1670309789,6,akr_newcastle_2019:,Assetto Corsa (64 bit)
-1670309789,4,akr_newcastle_2019:,Assetto Corsa (64 bit)
-1670309789,4,akr_newcastle_2019:,Assetto Corsa (64 bit)
-1670309789,2,akr_newcastle_2019:,Assetto Corsa (64 bit)
-1670309789,1,akr_newcastle_2019:,Assetto Corsa (64 bit)
-1670176288,5,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670176288,4,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670176288,1,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670176288,3,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670176288,2,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670316336,4,nurburgring nordschleife,iRacing
-1670316336,1,nurburgring nordschleife,iRacing
-1670316336,3,nurburgring nordschleife,iRacing
-1670316336,2,nurburgring nordschleife,iRacing
-1670176465,5,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,9,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,31,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670174701,9,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,14,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,36,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670174701,5,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,25,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670174701,4,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670176465,34,ks_nurburgring:layout_gp_a_osrw,Assetto Corsa (64 bit)
-1670220597,31,dover,iRacing
-1670220597,30,dover,iRacing
-1670220597,32,dover,iRacing
-1670220597,4,dover,iRacing
-1670220597,19,dover,iRacing
-1670220597,34,dover,iRacing
-1670220597,29,dover,iRacing
-1670220597,18,dover,iRacing
-1670220597,33,dover,iRacing
-1670220597,16,dover,iRacing
-1670357629,5,silverstone 2019 gp,iRacing
-1670219852,1,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,7,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,9,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,6,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,11,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,12,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,5,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670219852,8,Buenos_Aires:Buenos_Aires_Circuito_8,Automobilista 2
-1670242105,3,eldora,iRacing
-1670242105,1,eldora,iRacing
-1670340575,2,gt_autodromo_lago_maggiore:z,Assetto Corsa (64 bit)
-1670340575,1,gt_autodromo_lago_maggiore:z,Assetto Corsa (64 bit)
-1670194700,8,monza:track config,Assetto Corsa Competizione
-1670194700,10,monza:track config,Assetto Corsa Competizione
-1670194700,9,monza:track config,Assetto Corsa Competizione
-1670193586,5,monza:track config,Assetto Corsa Competizione
-1670194700,7,monza:track config,Assetto Corsa Competizione
-1670194700,4,monza:track config,Assetto Corsa Competizione
-1670193586,4,monza:track config,Assetto Corsa Competizione
-1670199529,5,monza:track config,Assetto Corsa Competizione
-1670214750,9,monza:track config,Assetto Corsa Competizione
-1670193586,2,monza:track config,Assetto Corsa Competizione
-1670224288,37,spa combined,iRacing
-1670276837,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670276837,3,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670277435,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670277435,1,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670262517,5,Road_America:Road_America_RC,Automobilista 2
-1670262517,2,Road_America:Road_America_RC,Automobilista 2
-1670262517,3,Road_America:Road_America_RC,Automobilista 2
-1670262517,4,Road_America:Road_America_RC,Automobilista 2
-1670262517,1,Road_America:Road_America_RC,Automobilista 2
-1670208545,2,texas 2020 oval,iRacing
-1670208545,1,texas 2020 oval,iRacing
-1670208545,10,texas 2020 oval,iRacing
-1670272474,4,texas 2020 oval,iRacing
-1670208545,7,texas 2020 oval,iRacing
-1670273815,5,texas 2020 oval,iRacing
-1670273815,7,texas 2020 oval,iRacing
-1670272474,3,texas 2020 oval,iRacing
-1670272474,2,texas 2020 oval,iRacing
-1670273815,8,texas 2020 oval,iRacing
-1670279701,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670279144,1,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670204782,1,albion:,Assetto Corsa (64 bit)
-1670310870,12,atlanta 2022 oval,iRacing
-1670310870,113,atlanta 2022 oval,iRacing
-1670310870,9,atlanta 2022 oval,iRacing
-1670310870,118,atlanta 2022 oval,iRacing
-1670310870,115,atlanta 2022 oval,iRacing
-1670310870,127,atlanta 2022 oval,iRacing
-1670310870,11,atlanta 2022 oval,iRacing
-1670310870,27,atlanta 2022 oval,iRacing
-1670310870,10,atlanta 2022 oval,iRacing
-1670310870,1,atlanta 2022 oval,iRacing
-1670360042,13,Norisring,RaceRoom
-1670359229,7,Norisring,RaceRoom
-1670279771,5,Norisring,RaceRoom
-1670359229,8,Norisring,RaceRoom
-1670279771,7,Norisring,RaceRoom
-1670279771,10,Norisring,RaceRoom
-1670360042,5,Norisring,RaceRoom
-1670271338,4,Norisring,RaceRoom
-1670279771,5,Norisring,RaceRoom
-1670360042,9,Norisring,RaceRoom
-1670178835,5,Monza Circuit,Race Room
-1670177989,6,Monza Circuit,Race Room
-1670178835,4,Monza Circuit,Race Room
-1670178835,3,Monza Circuit,Race Room
-1670177989,5,Monza Circuit,Race Room
-1670177989,4,Monza Circuit,Race Room
-1670176939,5,Long_Beach:Long_Beach,Automobilista 2
-1670176939,7,Long_Beach:Long_Beach,Automobilista 2
-1670176939,2,Long_Beach:Long_Beach,Automobilista 2
-1670176939,6,Long_Beach:Long_Beach,Automobilista 2
-1670176939,4,Long_Beach:Long_Beach,Automobilista 2
-1670176939,1,Long_Beach:Long_Beach,Automobilista 2
-1670176939,8,Long_Beach:Long_Beach,Automobilista 2
-1670176939,3,Long_Beach:Long_Beach,Automobilista 2
-1670222468,11,atlanta 2022 oval,iRacing
-1670224488,40,atlanta 2022 oval,iRacing
-1670224488,20,atlanta 2022 oval,iRacing
-1670222468,10,atlanta 2022 oval,iRacing
-1670224488,104,atlanta 2022 oval,iRacing
-1670224488,44,atlanta 2022 oval,iRacing
-1670222468,8,atlanta 2022 oval,iRacing
-1670224488,42,atlanta 2022 oval,iRacing
-1670224488,90,atlanta 2022 oval,iRacing
-1670224488,29,atlanta 2022 oval,iRacing
-1670225973,6,lakeland,iRacing
-1670225616,1,lakeland,iRacing
-1670225469,1,lakeland,iRacing
-1670225973,4,lakeland,iRacing
-1670225973,9,lakeland,iRacing
-1670225973,5,lakeland,iRacing
-1670225973,3,lakeland,iRacing
-1670225469,2,lakeland,iRacing
-1670225973,10,lakeland,iRacing
-1670225329,1,lakeland,iRacing
-1670599606,5,Circuit Zolder,RaceRoom
-1670599606,2,Circuit Zolder,RaceRoom
-1670599606,4,Circuit Zolder,RaceRoom
-1670599606,3,Circuit Zolder,RaceRoom
-1670599606,1,Circuit Zolder,RaceRoom
-1670599360,1,Circuit Zolder,RaceRoom
-1670599360,2,Circuit Zolder,RaceRoom
-1670522212,73,Long_Beach:Long_Beach,Automobilista 2
-1670522212,74,Long_Beach:Long_Beach,Automobilista 2
-1670522212,66,Long_Beach:Long_Beach,Automobilista 2
-1670522212,65,Long_Beach:Long_Beach,Automobilista 2
-1670522212,72,Long_Beach:Long_Beach,Automobilista 2
-1670522212,69,Long_Beach:Long_Beach,Automobilista 2
-1670522212,68,Long_Beach:Long_Beach,Automobilista 2
-1670522212,64,Long_Beach:Long_Beach,Automobilista 2
-1670522212,71,Long_Beach:Long_Beach,Automobilista 2
-1670522212,70,Long_Beach:Long_Beach,Automobilista 2
-1670199643,6,Bilster Berg,RaceRoom
-1670199643,3,Bilster Berg,RaceRoom
-1670199643,3,Bilster Berg,RaceRoom
-1670638425,3,limerock 2019 gp,iRacing
-1670637812,2,limerock 2019 gp,iRacing
-1670638425,8,limerock 2019 gp,iRacing
-1670638425,2,limerock 2019 gp,iRacing
-1670638425,7,limerock 2019 gp,iRacing
-1670638425,6,limerock 2019 gp,iRacing
-1670638425,4,limerock 2019 gp,iRacing
-1670637812,1,limerock 2019 gp,iRacing
-1670638425,9,limerock 2019 gp,iRacing
-1670578411,2,limerock 2019 gp,iRacing
-1670264453,2,Road_America:Road_America_RC,Automobilista 2
-1670351881,11,Road_America:Road_America_RC,Automobilista 2
-1670351881,10,Road_America:Road_America_RC,Automobilista 2
-1670353415,8,Road_America:Road_America_RC,Automobilista 2
-1670351345,2,Road_America:Road_America_RC,Automobilista 2
-1670351881,7,Road_America:Road_America_RC,Automobilista 2
-1670275743,1,Road_America:Road_America_RC,Automobilista 2
-1670275743,2,Road_America:Road_America_RC,Automobilista 2
-1670276178,13,Road_America:Road_America_RC,Automobilista 2
-1670276178,3,Road_America:Road_America_RC,Automobilista 2
-1670172778,1,ks_nordschleife:touristenfahrten,Assetto Corsa (64 bit)
-1670615006,38,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,58,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,23,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,40,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,41,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,39,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,37,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,32,Fontana:Fontana_OVAL,Automobilista 2
-1670615006,59,Fontana:Fontana_OVAL,Automobilista 2
-1670614581,2,Fontana:Fontana_OVAL,Automobilista 2
-1670532517,2,okayama full,iRacing
-1670282339,2,atlanta quadoval,iRacing
-1670224744,2,atlanta quadoval,iRacing
-1670224594,2,atlanta quadoval,iRacing
-1670225263,50,atlanta quadoval,iRacing
-1670225263,51,atlanta quadoval,iRacing
-1670281508,2,atlanta quadoval,iRacing
-1670282339,1,atlanta quadoval,iRacing
-1670281508,9,atlanta quadoval,iRacing
-1670281508,3,atlanta quadoval,iRacing
-1670224744,1,atlanta quadoval,iRacing
-1670616759,1,Watkins Glen International,Race Room
-1670589572,8,Watkins Glen International,Race Room
-1670615488,3,Watkins Glen International,Race Room
-1670589572,2,Watkins Glen International,Race Room
-1670278525,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670277969,1,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670291401,1,Nurburgring_2020:Nordschleife_2020,Automobilista 2
-1670312375,1,langley,iRacing
-1670311289,9,langley,iRacing
-1670311289,2,langley,iRacing
-1670311869,2,langley,iRacing
-1670201421,1,spielberg gp,iRacing
-1670525915,5,imola gp,iRacing
-1670525915,4,imola gp,iRacing
-1670525915,3,imola gp,iRacing
-1670525323,2,imola gp,iRacing
-1670525323,1,imola gp,iRacing
-1670525915,7,imola gp,iRacing
-1670525915,2,imola gp,iRacing
-1670525915,6,imola gp,iRacing
-1670375126,25,rudskogen,iRacing
-1670358492,4,rudskogen,iRacing
-1670358492,8,rudskogen,iRacing
-1670358492,7,rudskogen,iRacing
-1670375126,18,rudskogen,iRacing
-1670375126,24,rudskogen,iRacing
-1670375126,26,rudskogen,iRacing
-1670375126,19,rudskogen,iRacing
-1670375126,11,rudskogen,iRacing
-1670375126,17,rudskogen,iRacing
-1670417209,1,Monza Circuit,RaceRoom
-1670340183,1,Monza Circuit,RaceRoom
-1670319840,3,Monza Circuit,RaceRoom
-1670340183,1,Monza Circuit,RaceRoom
-1670267845,2,Monza Circuit,RaceRoom
-1670311189,4,daytona oval,iRacing
-1670311189,5,daytona oval,iRacing
-1670312593,4,daytona oval,iRacing
-1670311189,11,daytona oval,iRacing
-1670311189,10,daytona oval,iRacing
-1670312593,6,daytona oval,iRacing
-1670312593,7,daytona oval,iRacing
-1670312593,8,daytona oval,iRacing
-1670311189,7,daytona oval,iRacing
-1670312593,5,daytona oval,iRacing
-1670230511,11,charlottedirt,iRacing
-1670229979,1,charlottedirt,iRacing
-1670250967,4,mugello:,Assetto Corsa (64 bit)
-1670250967,2,mugello:,Assetto Corsa (64 bit)
-1670250967,1,mugello:,Assetto Corsa (64 bit)
-1670240012,1,rudskogen,iRacing
-1670336518,6,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670336518,3,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670336518,4,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670336518,7,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670336518,3,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670336518,2,mallory_park_2022:motorcycleshortcircuit,Assetto Corsa (64 bit)
-1670529687,7,Zandvoort:track config,Assetto Corsa Competizione
-1670529687,6,Zandvoort:track config,Assetto Corsa Competizione
-1670529687,5,Zandvoort:track config,Assetto Corsa Competizione
-1670529687,4,Zandvoort:track config,Assetto Corsa Competizione
-1670529687,3,Zandvoort:track config,Assetto Corsa Competizione
-1670529687,2,Zandvoort:track config,Assetto Corsa Competizione
-1670266346,1,Zandvoort:track config,Assetto Corsa Competizione
-1670267220,3,Zandvoort:track config,Assetto Corsa Competizione
-1670265310,5,Zandvoort:track config,Assetto Corsa Competizione
-1670265310,2,Zandvoort:track config,Assetto Corsa Competizione
-1670351687,1,fuji gp,iRacing
-1670354067,14,limerock 2019 classic,iRacing
-1670323745,1,daytona rallycross short,iRacing
-1670610505,13,limerock 2019 gp,iRacing
-1670341780,3,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670341780,2,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670341780,4,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670341780,5,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670312847,6,Donington Park,RaceRoom
-1670312847,4,Donington Park,RaceRoom
-1670312847,2,Donington Park,RaceRoom
-1670312847,5,Donington Park,RaceRoom
-1670312847,1,Donington Park,RaceRoom
-1670312847,1,Donington Park,RaceRoom
-1670312847,1,Donington Park,RaceRoom
-1670312847,2,Donington Park,RaceRoom
-1670312847,3,Donington Park,RaceRoom
-1670318664,2,Donington Park,RaceRoom
-1670224469,6,charlotte 2018 oval,iRacing
-1670224469,19,charlotte 2018 oval,iRacing
-1670223960,1,charlotte 2018 oval,iRacing
-1670224469,20,charlotte 2018 oval,iRacing
-1670224469,21,charlotte 2018 oval,iRacing
-1670224469,22,charlotte 2018 oval,iRacing
-1670224469,18,charlotte 2018 oval,iRacing
-1670224469,5,charlotte 2018 oval,iRacing
-1670224469,27,charlotte 2018 oval,iRacing
-1670528038,2,Paul Ricard 2017,RaceRoom
-1670527603,1,Paul Ricard 2017,RaceRoom
-1670339919,3,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670339919,1,rt_suzuka:suzukaeast,Assetto Corsa (64 bit)
-1670534820,3,zandvoort2020:drs,Assetto Corsa (64 bit)
-1670534820,4,zandvoort2020:drs,Assetto Corsa (64 bit)
-1670273734,3,Cordoba:Cordoba_International,Automobilista 2
-1670273734,4,Cordoba:Cordoba_International,Automobilista 2
-1670273734,1,Cordoba:Cordoba_International,Automobilista 2
-1670273734,5,Cordoba:Cordoba_International,Automobilista 2
-1670273734,2,Cordoba:Cordoba_International,Automobilista 2
-1670180957,4,monza:,Assetto Corsa (64 bit)
-1670179705,5,monza:,Assetto Corsa (64 bit)
-1670179705,6,monza:,Assetto Corsa (64 bit)
-1670179705,8,monza:,Assetto Corsa (64 bit)
-1670179705,3,monza:,Assetto Corsa (64 bit)
-1670180957,2,monza:,Assetto Corsa (64 bit)
-1670179705,2,monza:,Assetto Corsa (64 bit)
-1670274757,22,misano:track config,Assetto Corsa Competizione
-1670274757,13,misano:track config,Assetto Corsa Competizione
-1670242018,2,misano:track config,Assetto Corsa Competizione
-1670274757,21,misano:track config,Assetto Corsa Competizione
-1670274757,11,misano:track config,Assetto Corsa Competizione
-1670274174,4,misano:track config,Assetto Corsa Competizione
-1670274174,3,misano:track config,Assetto Corsa Competizione
-1670274174,2,misano:track config,Assetto Corsa Competizione
-1670272728,9,misano:track config,Assetto Corsa Competizione
-1670272728,10,misano:track config,Assetto Corsa Competizione
-1670178560,6,Road_America:Road_America_RC,Automobilista 2
-1670178560,2,Road_America:Road_America_RC,Automobilista 2
-1670178560,5,Road_America:Road_America_RC,Automobilista 2
-1670178560,4,Road_America:Road_America_RC,Automobilista 2
-1670178560,7,Road_America:Road_America_RC,Automobilista 2
-1670178560,3,Road_America:Road_America_RC,Automobilista 2
-1670311616,2,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,2,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,3,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,3,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,4,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,1,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670311186,2,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670312267,6,ks_brands_hatch:gp,Assetto Corsa (64 bit)
-1670348161,3,Sepang,RaceRoom
-1670348538,6,Sepang,RaceRoom
-1670281236,2,Sepang,RaceRoom
-1670348161,2,Sepang,RaceRoom
-1670281236,5,Sepang,RaceRoom
-1670281236,6,Sepang,RaceRoom
-1670280769,2,Sepang,RaceRoom
-1670348538,5,Sepang,RaceRoom
-1670348538,2,Sepang,RaceRoom
-1670281236,1,Sepang,RaceRoom
-1670320975,1,Nurburgring_2020:Nordschleife_2020_24hr,Automobilista 2
-1670613429,3,sebring international,iRacing
-1670613429,2,sebring international,iRacing
-1670613429,1,sebring international,iRacing
-1670272021,6,Brasilia:Brasilia_Full,Automobilista 2
-1670272021,3,Brasilia:Brasilia_Full,Automobilista 2
-1670272021,4,Brasilia:Brasilia_Full,Automobilista 2
-1670272021,2,Brasilia:Brasilia_Full,Automobilista 2
-1670222345,9,indianapolis ovalindypit,iRacing
-1670221240,4,daytona 2011 road,iRacing
-1670180859,3,Jerez:Standard,Automobilista 2
-1670180859,1,Jerez:Standard,Automobilista 2
-1670180859,2,Jerez:Standard,Automobilista 2
-1670180008,3,Watkins_Glen:Watkins_Glen_GP,Automobilista 2
-1670180008,1,Watkins_Glen:Watkins_Glen_GP,Automobilista 2
-1670180008,2,Watkins_Glen:Watkins_Glen_GP,Automobilista 2
-1670180008,2,Watkins_Glen:Watkins_Glen_GP,Automobilista 2
-1670261629,7,Road_America:Road_America_RC,Automobilista 2
-1670263467,4,Road_America:Road_America_RC,Automobilista 2
-1670261629,3,Road_America:Road_America_RC,Automobilista 2
-1670263467,3,Road_America:Road_America_RC,Automobilista 2
-1670263467,1,Road_America:Road_America_RC,Automobilista 2
-1670263467,2,Road_America:Road_America_RC,Automobilista 2
-1670261629,4,Road_America:Road_America_RC,Automobilista 2
-1670261629,2,Road_America:Road_America_RC,Automobilista 2
-1670263467,2,Road_America:Road_America_RC,Automobilista 2
-1670261629,5,Road_America:Road_America_RC,Automobilista 2
-1670260618,11,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,4,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,3,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,13,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,5,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,2,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,6,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,8,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,12,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670260618,10,Laguna_Seca:Laguna_Seca_2020,Automobilista 2
-1670208520,1,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670208088,2,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670209028,1,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670208088,2,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670209028,4,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670208520,3,ks_brands_hatch:indy,Assetto Corsa (64 bit)
-1670270559,5,Zolder:track config,Assetto Corsa Competizione
-1670270559,3,Zolder:track config,Assetto Corsa Competizione
-1670221384,2,Zolder:track config,Assetto Corsa Competizione
-1670528160,10,Zolder:track config,Assetto Corsa Competizione
-1670528160,7,Zolder:track config,Assetto Corsa Competizione
-1670584733,6,Zolder:track config,Assetto Corsa Competizione
-1670531604,13,Zolder:track config,Assetto Corsa Competizione
-1670528160,5,Zolder:track config,Assetto Corsa Competizione
-1670528160,11,Zolder:track config,Assetto Corsa Competizione
-1670584733,9,Zolder:track config,Assetto Corsa Competizione
-1670224282,17,southboston,iRacing
-1670222971,14,southboston,iRacing
-1670224282,1,southboston,iRacing
-1670255190,1,lilski_road_america:,Assetto Corsa (64 bit)
-1670255190,3,lilski_road_america:,Assetto Corsa (64 bit)
-1670255190,1,lilski_road_america:,Assetto Corsa (64 bit)
-1670256294,1,lilski_road_america:,Assetto Corsa (64 bit)
-1670250354,1,monza:,Assetto Corsa (64 bit)
-1670237961,1,newhampshire northoval,iRacing
-1670253547,1,monza:,Assetto Corsa (64 bit)
-1670253547,4,monza:,Assetto Corsa (64 bit)
-1670253547,3,monza:,Assetto Corsa (64 bit)
-1670311738,4,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,4,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,10,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,7,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,10,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,6,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,12,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,9,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,1,Nogaro Circuit Paul Armagnac,RaceRoom
-1670311738,14,Nogaro Circuit Paul Armagnac,RaceRoom
-1670338943,1,acf_grand_valley:acf_grand_valley_short,Assetto Corsa (64 bit)
-1670397091,2,charlotte quadoval,iRacing
-1670397091,12,charlotte quadoval,iRacing
-1670397091,7,charlotte quadoval,iRacing
-1670397091,6,charlotte quadoval,iRacing
-1670397091,11,charlotte quadoval,iRacing
-1670397091,9,charlotte quadoval,iRacing
-1670396657,2,charlotte quadoval,iRacing
-1670397091,8,charlotte quadoval,iRacing
-1670397091,10,charlotte quadoval,iRacing
-1670397091,13,charlotte quadoval,iRacing
-1670280738,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670280296,2,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670280738,3,kleine_nordschleife:,Assetto Corsa (64 bit)
-1670238632,1,charlotte 2018 2019 rallycrosslong,iRacing
-1670185932,4,Barcelona:track config,Assetto Corsa Competizione
-1670177733,3,Long_Beach:Long_Beach,Automobilista 2
-1670177733,5,Long_Beach:Long_Beach,Automobilista 2
-1670177733,2,Long_Beach:Long_Beach,Automobilista 2
-1670177733,7,Long_Beach:Long_Beach,Automobilista 2
-1670177733,4,Long_Beach:Long_Beach,Automobilista 2
-1670177733,2,Long_Beach:Long_Beach,Automobilista 2
-1670177733,6,Long_Beach:Long_Beach,Automobilista 2
-1670177733,1,Long_Beach:Long_Beach,Automobilista 2
-1670258148,4,nurburgring:track config,Assetto Corsa Competizione
-1670272888,7,nurburgring:track config,Assetto Corsa Competizione
-1670188819,26,nurburgring:track config,Assetto Corsa Competizione
-1670236525,9,nurburgring:track config,Assetto Corsa Competizione
-1670346610,19,nurburgring:track config,Assetto Corsa Competizione
-1670188819,30,nurburgring:track config,Assetto Corsa Competizione
-1670338207,3,nurburgring:track config,Assetto Corsa Competizione
-1670272888,5,nurburgring:track config,Assetto Corsa Competizione
-1670188819,17,nurburgring:track config,Assetto Corsa Competizione
-1670346610,17,nurburgring:track config,Assetto Corsa Competizione
-1670210499,5,lagunaseca,iRacing
-1670210499,7,lagunaseca,iRacing
-1670331670,4,watkins_glen:track config,Assetto Corsa Competizione
-1670242757,4,watkins_glen:track config,Assetto Corsa Competizione
-1670338766,18,watkins_glen:track config,Assetto Corsa Competizione
-1670331670,2,watkins_glen:track config,Assetto Corsa Competizione
-1670521114,14,watkins_glen:track config,Assetto Corsa Competizione
-1670338766,19,watkins_glen:track config,Assetto Corsa Competizione
-1670338766,17,watkins_glen:track config,Assetto Corsa Competizione
-1670521114,16,watkins_glen:track config,Assetto Corsa Competizione
-1670338766,16,watkins_glen:track config,Assetto Corsa Competizione
-1670242757,2,watkins_glen:track config,Assetto Corsa Competizione
-1670319283,7,lakeland dirt,iRacing
-1670319283,12,lakeland dirt,iRacing
-1670319283,15,lakeland dirt,iRacing
-1670319283,14,lakeland dirt,iRacing
-1670319283,10,lakeland dirt,iRacing
-1670319283,13,lakeland dirt,iRacing
-1670319283,5,lakeland dirt,iRacing
-1670319283,4,lakeland dirt,iRacing
-1670319283,8,lakeland dirt,iRacing
-1670319283,1,lakeland dirt,iRacing
-1670239518,1,phoenix oval,iRacing
-1670639273,1,limerock 2019 gp,iRacing
-1670308601,5,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,3,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,4,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,2,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670308601,4,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670308601,3,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,8,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,5,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670308601,7,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670310228,12,acu_mexico_2021:,Assetto Corsa (64 bit)
-1670342815,2,ddm_gts_tsukuba:full,Assetto Corsa (64 bit)
-1670188853,9,Suzuka:track config,Assetto Corsa Competizione
+game,session,track,car,lap,start,end,time,length,valid
+iRacing,1670846922,nurburgring nordschleife,Porsche 911 GT3 Cup (992),1,2022-12-12 13:08:41.738088+00:00,2022-12-12 13:16:50.633057+00:00,488.915344,20638,True
+Assetto Corsa (64 bit),1670215352,simtraxx_zeran:rally1,porsche_550_1500_rs_spyder_s1,1,2022-12-05 05:47:12.904425+00:00,2022-12-05 05:51:36.640604+00:00,234.88501,2556,True
+Assetto Corsa (64 bit),1671529002,alps:club,l26_a110_2017,1,2022-12-20 10:36:48.512507+00:00,2022-12-20 10:40:17.505847+00:00,106.848,3975,True
+Assetto Corsa (64 bit),1671529002,alps:club,l26_a110_2017,3,2022-12-20 10:40:17.620345+00:00,2022-12-20 10:42:04.458765+00:00,106.911,3974,True
+Assetto Corsa (64 bit),1671529002,alps:club,l26_a110_2017,4,2022-12-20 10:42:04.571125+00:00,2022-12-20 10:43:53.462909+00:00,108.969,3973,True
+Automobilista 2,1670871025,Kyalami:Kyalami_Historic,Chevrolet Corvette C8.R,3,2022-12-12 19:54:18.226970+00:00,2022-12-12 19:55:33.464988+00:00,63.887207,4044,True
+Automobilista 2,1670871025,Kyalami:Kyalami_Historic,Chevrolet Corvette C8.R,2,2022-12-12 19:53:02.610454+00:00,2022-12-12 19:54:18.116995+00:00,64.19141,4047,True
+iRacing,1670222575,pocono 2016,Dallara IR18,5,2022-12-05 00:47:28.946740+00:00,2022-12-05 00:48:10.775410+00:00,41.8777,4027,True
+iRacing,1670222575,pocono 2016,Dallara IR18,3,2022-12-05 00:46:04.731537+00:00,2022-12-05 00:46:46.682157+00:00,41.9890022,4028,True
+iRacing,1670222575,pocono 2016,Dallara IR18,11,2022-12-05 00:55:38.256541+00:00,2022-12-05 00:56:20.295182+00:00,42.0762329,4028,True
+iRacing,1670222575,pocono 2016,Dallara IR18,8,2022-12-05 00:51:29.118578+00:00,2022-12-05 00:52:11.261914+00:00,42.1925,4027,True
+iRacing,1670222575,pocono 2016,Dallara IR18,4,2022-12-05 00:46:46.712812+00:00,2022-12-05 00:47:28.912569+00:00,42.2391357,4029,True
+iRacing,1670222575,pocono 2016,Dallara IR18,9,2022-12-05 00:52:11.292523+00:00,2022-12-05 00:52:53.564076+00:00,42.2959023,4029,True
+iRacing,1670222575,pocono 2016,Dallara IR18,7,2022-12-05 00:50:46.791907+00:00,2022-12-05 00:51:29.084208+00:00,42.3185349,4029,True
+iRacing,1670222575,pocono 2016,Dallara IR18,2,2022-12-05 00:45:22.192150+00:00,2022-12-05 00:46:04.700077+00:00,42.5260658,4028,True
+iRacing,1670222575,pocono 2016,Dallara IR18,1,2022-12-05 00:44:39.239500+00:00,2022-12-05 00:45:22.161578+00:00,42.9634323,4027,True
+iRacing,1670222575,pocono 2016,Dallara IR18,10,2022-12-05 00:52:53.590339+00:00,2022-12-05 00:53:40.530247+00:00,46.9424324,4030,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,9,2022-12-06 01:04:46.807997+00:00,2022-12-06 01:05:07.274560+00:00,20.4849663,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,6,2022-12-06 01:03:44.141016+00:00,2022-12-06 01:04:04.687329+00:00,20.5512333,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,3,2022-12-06 01:01:19.241731+00:00,2022-12-06 01:01:39.853369+00:00,20.6412659,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,10,2022-12-06 01:05:07.290615+00:00,2022-12-06 01:05:27.925139+00:00,20.6617661,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,7,2022-12-06 01:04:04.703189+00:00,2022-12-06 01:04:25.407386+00:00,20.7258,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,1,2022-12-06 01:00:36.723184+00:00,2022-12-06 01:00:57.796407+00:00,21.1135,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,12,2022-12-06 01:06:42.965843+00:00,2022-12-06 01:07:04.161017+00:00,21.2252674,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,8,2022-12-06 01:04:25.424086+00:00,2022-12-06 01:04:46.792135+00:00,21.3883343,789,True
+iRacing,1670305708,martinsville,Chevrolet National Impala,2,2022-12-06 01:00:57.811905+00:00,2022-12-06 01:01:19.225434+00:00,21.435133,789,True
+iRacing,1670308279,vegas oval,Dallara IR18,14,2022-12-06 00:41:27.412891+00:00,2022-12-06 00:41:52.254468+00:00,24.8823643,2449,True
+iRacing,1670308279,vegas oval,Dallara IR18,15,2022-12-06 00:41:52.285614+00:00,2022-12-06 00:42:17.192332+00:00,24.9402981,2448,True
+iRacing,1670308279,vegas oval,Dallara IR18,1,2022-12-06 00:32:45.347808+00:00,2022-12-06 00:33:10.277016+00:00,24.9574986,2448,True
+iRacing,1670308279,vegas oval,Dallara IR18,2,2022-12-06 00:33:10.308469+00:00,2022-12-06 00:33:35.332374+00:00,25.0391312,2448,True
+iRacing,1670308279,vegas oval,Dallara IR18,13,2022-12-06 00:41:02.374100+00:00,2022-12-06 00:41:27.382326+00:00,25.0415974,2448,True
+iRacing,1670308279,vegas oval,Dallara IR18,4,2022-12-06 00:34:00.554933+00:00,2022-12-06 00:34:25.723194+00:00,25.1932316,2448,True
+iRacing,1670308279,vegas oval,Dallara IR18,3,2022-12-06 00:33:35.361566+00:00,2022-12-06 00:34:00.519132+00:00,25.200098,2449,True
+iRacing,1670308279,vegas oval,Dallara IR18,11,2022-12-06 00:36:57.816705+00:00,2022-12-06 00:37:23.033431+00:00,25.2348976,2447,True
+iRacing,1670308279,vegas oval,Dallara IR18,10,2022-12-06 00:36:32.535900+00:00,2022-12-06 00:36:57.784808+00:00,25.2845974,2446,True
+iRacing,1670308279,vegas oval,Dallara IR18,9,2022-12-06 00:36:07.233176+00:00,2022-12-06 00:36:32.504159+00:00,25.2876644,2448,True
+iRacing,1671640774,atlanta rallycross long,Volkswagen Beetle GRC Lite,2,2022-12-21 17:43:06.198067+00:00,2022-12-21 17:43:42.395181+00:00,36.2069321,1520,True
+iRacing,1670324692,eldora,Dirt UMP Modified,6,2022-12-06 03:09:14.110374+00:00,2022-12-06 03:09:37.539834+00:00,23.4383926,709,True
+iRacing,1670324692,eldora,Dirt UMP Modified,4,2022-12-06 03:08:30.086247+00:00,2022-12-06 03:08:56.839956+00:00,26.7920933,709,True
+Assetto Corsa (64 bit),1670610257,monza:,rss_formula_hybrid_2022_s,6,2022-12-09 19:36:41.901088+00:00,2022-12-09 19:38:05.654081+00:00,83.841,5757,True
+Assetto Corsa (64 bit),1670610257,monza:,rss_formula_hybrid_2022_s,1,2022-12-09 19:28:07.950356+00:00,2022-12-09 19:29:34.814717+00:00,86.85899,5757,True
+iRacing,1670238596,southernnational,Street Stock,1,2022-12-05 03:09:58.864145+00:00,2022-12-05 03:10:16.044023+00:00,20.2460327,569,True
+iRacing,1670242083,southernnational,Street Stock,34,2022-12-05 04:17:10.108011+00:00,2022-12-05 04:17:30.611759+00:00,20.5248661,568,True
+iRacing,1670238097,southernnational,Street Stock,1,2022-12-05 03:02:02.627455+00:00,2022-12-05 03:02:24.709673+00:00,22.23307,569,True
+iRacing,1670237631,southernnational,Street Stock,16,2022-12-05 02:59:17.660828+00:00,2022-12-05 02:59:48.773837+00:00,23.7873745,569,True
+Automobilista 2,1671635969,Cascavel4:Cascavel2,Mercedes-Benz Actros,7,2022-12-21 15:27:52.246698+00:00,2022-12-21 15:29:13.392711+00:00,81.6318359,3025,True
+Automobilista 2,1671635969,Cascavel4:Cascavel2,Mercedes-Benz Actros,6,2022-12-21 15:26:29.956232+00:00,2022-12-21 15:27:52.104147+00:00,82.1447754,3025,True
+Automobilista 2,1671635295,Cascavel4:Cascavel2,Mercedes-Benz Actros,6,2022-12-21 15:15:11.367670+00:00,2022-12-21 15:16:33.106960+00:00,82.1582,3025,True
+Automobilista 2,1671635969,Cascavel4:Cascavel2,Mercedes-Benz Actros,10,2022-12-21 15:31:58.203686+00:00,2022-12-21 15:33:19.847564+00:00,82.177,3025,True
+Automobilista 2,1671635295,Cascavel4:Cascavel2,Mercedes-Benz Actros,3,2022-12-21 15:11:05.415395+00:00,2022-12-21 15:12:26.904241+00:00,82.28088,3026,True
+Automobilista 2,1671635969,Cascavel4:Cascavel2,Mercedes-Benz Actros,5,2022-12-21 15:25:08.232670+00:00,2022-12-21 15:26:29.830015+00:00,82.31616,3028,True
+Automobilista 2,1671635969,Cascavel4:Cascavel2,Mercedes-Benz Actros,14,2022-12-21 15:37:29.590042+00:00,2022-12-21 15:38:51.192506+00:00,82.47119,3026,True
+Automobilista 2,1671633609,Cascavel4:Cascavel2,Mercedes-Benz Actros,2,2022-12-21 14:43:28.901393+00:00,2022-12-21 14:44:50.274747+00:00,82.543396,3029,True
+Automobilista 2,1671635295,Cascavel4:Cascavel2,Mercedes-Benz Actros,5,2022-12-21 15:13:49.190618+00:00,2022-12-21 15:15:11.221950+00:00,82.5834961,3025,True
+Automobilista 2,1671634491,Cascavel4:Cascavel2,Mercedes-Benz Actros,4,2022-12-21 15:00:46.869449+00:00,2022-12-21 15:02:09.541879+00:00,82.6084,3029,True
+Automobilista 2,1671627500,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,3,2022-12-21 13:02:42.514574+00:00,2022-12-21 13:04:50.421656+00:00,86.72925,4294,True
+Automobilista 2,1671627500,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,6,2022-12-21 13:09:01.601583+00:00,2022-12-21 13:11:06.879156+00:00,87.20239,4294,True
+Automobilista 2,1671625328,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,3,2022-12-21 12:29:46.522207+00:00,2022-12-21 12:31:52.931160+00:00,88.07178,4294,True
+Automobilista 2,1671625328,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,6,2022-12-21 12:40:56.155358+00:00,2022-12-21 12:43:02.158143+00:00,88.0918,4294,True
+Automobilista 2,1671627500,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,4,2022-12-21 13:04:50.544176+00:00,2022-12-21 13:06:55.947588+00:00,88.29761,4289,True
+Automobilista 2,1671627500,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,1,2022-12-21 12:58:20.891620+00:00,2022-12-21 13:00:27.690744+00:00,88.60596,4294,True
+Automobilista 2,1671625328,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,4,2022-12-21 12:36:39.534543+00:00,2022-12-21 12:38:48.541181+00:00,89.3092041,4292,True
+Automobilista 2,1671625328,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,5,2022-12-21 12:38:48.673081+00:00,2022-12-21 12:40:56.018748+00:00,90.0061646,4291,True
+Automobilista 2,1671627500,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,5,2022-12-21 13:06:56.088760+00:00,2022-12-21 13:09:01.474085+00:00,90.08838,4295,True
+Automobilista 2,1671625328,Interlagos:Interlagos_SCB,Mercedes-Benz Actros,2,2022-12-21 12:27:38.943351+00:00,2022-12-21 12:29:46.374303+00:00,90.44574,4291,True
+iRacing,1670609176,okayama short,Dallara F312 F3,1,2022-12-09 18:06:36.452911+00:00,2022-12-09 18:07:24.951736+00:00,36.9739342,1930,True
+iRacing,1670609176,okayama short,Dallara F312 F3,7,2022-12-09 18:11:23.930386+00:00,2022-12-09 18:12:01.203756+00:00,37.3018,1930,True
+iRacing,1670315039,spa combined,Porsche 911 GT3.R,24,2022-12-06 02:26:08.500456+00:00,2022-12-06 02:27:20.281013+00:00,71.80783,6930,True
+iRacing,1670532200,oran gp,Dallara F312 F3,7,2022-12-08 20:49:41.224850+00:00,2022-12-08 20:50:42.133620+00:00,61.2662,2599,True
+iRacing,1670532200,oran gp,Dallara F312 F3,4,2022-12-08 20:46:36.055778+00:00,2022-12-08 20:47:37.559321+00:00,61.297802,2598,True
+iRacing,1670532200,oran gp,Dallara F312 F3,11,2022-12-08 20:53:49.307016+00:00,2022-12-08 20:54:50.634690+00:00,61.3103333,2599,True
+iRacing,1670532200,oran gp,Dallara F312 F3,12,2022-12-08 20:54:50.650635+00:00,2022-12-08 20:55:52.107547+00:00,61.4949,2598,True
+iRacing,1670532200,oran gp,Dallara F312 F3,6,2022-12-08 20:48:39.221256+00:00,2022-12-08 20:49:41.224519+00:00,61.6228333,2596,True
+iRacing,1670532200,oran gp,Dallara F312 F3,14,2022-12-08 20:56:53.871816+00:00,2022-12-08 20:57:55.564773+00:00,61.6697,2598,True
+iRacing,1670532200,oran gp,Dallara F312 F3,13,2022-12-08 20:55:52.142373+00:00,2022-12-08 20:56:53.851503+00:00,61.7288322,2599,True
+iRacing,1670532200,oran gp,Dallara F312 F3,3,2022-12-08 20:45:34.053636+00:00,2022-12-08 20:46:35.807988+00:00,61.7566338,2592,True
+iRacing,1670532200,oran gp,Dallara F312 F3,5,2022-12-08 20:47:37.564307+00:00,2022-12-08 20:48:39.204829+00:00,61.9747,2599,True
+iRacing,1670532200,oran gp,Dallara F312 F3,8,2022-12-08 20:50:42.448653+00:00,2022-12-08 20:51:44.120769+00:00,61.9908,2599,True
+Automobilista 2,1670355483,SpaFrancorchamps:Spa_Francorchamps_1970,Porsche 911 RSR GTE,1,2022-12-06 20:38:03.354154+00:00,2022-12-06 20:41:54.085476+00:00,210.6756,14091,True
+Automobilista 2,1670355748,SpaFrancorchamps:Spa_Francorchamps_1970,Porsche 911 RSR GTE,1,2022-12-06 20:42:28.460166+00:00,2022-12-06 20:46:15.138780+00:00,234.087158,14093,True
+iRacing,1670226294,lagunaseca,Hyundai Elantra N TC,3,2022-12-04 23:51:28.745389+00:00,2022-12-04 23:53:03.915101+00:00,95.23297,3569,True
+iRacing,1670226294,lagunaseca,Hyundai Elantra N TC,2,2022-12-04 23:49:52.314175+00:00,2022-12-04 23:51:28.704012+00:00,96.41807,3570,True
+iRacing,1670226294,lagunaseca,Hyundai Elantra N TC,1,2022-12-04 23:45:26.417237+00:00,2022-12-04 23:49:52.282684+00:00,108.6895,3568,True
+Assetto Corsa (64 bit),1670334313,lilski_watkins_glen:boot,urd_maures_gtr_97,3,2022-12-06 13:52:35.521131+00:00,2022-12-06 13:54:17.884119+00:00,102.378,5418,True
+Assetto Corsa (64 bit),1670334313,lilski_watkins_glen:boot,urd_maures_gtr_97,2,2022-12-06 13:50:51.992760+00:00,2022-12-06 13:52:35.402532+00:00,103.485,5416,True
+Assetto Corsa (64 bit),1670334313,lilski_watkins_glen:boot,urd_maures_gtr_97,1,2022-12-06 13:49:04.838686+00:00,2022-12-06 13:50:51.865254+00:00,109.770004,5420,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,2,2022-12-05 19:41:12.230849+00:00,2022-12-05 19:42:44.006688+00:00,91.80323,4279,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,5,2022-12-05 19:45:50.733646+00:00,2022-12-05 19:47:23.003181+00:00,92.3017,4278,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,3,2022-12-05 19:42:44.036493+00:00,2022-12-05 19:44:16.346590+00:00,92.35553,4278,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,7,2022-12-05 19:48:57.186675+00:00,2022-12-05 19:50:29.791105+00:00,92.63503,4278,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,6,2022-12-05 19:47:23.034382+00:00,2022-12-05 19:48:57.156244+00:00,94.1363,4279,True
+iRacing,1670287161,spielberg gp,Porsche 911 GT3.R,4,2022-12-05 19:44:16.379709+00:00,2022-12-05 19:45:50.702064+00:00,94.33493,4278,True
+Assetto Corsa (64 bit),1671643460,ks_nurburgring:layout_gp_a,rss_formula_rss_3_v6,2,2022-12-21 18:31:23.345295+00:00,2022-12-21 18:33:12.851617+00:00,109.506,5076,True
+Assetto Corsa (64 bit),1671643460,ks_nurburgring:layout_gp_a,rss_formula_rss_3_v6,2,2022-12-21 18:29:32.901367+00:00,2022-12-21 18:31:23.236845+00:00,110.327995,5071,True
+Automobilista 2,1670584820,Nurburgring_2020:Nurb_GP_2020_Veedol,Porsche 911 RSR GTE,3,2022-12-09 12:27:31.194083+00:00,2022-12-09 12:29:48.317420+00:00,97.2019043,5123,True
+Automobilista 2,1670584820,Nurburgring_2020:Nurb_GP_2020_Veedol,Porsche 911 RSR GTE,2,2022-12-09 12:25:28.196953+00:00,2022-12-09 12:27:31.085511+00:00,103.855469,5123,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,3,2022-12-12 18:57:31.842659+00:00,2022-12-12 18:59:13.511391+00:00,112.49585,4909,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,4,2022-12-12 18:59:13.620837+00:00,2022-12-12 19:00:58.048364+00:00,116.048706,4908,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,9,2022-12-12 19:09:36.919358+00:00,2022-12-12 19:11:22.664144+00:00,116.930664,4906,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,2,2022-12-12 18:55:44.057315+00:00,2022-12-12 18:57:31.734666+00:00,117.5553,4909,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,1,2022-12-12 18:53:57.104256+00:00,2022-12-12 18:55:43.947835+00:00,119.060181,4908,True
+Automobilista 2,1670867479,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,8,2022-12-12 19:07:50.440055+00:00,2022-12-12 19:09:36.805232+00:00,119.260254,4909,True
+Automobilista 2,1670868801,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,1,2022-12-12 19:13:16.955833+00:00,2022-12-12 19:15:12.535090+00:00,127.678223,4908,True
+Automobilista 2,1670869102,ImolaAMS2:Imola_GP_2001,Porsche 911 GT1-98,1,2022-12-12 19:18:17.136079+00:00,2022-12-12 19:20:12.866674+00:00,127.775391,4910,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,41,2022-12-06 21:08:24.708685+00:00,2022-12-06 21:08:55.078159+00:00,26.8164063,3209,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,24,2022-12-06 20:57:12.817799+00:00,2022-12-06 20:57:43.399083+00:00,26.840332,3217,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,23,2022-12-06 20:56:42.315752+00:00,2022-12-06 20:57:12.702383+00:00,26.85791,3219,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,73,2022-12-06 21:26:53.035651+00:00,2022-12-06 21:27:23.536011+00:00,26.8798828,3212,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,42,2022-12-06 21:08:55.186445+00:00,2022-12-06 21:09:25.558699+00:00,26.9248047,3216,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,40,2022-12-06 21:07:54.144252+00:00,2022-12-06 21:08:24.599103+00:00,26.96045,3211,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,35,2022-12-06 21:05:20.267196+00:00,2022-12-06 21:05:50.836322+00:00,26.9892578,3215,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,20,2022-12-06 20:55:09.296245+00:00,2022-12-06 20:55:39.886602+00:00,26.996582,3214,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,70,2022-12-06 21:25:21.108498+00:00,2022-12-06 21:25:51.649439+00:00,27.0317383,3217,True
+Automobilista 2,1670355905,Fontana:Fontana_OVAL,Reynard 2Ki Ford-Cosworth - Superspeedway,37,2022-12-06 21:06:22.420383+00:00,2022-12-06 21:06:52.845638+00:00,27.0444336,3211,True
+iRacing,1670310761,daytona 2011 oval,Chevrolet Silverado,20,2022-12-06 01:36:35.222226+00:00,2022-12-06 01:37:23.957107+00:00,48.7829,3989,True
+iRacing,1670310761,daytona 2011 oval,Chevrolet Silverado,12,2022-12-06 01:27:20.297217+00:00,2022-12-06 01:28:09.182426+00:00,48.9104,3989,True
+iRacing,1670310761,daytona 2011 oval,Chevrolet Silverado,11,2022-12-06 01:26:31.027286+00:00,2022-12-06 01:27:20.287130+00:00,49.2702,3989,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,7,2022-12-06 00:59:06.362474+00:00,2022-12-06 00:59:56.337422+00:00,49.9301834,3988,True
+iRacing,1670310761,daytona 2011 oval,Chevrolet Silverado,19,2022-12-06 01:35:45.182327+00:00,2022-12-06 01:36:35.207300+00:00,50.0829,3990,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,5,2022-12-06 00:57:26.072443+00:00,2022-12-06 00:58:16.222799+00:00,50.1427155,3989,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,6,2022-12-06 00:58:16.227713+00:00,2022-12-06 00:59:06.352492+00:00,50.160717,3989,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,3,2022-12-06 00:55:44.932256+00:00,2022-12-06 00:56:35.122078+00:00,50.2160835,3989,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,2,2022-12-06 00:54:54.217308+00:00,2022-12-06 00:55:44.912157+00:00,50.77805,3989,True
+iRacing,1670309528,daytona 2011 oval,Chevrolet Silverado,4,2022-12-06 00:56:35.137173+00:00,2022-12-06 00:57:26.057235+00:00,50.9473839,3989,True
+Assetto Corsa (64 bit),1670249050,monza:,ks_lamborghini_gallardo_sl,3,2022-12-05 15:09:25.571226+00:00,2022-12-05 15:11:30.881429+00:00,125.396996,5754,True
+Assetto Corsa (64 bit),1670249050,monza:,ks_lamborghini_gallardo_sl,2,2022-12-05 15:07:16.481301+00:00,2022-12-05 15:09:25.451466+00:00,129.096008,5758,True
+Assetto Corsa (64 bit),1670249050,monza:,ks_lamborghini_gallardo_sl,1,2022-12-05 15:05:06.044476+00:00,2022-12-05 15:07:16.361501+00:00,130.281,5758,True
+Assetto Corsa (64 bit),1671630845,ks_silverstone:international,ks_mazda_mx5_cup,3,2022-12-21 14:59:46.348380+00:00,2022-12-21 15:01:06.520052+00:00,80.159996,2943,True
+Assetto Corsa (64 bit),1671630140,ks_silverstone:international,ks_mazda_mx5_cup,5,2022-12-21 14:49:56.333704+00:00,2022-12-21 14:51:17.153179+00:00,80.7960052,2944,True
+Assetto Corsa (64 bit),1671630845,ks_silverstone:international,ks_mazda_mx5_cup,2,2022-12-21 14:58:24.355139+00:00,2022-12-21 14:59:46.331066+00:00,81.923996,2944,True
+Assetto Corsa (64 bit),1671630140,ks_silverstone:international,ks_mazda_mx5_cup,1,2022-12-21 14:42:37.589871+00:00,2022-12-21 14:45:34.274302+00:00,82.182,2944,True
+Assetto Corsa (64 bit),1671630845,ks_silverstone:international,ks_mazda_mx5_cup,1,2022-12-21 14:57:01.943449+00:00,2022-12-21 14:58:24.338425+00:00,82.326004,2943,True
+Assetto Corsa (64 bit),1671630140,ks_silverstone:international,ks_mazda_mx5_cup,2,2022-12-21 14:45:34.304805+00:00,2022-12-21 14:46:56.746199+00:00,82.407,2944,True
+Assetto Corsa (64 bit),1671629436,ks_silverstone:international,ks_mazda_mx5_cup,2,2022-12-21 14:36:41.266658+00:00,2022-12-21 14:38:03.940645+00:00,82.62,2944,True
+Assetto Corsa (64 bit),1671630140,ks_silverstone:international,ks_mazda_mx5_cup,3,2022-12-21 14:46:56.778664+00:00,2022-12-21 14:48:26.441389+00:00,89.65201,2944,True
+Assetto Corsa (64 bit),1671630140,ks_silverstone:international,ks_mazda_mx5_cup,4,2022-12-21 14:48:26.472474+00:00,2022-12-21 14:49:56.301853+00:00,89.799,2944,True
+iRacing,1671547370,brandshatch grandprix,Lamborghini Huracan GT3 EVO,4,2022-12-20 15:46:06.012648+00:00,2022-12-20 15:46:33.508135+00:00,27.5779343,3890,True
+Assetto Corsa (64 bit),1671530933,ks_silverstone:international,tatuusfa1,2,2022-12-20 11:11:24.635968+00:00,2022-12-20 11:12:33.568447+00:00,68.919,2941,True
+Assetto Corsa (64 bit),1671530933,ks_silverstone:international,tatuusfa1,1,2022-12-20 11:08:59.257476+00:00,2022-12-20 11:11:24.529752+00:00,70.998,2939,True
+iRacing,1670270711,roadamerica full,Kia Optima,3,2022-12-05 21:16:48.037832+00:00,2022-12-05 21:19:07.628161+00:00,139.6046,6408,True
+iRacing,1670266040,roadamerica full,Kia Optima,5,2022-12-05 19:56:58.484877+00:00,2022-12-05 19:59:18.385821+00:00,139.965469,6407,True
+iRacing,1670270711,roadamerica full,Kia Optima,2,2022-12-05 21:14:27.967199+00:00,2022-12-05 21:16:48.006898+00:00,140.061035,6408,True
+iRacing,1670266040,roadamerica full,Kia Optima,4,2022-12-05 19:54:38.415424+00:00,2022-12-05 19:56:58.439916+00:00,140.063263,6409,True
+iRacing,1670272422,roadamerica full,Kia Optima,1,2022-12-05 21:36:13.679191+00:00,2022-12-05 21:38:33.835088+00:00,140.185135,6409,True
+iRacing,1670273262,roadamerica full,Kia Optima,2,2022-12-05 21:50:19.458489+00:00,2022-12-05 21:52:39.689615+00:00,140.236,6408,True
+iRacing,1670266040,roadamerica full,Kia Optima,3,2022-12-05 19:52:18.141110+00:00,2022-12-05 19:54:38.382170+00:00,140.274872,6409,True
+iRacing,1670266040,roadamerica full,Kia Optima,2,2022-12-05 19:49:57.750595+00:00,2022-12-05 19:52:18.107627+00:00,140.370331,6408,True
+iRacing,1670273262,roadamerica full,Kia Optima,4,2022-12-05 21:55:01.199132+00:00,2022-12-05 21:57:21.555771+00:00,140.399567,6409,True
+iRacing,1670273262,roadamerica full,Kia Optima,9,2022-12-05 22:06:45.773507+00:00,2022-12-05 22:09:06.052551+00:00,140.46907,6408,True
+Automobilista 2,1671645530,Cordoba:Cordoba_NATL,MINI Cooper S 1965 B,5,2022-12-21 18:05:36.025538+00:00,2022-12-21 18:06:48.039239+00:00,73.5875854,2276,True
+Automobilista 2,1671645530,Cordoba:Cordoba_NATL,MINI Cooper S 1965 B,3,2022-12-21 18:03:04.613913+00:00,2022-12-21 18:04:16.613606+00:00,74.47603,2275,True
+Automobilista 2,1671645530,Cordoba:Cordoba_NATL,MINI Cooper S 1965 B,1,2022-12-21 18:00:31.696649+00:00,2022-12-21 18:01:48.693180+00:00,77.53616,2277,True
+Automobilista 2,1671645530,Cordoba:Cordoba_NATL,MINI Cooper S 1965 B,2,2022-12-21 18:01:48.827766+00:00,2022-12-21 18:03:04.456214+00:00,80.34357,2276,True
+Automobilista 2,1671645530,Cordoba:Cordoba_NATL,MINI Cooper S 1965 B,4,2022-12-21 18:04:16.762319+00:00,2022-12-21 18:05:35.841726+00:00,83.29144,2273,True
+iRacing,1670308697,oulton island,Mazda MX-5 Cup,1,2022-12-06 00:42:58.202409+00:00,2022-12-06 00:43:25.297171+00:00,27.1036377,3540,True
+Assetto Corsa (64 bit),1670611605,spa:,rss_formula_rss_3_v6,1,2022-12-09 19:49:46.844007+00:00,2022-12-09 19:51:57.000399+00:00,130.14,6945,True
+Automobilista 2,1671630769,Bathurst:Bathurst_2020,Dallara F309,2,2022-12-21 13:55:03.653523+00:00,2022-12-21 13:57:12.064657+00:00,140.50354,6201,True
+Automobilista 2,1671630769,Bathurst:Bathurst_2020,Dallara F309,1,2022-12-21 13:52:48.883850+00:00,2022-12-21 13:55:03.538971+00:00,146.283539,6203,True
+iRacing,1670249576,lagunaseca,Mazda MX-5 Cup,1,2022-12-05 06:12:54.764942+00:00,2022-12-05 06:13:20.112835+00:00,25.3919659,3570,True
+iRacing,1670238139,spa up,Mercedes W12,1,2022-12-05 06:05:44.137256+00:00,2022-12-05 06:07:26.885396+00:00,102.776634,6927,True
+iRacing,1670238752,spa up,Mercedes W12,15,2022-12-05 06:39:31.967841+00:00,2022-12-05 06:41:15.171199+00:00,103.2187,6929,True
+iRacing,1670238139,spa up,Mercedes W12,2,2022-12-05 06:07:26.905466+00:00,2022-12-05 06:09:10.424114+00:00,103.518967,6928,True
+iRacing,1670238752,spa up,Mercedes W12,16,2022-12-05 06:41:15.186822+00:00,2022-12-05 06:42:59.055770+00:00,103.874069,6928,True
+iRacing,1670238752,spa up,Mercedes W12,18,2022-12-05 06:44:43.435351+00:00,2022-12-05 06:46:27.646862+00:00,104.23233,6928,True
+iRacing,1670238752,spa up,Mercedes W12,17,2022-12-05 06:42:59.080577+00:00,2022-12-05 06:44:43.417510+00:00,104.3793,6928,True
+iRacing,1670238752,spa up,Mercedes W12,19,2022-12-05 06:46:27.687904+00:00,2022-12-05 06:48:12.196971+00:00,104.52977,6927,True
+iRacing,1670238752,spa up,Mercedes W12,9,2022-12-05 06:28:03.046758+00:00,2022-12-05 06:29:47.802086+00:00,104.801735,6928,True
+iRacing,1670238752,spa up,Mercedes W12,20,2022-12-05 06:48:12.212094+00:00,2022-12-05 06:49:57.031702+00:00,104.8196,6928,True
+iRacing,1670238752,spa up,Mercedes W12,3,2022-12-05 06:17:27.211443+00:00,2022-12-05 06:19:12.010535+00:00,104.863068,6929,True
+iRacing,1670195814,summit summit raceway,Formula Vee,4,2022-12-04 18:16:55.894464+00:00,2022-12-04 18:19:15.140259+00:00,90.13515,3200,True
+iRacing,1671612931,nurburgring gp,Mercedes W12,2,2022-12-21 10:01:05.437876+00:00,2022-12-21 10:02:38.058081+00:00,92.63904,5069,True
+iRacing,1671612931,nurburgring gp,Mercedes W12,1,2022-12-21 09:59:31.179572+00:00,2022-12-21 10:01:05.421704+00:00,94.277504,5069,True
+Automobilista 2,1671630383,ImolaAMS2:Imola_GP_1972,Lotus Type 49C Cosworth,1,2022-12-21 13:47:32.636283+00:00,2022-12-21 13:49:12.233630+00:00,114.537766,4948,True
+Assetto Corsa (64 bit),1671623886,rmi_nkp_prato:long,legion_corvette_c6r_2010,1,2022-12-21 13:00:07.858437+00:00,2022-12-21 13:01:40.211025+00:00,92.43,3893,True
+Assetto Corsa (64 bit),1671624426,rmi_nkp_prato:long,legion_corvette_c6r_2010,3,2022-12-21 13:11:15.828614+00:00,2022-12-21 13:13:04.845415+00:00,109.068,3896,True
+Assetto Corsa (64 bit),1671624426,rmi_nkp_prato:long,legion_corvette_c6r_2010,1,2022-12-21 13:07:11.840709+00:00,2022-12-21 13:11:15.717041+00:00,109.955994,3897,True
+iRacing,1670307141,daytona 2011 oval,Ford F150,11,2022-12-06 00:24:19.786554+00:00,2022-12-06 00:25:08.503508+00:00,48.7359657,3987,True
+iRacing,1670307141,daytona 2011 oval,Ford F150,8,2022-12-06 00:20:58.333315+00:00,2022-12-06 00:21:48.071506+00:00,49.7519341,3987,True
+iRacing,1670307141,daytona 2011 oval,Ford F150,2,2022-12-06 00:13:20.030634+00:00,2022-12-06 00:14:10.378528+00:00,50.3504333,3988,True
+iRacing,1670307141,daytona 2011 oval,Ford F150,12,2022-12-06 00:25:08.534291+00:00,2022-12-06 00:25:59.244392+00:00,50.7373657,3987,True
+iRacing,1670305048,daytona 2011 oval,Ford F150,3,2022-12-05 23:52:09.615390+00:00,2022-12-05 23:53:00.575629+00:00,51.0132141,3988,True
+iRacing,1670306607,daytona 2011 oval,Ford F150,2,2022-12-06 00:05:28.784909+00:00,2022-12-06 00:06:21.332845+00:00,52.57543,3988,True
+iRacing,1670306607,daytona 2011 oval,Ford F150,1,2022-12-06 00:04:35.693868+00:00,2022-12-06 00:05:28.755113+00:00,53.1207352,3989,True
+iRacing,1670307141,daytona 2011 oval,Ford F150,7,2022-12-06 00:20:04.528502+00:00,2022-12-06 00:20:58.304439+00:00,53.8153648,3987,True
+iRacing,1670305048,daytona 2011 oval,Ford F150,1,2022-12-05 23:42:24.099286+00:00,2022-12-05 23:43:22.474344+00:00,58.403347,3987,True
+Assetto Corsa (64 bit),1670309789,akr_newcastle_2019:,bmw_m3_e30_dtm_rennverein,6,2022-12-06 08:06:03.330635+00:00,2022-12-06 08:07:28.538152+00:00,85.266,2600,True
+Assetto Corsa (64 bit),1670309789,akr_newcastle_2019:,bmw_m3_e30_dtm_rennverein,4,2022-12-06 08:04:33.460542+00:00,2022-12-06 08:06:03.221683+00:00,89.781,2600,True
+Assetto Corsa (64 bit),1670309789,akr_newcastle_2019:,bmw_m3_e30_dtm_rennverein,4,2022-12-06 08:02:17.790999+00:00,2022-12-06 08:04:33.345779+00:00,93.288,2598,True
+Assetto Corsa (64 bit),1670309789,akr_newcastle_2019:,bmw_m3_e30_dtm_rennverein,2,2022-12-06 07:58:38.482491+00:00,2022-12-06 08:00:14.685293+00:00,96.249,2597,True
+Assetto Corsa (64 bit),1670309789,akr_newcastle_2019:,bmw_m3_e30_dtm_rennverein,1,2022-12-06 07:56:34.275505+00:00,2022-12-06 07:58:38.362693+00:00,98.5919952,2599,True
+Automobilista 2,1670176288,Laguna_Seca:Laguna_Seca_2020,Reynard 95i Ford-Cosworth,5,2022-12-04 18:56:43.670182+00:00,2022-12-04 18:57:52.115330+00:00,77.6353149,3599,True
+Automobilista 2,1670176288,Laguna_Seca:Laguna_Seca_2020,Reynard 95i Ford-Cosworth,4,2022-12-04 18:55:34.835046+00:00,2022-12-04 18:56:43.547492+00:00,78.06299,3601,True
+Automobilista 2,1670176288,Laguna_Seca:Laguna_Seca_2020,Reynard 95i Ford-Cosworth,1,2022-12-04 18:51:27.995400+00:00,2022-12-04 18:53:12.440726+00:00,79.2927246,3600,True
+Automobilista 2,1670176288,Laguna_Seca:Laguna_Seca_2020,Reynard 95i Ford-Cosworth,3,2022-12-04 18:54:24.166674+00:00,2022-12-04 18:55:34.724648+00:00,79.5455,3597,True
+Automobilista 2,1670176288,Laguna_Seca:Laguna_Seca_2020,Reynard 95i Ford-Cosworth,2,2022-12-04 18:53:12.559457+00:00,2022-12-04 18:54:24.059982+00:00,80.4340057,3597,True
+iRacing,1670316336,nurburgring nordschleife,Porsche 911 GT3.R,4,2022-12-06 04:23:12.129496+00:00,2022-12-06 04:30:02.293515+00:00,410.173126,20639,True
+iRacing,1670316336,nurburgring nordschleife,Porsche 911 GT3.R,1,2022-12-06 03:59:34.558397+00:00,2022-12-06 04:06:29.896599+00:00,415.365631,20639,True
+iRacing,1670316336,nurburgring nordschleife,Porsche 911 GT3.R,3,2022-12-06 04:13:58.345258+00:00,2022-12-06 04:21:18.129675+00:00,439.81076,20640,True
+iRacing,1670316336,nurburgring nordschleife,Porsche 911 GT3.R,2,2022-12-06 04:06:29.924814+00:00,2022-12-06 04:13:58.284481+00:00,448.359283,20638,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,5,2022-12-04 19:01:21.762148+00:00,2022-12-04 19:02:59.571399+00:00,97.8839951,5075,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,9,2022-12-04 19:08:02.464004+00:00,2022-12-04 19:09:40.538844+00:00,98.145,5072,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,31,2022-12-04 19:49:22.045680+00:00,2022-12-04 19:51:00.431502+00:00,98.43001,5070,True
+Assetto Corsa (64 bit),1670174701,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,9,2022-12-04 18:42:17.506961+00:00,2022-12-04 18:43:55.961954+00:00,98.5499954,5069,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,14,2022-12-04 19:16:25.642509+00:00,2022-12-04 19:18:04.179443+00:00,98.571,5070,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,36,2022-12-04 19:57:40.982021+00:00,2022-12-04 19:59:19.707031+00:00,98.745,5068,True
+Assetto Corsa (64 bit),1670174701,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,5,2022-12-04 18:32:00.053400+00:00,2022-12-04 18:33:38.845355+00:00,98.889,5073,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,25,2022-12-04 19:35:00.259337+00:00,2022-12-04 19:36:39.107257+00:00,98.95799,5076,True
+Assetto Corsa (64 bit),1670174701,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,4,2022-12-04 18:30:20.885843+00:00,2022-12-04 18:31:59.945373+00:00,99.084,5077,True
+Assetto Corsa (64 bit),1670176465,ks_nurburgring:layout_gp_a_osrw,ks_porsche_919_hybrid_2016_evo,34,2022-12-04 19:54:22.145305+00:00,2022-12-04 19:56:01.092787+00:00,99.084,5076,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,31,2022-12-05 01:30:47.771760+00:00,2022-12-05 01:31:11.105324+00:00,23.3191319,1638,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,30,2022-12-05 01:30:24.528532+00:00,2022-12-05 01:30:47.770056+00:00,23.3399982,1637,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,32,2022-12-05 01:31:11.128313+00:00,2022-12-05 01:31:34.483977+00:00,23.3807316,1637,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,4,2022-12-05 01:12:10.915045+00:00,2022-12-05 01:12:34.372939+00:00,23.498064,1639,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,19,2022-12-05 01:22:10.037119+00:00,2022-12-05 01:22:33.542610+00:00,23.515131,1638,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,34,2022-12-05 01:31:58.082704+00:00,2022-12-05 01:32:21.576484+00:00,23.5203323,1639,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,29,2022-12-05 01:30:00.953596+00:00,2022-12-05 01:30:24.528287+00:00,23.5288658,1638,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,18,2022-12-05 01:21:46.480548+00:00,2022-12-05 01:22:10.007316+00:00,23.5699654,1638,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,33,2022-12-05 01:31:34.514714+00:00,2022-12-05 01:31:58.051875+00:00,23.5704651,1639,True
+iRacing,1670220597,dover,NASCAR Toyota Camry,16,2022-12-05 01:20:58.960711+00:00,2022-12-05 01:21:22.497797+00:00,23.603199,1637,True
+iRacing,1670357629,silverstone 2019 gp,Mercedes-AMG W13 E Performance,5,2022-12-06 20:20:52.164822+00:00,2022-12-06 20:21:31.974725+00:00,39.8283577,5800,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,1,2022-12-05 00:00:19.133838+00:00,2022-12-05 00:01:54.627096+00:00,90.53598,3501,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,7,2022-12-05 00:12:48.461743+00:00,2022-12-05 00:15:02.676091+00:00,91.07135,3500,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,9,2022-12-05 00:19:42.991821+00:00,2022-12-05 00:23:55.770968+00:00,91.2207,3504,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,6,2022-12-05 00:11:12.837828+00:00,2022-12-05 00:12:48.360122+00:00,91.57233,3502,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,11,2022-12-05 00:23:55.872830+00:00,2022-12-05 00:25:31.967314+00:00,92.06885,3500,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,12,2022-12-05 00:25:32.078600+00:00,2022-12-05 00:27:07.816992+00:00,92.0704346,3499,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,5,2022-12-05 00:09:35.549039+00:00,2022-12-05 00:11:12.734539+00:00,92.54413,3499,True
+Automobilista 2,1670219852,Buenos_Aires:Buenos_Aires_Circuito_8,Formula Trainer,8,2022-12-05 00:15:02.774595+00:00,2022-12-05 00:16:39.349526+00:00,92.7202148,3503,True
+iRacing,1670242105,eldora,Street Stock,3,2022-12-05 04:10:00.592253+00:00,2022-12-05 04:10:20.546482+00:00,20.0123825,709,True
+iRacing,1670242105,eldora,Street Stock,1,2022-12-05 04:09:20.445732+00:00,2022-12-05 04:09:40.564358+00:00,20.1363831,708,True
+Assetto Corsa (64 bit),1670340575,gt_autodromo_lago_maggiore:z,rn_sandero_rs,2,2022-12-06 16:31:55.591171+00:00,2022-12-06 16:32:55.203512+00:00,59.613,1972,True
+Assetto Corsa (64 bit),1670340575,gt_autodromo_lago_maggiore:z,rn_sandero_rs,1,2022-12-06 16:29:43.559986+00:00,2022-12-06 16:31:55.451951+00:00,63.153,1969,True
+Automobilista 2,1670869344,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,5,2022-12-12 19:31:18.428533+00:00,2022-12-12 19:32:47.722670+00:00,104.922607,4960,True
+Automobilista 2,1670869344,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,2,2022-12-12 19:26:44.682497+00:00,2022-12-12 19:28:14.681491+00:00,106.605469,4962,True
+Automobilista 2,1670869344,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,4,2022-12-12 19:29:46.466705+00:00,2022-12-12 19:31:18.318852+00:00,107.580322,4960,True
+Automobilista 2,1670869344,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,3,2022-12-12 19:28:14.788084+00:00,2022-12-12 19:29:46.358527+00:00,108.227539,4961,True
+Automobilista 2,1670869344,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,1,2022-12-12 19:25:02.428554+00:00,2022-12-12 19:26:44.574295+00:00,111.322754,4960,True
+Automobilista 2,1670870200,ImolaAMS2:Imola_GP_1988,Formula Classic Gen3 Model1,1,2022-12-12 19:36:35.825364+00:00,2022-12-12 19:38:20.863780+00:00,122.714355,4964,True
+iRacing,1670855331,virginia full,Porsche 911 GT3 Cup (992),2,2022-12-12 15:30:58.486329+00:00,2022-12-12 15:31:33.526861+00:00,35.0402336,5220,True
+iRacing,1671646152,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,3,2022-12-21 19:11:26.793785+00:00,2022-12-21 19:12:09.354180+00:00,42.5656738,1340,True
+iRacing,1671646720,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,2,2022-12-21 19:19:47.771592+00:00,2022-12-21 19:20:33.316406+00:00,45.5886,1339,True
+iRacing,1671643130,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,1,2022-12-21 18:19:12.828739+00:00,2022-12-21 18:19:58.590571+00:00,45.75313,1339,True
+iRacing,1671647105,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,3,2022-12-21 19:27:10.541065+00:00,2022-12-21 19:27:56.328045+00:00,45.8143,1338,True
+iRacing,1671643130,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,2,2022-12-21 18:19:58.620330+00:00,2022-12-21 18:20:44.397658+00:00,45.83383,1338,True
+iRacing,1671643370,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,5,2022-12-21 18:26:17.113211+00:00,2022-12-21 18:27:02.980748+00:00,45.91567,1339,True
+iRacing,1671647105,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,2,2022-12-21 19:25:23.531754+00:00,2022-12-21 19:27:10.506638+00:00,46.0983,1339,True
+iRacing,1671643370,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,6,2022-12-21 18:27:03.013158+00:00,2022-12-21 18:27:49.063959+00:00,46.0987,1338,True
+iRacing,1671643370,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,7,2022-12-21 18:27:49.094320+00:00,2022-12-21 18:28:35.223254+00:00,46.1389,1339,True
+iRacing,1671646152,charlotte 2018 2019 rallycrosslong,Volkswagen Beetle GRC Lite,1,2022-12-21 19:09:38.481897+00:00,2022-12-21 19:10:24.795238+00:00,46.3361435,1339,True
+iRacing,1670224288,spa combined,BMW M4 GT3,37,2022-12-05 01:46:15.919255+00:00,2022-12-05 01:46:40.262327+00:00,24.3551712,6930,True
+Assetto Corsa (64 bit),1670276837,kleine_nordschleife:,chawaii_pgrczct3,2,2022-12-06 08:25:43.018462+00:00,2022-12-06 08:28:18.957699+00:00,155.976,7101,True
+Assetto Corsa (64 bit),1670276837,kleine_nordschleife:,chawaii_pgrczct3,3,2022-12-06 08:28:19.064696+00:00,2022-12-06 08:30:56.711104+00:00,157.713,7099,True
+Assetto Corsa (64 bit),1670277435,kleine_nordschleife:,chawaii_pgrczct3,2,2022-12-06 08:35:18.953473+00:00,2022-12-06 08:38:04.588749+00:00,165.64801,7095,True
+Assetto Corsa (64 bit),1670277435,kleine_nordschleife:,chawaii_pgrczct3,1,2022-12-06 08:32:21.932991+00:00,2022-12-06 08:35:18.850578+00:00,177.794983,7097,True
+Automobilista 2,1670262517,Road_America:Road_America_RC,Lola B2K00 Ford-Cosworth,5,2022-12-05 18:56:01.528521+00:00,2022-12-05 18:57:39.271357+00:00,85.0332,6440,True
+Automobilista 2,1670262517,Road_America:Road_America_RC,Lola B2K00 Ford-Cosworth,2,2022-12-05 18:51:05.747333+00:00,2022-12-05 18:52:44.315812+00:00,85.5022,6439,True
+Automobilista 2,1670262517,Road_America:Road_America_RC,Lola B2K00 Ford-Cosworth,3,2022-12-05 18:52:44.425245+00:00,2022-12-05 18:54:22.477725+00:00,85.62793,6436,True
+Automobilista 2,1670262517,Road_America:Road_America_RC,Lola B2K00 Ford-Cosworth,4,2022-12-05 18:54:22.586011+00:00,2022-12-05 18:56:01.420114+00:00,85.9206543,6433,True
+Automobilista 2,1670262517,Road_America:Road_America_RC,Lola B2K00 Ford-Cosworth,1,2022-12-05 18:48:36.307651+00:00,2022-12-05 18:51:05.631639+00:00,86.4018555,6434,True
+iRacing,1670208545,texas 2020 oval,Chevrolet National Impala,2,2022-12-04 21:53:00.935811+00:00,2022-12-04 21:53:31.727575+00:00,30.7896843,2350,True
+iRacing,1670208545,texas 2020 oval,Chevrolet National Impala,1,2022-12-04 21:52:29.804793+00:00,2022-12-04 21:53:00.899086+00:00,31.1322842,2347,True
+iRacing,1670208545,texas 2020 oval,Chevrolet National Impala,10,2022-12-04 22:05:49.065722+00:00,2022-12-04 22:06:20.223437+00:00,31.1912174,2349,True
+iRacing,1670272474,texas 2020 oval,Chevrolet National Impala,4,2022-12-05 20:38:56.483296+00:00,2022-12-05 20:39:27.732052+00:00,31.2670975,2348,True
+iRacing,1670208545,texas 2020 oval,Chevrolet National Impala,7,2022-12-04 22:00:45.674367+00:00,2022-12-04 22:01:17.007044+00:00,31.3598175,2349,True
+iRacing,1670273815,texas 2020 oval,Chevrolet National Impala,5,2022-12-05 20:59:13.586250+00:00,2022-12-05 20:59:44.959424+00:00,31.3928661,2349,True
+iRacing,1670273815,texas 2020 oval,Chevrolet National Impala,7,2022-12-05 21:00:16.577218+00:00,2022-12-05 21:00:47.926800+00:00,31.3976,2349,True
+iRacing,1670272474,texas 2020 oval,Chevrolet National Impala,3,2022-12-05 20:38:25.067649+00:00,2022-12-05 20:38:56.453518+00:00,31.4108639,2348,True
+iRacing,1670272474,texas 2020 oval,Chevrolet National Impala,2,2022-12-05 20:37:53.644868+00:00,2022-12-05 20:38:25.035935+00:00,31.4175968,2349,True
+iRacing,1670273815,texas 2020 oval,Chevrolet National Impala,8,2022-12-05 21:00:47.957681+00:00,2022-12-05 21:01:19.360599+00:00,31.4616337,2348,True
+Assetto Corsa (64 bit),1670279701,kleine_nordschleife:,rss_formula_79,2,2022-12-06 09:13:09.466808+00:00,2022-12-06 09:15:40.724147+00:00,151.29599,7098,True
+Assetto Corsa (64 bit),1670279144,kleine_nordschleife:,rss_formula_79,1,2022-12-06 09:04:14.826038+00:00,2022-12-06 09:06:50.213219+00:00,155.37,7100,True
+Assetto Corsa (64 bit),1670204782,albion:,gue_brabham_bt63_gt2,1,2022-12-05 02:46:26.703282+00:00,2022-12-05 02:48:34.701824+00:00,131.607,5667,True
+Assetto Corsa (64 bit),1671642236,kyalami_2016:gt_challenge,tcr_audi_rs3_lms_2021,4,2022-12-21 18:13:12.454825+00:00,2022-12-21 18:15:04.866770+00:00,112.425,4501,True
+Assetto Corsa (64 bit),1671642236,kyalami_2016:gt_challenge,tcr_audi_rs3_lms_2021,3,2022-12-21 18:11:19.208190+00:00,2022-12-21 18:13:12.343897+00:00,113.172,4502,True
+Assetto Corsa (64 bit),1671642236,kyalami_2016:gt_challenge,tcr_audi_rs3_lms_2021,1,2022-12-21 18:07:25.662872+00:00,2022-12-21 18:11:19.094718+00:00,114.141,4504,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,12,2022-12-06 02:20:22.436016+00:00,2022-12-06 02:20:52.846083+00:00,30.4375324,2438,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,113,2022-12-06 03:22:08.380343+00:00,2022-12-06 03:22:38.790676+00:00,30.4455,2437,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,9,2022-12-06 02:18:50.714481+00:00,2022-12-06 02:19:21.148761+00:00,30.4551334,2438,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,118,2022-12-06 03:24:41.743332+00:00,2022-12-06 03:25:12.203204+00:00,30.4983673,2439,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,115,2022-12-06 03:23:09.646850+00:00,2022-12-06 03:23:40.160364+00:00,30.5494671,2439,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,127,2022-12-06 03:32:05.734642+00:00,2022-12-06 03:32:36.285916+00:00,30.576067,2437,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,11,2022-12-06 02:19:51.835762+00:00,2022-12-06 02:20:22.405599+00:00,30.6164341,2437,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,27,2022-12-06 02:30:59.965851+00:00,2022-12-06 02:31:30.586015+00:00,30.6383,2439,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,10,2022-12-06 02:19:21.180291+00:00,2022-12-06 02:19:51.805603+00:00,30.6443329,2439,True
+iRacing,1670310870,atlanta 2022 oval,NASCAR Chevrolet Camaro ZL1,1,2022-12-06 02:14:38.466430+00:00,2022-12-06 02:15:44.582009+00:00,30.6471672,2437,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,5,2022-12-04 19:09:03.571963+00:00,2022-12-04 19:10:11.882812+00:00,69.95563,3143,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,7,2022-12-04 19:11:21.066858+00:00,2022-12-04 19:12:29.429484+00:00,70.05969,3147,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,2,2022-12-04 19:05:27.191866+00:00,2022-12-04 19:06:36.341571+00:00,70.3140259,3148,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,6,2022-12-04 19:10:11.991049+00:00,2022-12-04 19:11:20.957153+00:00,70.34961,3146,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,4,2022-12-04 19:07:54.231008+00:00,2022-12-04 19:09:03.464019+00:00,70.8125,3144,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,1,2022-12-04 19:03:33.979331+00:00,2022-12-04 19:05:27.083085+00:00,70.8529053,3145,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,8,2022-12-04 19:12:29.537693+00:00,2022-12-04 19:13:39.148474+00:00,71.15967,3146,True
+Automobilista 2,1670176939,Long_Beach:Long_Beach,Reynard 95i Ford-Cosworth,3,2022-12-04 19:06:36.449919+00:00,2022-12-04 19:07:54.122710+00:00,78.66986,3146,True
+iRacing,1670222468,atlanta 2022 oval,Chevrolet Silverado,11,2022-12-05 01:52:57.743131+00:00,2022-12-05 01:53:28.666358+00:00,30.95385,2437,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,40,2022-12-05 02:43:53.409884+00:00,2022-12-05 02:44:24.373382+00:00,30.983366,2439,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,20,2022-12-05 02:27:46.848859+00:00,2022-12-05 02:28:17.867610+00:00,31.0558662,2439,True
+iRacing,1670222468,atlanta 2022 oval,Chevrolet Silverado,10,2022-12-05 01:52:26.686333+00:00,2022-12-05 01:52:57.711516+00:00,31.05825,2438,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,104,2022-12-05 03:29:35.823712+00:00,2022-12-05 03:30:06.865591+00:00,31.0775661,2439,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,44,2022-12-05 02:45:58.955797+00:00,2022-12-05 02:46:30.016881+00:00,31.092,2437,True
+iRacing,1670222468,atlanta 2022 oval,Chevrolet Silverado,8,2022-12-05 01:51:22.948131+00:00,2022-12-05 01:51:54.036532+00:00,31.1088161,2439,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,42,2022-12-05 02:44:55.710919+00:00,2022-12-05 02:45:26.794889+00:00,31.1228333,2439,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,90,2022-12-05 03:18:23.794774+00:00,2022-12-05 03:18:54.920373+00:00,31.1427326,2438,True
+iRacing,1670224488,atlanta 2022 oval,Chevrolet Silverado,29,2022-12-05 02:35:15.192142+00:00,2022-12-05 02:35:46.319566+00:00,31.1505661,2439,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,6,2022-12-05 01:41:39.617221+00:00,2022-12-05 01:42:04.497552+00:00,24.8458672,979,True
+iRacing,1670225616,lakeland,Legends Ford  34 Coupe - Rookie,1,2022-12-05 01:34:15.242360+00:00,2022-12-05 01:34:40.097423+00:00,24.8772,979,True
+iRacing,1670225469,lakeland,Legends Ford  34 Coupe - Rookie,1,2022-12-05 01:31:47.668072+00:00,2022-12-05 01:32:12.557366+00:00,24.9201336,978,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,4,2022-12-05 01:40:49.652437+00:00,2022-12-05 01:41:14.587458+00:00,24.9472,979,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,9,2022-12-05 01:42:54.672433+00:00,2022-12-05 01:43:19.592293+00:00,24.9648666,979,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,5,2022-12-05 01:41:14.607332+00:00,2022-12-05 01:41:39.602719+00:00,25.0034332,979,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,3,2022-12-05 01:40:24.647089+00:00,2022-12-05 01:40:49.642318+00:00,25.0096664,979,True
+iRacing,1670225469,lakeland,Legends Ford  34 Coupe - Rookie,2,2022-12-05 01:32:12.582367+00:00,2022-12-05 01:32:37.627184+00:00,25.0343666,979,True
+iRacing,1670225973,lakeland,Legends Ford  34 Coupe - Rookie,10,2022-12-05 01:43:19.612473+00:00,2022-12-05 01:43:44.617410+00:00,25.0352669,979,True
+iRacing,1670225329,lakeland,Legends Ford  34 Coupe - Rookie,1,2022-12-05 01:29:38.302373+00:00,2022-12-05 01:30:03.347609+00:00,25.0399,979,True
+iRacing,1670956099,rudskogen,Mazda MX-5 Cup,5,2022-12-20 09:21:36.849045+00:00,2022-12-20 09:22:19.377317+00:00,42.5197,3150,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,73,2022-12-08 19:58:41.477631+00:00,2022-12-08 19:59:48.885771+00:00,67.37402,3142,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,74,2022-12-08 19:59:48.994205+00:00,2022-12-08 20:00:56.097509+00:00,67.56641,3146,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,66,2022-12-08 19:50:32.946437+00:00,2022-12-08 19:51:40.090537+00:00,67.88086,3148,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,65,2022-12-08 19:49:25.513142+00:00,2022-12-08 19:50:32.839753+00:00,67.91211,3145,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,72,2022-12-08 19:57:33.612482+00:00,2022-12-08 19:58:41.367941+00:00,68.05762,3145,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,69,2022-12-08 19:54:08.553320+00:00,2022-12-08 19:55:15.863023+00:00,68.31152,3145,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,68,2022-12-08 19:52:55.148815+00:00,2022-12-08 19:54:08.450826+00:00,68.47461,3147,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,64,2022-12-08 19:48:17.660362+00:00,2022-12-08 19:49:25.405140+00:00,68.8339844,3147,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,71,2022-12-08 19:56:23.849741+00:00,2022-12-08 19:57:33.503733+00:00,69.171875,3147,True
+Automobilista 2,1670522212,Long_Beach:Long_Beach,Reynard 98i Honda,70,2022-12-08 19:55:15.973077+00:00,2022-12-08 19:56:23.741239+00:00,69.578125,3148,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,3,2022-12-09 20:15:55.886334+00:00,2022-12-09 20:16:56.454439+00:00,60.6137,2339,True
+iRacing,1670637812,limerock 2019 gp,Mazda MX-5 Cup,2,2022-12-09 20:06:42.068129+00:00,2022-12-09 20:07:42.886550+00:00,60.8254,2339,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,8,2022-12-09 20:21:17.797802+00:00,2022-12-09 20:22:18.705650+00:00,60.9253,2338,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,2,2022-12-09 20:14:54.902415+00:00,2022-12-09 20:15:55.853693+00:00,61.0037,2339,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,7,2022-12-09 20:20:16.754076+00:00,2022-12-09 20:21:17.766684+00:00,61.0343,2338,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,6,2022-12-09 20:19:15.507208+00:00,2022-12-09 20:20:16.722006+00:00,61.2348,2339,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,4,2022-12-09 20:16:56.486243+00:00,2022-12-09 20:17:58.289653+00:00,61.8472328,2339,True
+iRacing,1670637812,limerock 2019 gp,Mazda MX-5 Cup,1,2022-12-09 20:05:40.082081+00:00,2022-12-09 20:06:42.036358+00:00,61.9537,2338,True
+iRacing,1670638425,limerock 2019 gp,Mazda MX-5 Cup,9,2022-12-09 20:22:18.804576+00:00,2022-12-09 20:23:20.761457+00:00,62.0361,2339,True
+iRacing,1670578411,limerock 2019 gp,Mazda MX-5 Cup,2,2022-12-09 10:36:53.278903+00:00,2022-12-09 10:37:55.828180+00:00,62.571434,2339,True
+Automobilista 2,1670264453,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,2,2022-12-05 19:24:39.190491+00:00,2022-12-05 19:26:18.527204+00:00,85.65723,6440,True
+Automobilista 2,1670351881,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,11,2022-12-06 19:54:57.500523+00:00,2022-12-06 19:56:36.078584+00:00,85.770874,6441,True
+Automobilista 2,1670351881,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,10,2022-12-06 19:53:18.318062+00:00,2022-12-06 19:54:57.391679+00:00,85.7791748,6439,True
+Automobilista 2,1670353415,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,8,2022-12-06 20:15:26.081699+00:00,2022-12-06 20:17:53.423933+00:00,85.8718262,6435,True
+Automobilista 2,1670351345,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,2,2022-12-06 19:33:19.868652+00:00,2022-12-06 19:34:58.539628+00:00,86.00006,6440,True
+Automobilista 2,1670351881,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,7,2022-12-06 19:48:19.500055+00:00,2022-12-06 19:49:59.306336+00:00,86.11609,6437,True
+Automobilista 2,1670275743,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,1,2022-12-05 22:31:20.021820+00:00,2022-12-05 22:32:59.814623+00:00,86.14331,6435,True
+Automobilista 2,1670275743,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,2,2022-12-05 22:32:59.922762+00:00,2022-12-05 22:34:39.214826+00:00,86.22046,6440,True
+Automobilista 2,1670276178,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,13,2022-12-05 22:56:59.517069+00:00,2022-12-05 22:58:38.741605+00:00,86.22119,6432,True
+Automobilista 2,1670276178,Road_America:Road_America_RC,Reynard 2Ki Ford-Cosworth,3,2022-12-05 22:39:45.092933+00:00,2022-12-05 22:41:25.492653+00:00,86.23877,6436,True
+Assetto Corsa (64 bit),1670172778,ks_nordschleife:touristenfahrten,ks_porsche_panamera,1,2022-12-04 17:59:06.255213+00:00,2022-12-04 18:09:14.840582+00:00,25.965,20799,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,38,2022-12-09 21:04:00.485786+00:00,2022-12-09 21:04:30.562881+00:00,26.6569824,3215,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,58,2022-12-09 21:15:03.721517+00:00,2022-12-09 21:15:33.950737+00:00,26.7141113,3212,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,23,2022-12-09 20:56:19.592997+00:00,2022-12-09 20:56:50.113481+00:00,26.74414,3215,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,40,2022-12-09 21:05:01.095372+00:00,2022-12-09 21:05:31.399409+00:00,26.7885742,3212,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,41,2022-12-09 21:05:31.513860+00:00,2022-12-09 21:06:01.622518+00:00,26.8483887,3218,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,39,2022-12-09 21:04:30.673073+00:00,2022-12-09 21:05:00.987879+00:00,26.8723145,3217,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,37,2022-12-09 21:03:30.020225+00:00,2022-12-09 21:04:00.376293+00:00,26.8759766,3217,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,32,2022-12-09 21:00:56.871411+00:00,2022-12-09 21:01:27.273351+00:00,26.894165,3208,True
+Automobilista 2,1670615006,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,59,2022-12-09 21:15:34.060336+00:00,2022-12-09 21:16:04.888909+00:00,26.96167,3217,True
+Automobilista 2,1670614581,Fontana:Fontana_OVAL,Lola B2K00 Toyota - Superspeedway,2,2022-12-09 20:38:03.477160+00:00,2022-12-09 20:38:33.928823+00:00,26.9700165,3209,True
+iRacing,1670532517,okayama full,Toyota GR86,2,2022-12-08 20:52:33.391483+00:00,2022-12-08 20:53:07.969742+00:00,34.5857658,3650,True
+iRacing,1670873611,lakeland,Street Stock,25,2022-12-12 19:53:59.491560+00:00,2022-12-12 19:54:22.751602+00:00,23.31193,979,True
+iRacing,1670873611,lakeland,Street Stock,26,2022-12-12 19:54:22.785617+00:00,2022-12-12 19:54:46.152864+00:00,23.3747959,978,True
+iRacing,1670873611,lakeland,Street Stock,28,2022-12-12 19:55:09.696239+00:00,2022-12-12 19:55:33.029934+00:00,23.38253,978,True
+iRacing,1670873611,lakeland,Street Stock,21,2022-12-12 19:49:55.039300+00:00,2022-12-12 19:50:18.420304+00:00,23.41613,979,True
+iRacing,1670873611,lakeland,Street Stock,22,2022-12-12 19:50:18.459706+00:00,2022-12-12 19:50:41.857553+00:00,23.4336624,979,True
+iRacing,1670873611,lakeland,Street Stock,24,2022-12-12 19:53:36.023298+00:00,2022-12-12 19:53:59.463737+00:00,23.4530621,979,True
+iRacing,1670873611,lakeland,Street Stock,27,2022-12-12 19:54:46.199552+00:00,2022-12-12 19:55:09.659643+00:00,23.4859962,979,True
+iRacing,1670873611,lakeland,Street Stock,20,2022-12-12 19:49:31.422667+00:00,2022-12-12 19:49:55.013863+00:00,23.6059628,979,True
+iRacing,1670873611,lakeland,Street Stock,16,2022-12-12 19:45:32.321384+00:00,2022-12-12 19:45:55.954334+00:00,23.6349964,979,True
+iRacing,1670873611,lakeland,Street Stock,17,2022-12-12 19:45:55.979793+00:00,2022-12-12 19:46:19.605354+00:00,23.6537952,979,True
+iRacing,1670282339,atlanta quadoval,Dallara IR18,2,2022-12-05 18:19:55.037304+00:00,2022-12-05 18:20:19.959358+00:00,24.9652,2429,True
+iRacing,1670224744,atlanta quadoval,Dallara IR18,2,2022-12-05 02:20:05.125925+00:00,2022-12-05 02:20:30.086778+00:00,24.9869671,2428,True
+iRacing,1670224594,atlanta quadoval,Dallara IR18,2,2022-12-05 02:17:13.544454+00:00,2022-12-05 02:17:38.521800+00:00,25.0271683,2429,True
+iRacing,1670225263,atlanta quadoval,Dallara IR18,50,2022-12-05 02:54:50.823558+00:00,2022-12-05 02:55:15.982066+00:00,25.0787582,2428,True
+iRacing,1670225263,atlanta quadoval,Dallara IR18,51,2022-12-05 02:55:15.982328+00:00,2022-12-05 02:55:40.981022+00:00,25.0972252,2427,True
+iRacing,1670281508,atlanta quadoval,Dallara IR18,2,2022-12-05 18:06:24.483039+00:00,2022-12-05 18:06:49.607121+00:00,25.11788,2428,True
+iRacing,1670282339,atlanta quadoval,Dallara IR18,1,2022-12-05 18:19:29.929865+00:00,2022-12-05 18:19:55.015325+00:00,25.1309,2429,True
+iRacing,1670281508,atlanta quadoval,Dallara IR18,9,2022-12-05 18:09:20.949563+00:00,2022-12-05 18:09:46.091986+00:00,25.15198,2427,True
+iRacing,1670281508,atlanta quadoval,Dallara IR18,3,2022-12-05 18:06:49.613065+00:00,2022-12-05 18:07:14.742909+00:00,25.1635456,2428,True
+iRacing,1670224744,atlanta quadoval,Dallara IR18,1,2022-12-05 02:19:39.936214+00:00,2022-12-05 02:20:05.094979+00:00,25.1778336,2428,True
+Assetto Corsa (64 bit),1670278525,kleine_nordschleife:,gue_brabham_bt63_gt2,2,2022-12-06 08:54:09.118093+00:00,2022-12-06 08:56:49.565338+00:00,160.515,7100,True
+Assetto Corsa (64 bit),1670277969,kleine_nordschleife:,gue_brabham_bt63_gt2,1,2022-12-06 08:42:44.913015+00:00,2022-12-06 08:48:20.666571+00:00,165.609,7099,True
+Automobilista 2,1670291401,Nurburgring_2020:Nordschleife_2020,Porsche 911 RSR 74,1,2022-12-06 02:50:27.999689+00:00,2022-12-06 02:58:47.756254+00:00,348.205261,20814,True
+iRacing,1670312375,langley,Street Stock,1,2022-12-06 01:39:38.084600+00:00,2022-12-06 01:39:56.237183+00:00,21.7253,579,True
+iRacing,1670311289,langley,Street Stock,9,2022-12-06 01:28:55.674764+00:00,2022-12-06 01:29:18.537354+00:00,22.9611244,578,True
+iRacing,1670311289,langley,Street Stock,2,2022-12-06 01:23:05.812375+00:00,2022-12-06 01:23:29.971294+00:00,24.372057,579,True
+iRacing,1670311869,langley,Street Stock,2,2022-12-06 01:32:15.083044+00:00,2022-12-06 01:32:39.959311+00:00,25.4642315,579,True
+iRacing,1670201421,spielberg gp,Lamborghini Huracan GT3 EVO,1,2022-12-04 20:06:53.059236+00:00,2022-12-04 20:08:09.954402+00:00,76.91071,4280,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,5,2022-12-08 20:07:23.876521+00:00,2022-12-08 20:09:09.204850+00:00,105.36113,4860,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,4,2022-12-08 20:05:38.109528+00:00,2022-12-08 20:07:23.848421+00:00,105.758667,4858,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,3,2022-12-08 20:03:51.227539+00:00,2022-12-08 20:05:38.079311+00:00,106.8772,4858,True
+iRacing,1670525323,imola gp,Ferrari 488 GT3 Evo 2020,2,2022-12-08 19:52:35.350658+00:00,2022-12-08 19:54:22.545010+00:00,107.2149,4859,True
+iRacing,1670525323,imola gp,Ferrari 488 GT3 Evo 2020,1,2022-12-08 19:50:45.868669+00:00,2022-12-08 19:52:35.320085+00:00,109.473335,4859,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,7,2022-12-08 20:11:09.037787+00:00,2022-12-08 20:12:59.825222+00:00,110.8224,4858,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,2,2022-12-08 20:01:53.178886+00:00,2022-12-08 20:03:51.192844+00:00,118.058365,4858,True
+iRacing,1670525915,imola gp,Ferrari 488 GT3 Evo 2020,6,2022-12-08 20:09:09.237632+00:00,2022-12-08 20:11:09.005628+00:00,119.814934,4859,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,7,2022-12-12 13:30:13.078490+00:00,2022-12-12 13:32:11.348624+00:00,118.311005,6417,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,6,2022-12-12 13:28:13.208496+00:00,2022-12-12 13:30:12.970214+00:00,119.786995,6420,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,4,2022-12-12 13:24:00.870408+00:00,2022-12-12 13:26:00.720083+00:00,119.922,6419,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,3,2022-12-12 13:22:00.542501+00:00,2022-12-12 13:24:00.758197+00:00,120.294,6422,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,1,2022-12-12 13:17:50.098933+00:00,2022-12-12 13:19:53.377607+00:00,126.876,6418,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,2,2022-12-12 13:19:53.486338+00:00,2022-12-12 13:22:00.433080+00:00,126.957,6422,True
+Assetto Corsa (64 bit),1670850831,lilski_road_america:,rss_lmgt_toyama_2zero_v8_1998,5,2022-12-12 13:26:00.832115+00:00,2022-12-12 13:28:13.096711+00:00,132.293991,6418,True
+iRacing,1670847856,summit summit raceway,Skip Barber Formula 2000,1,2022-12-12 13:24:42.680947+00:00,2022-12-12 13:25:54.289657+00:00,55.26358,3200,True
+iRacing,1670375126,rudskogen,Toyota GR86,25,2022-12-06 20:53:23.238135+00:00,2022-12-06 20:54:57.933030+00:00,94.73683,3148,True
+iRacing,1670358492,rudskogen,Toyota GR86,4,2022-12-06 20:33:24.890174+00:00,2022-12-06 20:34:59.998051+00:00,95.136734,3149,True
+iRacing,1670358492,rudskogen,Toyota GR86,8,2022-12-06 20:41:29.924858+00:00,2022-12-06 20:43:05.166351+00:00,95.27053,3149,True
+iRacing,1670358492,rudskogen,Toyota GR86,7,2022-12-06 20:39:54.497695+00:00,2022-12-06 20:41:29.891835+00:00,95.40957,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,18,2022-12-06 20:41:31.330572+00:00,2022-12-06 20:43:06.884698+00:00,95.57867,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,24,2022-12-06 20:51:47.585520+00:00,2022-12-06 20:53:23.209704+00:00,95.6611938,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,26,2022-12-06 20:54:57.963894+00:00,2022-12-06 20:56:33.654693+00:00,95.7029953,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,19,2022-12-06 20:43:06.915697+00:00,2022-12-06 20:44:42.845757+00:00,95.96943,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,11,2022-12-06 20:28:26.000585+00:00,2022-12-06 20:30:02.133774+00:00,96.17107,3149,True
+iRacing,1670375126,rudskogen,Toyota GR86,17,2022-12-06 20:39:55.013626+00:00,2022-12-06 20:41:31.297364+00:00,96.31813,3149,True
+Assetto Corsa (64 bit),1671529891,imola:,tatuusfa1,3,2022-12-20 10:57:31.103748+00:00,2022-12-20 10:59:25.207368+00:00,114.114,4857,True
+Assetto Corsa (64 bit),1671529891,imola:,tatuusfa1,3,2022-12-20 10:55:35.624824+00:00,2022-12-20 10:57:30.995065+00:00,115.407,4860,True
+Assetto Corsa (64 bit),1671529891,imola:,tatuusfa1,1,2022-12-20 10:53:38.785126+00:00,2022-12-20 10:55:35.515913+00:00,116.742004,4860,True
+iRacing,1671538556,tsukuba 2kfull,Formula Vee,1,2022-12-20 13:18:24.870701+00:00,2022-12-20 13:18:51.923680+00:00,27.0800228,2080,True
+iRacing,1671540948,tsukuba 2kfull,Formula Vee,7,2022-12-20 14:14:04.856479+00:00,2022-12-20 14:14:32.675837+00:00,27.8234,2080,True
+iRacing,1670311189,daytona oval,Chevrolet Silverado,4,2022-12-06 02:23:28.223737+00:00,2022-12-06 02:24:17.212732+00:00,49.02248,3988,True
+iRacing,1670311189,daytona oval,Chevrolet Silverado,5,2022-12-06 02:24:17.242867+00:00,2022-12-06 02:25:06.521800+00:00,49.30088,3988,True
+iRacing,1670312593,daytona oval,Chevrolet Silverado,4,2022-12-06 02:46:20.182760+00:00,2022-12-06 02:47:09.630463+00:00,49.48097,3988,True
+iRacing,1670311189,daytona oval,Chevrolet Silverado,11,2022-12-06 02:29:17.435720+00:00,2022-12-06 02:30:06.988506+00:00,49.59578,3989,True
+iRacing,1670311189,daytona oval,Chevrolet Silverado,10,2022-12-06 02:28:27.759034+00:00,2022-12-06 02:29:17.403701+00:00,49.6749458,3989,True
+iRacing,1670312593,daytona oval,Chevrolet Silverado,6,2022-12-06 02:47:59.692708+00:00,2022-12-06 02:48:49.383537+00:00,49.7299652,3987,True
+iRacing,1670312593,daytona oval,Chevrolet Silverado,7,2022-12-06 02:48:49.415812+00:00,2022-12-06 02:49:39.194087+00:00,49.78647,3989,True
+iRacing,1670312593,daytona oval,Chevrolet Silverado,8,2022-12-06 02:49:39.227643+00:00,2022-12-06 02:50:29.086294+00:00,49.91147,3989,True
+iRacing,1670311189,daytona oval,Chevrolet Silverado,7,2022-12-06 02:25:57.015378+00:00,2022-12-06 02:26:46.980486+00:00,49.9756126,3989,True
+iRacing,1670312593,daytona oval,Chevrolet Silverado,5,2022-12-06 02:47:09.662227+00:00,2022-12-06 02:47:59.663334+00:00,50.0356,3989,True
+iRacing,1670230511,charlottedirt,Dirt Limited Late Model,11,2022-12-05 00:59:01.841431+00:00,2022-12-05 00:59:55.891360+00:00,21.4253922,619,True
+iRacing,1670229979,charlottedirt,Dirt Limited Late Model,1,2022-12-05 00:47:15.853570+00:00,2022-12-05 00:47:39.459929+00:00,23.9684372,619,True
+Assetto Corsa (64 bit),1670250967,mugello:,mclaren_mp412c,4,2022-12-05 15:43:27.744087+00:00,2022-12-05 15:45:45.415638+00:00,137.745,5192,True
+Assetto Corsa (64 bit),1670250967,mugello:,mclaren_mp412c,2,2022-12-05 15:41:09.885821+00:00,2022-12-05 15:43:27.641858+00:00,137.748,5196,True
+Assetto Corsa (64 bit),1670250967,mugello:,mclaren_mp412c,1,2022-12-05 15:36:14.543940+00:00,2022-12-05 15:41:09.788558+00:00,145.737,5192,True
+iRacing,1671647332,spa up,Dallara P217 LMP2,2,2022-12-21 18:35:03.352107+00:00,2022-12-21 18:36:21.374538+00:00,78.01724,6930,True
+Assetto Corsa (64 bit),1671528251,villaolimpica:,ac_legends_cougar,3,2022-12-20 10:25:51.568392+00:00,2022-12-20 10:26:34.899012+00:00,43.374,1341,True
+Assetto Corsa (64 bit),1671528251,villaolimpica:,ac_legends_cougar,1,2022-12-20 10:25:06.715782+00:00,2022-12-20 10:25:51.451358+00:00,44.73,1341,True
+iRacing,1670240012,rudskogen,Dallara IR18,1,2022-12-05 03:35:59.334736+00:00,2022-12-05 03:36:27.652725+00:00,28.3053017,3150,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,6,2022-12-06 14:30:40.664021+00:00,2022-12-06 14:31:33.052480+00:00,52.476,2039,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,3,2022-12-06 14:28:54.146682+00:00,2022-12-06 14:29:47.288931+00:00,53.124,2035,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,4,2022-12-06 14:29:47.393991+00:00,2022-12-06 14:30:40.556637+00:00,53.142,2041,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,7,2022-12-06 14:31:33.168598+00:00,2022-12-06 14:32:26.849239+00:00,53.724,2038,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,3,2022-12-06 14:27:59.707598+00:00,2022-12-06 14:28:54.036170+00:00,54.336,2036,True
+Assetto Corsa (64 bit),1670336518,mallory_park_2022:motorcycleshortcircuit,nissan_300zx_jgtc,2,2022-12-06 14:27:01.550356+00:00,2022-12-06 14:27:59.596296+00:00,58.071,2036,True
+iRacing,1670351687,fuji gp,Ferrari 488 GT3 Evo 2020,1,2022-12-06 19:43:27.085289+00:00,2022-12-06 19:44:01.159305+00:00,34.1019325,4480,True
+iRacing,1670354067,limerock 2019 classic,Dallara F312 F3,14,2022-12-06 19:25:50.109423+00:00,2022-12-06 19:26:19.519685+00:00,29.6628571,2350,True
+iRacing,1670323745,daytona rallycross short,Legends Ford  34 Coupe,1,2022-12-06 02:49:57.047651+00:00,2022-12-06 02:50:51.571536+00:00,54.54052,1149,True
+iRacing,1670610505,limerock 2019 gp,Toyota GR86,13,2022-12-09 18:42:10.462020+00:00,2022-12-09 18:42:50.934443+00:00,21.3870239,2340,True
+Assetto Corsa (64 bit),1670341780,rt_suzuka:suzukaeast,hd_nissangtrdday,3,2022-12-06 16:52:53.329863+00:00,2022-12-06 16:53:45.808120+00:00,52.503,2209,True
+Assetto Corsa (64 bit),1670341780,rt_suzuka:suzukaeast,hd_nissangtrdday,2,2022-12-06 16:51:56.099799+00:00,2022-12-06 16:52:53.221381+00:00,57.177002,2206,True
+Assetto Corsa (64 bit),1670341780,rt_suzuka:suzukaeast,hd_nissangtrdday,4,2022-12-06 16:53:45.925120+00:00,2022-12-06 16:54:44.761138+00:00,58.9349976,2206,True
+Assetto Corsa (64 bit),1670341780,rt_suzuka:suzukaeast,hd_nissangtrdday,5,2022-12-06 16:54:44.872183+00:00,2022-12-06 16:55:45.764968+00:00,60.906,2207,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,6,2022-12-05 01:19:58.437629+00:00,2022-12-05 01:20:29.360312+00:00,30.9381676,2338,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,19,2022-12-05 01:33:45.592408+00:00,2022-12-05 01:34:16.649287+00:00,31.0717659,2338,True
+iRacing,1670223960,charlotte 2018 oval,Ford F150,1,2022-12-05 01:07:36.378059+00:00,2022-12-05 01:08:07.423735+00:00,31.0984,2340,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,20,2022-12-05 01:34:16.680371+00:00,2022-12-05 01:34:47.778149+00:00,31.1336,2339,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,21,2022-12-05 01:34:47.810369+00:00,2022-12-05 01:35:19.086383+00:00,31.3083,2339,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,22,2022-12-05 01:35:19.124415+00:00,2022-12-05 01:35:51.116244+00:00,32.0431328,2339,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,18,2022-12-05 01:33:12.474460+00:00,2022-12-05 01:33:45.561172+00:00,33.1012344,2337,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,5,2022-12-05 01:19:24.358047+00:00,2022-12-05 01:19:58.407187+00:00,34.085968,2337,True
+iRacing,1670224469,charlotte 2018 oval,Ford F150,27,2022-12-05 01:40:31.806855+00:00,2022-12-05 01:41:08.151518+00:00,36.3501,2340,True
+Assetto Corsa (64 bit),1670339919,rt_suzuka:suzukaeast,rn_sandero_rs,3,2022-12-06 16:21:05.494236+00:00,2022-12-06 16:22:13.104339+00:00,67.6560059,2208,True
+Assetto Corsa (64 bit),1670339919,rt_suzuka:suzukaeast,rn_sandero_rs,1,2022-12-06 16:19:56.831741+00:00,2022-12-06 16:21:05.377330+00:00,68.532,2208,True
+Automobilista 2,1670866261,Hockenheim:Hockenheim_2001,Porsche 911 GT1-98 - Low Downforce,4,2022-12-12 18:37:19.813150+00:00,2022-12-12 18:39:21.364525+00:00,99.21234,6808,True
+Automobilista 2,1670866261,Hockenheim:Hockenheim_2001,Porsche 911 GT1-98 - Low Downforce,3,2022-12-12 18:35:16.364529+00:00,2022-12-12 18:37:19.699461+00:00,100.29068,6810,True
+Automobilista 2,1670866261,Hockenheim:Hockenheim_2001,Porsche 911 GT1-98 - Low Downforce,5,2022-12-12 18:39:21.473428+00:00,2022-12-12 18:41:24.755950+00:00,100.31311,6809,True
+Automobilista 2,1670866261,Hockenheim:Hockenheim_2001,Porsche 911 GT1-98 - Low Downforce,2,2022-12-12 18:33:13.063044+00:00,2022-12-12 18:35:16.247032+00:00,102.597168,6809,True
+Automobilista 2,1670866261,Hockenheim:Hockenheim_2001,Porsche 911 GT1-98 - Low Downforce,1,2022-12-12 18:30:56.911626+00:00,2022-12-12 18:33:12.945020+00:00,110.830383,6807,True
+Assetto Corsa (64 bit),1670534820,zandvoort2020:drs,dallara_f317,3,2022-12-08 21:48:02.579972+00:00,2022-12-08 21:49:33.092780+00:00,90.522,4200,True
+Assetto Corsa (64 bit),1670534820,zandvoort2020:drs,dallara_f317,4,2022-12-08 21:49:33.191782+00:00,2022-12-08 21:51:11.131099+00:00,98.061,4197,True
+Automobilista 2,1670273734,Cordoba:Cordoba_International,Dallara F301,3,2022-12-05 21:58:35.570223+00:00,2022-12-05 21:59:48.264242+00:00,69.23218,3651,True
+Automobilista 2,1670273734,Cordoba:Cordoba_International,Dallara F301,4,2022-12-05 21:59:48.369232+00:00,2022-12-05 22:01:02.193463+00:00,69.26221,3652,True
+Automobilista 2,1670273734,Cordoba:Cordoba_International,Dallara F301,1,2022-12-05 21:55:32.866679+00:00,2022-12-05 21:57:11.097902+00:00,70.11011,3654,True
+Automobilista 2,1670273734,Cordoba:Cordoba_International,Dallara F301,5,2022-12-05 22:01:02.302352+00:00,2022-12-05 22:02:15.784807+00:00,70.4563,3654,True
+Automobilista 2,1670273734,Cordoba:Cordoba_International,Dallara F301,2,2022-12-05 21:57:11.205315+00:00,2022-12-05 21:58:35.460535+00:00,71.99353,3651,True
+Assetto Corsa (64 bit),1670180957,monza:,lotus_exos_125,4,2022-12-04 20:11:17.344478+00:00,2022-12-04 20:12:46.946792+00:00,89.625,5752,True
+Assetto Corsa (64 bit),1670179705,monza:,lotus_exos_125,5,2022-12-04 19:51:41.006676+00:00,2022-12-04 19:53:19.735614+00:00,98.769,5755,True
+Assetto Corsa (64 bit),1670179705,monza:,lotus_exos_125,6,2022-12-04 19:53:19.836165+00:00,2022-12-04 19:54:59.020192+00:00,99.237,5755,True
+Assetto Corsa (64 bit),1670179705,monza:,lotus_exos_125,8,2022-12-04 19:56:49.028423+00:00,2022-12-04 19:58:28.621105+00:00,99.609,5752,True
+Assetto Corsa (64 bit),1670179705,monza:,lotus_exos_125,3,2022-12-04 19:48:11.578953+00:00,2022-12-04 19:49:51.345493+00:00,99.837,5754,True
+Assetto Corsa (64 bit),1670180957,monza:,lotus_exos_125,2,2022-12-04 20:07:20.121648+00:00,2022-12-04 20:09:01.348463+00:00,101.286,5751,True
+Assetto Corsa (64 bit),1670179705,monza:,lotus_exos_125,2,2022-12-04 19:46:29.311107+00:00,2022-12-04 19:48:11.461150+00:00,102.246,5756,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,6,2022-12-04 19:41:03.391007+00:00,2022-12-04 19:42:46.658213+00:00,89.4643555,6435,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,2,2022-12-04 19:34:09.541061+00:00,2022-12-04 19:35:52.566850+00:00,89.5297852,6435,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,5,2022-12-04 19:39:20.360401+00:00,2022-12-04 19:41:03.282433+00:00,89.69043,6441,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,4,2022-12-04 19:37:36.975397+00:00,2022-12-04 19:39:20.249787+00:00,89.79199,6433,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,7,2022-12-04 19:42:46.765854+00:00,2022-12-04 19:44:30.538416+00:00,90.9619141,6441,True
+Automobilista 2,1670178560,Road_America:Road_America_RC,Lola T9500 Mercedes-Benz,3,2022-12-04 19:35:52.679922+00:00,2022-12-04 19:37:36.867807+00:00,91.07129,6437,True
+Assetto Corsa (64 bit),1670311616,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,2,2022-12-06 08:29:04.639480+00:00,2022-12-06 08:30:42.420345+00:00,97.86,3886,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,2,2022-12-06 08:39:34.084635+00:00,2022-12-06 08:41:15.184113+00:00,101.162994,3885,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,3,2022-12-06 08:41:15.295560+00:00,2022-12-06 08:42:56.616689+00:00,101.372993,3883,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,3,2022-12-06 08:42:56.728242+00:00,2022-12-06 08:44:50.508197+00:00,104.313,3879,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,4,2022-12-06 08:44:50.617076+00:00,2022-12-06 08:46:36.216974+00:00,105.564,3887,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,1,2022-12-06 08:37:50.581042+00:00,2022-12-06 08:39:33.983947+00:00,106.548004,3885,True
+Assetto Corsa (64 bit),1670311186,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,2,2022-12-06 08:24:05.095855+00:00,2022-12-06 08:25:52.063228+00:00,107.022,3885,True
+Assetto Corsa (64 bit),1670312267,ks_brands_hatch:gp,porsche_911_997_gt3_rsr,6,2022-12-06 08:46:36.326568+00:00,2022-12-06 08:48:24.512018+00:00,108.252,3883,True
+Automobilista 2,1670320975,Nurburgring_2020:Nordschleife_2020_24hr,Ginetta G58,1,2022-12-06 11:06:10.494491+00:00,2022-12-06 11:14:14.740398+00:00,377.205566,25385,True
+iRacing,1670613429,sebring international,BMW M Hybrid V8,3,2022-12-09 19:25:59.820172+00:00,2022-12-09 19:27:53.227665+00:00,113.4179,5788,True
+iRacing,1670613429,sebring international,BMW M Hybrid V8,2,2022-12-09 19:24:04.284258+00:00,2022-12-09 19:25:59.787296+00:00,115.536667,5787,True
+iRacing,1670613429,sebring international,BMW M Hybrid V8,1,2022-12-09 19:22:06.789624+00:00,2022-12-09 19:24:04.253315+00:00,117.500137,5788,True
+Automobilista 2,1670272021,Brasilia:Brasilia_Full,Chevrolet Cruze Stock Car 2022,6,2022-12-05 21:50:23.317112+00:00,2022-12-05 21:52:34.149442+00:00,101.904175,5492,True
+Automobilista 2,1670272021,Brasilia:Brasilia_Full,Chevrolet Cruze Stock Car 2022,3,2022-12-05 21:43:55.891837+00:00,2022-12-05 21:46:00.746407+00:00,104.2959,5494,True
+Automobilista 2,1670272021,Brasilia:Brasilia_Full,Chevrolet Cruze Stock Car 2022,4,2022-12-05 21:46:00.855034+00:00,2022-12-05 21:48:05.688142+00:00,104.608276,5492,True
+Automobilista 2,1670272021,Brasilia:Brasilia_Full,Chevrolet Cruze Stock Car 2022,2,2022-12-05 21:36:42.832490+00:00,2022-12-05 21:38:59.180629+00:00,105.064026,5495,True
+iRacing,1670222345,indianapolis ovalindypit,Dallara DW12,9,2022-12-05 01:47:50.908419+00:00,2022-12-05 01:48:12.432035+00:00,21.5182285,4040,True
+iRacing,1670221240,daytona 2011 road,Dallara P217 LMP2,4,2022-12-05 00:32:43.438160+00:00,2022-12-05 00:33:07.698294+00:00,24.291317,5690,True
+Automobilista 2,1670180859,Jerez:Standard,Formula Classic Gen3 Model1,3,2022-12-04 20:10:56.440307+00:00,2022-12-04 20:12:17.504509+00:00,80.10596,4425,True
+Automobilista 2,1670180859,Jerez:Standard,Formula Classic Gen3 Model1,1,2022-12-04 20:07:38.753546+00:00,2022-12-04 20:09:33.915461+00:00,80.8418,4425,True
+Automobilista 2,1670180859,Jerez:Standard,Formula Classic Gen3 Model1,2,2022-12-04 20:09:34.027764+00:00,2022-12-04 20:10:56.333073+00:00,81.8042,4424,True
+Automobilista 2,1670180008,Watkins_Glen:Watkins_Glen_GP,Lola T9500 Mercedes-Benz,3,2022-12-04 20:03:53.234212+00:00,2022-12-04 20:05:18.786125+00:00,80.01904,5440,True
+Automobilista 2,1670180008,Watkins_Glen:Watkins_Glen_GP,Lola T9500 Mercedes-Benz,1,2022-12-04 19:56:21.607186+00:00,2022-12-04 19:58:07.573074+00:00,81.36206,5440,True
+Automobilista 2,1670180008,Watkins_Glen:Watkins_Glen_GP,Lola T9500 Mercedes-Benz,2,2022-12-04 20:02:26.869421+00:00,2022-12-04 20:03:53.124805+00:00,81.36426,5438,True
+Automobilista 2,1670180008,Watkins_Glen:Watkins_Glen_GP,Lola T9500 Mercedes-Benz,2,2022-12-04 19:58:07.680646+00:00,2022-12-04 19:59:34.279940+00:00,81.74487,5438,True
+Automobilista 2,1670261629,Road_America:Road_America_RC,Reynard 2Ki Honda,7,2022-12-05 18:44:13.280390+00:00,2022-12-05 18:45:52.132156+00:00,84.43262,6439,True
+Automobilista 2,1670263467,Road_America:Road_America_RC,Reynard 2Ki Honda,4,2022-12-05 19:12:47.448324+00:00,2022-12-05 19:14:24.520544+00:00,84.70166,6440,True
+Automobilista 2,1670261629,Road_America:Road_America_RC,Reynard 2Ki Honda,3,2022-12-05 18:37:25.416681+00:00,2022-12-05 18:39:03.045546+00:00,84.87622,6434,True
+Automobilista 2,1670263467,Road_America:Road_America_RC,Reynard 2Ki Honda,3,2022-12-05 19:11:06.906507+00:00,2022-12-05 19:12:47.339428+00:00,84.93628,6433,True
+Automobilista 2,1670263467,Road_America:Road_America_RC,Reynard 2Ki Honda,1,2022-12-05 19:04:26.650484+00:00,2022-12-05 19:06:25.716721+00:00,84.97095,6439,True
+Automobilista 2,1670263467,Road_America:Road_America_RC,Reynard 2Ki Honda,2,2022-12-05 19:06:25.824782+00:00,2022-12-05 19:09:28.864815+00:00,85.1062,6438,True
+Automobilista 2,1670261629,Road_America:Road_America_RC,Reynard 2Ki Honda,4,2022-12-05 18:39:03.153888+00:00,2022-12-05 18:40:41.785398+00:00,85.16028,6440,True
+Automobilista 2,1670261629,Road_America:Road_America_RC,Reynard 2Ki Honda,2,2022-12-05 18:35:47.190363+00:00,2022-12-05 18:37:25.300998+00:00,85.5014648,6439,True
+Automobilista 2,1670263467,Road_America:Road_America_RC,Reynard 2Ki Honda,2,2022-12-05 19:09:28.865103+00:00,2022-12-05 19:11:06.797758+00:00,85.70459,6434,True
+Automobilista 2,1670261629,Road_America:Road_America_RC,Reynard 2Ki Honda,5,2022-12-05 18:40:41.893726+00:00,2022-12-05 18:42:21.623471+00:00,85.80615,6435,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,11,2022-12-05 18:29:13.382020+00:00,2022-12-05 18:30:18.943860+00:00,74.41138,3601,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,4,2022-12-05 18:20:35.670815+00:00,2022-12-05 18:21:41.221313+00:00,74.6859741,3597,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,3,2022-12-05 18:19:29.707051+00:00,2022-12-05 18:20:35.547961+00:00,74.75699,3599,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,13,2022-12-05 18:31:26.737665+00:00,2022-12-05 18:32:32.171808+00:00,74.98053,3598,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,5,2022-12-05 18:21:41.330427+00:00,2022-12-05 18:22:47.275569+00:00,75.46173,3598,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,2,2022-12-05 18:18:23.275214+00:00,2022-12-05 18:19:29.600644+00:00,76.19095,3600,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,6,2022-12-05 18:22:47.388592+00:00,2022-12-05 18:23:53.782483+00:00,76.32611,3597,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,8,2022-12-05 18:25:33.380472+00:00,2022-12-05 18:26:39.745369+00:00,76.446106,3595,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,12,2022-12-05 18:30:19.053288+00:00,2022-12-05 18:31:26.623787+00:00,78.50415,3599,True
+Automobilista 2,1670260618,Laguna_Seca:Laguna_Seca_2020,Reynard 2Ki Honda,10,2022-12-05 18:27:59.216731+00:00,2022-12-05 18:29:13.272164+00:00,84.40967,3600,True
+Assetto Corsa (64 bit),1670208520,ks_brands_hatch:indy,ginetta_gt4_lhd,1,2022-12-05 03:50:05.732834+00:00,2022-12-05 03:51:01.714656+00:00,55.9709969,1911,True
+Assetto Corsa (64 bit),1670208088,ks_brands_hatch:indy,ginetta_gt4_lhd,2,2022-12-05 03:45:48.029520+00:00,2022-12-05 03:46:45.472367+00:00,57.504,1913,True
+Assetto Corsa (64 bit),1670209028,ks_brands_hatch:indy,ginetta_gt4_lhd,1,2022-12-05 03:58:17.506077+00:00,2022-12-05 03:59:16.768828+00:00,59.277,1915,True
+Assetto Corsa (64 bit),1670208088,ks_brands_hatch:indy,ginetta_gt4_lhd,2,2022-12-05 03:46:45.580714+00:00,2022-12-05 03:47:46.331655+00:00,60.741,1913,True
+Assetto Corsa (64 bit),1670209028,ks_brands_hatch:indy,ginetta_gt4_lhd,4,2022-12-05 04:00:29.009170+00:00,2022-12-05 04:01:31.394719+00:00,62.493,1913,True
+Assetto Corsa (64 bit),1670208520,ks_brands_hatch:indy,ginetta_gt4_lhd,3,2022-12-05 03:51:01.824800+00:00,2022-12-05 03:52:05.403880+00:00,63.603,1911,True
+iRacing,1670224282,southboston,Legends Ford  34 Coupe,17,2022-12-05 01:16:55.732215+00:00,2022-12-05 01:19:24.182338+00:00,20.5067329,590,True
+iRacing,1670222971,southboston,Legends Ford  34 Coupe,14,2022-12-05 00:53:37.027385+00:00,2022-12-05 00:53:58.447176+00:00,21.4473686,589,True
+iRacing,1670224282,southboston,Legends Ford  34 Coupe,1,2022-12-05 01:11:24.252573+00:00,2022-12-05 01:11:41.722310+00:00,22.0380325,590,True
+Assetto Corsa (64 bit),1670255190,lilski_road_america:,urd_maures_gtr_97,1,2022-12-05 15:52:27.288813+00:00,2022-12-05 15:54:28.379827+00:00,121.083,6417,True
+Assetto Corsa (64 bit),1670255190,lilski_road_america:,urd_maures_gtr_97,3,2022-12-05 15:54:28.479304+00:00,2022-12-05 15:56:29.857794+00:00,121.38,6423,True
+Assetto Corsa (64 bit),1670255190,lilski_road_america:,urd_maures_gtr_97,1,2022-12-05 15:50:20.496230+00:00,2022-12-05 15:52:27.177032+00:00,129.819,6418,True
+Assetto Corsa (64 bit),1670256294,lilski_road_america:,urd_maures_gtr_97,1,2022-12-05 16:08:44.699109+00:00,2022-12-05 16:10:58.666110+00:00,136.467,6417,True
+Assetto Corsa (64 bit),1670250354,monza:,ks_lamborghini_aventador_sv,1,2022-12-05 15:26:30.274072+00:00,2022-12-05 15:28:35.661883+00:00,125.459991,5758,True
+Automobilista 2,1671552100,Long_Beach:Long_Beach,Porsche 911 RSR 74,4,2022-12-20 16:06:41.763295+00:00,2022-12-20 16:08:15.829887+00:00,96.9448242,3145,True
+Automobilista 2,1671552100,Long_Beach:Long_Beach,Porsche 911 RSR 74,3,2022-12-20 16:05:07.294476+00:00,2022-12-20 16:06:41.648668+00:00,97.1629639,3146,True
+Automobilista 2,1671552100,Long_Beach:Long_Beach,Porsche 911 RSR 74,2,2022-12-20 16:03:32.021877+00:00,2022-12-20 16:05:07.179290+00:00,98.3241,3145,True
+Automobilista 2,1671552100,Long_Beach:Long_Beach,Porsche 911 RSR 74,1,2022-12-20 16:01:39.496543+00:00,2022-12-20 16:03:31.911464+00:00,113.214783,3144,True
+iRacing,1670237961,newhampshire northoval,Skip Barber Formula 2000,1,2022-12-05 03:03:04.447562+00:00,2022-12-05 03:03:37.432416+00:00,32.99539,2560,True
+Assetto Corsa (64 bit),1670253547,monza:,mercedes_sls,1,2022-12-05 16:21:22.047996+00:00,2022-12-05 16:23:29.675530+00:00,127.611,5754,True
+Assetto Corsa (64 bit),1670253547,monza:,mercedes_sls,4,2022-12-05 16:25:45.952643+00:00,2022-12-05 16:27:55.072810+00:00,129.201,5752,True
+Assetto Corsa (64 bit),1670253547,monza:,mercedes_sls,3,2022-12-05 16:23:29.802840+00:00,2022-12-05 16:25:45.835684+00:00,136.068,5758,True
+Assetto Corsa (64 bit),1670338943,acf_grand_valley:acf_grand_valley_short,rn_sandero_rs,1,2022-12-06 16:02:56.243460+00:00,2022-12-06 16:06:46.355694+00:00,93.549,2782,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,2,2022-12-06 23:11:52.392295+00:00,2022-12-06 23:12:16.337143+00:00,23.9812336,2339,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,12,2022-12-06 23:16:35.482796+00:00,2022-12-06 23:16:59.587354+00:00,24.1065674,2339,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,7,2022-12-06 23:14:34.320639+00:00,2022-12-06 23:14:58.444734+00:00,24.133934,2338,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,6,2022-12-06 23:14:10.166297+00:00,2022-12-06 23:14:34.287850+00:00,24.1645,2338,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,11,2022-12-06 23:16:11.277630+00:00,2022-12-06 23:16:35.466611+00:00,24.1879,2339,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,9,2022-12-06 23:15:22.682421+00:00,2022-12-06 23:15:46.864333+00:00,24.1926,2339,True
+iRacing,1670396657,charlotte quadoval,Dallara DW12,2,2022-12-06 23:04:44.703814+00:00,2022-12-06 23:05:08.885205+00:00,24.1996,2338,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,8,2022-12-06 23:14:58.461603+00:00,2022-12-06 23:15:22.665801+00:00,24.2374668,2339,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,10,2022-12-06 23:15:46.880735+00:00,2022-12-06 23:16:11.261938+00:00,24.430666,2338,True
+iRacing,1670397091,charlotte quadoval,Dallara DW12,13,2022-12-06 23:16:59.604145+00:00,2022-12-06 23:17:24.051878+00:00,24.4655342,2338,True
+Assetto Corsa (64 bit),1670280738,kleine_nordschleife:,chevrolet_corvette_c8r_1k,2,2022-12-06 09:30:50.587553+00:00,2022-12-06 09:33:17.299625+00:00,146.742,7099,True
+Assetto Corsa (64 bit),1670280296,kleine_nordschleife:,chevrolet_corvette_c8r_1k,2,2022-12-06 09:23:25.042718+00:00,2022-12-06 09:25:51.746170+00:00,146.811,7101,True
+Assetto Corsa (64 bit),1670280738,kleine_nordschleife:,chevrolet_corvette_c8r_1k,3,2022-12-06 09:33:17.401686+00:00,2022-12-06 09:35:59.389088+00:00,162.033,7101,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,9,2022-12-20 07:47:12.339226+00:00,2022-12-20 07:47:44.066143+00:00,31.7643337,2339,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,8,2022-12-20 07:46:40.294179+00:00,2022-12-20 07:47:12.303461+00:00,32.0284653,2338,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,5,2022-12-20 07:45:02.661807+00:00,2022-12-20 07:45:34.876932+00:00,32.2466,2339,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,7,2022-12-20 07:46:07.962075+00:00,2022-12-20 07:46:40.263145+00:00,32.33853,2338,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,3,2022-12-20 07:43:56.895868+00:00,2022-12-20 07:44:29.623953+00:00,32.7657,2339,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,22,2022-12-20 07:54:31.970650+00:00,2022-12-20 07:55:04.750757+00:00,32.8163,2339,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,17,2022-12-20 07:51:46.634477+00:00,2022-12-20 07:52:19.508512+00:00,32.8930664,2338,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,18,2022-12-20 07:52:19.536529+00:00,2022-12-20 07:52:52.402623+00:00,32.8944664,2338,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,4,2022-12-20 07:44:29.649818+00:00,2022-12-20 07:45:02.630846+00:00,33.0087,2338,True
+iRacing,1670957800,charlotte 2018 oval,Chevrolet Silverado,19,2022-12-20 07:52:52.433596+00:00,2022-12-20 07:53:25.461724+00:00,33.0513649,2335,True
+Assetto Corsa (64 bit),1671618199,boujma:,ford_falcon_ba_xr6_turbo,1,2022-12-21 11:25:48.683685+00:00,2022-12-21 11:27:32.419556+00:00,103.695,3339,True
+Assetto Corsa (64 bit),1671618199,boujma:,ford_falcon_ba_xr6_turbo,1,2022-12-21 11:24:00.586827+00:00,2022-12-21 11:25:48.577456+00:00,107.289,3341,True
+iRacing,1670238632,charlotte 2018 2019 rallycrosslong,Lucas Oil Off-Road Racing Series Pro-2 Lite,1,2022-12-05 03:11:05.619571+00:00,2022-12-05 03:12:07.165511+00:00,61.5775,1339,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,3,2022-12-04 19:21:57.855205+00:00,2022-12-04 19:23:07.569681+00:00,71.2178955,3143,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,5,2022-12-04 19:24:18.300574+00:00,2022-12-04 19:25:29.079392+00:00,71.63855,3148,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,2,2022-12-04 19:20:47.044595+00:00,2022-12-04 19:21:57.747295+00:00,71.77844,3144,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,7,2022-12-04 19:26:40.667366+00:00,2022-12-04 19:27:50.910555+00:00,71.85596,3147,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,4,2022-12-04 19:23:07.684012+00:00,2022-12-04 19:24:18.192012+00:00,72.12012,3141,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,2,2022-12-04 19:18:23.491464+00:00,2022-12-04 19:20:46.935866+00:00,72.3516846,3144,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,6,2022-12-04 19:25:29.190731+00:00,2022-12-04 19:26:40.556591+00:00,72.38135,3144,True
+Automobilista 2,1670177733,Long_Beach:Long_Beach,Reynard 95i Mercedes-Benz,1,2022-12-04 19:16:52.274486+00:00,2022-12-04 19:18:23.384220+00:00,72.51599,3146,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,8,2022-12-20 14:08:08.691453+00:00,2022-12-20 14:09:42.229591+00:00,93.531,5768,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,7,2022-12-20 14:06:34.059206+00:00,2022-12-20 14:08:08.581795+00:00,94.509,5765,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,3,2022-12-20 13:50:51.770756+00:00,2022-12-20 13:52:26.754487+00:00,95.037,5766,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,4,2022-12-20 13:52:26.869856+00:00,2022-12-20 13:54:01.932322+00:00,95.0730057,5768,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,2,2022-12-20 13:49:15.399599+00:00,2022-12-20 13:50:51.658540+00:00,96.27,5769,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,5,2022-12-20 14:03:09.388387+00:00,2022-12-20 14:04:46.098892+00:00,96.684,5770,True
+Assetto Corsa (64 bit),1671539984,rt_suzuka:suzukagp,vrc_1997_williams_fw19,7,2022-12-20 14:04:46.208317+00:00,2022-12-20 14:06:33.951201+00:00,107.798996,5764,True
+iRacing,1670210499,lagunaseca,Mercedes AMG GT4,5,2022-12-04 22:28:29.140302+00:00,2022-12-04 22:29:31.205882+00:00,51.3830338,3570,True
+iRacing,1670210499,lagunaseca,Mercedes AMG GT4,7,2022-12-04 22:29:31.236397+00:00,2022-12-04 22:30:32.759654+00:00,61.52603,3570,True
+Assetto Corsa (64 bit),1670850169,mugello:mugello_osrw,rss_lmgt_toyama_2zero_v8_1998,2,2022-12-12 13:08:36.419109+00:00,2022-12-12 13:10:21.766546+00:00,105.345,5190,True
+Assetto Corsa (64 bit),1670850169,mugello:mugello_osrw,rss_lmgt_toyama_2zero_v8_1998,1,2022-12-12 13:06:48.061343+00:00,2022-12-12 13:08:36.308723+00:00,112.17,5190,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,7,2022-12-06 01:41:22.805426+00:00,2022-12-06 01:41:53.328108+00:00,30.5705662,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,12,2022-12-06 01:49:04.159456+00:00,2022-12-06 01:49:34.714843+00:00,30.59,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,15,2022-12-06 01:50:36.028766+00:00,2022-12-06 01:51:06.619096+00:00,30.6188,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,14,2022-12-06 01:50:05.399249+00:00,2022-12-06 01:50:35.997010+00:00,30.619833,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,10,2022-12-06 01:43:29.456548+00:00,2022-12-06 01:44:00.060552+00:00,30.6487675,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,13,2022-12-06 01:49:34.743574+00:00,2022-12-06 01:50:05.373459+00:00,30.6627,968,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,5,2022-12-06 01:38:57.947553+00:00,2022-12-06 01:39:28.594593+00:00,30.6979332,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,4,2022-12-06 01:38:27.247945+00:00,2022-12-06 01:38:57.912110+00:00,30.6989,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,8,2022-12-06 01:41:53.360089+00:00,2022-12-06 01:42:24.185030+00:00,30.8406,969,True
+iRacing,1670319283,lakeland dirt,Lucas Oil Off-Road Racing Series Pro-2 Lite,1,2022-12-06 01:36:53.462359+00:00,2022-12-06 01:37:24.578457+00:00,31.1493664,969,True
+Assetto Corsa (64 bit),1671616103,wolsfeld:,ford_falcon_ba_xr6_turbo,1,2022-12-21 10:50:07.418135+00:00,2022-12-21 10:52:27.000949+00:00,83.973,2054,True
+iRacing,1670239518,phoenix oval,Chevrolet Silverado,1,2022-12-05 03:26:57.776506+00:00,2022-12-05 03:27:28.788658+00:00,31.03651,1618,True
+iRacing,1670639273,limerock 2019 gp,Ferrari 488 GT3 Evo 2020,1,2022-12-09 20:30:46.630676+00:00,2022-12-09 20:31:51.392507+00:00,25.760849,2340,True
+Assetto Corsa (64 bit),1670308601,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,5,2022-12-06 07:47:29.244931+00:00,2022-12-06 07:48:53.096213+00:00,83.8650055,4452,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,3,2022-12-06 08:06:40.564055+00:00,2022-12-06 08:08:05.004964+00:00,84.519,4455,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,4,2022-12-06 08:08:05.117210+00:00,2022-12-06 08:09:29.979856+00:00,84.921,4457,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,2,2022-12-06 08:05:15.103762+00:00,2022-12-06 08:06:40.449612+00:00,85.359,4457,True
+Assetto Corsa (64 bit),1670308601,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,4,2022-12-06 07:46:03.663642+00:00,2022-12-06 07:47:29.132886+00:00,85.4819946,4454,True
+Assetto Corsa (64 bit),1670308601,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,3,2022-12-06 07:44:38.032514+00:00,2022-12-06 07:46:03.553554+00:00,85.569,4453,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,8,2022-12-06 08:13:53.505971+00:00,2022-12-06 08:15:19.242997+00:00,85.755,4454,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,5,2022-12-06 08:10:59.880997+00:00,2022-12-06 08:12:25.797179+00:00,85.8959961,4455,True
+Assetto Corsa (64 bit),1670308601,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,7,2022-12-06 07:50:19.861623+00:00,2022-12-06 07:51:45.771242+00:00,85.956,4458,True
+Assetto Corsa (64 bit),1670310228,acu_mexico_2021:,ks_porsche_919_hybrid_2016_evo,12,2022-12-06 08:19:58.567785+00:00,2022-12-06 08:21:24.928599+00:00,86.418,4451,True
+Assetto Corsa (64 bit),1670342815,ddm_gts_tsukuba:full,rn_sandero_rs,2,2022-12-06 17:08:54.135494+00:00,2022-12-06 17:10:09.239127+00:00,75.1170044,2069,True

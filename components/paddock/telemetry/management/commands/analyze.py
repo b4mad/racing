@@ -119,10 +119,16 @@ class Command(BaseCommand):
             csv_writer = csv.DictWriter(
                 csv_file,
                 fieldnames=[
-                    "session",
-                    "lap",
-                    "track",
                     "game",
+                    "session",
+                    "track",
+                    "car",
+                    "lap",
+                    "start",
+                    "end",
+                    "time",
+                    "length",
+                    "valid",
                 ],
             )
             csv_writer.writeheader()
@@ -210,10 +216,16 @@ class Command(BaseCommand):
                 if options["save_csv"]:
                     for lap in fast_laps:
                         row = {
-                            "session": lap.session.session_id,
-                            "lap": lap.number,
-                            "track": track.name,
                             "game": game.name,
+                            "session": lap.session.session_id,
+                            "track": track.name,
+                            "car": lap.car.name,
+                            "lap": lap.number,
+                            "start": lap.start,
+                            "end": lap.end,
+                            "time": lap.time,
+                            "length": lap.length,
+                            "valid": lap.valid,
                         }
                         csv_writer.writerow(row)
                 else:
