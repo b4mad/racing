@@ -11,6 +11,13 @@ numpy = "*"
 pandas = "*"
 seaborn = "*"
 nbconvert = {extras = ["webpdf"], version = "*"}
+scipy = "*"
+plotly = "*"
+ipywidgets = "~=7.0"
+scikit-learn = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+kaleido = "*"
 
 [dev-packages]
 mypy = "*"
