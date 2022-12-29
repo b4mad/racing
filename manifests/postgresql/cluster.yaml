@@ -69,3 +69,8 @@ spec:
         - paddock
         - stats
       options: "NOSUPERUSER"
+    - name: paddock-root
+      databases:
+        - paddock
+        - stats
+      options: "SUPERUSER"

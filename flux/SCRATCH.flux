@@ -173,3 +173,20 @@ from(bucket: "racing")
 https://grafana.com/grafana/dashboards/15356
 
 https://www.sqlpac.com/en/documents/influxdb-v2-flux-language-quick-reference-guide-cheat-sheet.html
+
+
+
+games = [${GameName:doublequote}]
+session_types = [${SessionTypeName:doublequote}]
+
+from(bucket: "racing")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+  |> filter(fn: (r) => r["user"] == "${user}")
+  |> keep(columns: ["GameName", "user", "CarModel", "TrackCode", "SessionId", "SessionTypeName", "_time", "_value"])
+  |> last()
+  |> group()
+  |> filter(fn: (r) => contains(value: r.GameName, set: games) )
+  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )
+  |> group(columns: [])
+  |> sort(columns: ["End"], desc: true)
