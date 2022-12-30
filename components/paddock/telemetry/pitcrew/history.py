@@ -38,11 +38,11 @@ class History:
 
     def run(self):
         while self.do_run:
+            time.sleep(5)
             if self.do_init:
                 self.ready = self.init()
                 if self.ready:
                     self.do_init = False
-            time.sleep(60)
 
     def set_filter(self, filter):
         self.filter = filter

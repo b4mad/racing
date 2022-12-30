@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: analyze
+  namespace: b4mad-racing
+spec:
+  selector: {}
+  template:
+    metadata:
+      name: analyze
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: b4mad-racing-pguser-paddock
+                  key: uri
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          image: paddock:latest
+          imagePullPolicy: Always
+          name: analyze
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py analyze
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      restartPolicy: Never

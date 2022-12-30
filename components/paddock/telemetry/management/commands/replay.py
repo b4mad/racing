@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from django.core.management.base import BaseCommand
 from telemetry.influx import Influx
 import logging
@@ -31,18 +32,30 @@ class Command(BaseCommand):
             default=None,
             help="list of lap ids to analyze",
         )
+        parser.add_argument(
+            "-w",
+            "--wait",
+            nargs="?",
+            type=int,
+            default=None,
+            help="fraction of a second to sleep between messages",
+        )
 
     def handle(self, *args, **options):
-        i = Influx()
+        influx = Influx()
         mqttc = mqtt.Client()
         mqttc.username_pw_set(B4MAD_RACING_CLIENT_USER, B4MAD_RACING_CLIENT_PASSWORD)
         mqttc.connect("telemetry.b4mad.racing", 31883, 60)
         logging.info("Connected to telemetry.b4mad.racing")
         # epoch = datetime.datetime.utcfromtimestamp(0)
+        sleep = 0
+        if options["wait"]:
+            sleep = 1.0 / options["wait"]
 
         for session_id in options["session_ids"]:
             logging.info(f"Replaying session {session_id}")
-            for record in i.session(session_id, lap_ids=options["lap_ids"]):
+            line_count = 0
+            for record in influx.session(session_id, lap_ids=options["lap_ids"]):
                 topic = record["topic"]
                 _time = record["_time"]
                 values = record.values.copy()
@@ -77,12 +90,25 @@ class Command(BaseCommand):
                     "time": _time,
                     "telemetry": values,
                 }
-                topic = "replay/" + topic
-                # print(topic)
+                (
+                    prefix,
+                    driver,
+                    session_id,
+                    game,
+                    track,
+                    car,
+                    session_type,
+                ) = topic.split("/")
+                topic = f"replay/{prefix}/durandom/{session_id}/{game}/{track}/{car}/{session_type}"
+
+                if line_count == 0:
+                    print(topic)
+                line_count += 1
+
                 # print dot without newline
                 print(".", end="", flush=True)
-                # sleep for 1/60th of a second
-                # time.sleep(0.016666666666666666)
+                if sleep:
+                    time.sleep(sleep)
 
                 # convert payload to json string
                 payload = json.dumps(payload)

@@ -66,15 +66,10 @@ class Coach:
         now = time.time()
         # build self.messages from fast laps segments
         if not self.messages:
+            track_length = self.history.track.length
             for segment in self.history.segments:
-                at = segment.brake - 50
+                at = (segment.accelerate - 100) % track_length
                 msg = f"gear {segment.gear}"
-
-                # wrap around track length
-                if at <= 0:
-                    at = self.history.track.length - at
-                elif at >= self.history.track.length:
-                    at = at - self.history.track.length
 
                 self.messages[at] = {
                     "msg": msg,
