@@ -25,6 +25,7 @@ django-dirtyfields = "*"
 matplotlib = "*"
 scipy = "*"
 locked-dict = "*"
+scikit-learn = "*"
 
 [dev-packages]
 black = "*"
