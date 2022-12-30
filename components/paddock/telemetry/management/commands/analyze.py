@@ -150,9 +150,9 @@ class Command(BaseCommand):
             exit(0)
 
         where = []
-        if options["game"]:
-            game = Game.objects.get(name=options["game"])
-            where.append(f"game='{game.pk}'")
+        # if options["game"]:
+        #     game = Game.objects.get(name=options["game"])
+        #     where.append(f"game={game.pk}")
         if options["track"]:
             track = Track.objects.get(name=options["track"])
             where.append(f" track_id={track.pk}")
@@ -174,17 +174,6 @@ class Command(BaseCommand):
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
             game = car.game
-            if game.name == "RaceRoom":
-                logging.info("RaceRoom not supported, because no SteeringAngle")
-                continue
-            if game.name == "Assetto Corsa Competizione":
-                logging.info(
-                    "Assetto Corsa Competizione not supported, because no SteeringAngle"
-                )
-                continue
-            if car.name == "Unknown":
-                logging.info(f"Car {car.name} not supported, skipping")
-                continue
 
             if options["new"]:
                 if FastLap.objects.filter(
@@ -198,41 +187,44 @@ class Command(BaseCommand):
             logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
 
             laps = Lap.objects.filter(
-                track=track, car=car, length__gt=track.length - 20, time__gt=20
+                track=track, car=car, length__gt=track.length - 20
             ).order_by("time")[:10]
 
-            if laps.count() > 0:
-                lap = laps[0]
-                fast_time = lap.time
-                fast_laps = [lap]
-                # threshold is 120% of the fastest lap
-                threshold = fast_time * 1.2
+            if laps.count() == 0:
+                logging.info("No laps found for threshold")
+                continue
 
-                for lap in laps[1:]:
-                    if lap.time <= threshold:
-                        # print(f"{lap.time} is <= {threshold}")
-                        fast_laps.append(lap)
+            lap = laps[0]
+            fast_time = lap.time
+            fast_laps = [lap]
+            # threshold is 120% of the fastest lap
+            threshold = fast_time * 1.2
 
-                if options["save_csv"]:
-                    for lap in fast_laps:
-                        row = {
-                            "game": game.name,
-                            "session": lap.session.session_id,
-                            "track": track.name,
-                            "car": lap.car.name,
-                            "lap": lap.number,
-                            "start": lap.start,
-                            "end": lap.end,
-                            "time": lap.time,
-                            "length": lap.length,
-                            "valid": lap.valid,
-                        }
-                        csv_writer.writerow(row)
-                else:
-                    fl = FastLapAnalyzer(fast_laps)
-                    track_info = fl.analyze()
-                    if track_info:
-                        self.save_fastlap(track_info, car=car, track=track, game=game)
+            for lap in laps[1:]:
+                if lap.time <= threshold:
+                    # print(f"{lap.time} is <= {threshold}")
+                    fast_laps.append(lap)
+
+            if options["save_csv"]:
+                for lap in fast_laps:
+                    row = {
+                        "game": game.name,
+                        "session": lap.session.session_id,
+                        "track": track.name,
+                        "car": lap.car.name,
+                        "lap": lap.number,
+                        "start": lap.start,
+                        "end": lap.end,
+                        "time": lap.time,
+                        "length": lap.length,
+                        "valid": lap.valid,
+                    }
+                    csv_writer.writerow(row)
+            else:
+                fl = FastLapAnalyzer(fast_laps)
+                track_info = fl.analyze()
+                if track_info:
+                    self.save_fastlap(track_info, car=car, track=track, game=game)
 
         if options["save_csv"]:
             csv_file.close()
