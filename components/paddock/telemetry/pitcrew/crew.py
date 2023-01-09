@@ -33,8 +33,15 @@ class Crew:
         self.active_coaches = {}
         self.replay = False
         self.clear_sessions_tick = django.utils.timezone.now()
+        self._stop_event = threading.Event()
 
         self.session_save_interval = 10
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
     def on_message(self, mqttc, obj, msg):
         """Handle incoming messages, we are only interested in the telemetry.
@@ -225,7 +232,7 @@ class Crew:
                     )
 
     def save_sessions(self):
-        while True:
+        while True and not self.stopped():
             time.sleep(self.session_save_interval)
             # FIXME: purge old sessions
             session_ids = self.sessions.keys()
@@ -311,7 +318,7 @@ class Crew:
                                 track.save()
 
     def watch_coaches(self):
-        while True:
+        while True and not self.stopped():
             # sleep longer than save_sessions, to make sure all DB objects are initialized
             time.sleep((self.session_save_interval * 2) + 1)
             # logging.info("checking coaches")
@@ -381,11 +388,38 @@ class Crew:
 
         s = self.mqttc.subscribe(topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
-            threading.Thread(target=self.watch_coaches).start()
-            threading.Thread(target=self.save_sessions).start()
             logging.info(f"Subscribed to {topic}")
 
-            self.mqttc.loop_forever()
+            threads = []
+            t = threading.Thread(target=self.watch_coaches)
+            threads.append(t)
+            t = threading.Thread(target=self.save_sessions)
+            threads.append(t)
+            for t in threads:
+                t.start()
+
+            # self.mqttc.loop_forever()
+            self.mqttc.loop_start()
+            threads.append(self.mqttc._thread)
+
+            time.sleep(1)
+
+            while True and not self.stopped():
+                time.sleep(1)
+                for t in threads:
+                    if not t.is_alive():
+                        self.stop()
+                        logging.error(f"Thread {t} died")
+                        break
+
+            self.mqttc.loop_stop()
+            logging.error("Terminating all threads...")
+            for t in threads:
+                logging.debug(f"joining Thread {t}")
+                t.join(timeout=2)
+
+            exit(1)
+
         else:
             logging.error(f"Failed to subscribe to {topic}")
             exit(1)
