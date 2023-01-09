@@ -31,6 +31,8 @@ class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = [
         "id",
+        "start",
+        "end",
         "length",
         "time",
         "session",
