@@ -10,10 +10,61 @@ class Analyzer:
     def __init__(self):
         pass
 
-    def local_minima(self, df, column="Gear"):
+    def resample(self, df, columns=["Brake", "SpeedMs"], freq=1):
+        # https://stackoverflow.com/questions/30560198/resampling-non-time-series-data/57110084
+        columns = ["DistanceRoundTrack"] + columns
+        id = df["id"].iloc[0]
+        df = df[columns]
+
+        max = df["DistanceRoundTrack"].max()
+        min = df["DistanceRoundTrack"].min()
+        count = max
+        count = int(count / freq)
+        df.set_index("DistanceRoundTrack", inplace=True)
+        # display(df)
+
+        resampled = np.linspace(min, max, count)
+        # print(Xresampled)
+
+        # Resampling
+        # df = df.reindex(df.index.union(resampling))
+
+        # Interpolation technique to use. One of:
+
+        #'linear': Ignore the index and treat the values as equally spaced.
+        #   This is the only method supported on MultiIndexes.
+        #'time': Works on daily and higher resolution data to interpolate given length of interval.
+        #'index', 'values': use the actual numerical values of the index.
+        #'pad': Fill in NaNs using existing values.
+        #'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'spline', 'barycentric', 'polynomial':
+        #   Passed to scipy.interpolate.interp1d. These methods use the numerical values of the index.
+        #   Both 'polynomial' and 'spline' require that you also specify an order (int),
+        #   e.g. df.interpolate(method='polynomial', order=5).
+        #'krogh', 'piecewise_polynomial', 'spline', 'pchip', 'akima':
+        #   Wrappers around the SciPy interpolation methods of similar names. See Notes.
+        #'from_derivatives': Refers to scipy.interpolate.BPoly.from_derivatives
+        #   which replaces 'piecewise_polynomial' interpolation method in scipy 0.18.
+
+        # df = df.reindex(df.index.union(Xresampled)).interpolate(method='polynomial',order=2).loc[Xresampled]
+        df = (
+            df.reindex(df.index.union(resampled))
+            .interpolate(method="values")
+            .loc[resampled]
+        )
+        df = df.reset_index()
+        df["id"] = id
+        return df
+
+    def local_maxima(self, df, column="Gear", points=50):
+        return self.local_extrema(df, column, mode="max", points=points)
+
+    def local_minima(self, df, column="Gear", points=50):
+        return self.local_extrema(df, column, mode="min", points=points)
+
+    def local_extrema(self, df, column="Gear", mode="min", points=50):
         # https://stackoverflow.com/questions/48023982/pandas-finding-local-max-and-min
         # Find local peaks
-        n = 50  # number of points to be checked before and after
+        n = points  # number of points to be checked before and after
         # Find local peaks
 
         if column == "Gear":
@@ -34,12 +85,20 @@ class Analyzer:
         # # also add the first and last row
         min_max = pd.concat([min_max, df.iloc[[0, -1]]])
 
-        # now find the local minima again
-        real_min = min_max[column][
-            (min_max[column].shift(1) >= min_max[column])
-            & (min_max[column].shift(-1) > min_max[column])
-        ]
-        return df.loc[real_min.index]
+        if mode == "min":
+            # now find the local minima again
+            real = min_max[column][
+                (min_max[column].shift(1) >= min_max[column])
+                & (min_max[column].shift(-1) > min_max[column])
+            ]
+        else:
+            # now find the local maxima again
+            real = min_max[column][
+                (min_max[column].shift(1) <= min_max[column])
+                & (min_max[column].shift(-1) < min_max[column])
+            ]
+
+        return df.loc[real.index]
 
     def local_minima_off(self, df, column="Gear"):
         # https://stackoverflow.com/questions/48023982/pandas-finding-local-max-and-min
@@ -159,7 +218,7 @@ class Analyzer:
                 length = max_distance
         return length
 
-    def resample(self, distances, points, length):
+    def resample_(self, distances, points, length):
         delta_distance = 2  # [meter]
         distances = distances.copy()
         points = points.copy()

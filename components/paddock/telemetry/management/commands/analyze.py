@@ -236,19 +236,9 @@ class Command(BaseCommand):
         fast_lap.fast_lap_segments.all().delete()
         i = 1
         for brakepoint in track_info:
+            brakepoint["turn"] = i
             print(brakepoint)
-            segment, created = fast_lap.fast_lap_segments.get_or_create(
-                turn=i,
-                start=brakepoint["start"],
-                end=brakepoint["end"],
-                brake=brakepoint["brake"],
-                force=brakepoint["force"],
-                gear=brakepoint["gear"],
-                speed=brakepoint["speed"],
-                stop=brakepoint["stop"],
-                accelerate=brakepoint["accelerate"],
-                # mark=brakepoint["mark"],
-            )
+            fast_lap.fast_lap_segments.create(**brakepoint)
             i += 1
 
     def handle_influx(self, *args, **options):

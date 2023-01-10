@@ -18,6 +18,7 @@ scikit-learn = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
 kaleido = "*"
+ipykernel = "*"
 
 [dev-packages]
 mypy = "*"

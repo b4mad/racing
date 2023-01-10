@@ -33,34 +33,137 @@ class FastLapAnalyzer:
         if not self.assert_can_analyze():
             return
 
-        all_laps = self.influx.telemetry_for_laps(self.laps)
-        if len(all_laps) == 0:
+        laps = self.influx.telemetry_for_laps(self.laps)
+        if len(laps) == 0:
             return
 
-        laps = self.analyzer.remove_uncorrelated_laps(all_laps, column="SpeedMs")
+        laps = self.analyzer.remove_uncorrelated_laps(laps, column="SpeedMs")
+        # remove laps that are too different from the others
+        laps = self.analyzer.remove_uncorrelated_laps(
+            laps, column="Brake", threshold=0.5
+        )
+
+        if len(laps) == 0:
+            return
 
         # get the max distance for each lap and select the max
-        max_distance = np.max([df["DistanceRoundTrack"].max() for df in laps])
+        self.max_distance = np.max([df["DistanceRoundTrack"].max() for df in laps])
 
-        all_minima = []
-        for lap_df in laps:
-            # extend the lap to 3 times the length
-            df = self.analyzer.drop_decreasing(lap_df)
-            window_length = 120  # 60 points corresponds to 1 seconds
+        cleaned_laps = []
+        for df in laps:
+            df = self.analyzer.drop_decreasing(df)
+            df = self.analyzer.resample(
+                df, columns=["Brake", "SpeedMs", "Gear"], freq=1
+            )
+
+            # smooth the laps
+            window_length = 10  # meters
             if len(df) < window_length:
                 # too short, skip
                 logging.warning("lap too short, skipping")
                 continue
+
             df = self.analyzer.extend_lap(df)
 
-            # smooth the laps
+            df["Brake"] = savgol_filter(df["Brake"], window_length, 2)
             df["SpeedMs"] = savgol_filter(df["SpeedMs"], window_length, 2)
-            minima = self.analyzer.local_minima(df, column="SpeedMs")
-            logging.debug(f"number of minima {len(minima)} for lap {df['id'].iloc[0]}")
-            all_minima.append(minima)
+            cleaned_laps.append(df)
+
+        gears_and_turns = self.get_gears_and_turns(cleaned_laps)
+        brakepoints = self.get_brakepoints(cleaned_laps)
+
+        # merge gears_and_turns and brakepoints based on the numeric value of the start key
+        track_info = gears_and_turns + brakepoints
+        track_info = sorted(track_info, key=lambda k: k["start"])
+
+        # convert track_info, which is an array of dict, to a pandas dataframe
+        df = pd.DataFrame(track_info)
+        logging.info(df.style.format(precision=1).to_string())
+        return track_info
+
+    def get_brakepoints(self, laps):
+        all_minima = []
+        max_distance = self.max_distance
+        track_info = []
+
+        for df in laps:
+            extrema = self.analyzer.local_maxima(df, column="Brake", points=30)
+            logging.debug(f"number of maxima {len(extrema)} for lap {df['id'].iloc[0]}")
+            if len(extrema) > 0:
+                all_minima.append(extrema)
 
         if len(all_minima) == 0:
-            return
+            return track_info
+
+        centroids_df, labels = self.analyzer.cluster(all_minima, field="Brake")
+        centroids_df = centroids_df.sort_values(by=["DistanceRoundTrack"])
+        centroids_df = centroids_df.reset_index(drop=True)
+        df = centroids_df.copy()
+
+        # apply modulo length to DistanceRoundTrack
+        df["DistanceRoundTrack"] = df["DistanceRoundTrack"].mod(max_distance)
+
+        # sort the centroids by DistanceRoundTrack and reset the index
+        df = df.sort_values(by=["DistanceRoundTrack"])
+        df = df.reset_index(drop=True)
+
+        n_clusters = int(len(df) / 3)
+        turns, labels = self.analyzer.cluster(
+            [df], field="Brake", n_clusters=n_clusters
+        )
+        turns = turns.sort_values(by=["DistanceRoundTrack"])
+        turns = turns.reset_index(drop=True)
+
+        for i in range(len(turns)):
+            # get the distance of the turn
+            brake_max = turns["Brake"].iloc[i]
+            distance = turns["DistanceRoundTrack"].iloc[i]
+            # display(f'brake force {brake_max} at distance {distance}')
+
+            brake_starts = []
+            for df in laps:
+                # go back from the turn to find where Brake starts
+                brake = brake_max
+                # find the index in df where DistanceRoundTrack is equal to distance
+                index = df[df["DistanceRoundTrack"] > distance].index[0]
+                brake_start = distance
+                while brake > 0.1:
+                    index -= 1
+                    if index < 0:
+                        index = len(df) - 1
+                    brake = df["Brake"].iloc[index]
+                    brake_start = df["DistanceRoundTrack"].iloc[index]
+                brake_starts.append(brake_start)
+                # print(f"brake start {brake_start} ({brake})")
+
+            # find median gear
+            brake_start = int(np.median(brake_starts))
+
+            track_info.append(
+                {
+                    "start": brake_start,
+                    "brake": brake_start,
+                    "force": brake_max,
+                }
+            )
+
+        # df = pd.DataFrame(track_info)
+        # logging.info(df.style.format(precision=1).to_string())
+        return track_info
+
+    def get_gears_and_turns(self, laps):
+        all_minima = []
+        max_distance = self.max_distance
+        track_info = []
+
+        for df in laps:
+            minima = self.analyzer.local_minima(df, column="SpeedMs")
+            logging.debug(f"number of minima {len(minima)} for lap {df['id'].iloc[0]}")
+            if len(minima) >= 0:
+                all_minima.append(minima)
+
+        if len(all_minima) == 0:
+            return track_info
 
         centroids_df, labels = self.analyzer.cluster(all_minima, field="SpeedMs")
         centroids_df = centroids_df.sort_values(by=["DistanceRoundTrack"])
@@ -84,7 +187,6 @@ class FastLapAnalyzer:
         turns = turns.sort_values(by=["DistanceRoundTrack"])
         turns = turns.reset_index(drop=True)
 
-        track_info = []
         for i in range(len(turns)):
             # get the distance of the turn
             distance = turns["DistanceRoundTrack"].iloc[i]
@@ -140,16 +242,13 @@ class FastLapAnalyzer:
                 {
                     "start": start,
                     "end": end,
-                    "brake": 0,
-                    "force": 0,
                     "gear": gear,
                     "speed": speed,
-                    "stop": 0,
                     "accelerate": distance,
                 }
             )
 
         # convert track_info, which is an array of dict, to a pandas dataframe
-        df = pd.DataFrame(track_info)
-        logging.info(df.style.format(precision=1).to_string())
+        # df = pd.DataFrame(track_info)
+        # logging.info(df.style.format(precision=1).to_string())
         return track_info
