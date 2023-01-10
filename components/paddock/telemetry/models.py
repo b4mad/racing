@@ -112,6 +112,7 @@ class FastLapSegment(models.Model):
     turn_in = models.IntegerField(default=0)
     force = models.IntegerField(default=0)
     gear = models.IntegerField(default=0)
+    # stop is the time the brake force starts to decrease
     stop = models.IntegerField(default=0)
     accelerate = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
