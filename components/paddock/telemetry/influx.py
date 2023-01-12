@@ -1,13 +1,12 @@
 from datetime import datetime
-import logging
+from telemetry.models import Lap
 
+import logging
 import os
 import csv
-
 import influxdb_client
-
-import warnings
 from influxdb_client.client.warnings import MissingPivotFunction
+import warnings
 
 warnings.simplefilter("ignore", MissingPivotFunction)
 
@@ -91,7 +90,7 @@ class Influx:
             lap_number = lap.number
 
             logging.info(
-                f"Processing {game} {track} {car} : {session} - {lap_number: >2} : {lap.length} - {lap.time}"
+                f"Processing {lap.id}: {game} {track} {car} : {session} - {lap_number: >2} : {lap.length} - {lap.time}"
             )
 
             try:
@@ -104,23 +103,43 @@ class Influx:
 
         return data
 
-    def session(self, session_id, lap_ids=[]):
-        query = f"""
-            from(bucket: "racing")
-            |> range(start: -10y, stop: now())
-            |> filter(fn: (r) => r["_measurement"] == "laps_cc")
-            |> filter(fn: (r) => r["SessionId"] == "{session_id}")
-            |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
-        """
+    def session(self, session_id=None, lap_id=None, lap_numbers=[]):
 
         lap_filter = []
-        if lap_ids:
-            for lap_id in lap_ids:
-                lap_filter.append(f'r["CurrentLap"] == "{lap_id}"')
 
-            query += f"|> filter(fn: (r) => {' or '.join(lap_filter)})"
+        if lap_numbers and session_id:
+            for lap_number in lap_numbers:
+                lap_filter.append(f'r["CurrentLap"] == "{lap_number}"')
 
-        # print(query)
+            query = f"""
+                from(bucket: "racing")
+                |> range(start: -10y, stop: now())
+                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["SessionId"] == "{session_id}")
+                |> filter(fn: (r) => {' or '.join(lap_filter)})
+                |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+            """
+        elif lap_id:
+            lap = Lap.objects.get(id=lap_id)
+            start = lap.start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            end = lap.end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            session_id = lap.session.session_id
+
+            query = f"""
+                from(bucket: "racing")
+                |> range(start: {start}, stop: {end})
+                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["SessionId"] == "{session_id}")
+                |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+            """
+        else:
+            query = f"""
+                from(bucket: "racing")
+                |> range(start: -10y, stop: now())
+                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["SessionId"] == "{session_id}")
+                |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+            """
 
         records = self.query_api.query_stream(query=query)
         for record in records:

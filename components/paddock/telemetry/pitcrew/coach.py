@@ -20,8 +20,13 @@ class Coach:
         self.messages = {}
         self.debug = debug
 
+        self.msg_read_interval = 20
+        if self.debug:
+            self.msg_read_interval = 1
+
     def set_filter(self, filter):
         self.history.set_filter(filter)
+        self.messages = {}
 
     def gear(self, segment):
         gear_h = self.history.gear(segment)
@@ -68,13 +73,23 @@ class Coach:
         if not self.messages:
             track_length = self.history.track.length
             for segment in self.history.segments:
-                at = (segment.accelerate - 100) % track_length
-                msg = f"gear {segment.gear}"
+                # add gear notification
+                if segment.gear:
+                    at = (segment.accelerate - 100) % track_length
+                    msg = f"gear {segment.gear}"
+                    self.messages[at] = {
+                        "msg": msg,
+                        "read": 0,
+                    }
+                if segment.brake:
+                    at = segment.start % track_length
+                    # This message takes 5.3 seconds to read
+                    msg = "Brake in 3 .. 2 .. 1 .. brake"
+                    self.messages[at] = {
+                        "msg": msg,
+                        "read": 0,
+                    }
 
-                self.messages[at] = {
-                    "msg": msg,
-                    "read": 0,
-                }
             logging.debug(f"loaded messages: {self.messages}")
 
         # loop over all messages and check the distance, if we have something to say
@@ -82,7 +97,10 @@ class Coach:
         for at in self.messages:
             distance = abs(at - meters)
             # only read every 20 seconds and if we are close
-            if distance < 2 and now - self.messages[at]["read"] > 20:
+            if (
+                distance < 2
+                and now - self.messages[at]["read"] > self.msg_read_interval
+            ):
                 self.messages[at]["read"] = now
                 return self.messages[at]["msg"]
 

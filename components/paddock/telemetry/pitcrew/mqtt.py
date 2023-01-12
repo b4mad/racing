@@ -82,6 +82,7 @@ class Mqtt:
 
         # print('.', end='')
         telemetry = json.loads(msg.payload.decode("utf-8"))["telemetry"]
+        # print(telemetry["DistanceRoundTrack"])
 
         # meters = telemetry["telemetry"]["DistanceRoundTrack"]
         response = self.coach.get_response(telemetry)
