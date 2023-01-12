@@ -25,93 +25,135 @@ class Command(BaseCommand):
             help="list of sessions to replay",
         )
         parser.add_argument(
-            "-l",
+            "-n",
+            "--new-session-id",
+            nargs="?",
+            type=int,
+            default=None,
+            help="list of sessions to replay",
+        )
+        parser.add_argument(
+            "-i",
             "--lap-ids",
             nargs="*",
             type=int,
             default=None,
-            help="list of lap ids to analyze",
+            help="lap id to analyze",
+        )
+        parser.add_argument(
+            "-l",
+            "--lap-numbers",
+            nargs="*",
+            type=int,
+            default=None,
+            help="lap numbers to analyze",
         )
         parser.add_argument(
             "-w",
             "--wait",
             nargs="?",
-            type=int,
+            type=float,
             default=None,
-            help="fraction of a second to sleep between messages",
+            help="seconds to sleep between messages",
         )
 
     def handle(self, *args, **options):
         influx = Influx()
+        if options["session_ids"]:
+            for session_id in options["session_ids"]:
+                session = influx.session(
+                    session_id=session_id, lap_numbers=options["lap_numbers"]
+                )
+                if options["new_session_id"]:
+                    new_session_id = options["new_session_id"]
+                else:
+                    new_session_id = int(time.time())
+                logging.info(
+                    f"Replaying session {session_id} as new session {new_session_id}"
+                )
+                self.replay(
+                    session, wait=options["wait"], new_session_id=new_session_id
+                )
+
+        if options["lap_ids"]:
+            for lap_id in options["lap_ids"]:
+                session = influx.session(lap_id=lap_id)
+                if options["new_session_id"]:
+                    new_session_id = options["new_session_id"]
+                else:
+                    new_session_id = int(time.time())
+                logging.info(
+                    f"Replaying lap_id {lap_id} as new session {new_session_id}"
+                )
+                self.replay(
+                    session, wait=options["wait"], new_session_id=new_session_id
+                )
+
+    def replay(self, session, wait=0.001, new_session_id=None):
         mqttc = mqtt.Client()
         mqttc.username_pw_set(B4MAD_RACING_CLIENT_USER, B4MAD_RACING_CLIENT_PASSWORD)
         mqttc.connect("telemetry.b4mad.racing", 31883, 60)
         logging.info("Connected to telemetry.b4mad.racing")
         # epoch = datetime.datetime.utcfromtimestamp(0)
-        sleep = 0
-        if options["wait"]:
-            sleep = 1.0 / options["wait"]
 
-        for session_id in options["session_ids"]:
-            logging.info(f"Replaying session {session_id}")
-            line_count = 0
-            for record in influx.session(session_id, lap_ids=options["lap_ids"]):
-                topic = record["topic"]
-                _time = record["_time"]
-                values = record.values.copy()
-                for key in [
-                    "result",
-                    "table",
-                    "_start",
-                    "_stop",
-                    "_time",
-                    "_measurement",
-                    "topic",
-                    "host",
-                ]:
-                    del values[key]
+        line_count = 0
+        for record in session:
+            topic = record["topic"]
+            _time = record["_time"]
+            values = record.values.copy()
+            for key in [
+                "result",
+                "table",
+                "_start",
+                "_stop",
+                "_time",
+                "_measurement",
+                "topic",
+                "host",
+            ]:
+                del values[key]
 
-                for key in [
-                    "CarModel",
-                    "GameName",
-                    "SessionId",
-                    "SessionTypeName",
-                    "TrackCode",
-                    "user",
-                ]:
-                    del values[key]
+            for key in [
+                "CarModel",
+                "GameName",
+                "SessionId",
+                "SessionTypeName",
+                "TrackCode",
+                "user",
+            ]:
+                del values[key]
 
-                # publish to mqtt
-                # convert _time to seconds
+            # publish to mqtt
+            # convert _time to seconds
 
-                # _time = (_time - epoch).total_seconds() * 1000.0
-                _time = int(_time.timestamp() * 1000.0)
-                payload = {
-                    "time": _time,
-                    "telemetry": values,
-                }
-                (
-                    prefix,
-                    driver,
-                    session_id,
-                    game,
-                    track,
-                    car,
-                    session_type,
-                ) = topic.split("/")
-                topic = f"replay/{prefix}/durandom/{session_id}/{game}/{track}/{car}/{session_type}"
+            # _time = (_time - epoch).total_seconds() * 1000.0
+            _time = int(_time.timestamp() * 1000.0)
+            payload = {
+                "time": _time,
+                "telemetry": values,
+            }
+            (
+                prefix,
+                driver,
+                session_id,
+                game,
+                track,
+                car,
+                session_type,
+            ) = topic.split("/")
+            topic = f"replay/{prefix}/durandom/{new_session_id}/{game}/{track}/{car}/{session_type}"
 
-                if line_count == 0:
-                    print(topic)
-                line_count += 1
+            if line_count == 0:
+                print(topic)
+            line_count += 1
 
-                # print dot without newline
-                print(".", end="", flush=True)
-                if sleep:
-                    time.sleep(sleep)
+            # convert payload to json string
+            payload_string = json.dumps(payload)
+            # print(payload)
 
-                # convert payload to json string
-                payload = json.dumps(payload)
-                # print(payload)
+            mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
 
-                mqttc.publish(topic, payload=str(payload), qos=0, retain=False)
+            # print dot without newline
+            print(".", end="", flush=True)
+            print(payload["telemetry"]["DistanceRoundTrack"])
+            time.sleep(wait)

@@ -53,7 +53,7 @@ class FastLapAnalyzer:
         for df in laps:
             df = self.analyzer.drop_decreasing(df)
             df = self.analyzer.resample(
-                df, columns=["Brake", "SpeedMs", "Gear"], freq=1
+                df, columns=["Brake", "SpeedMs", "Gear", "CurrentLapTime"], freq=1
             )
 
             # smooth the laps
@@ -121,27 +121,50 @@ class FastLapAnalyzer:
             # display(f'brake force {brake_max} at distance {distance}')
 
             brake_starts = []
+            brake_starts_minus_5 = []
             for df in laps:
                 # go back from the turn to find where Brake starts
                 brake = brake_max
                 # find the index in df where DistanceRoundTrack is equal to distance
-                index = df[df["DistanceRoundTrack"] > distance].index[0]
-                brake_start = distance
-                while brake > 0.1:
-                    index -= 1
-                    if index < 0:
-                        index = len(df) - 1
-                    brake = df["Brake"].iloc[index]
+                if len(df[df["DistanceRoundTrack"] > distance]) > 0:
+                    index = df[df["DistanceRoundTrack"] > distance].index[0]
+                    brake_start = distance
+                    while brake > 0.1:
+                        index -= 1
+                        if index < 0:
+                            index = len(df) - 1
+                        brake = df["Brake"].iloc[index]
                     brake_start = df["DistanceRoundTrack"].iloc[index]
-                brake_starts.append(brake_start)
-                # print(f"brake start {brake_start} ({brake})")
+                    brake_starts.append(brake_start)
+
+                    # now go back 5.3 seconds
+                    # because we'll read "Brake in 3 2 1", which take 5.3 seconds
+                    current_lap_time = df["CurrentLapTime"].iloc[index]
+                    target_lap_time = current_lap_time - 5.3
+                    if target_lap_time < 0:
+                        index = len(df) - 1
+                        target_lap_time = df["CurrentLapTime"].max() - target_lap_time
+                        current_lap_time = df["CurrentLapTime"].iloc[index]
+
+                    cycles = 0
+                    while current_lap_time > target_lap_time and cycles <= 2:
+                        index -= 1
+                        if index < 0:
+                            index = len(df) - 1
+                            cycles += 1
+                        current_lap_time = df["CurrentLapTime"].iloc[index]
+
+                    if cycles != 2:
+                        brake_start_minus_5 = df["DistanceRoundTrack"].iloc[index]
+                        brake_starts_minus_5.append(brake_start_minus_5)
 
             # find median gear
             brake_start = int(np.median(brake_starts))
+            brake_start_minus_5 = int(np.median(brake_starts_minus_5))
 
             track_info.append(
                 {
-                    "start": brake_start,
+                    "start": brake_start_minus_5,
                     "brake": brake_start,
                     "force": brake_max,
                 }
