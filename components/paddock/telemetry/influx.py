@@ -97,7 +97,8 @@ class Influx:
                 df = self.session_df(
                     session, lap_number=lap_number, start=lap.start, end=lap.end
                 )
-                data.append(df)
+                if len(df) > 100:
+                    data.append(df)
             except Exception as e:
                 logging.error(e)
 

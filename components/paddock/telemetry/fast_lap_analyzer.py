@@ -52,6 +52,9 @@ class FastLapAnalyzer:
         cleaned_laps = []
         for df in laps:
             df = self.analyzer.drop_decreasing(df)
+            # dataframes with less than 100 points are not reliable
+            if len(df) < 100:
+                continue
             df = self.analyzer.resample(
                 df, columns=["Brake", "SpeedMs", "Gear", "CurrentLapTime"], freq=1
             )
@@ -86,11 +89,15 @@ class FastLapAnalyzer:
         max_distance = self.max_distance
         track_info = []
 
+        laps_with_extrema = []
         for df in laps:
             extrema = self.analyzer.local_maxima(df, column="Brake", points=30)
             logging.debug(f"number of maxima {len(extrema)} for lap {df['id'].iloc[0]}")
             if len(extrema) > 0:
                 all_minima.append(extrema)
+                laps_with_extrema.append(df)
+
+        laps = laps_with_extrema
 
         if len(all_minima) == 0:
             return track_info
@@ -107,7 +114,9 @@ class FastLapAnalyzer:
         df = df.sort_values(by=["DistanceRoundTrack"])
         df = df.reset_index(drop=True)
 
-        n_clusters = int(len(df) / 3)
+        # cluster again with number of clusters set to 3, since we've extended the lap to 3 times the length
+        # round up to the nearest integer
+        n_clusters = int(np.ceil(len(df) / 3))
         turns, labels = self.analyzer.cluster(
             [df], field="Brake", n_clusters=n_clusters
         )
@@ -179,12 +188,15 @@ class FastLapAnalyzer:
         max_distance = self.max_distance
         track_info = []
 
+        laps_with_extrema = []
         for df in laps:
             minima = self.analyzer.local_minima(df, column="SpeedMs")
             logging.debug(f"number of minima {len(minima)} for lap {df['id'].iloc[0]}")
-            if len(minima) >= 0:
+            if len(minima) > 0:
+                laps_with_extrema.append(df)
                 all_minima.append(minima)
 
+        laps = laps_with_extrema
         if len(all_minima) == 0:
             return track_info
 
@@ -201,9 +213,8 @@ class FastLapAnalyzer:
         df = df.reset_index(drop=True)
 
         # cluster again with number of clusters set to 3, since we've extended the lap to 3 times the length
-        n_clusters = len(df) / 3
         # round up to the nearest integer
-        n_clusters = int(np.ceil(n_clusters))
+        n_clusters = int(np.ceil(len(df) / 3))
         turns, labels = self.analyzer.cluster(
             [df], field="SpeedMs", n_clusters=n_clusters
         )
