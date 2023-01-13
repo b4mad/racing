@@ -157,6 +157,7 @@ class Command(BaseCommand):
             track = Track.objects.get(name=options["track"])
             where.append(f" track_id={track.pk}")
         if options["car"]:
+            # get the first car with this name
             car = Car.objects.get(name=options["car"])
             where.append(f"car_id={car.pk}")
 
