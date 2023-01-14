@@ -1,5 +1,6 @@
 import csv
 import os
+import statistics
 from django.core.management.base import BaseCommand
 from telemetry.models import Game, Driver, Car, Track, SessionType, Lap, FastLap
 from telemetry.influx import Influx
@@ -187,8 +188,25 @@ class Command(BaseCommand):
 
             logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
 
+            # get all lap time and length for this car and track
+            sql = f"select time, length from telemetry_lap where track_id={track.pk} and car_id={car.pk}"
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+
+            times = [row[0] for row in rows]
+            lengths = [row[1] for row in rows]
+            median_time = statistics.median(times)
+            median_length = statistics.median(lengths)
+            logging.debug(f"median time: {median_time}, median length: {median_length}")
+
             laps = Lap.objects.filter(
-                track=track, car=car, length__gt=track.length - 20
+                track=track,
+                car=car,
+                length__gt=median_length * 0.95,
+                length__lt=median_length * 1.05,
+                time__gt=median_time * 0.95,
+                time__lt=median_time * 1.05,
             ).order_by("time")[:10]
 
             if laps.count() == 0:
