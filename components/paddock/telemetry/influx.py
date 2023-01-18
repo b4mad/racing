@@ -1,5 +1,4 @@
 from datetime import datetime
-from telemetry.models import Lap
 
 import logging
 import os
@@ -104,7 +103,7 @@ class Influx:
 
         return data
 
-    def session(self, session_id=None, lap_id=None, lap_numbers=[]):
+    def session(self, session_id=None, lap=None, lap_numbers=[]):
 
         lap_filter = []
 
@@ -120,8 +119,7 @@ class Influx:
                 |> filter(fn: (r) => {' or '.join(lap_filter)})
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             """
-        elif lap_id:
-            lap = Lap.objects.get(id=lap_id)
+        elif lap:
             start = lap.start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             end = lap.end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             session_id = lap.session.session_id

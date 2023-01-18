@@ -2,6 +2,7 @@ import json
 import os
 import time
 from django.core.management.base import BaseCommand
+from telemetry.models import Lap
 from telemetry.influx import Influx
 import logging
 import paho.mqtt.client as mqtt
@@ -77,7 +78,8 @@ class Command(BaseCommand):
 
         if options["lap_ids"]:
             for lap_id in options["lap_ids"]:
-                session = influx.session(lap_id=lap_id)
+                lap = Lap.objects.get(id=lap_id)
+                session = influx.session(lap=lap)
                 if options["new_session_id"]:
                     new_session_id = options["new_session_id"]
                 else:

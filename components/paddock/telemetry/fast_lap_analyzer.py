@@ -60,7 +60,7 @@ class FastLapAnalyzer:
             )
 
             # smooth the laps
-            window_length = 10  # meters
+            window_length = 20  # meters
             if len(df) < window_length:
                 # too short, skip
                 logging.warning("lap too short, skipping")
@@ -91,7 +91,7 @@ class FastLapAnalyzer:
 
         laps_with_extrema = []
         for df in laps:
-            extrema = self.analyzer.local_maxima(df, column="Brake", points=30)
+            extrema = self.analyzer.local_maxima(df, column="Brake", points=50)
             logging.debug(f"number of maxima {len(extrema)} for lap {df['id'].iloc[0]}")
             if len(extrema) > 0:
                 all_minima.append(extrema)
