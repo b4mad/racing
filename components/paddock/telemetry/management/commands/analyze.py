@@ -151,9 +151,9 @@ class Command(BaseCommand):
             exit(0)
 
         where = []
-        # if options["game"]:
-        #     game = Game.objects.get(name=options["game"])
-        #     where.append(f"game={game.pk}")
+        filter_game = None
+        if options["game"]:
+            filter_game = Game.objects.get(name=options["game"])
         if options["track"]:
             track = Track.objects.get(name=options["track"])
             where.append(f" track_id={track.pk}")
@@ -176,6 +176,8 @@ class Command(BaseCommand):
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
             game = car.game
+            if filter_game and filter_game != car.game:
+                continue
 
             if options["new"]:
                 if FastLap.objects.filter(
@@ -207,7 +209,7 @@ class Command(BaseCommand):
                 length__lt=median_length * 1.05,
                 time__gt=median_time * 0.95,
                 time__lt=median_time * 1.05,
-            ).order_by("time")[:10]
+            ).order_by("time")[:3]
 
             if laps.count() == 0:
                 logging.info("No laps found for threshold")

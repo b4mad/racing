@@ -24,7 +24,7 @@ spec:
           name: analyze
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py analyze
+            - python /opt/app-root/src/manage.py analyze --game "iRacing"
           resources:
             limits:
               cpu: "2"
