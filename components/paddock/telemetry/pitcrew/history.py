@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
+import statistics
 import threading
 import os
-import pickle
+
+# import pickle
+import pandas as pd
+import numpy as np
 import time
 import logging
 from telemetry.models import Game, FastLap, FastLapSegment, Driver
+from telemetry.analyzer import Analyzer
 
 from influxdb_client import InfluxDBClient
 
@@ -32,6 +37,9 @@ class History:
         self.error = None
         self.do_run = True
         self.driver = None
+        self.track_length = 0
+        self.telemetry = pd.DataFrame()
+        self.analyzer = Analyzer()
 
     def disconnect(self):
         self.do_run = False
@@ -54,6 +62,7 @@ class History:
             self.game = Game.objects.get(name=self.filter["GameName"])
             self.car = self.game.cars.get(name=self.filter["CarModel"])
             self.track = self.game.tracks.get(name=self.filter["TrackCode"])
+            self.track_length = self.track.length
         except Exception as e:
             error = f"Error init {self.filter['Driver']} / {self.filter['GameName']}"
             error += f" / {self.filter['CarModel']}/  {self.filter['TrackCode']} - {e}"
@@ -65,16 +74,27 @@ class History:
         if not success:
             return False
 
-        if self.pickle:
-            self.read_cache_from_file()
-        else:
-            self.init_cache()
+        self.init_driver()
 
         self.error = None
+        self.telemetry = pd.DataFrame(
+            [
+                {
+                    "_time": time.time(),
+                    "DistanceRoundTrack": 0,
+                    "Gear": 0,
+                    "SpeedMs": 0,
+                    "Throttle": 0,
+                    "Brake": 0,
+                }
+            ]
+        )
+
         return True
 
-    def init_cache(self):
-        self.cache = {}
+    def init_driver(self):
+        self.driver_segments = {}
+        self.driver_data = {}
         fast_lap, created = FastLap.objects.get_or_create(
             car=self.car, track=self.track, game=self.game, driver=self.driver
         )
@@ -86,38 +106,114 @@ class History:
                 FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)
 
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
-            self.cache[segment.turn] = segment
+            self.driver_segments[segment.turn] = segment
+            self.driver_data[segment.turn] = {
+                "gear": [],
+                "brake": [],
+            }
 
-    def write_cache_to_file(self):
-        with open("cache.pickle", "wb") as outfile:
-            pickle.dump(self.cache, outfile)
+    # def write_cache_to_file(self):
+    #     with open("cache.pickle", "wb") as outfile:
+    #         pickle.dump(self.cache, outfile)
 
-    def read_cache_from_file(self):
-        logging.debug("reading historic data from file")
-        with open("cache.pickle", "rb") as infile:
-            self.cache = pickle.load(infile)
+    # def read_cache_from_file(self):
+    #     logging.debug("reading historic data from file")
+    #     with open("cache.pickle", "rb") as infile:
+    #         self.cache = pickle.load(infile)
 
-    def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
-        if len(self.segments) == 0:
-            return None
-        # stop the recursion if we are too deep
-        if depth > len(self.segments):
-            return None
+    def in_range(self, meters, target, delta=10):
+        start = target - delta
+        end = target + delta
 
-        if idx is None:
-            idx = self.segment_idx
+        if start < 0:
+            start = self.track_length + start
+            return meters <= end or meters >= start
 
-        if idx >= len(self.segments):
-            idx = 0
+        if end > self.track_length:
+            end = end - self.track_length
+            return meters <= end or meters >= start
 
-        segment = self.segments[idx]
+        return start <= meters <= end
 
-        # check if meters is between .start and .end
-        if segment.start <= meters < segment.end:
-            self.segment_idx = idx
-            return segment
+    def update(self, time, telemetry):
+        # add telemetry['Gear'] to dataframe
+        t = pd.DataFrame(
+            [
+                {
+                    "_time": time,
+                    "DistanceRoundTrack": telemetry["DistanceRoundTrack"],
+                    "Gear": telemetry["Gear"],
+                    "SpeedMs": telemetry["SpeedMs"],
+                    "Throttle": telemetry["Throttle"],
+                    "Brake": telemetry["Brake"],
+                }
+            ]
+        )
 
-        return self.segment(meters, idx=idx + 1, depth=depth + 1)
+        self.telemetry = pd.concat([self.telemetry, t])
+        # logging.debug("telemetry: %s", self.telemetry)
+
+    def telemetry_segment(self, start, end):
+        df = self.telemetry
+        df = df[df["_time"] > time.time() - 30]
+        df = df[df["DistanceRoundTrack"].between(start, end)]
+
+        return df
+
+    def driver_gear(self, segment):
+        driver_segment = self.driver_segments[segment.turn]
+        df = self.telemetry_segment(segment.start, segment.end)
+
+        gear = df[df["Gear"] > 0]["Gear"].min()
+
+        if not np.isnan(gear):
+            logging.debug("gear: %s", gear)
+
+            self.driver_data[segment.turn]["gear"].append(gear)
+            gear = statistics.median(self.driver_data[segment.turn]["gear"][-5:])
+            driver_segment.gear = round(gear)
+            driver_segment.save()
+
+        # logging.debug("driver gear %s", driver_segment.gear)
+        return driver_segment.gear
+
+    def driver_brake(self, segment):
+        driver_segment = self.driver_segments[segment.turn]
+        df = self.telemetry_segment(segment.start, segment.brake + 200)
+        # find the DistanceRoundTrack where Brake is > 0.1
+
+        brake = df[df["Brake"] > 0.1]["DistanceRoundTrack"].min()
+
+        if not np.isnan(brake):
+            self.driver_data[segment.turn]["brake"].append(brake)
+            brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
+            driver_segment.brake = round(brake)
+            driver_segment.save()
+
+        # logging.debug("driver gear %s", driver_segment.gear)
+        return driver_segment.brake
+
+    # def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
+    #     if len(self.segments) == 0:
+    #         return None
+    #     # stop the recursion if we are too deep
+    #     if depth > len(self.segments):
+    #         return None
+
+    #     if idx is None:
+    #         idx = self.segment_idx
+
+    #     if idx >= len(self.segments):
+    #         idx = 0
+
+    #     segment = self.segments[idx]
+
+    #     # check if meters is between .start and .end
+    #     if segment.start <= meters < segment.end:
+    #         self.segment_idx = idx
+    #         return segment
+
+    #     return self.segment(meters, idx=idx + 1, depth=depth + 1)
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
@@ -146,93 +242,6 @@ class History:
         self.error += f"on track {self.filter['TrackCode']}"
         self.error += f"in car {self.filter['CarModel']}"
         return True
-
-    def gear(self, segment):
-        return self.cache[segment.turn].gear
-
-    def off_gear(self, brakepoint):
-        return self.cache["gear"].get(brakepoint["corner"])
-
-    def off_gear_q(self, start, stop):
-        vars = self.filter.copy()
-        vars.update({"start": start - 20, "stop": stop})
-        q = """
-        from(bucket: "racing")
-          |> range(start: -10y)
-          |> filter(fn: (r) => r["_measurement"] == "gears")
-          |> filter(fn: (r) => r["user"] == "{user}" and
-                              r["GameName"] == "{GameName}" and
-                              r["TrackCode"] == "{TrackCode}" and
-                              r["CarModel"] == "{CarModel}")
-          |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
-          |> filter(fn: (r) => r["DistanceRoundTrack"] >= {start} and r["DistanceRoundTrack"] <= {stop})
-          |> group(columns: ["CurrentLap", "SessionId"])
-          |> min(column: "Gear")
-          |> group()
-          |> sort(columns: ["_time"], desc: true)
-          |> limit(n: 5) // https://docs.influxdata.com/flux/v0.x/stdlib/universe/doubleema/  2 * n - 1
-          |> duplicate(column: "Gear", as: "_value")
-          |> doubleEMA(n: 3)
-          |> keep(columns: ["Gear", "_value", "_time"])
-          |> limit(n: 1)
-      """.format(
-            **vars
-        )
-
-        # logging.debug("query:\n %s", q)
-        logging.debug("querying gear for %s - %s", start, stop)
-
-        # tables = self.query(q)
-        query_api = self.client.query_api()
-
-        tables = query_api.query(q)
-        if tables:
-            return tables[0].records[0].get_value()
-        else:
-            return 0
-
-    def brake_start(self, segment):
-        return self.cache[segment.turn].brake
-        # return self.cache["brake_start"].get(brakepoint["corner"])
-
-    def brake_start_q(self, start, stop):
-        vars = self.filter.copy()
-        vars.update({"start": start - 20, "stop": stop})
-        q = """
-        from(bucket: "racing")
-          |> range(start: -10y)
-          |> filter(fn: (r) => r["_measurement"] == "brake_start")
-          |> filter(fn: (r) => r["user"] == "{user}" and
-                              r["GameName"] == "{GameName}" and
-                              r["TrackCode"] == "{TrackCode}" and
-                              r["CarModel"] == "{CarModel}")
-          |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
-          |> filter(fn: (r) => r["DistanceRoundTrack"] >= {start} and r["DistanceRoundTrack"] <= {stop})
-          |> group(columns: ["CurrentLap", "SessionId"])
-          |> min(column: "DistanceRoundTrack")
-          |> group()
-          |> sort(columns: ["_time"], desc: true)
-          |> limit(n: 5) // https://docs.influxdata.com/flux/v0.x/stdlib/universe/doubleema/  2 * n - 1
-          |> duplicate(column: "DistanceRoundTrack", as: "_value")
-          |> doubleEMA(n: 3)
-          |> keep(columns: ["DistanceRoundTrack", "_value", "_time"])
-      """.format(
-            **vars
-        )
-
-        # logging.debug("query:\n %s", q)
-        logging.debug("querying brake_start for %s - %s", start, stop)
-
-        query_api = self.client.query_api()
-
-        tables = query_api.query(q)
-        if tables:
-            return tables[0].records[0].get_value()
-        else:
-            return 0
-
-    def query(self, query):
-        return self.client.query_api().query(query)
 
 
 if __name__ == "__main__":
