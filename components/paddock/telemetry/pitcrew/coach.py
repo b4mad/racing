@@ -57,6 +57,34 @@ class Coach:
             return int(distance_to_ideal)
         return False
 
+    def eval_gear(self, segment):
+        gear = self.history.driver_gear(segment)
+        if segment.gear != gear:
+            # enable gear notification
+            self.enable_msg(segment)
+            return f"gear should be {gear}"
+        else:
+            self.disable_msg(segment)
+
+    def eval_brake(self, segment):
+        brake = self.history.driver_brake(segment)
+        delta = abs(segment.brake - brake)
+        if delta > 40:
+            # enable brake notification
+            self.enable_msg(segment)
+        else:
+            self.disable_msg(segment)
+
+    def disable_msg(self, segment):
+        self.enable_msg(segment, False)
+
+    def enable_msg(self, segment, enabled=True):
+        # iterate over messages and enable the one for this segment
+        for msg in self.messages.values():
+            if "segment" in msg and "enabled" in msg:
+                if msg["segment"] == segment:
+                    msg["enabled"] = enabled
+
     def get_response(self, telemetry):
         if not self.history.ready:
             if self.history.error != self.previous_history_error:
@@ -80,7 +108,17 @@ class Coach:
                     self.messages[at] = {
                         "msg": msg,
                         "read": 0,
+                        "enabled": True,
+                        "segment": segment,
                     }
+
+                    at = (segment.accelerate + 20) % track_length
+                    self.messages[at] = {
+                        "fn": self.eval_gear,
+                        "args": [segment],
+                        "read": 0,
+                    }
+
                 if segment.brake:
                     at = segment.start % track_length
                     # This message takes 5.3 seconds to read
@@ -88,21 +126,36 @@ class Coach:
                     self.messages[at] = {
                         "msg": msg,
                         "read": 0,
+                        "enabled": True,
+                    }
+
+                    at = (segment.brake + 20) % track_length
+                    self.messages[at] = {
+                        "fn": self.eval_brake,
+                        "args": [segment],
+                        "read": 0,
                     }
 
             logging.debug(f"loaded messages: {self.messages}")
 
         # loop over all messages and check the distance, if we have something to say
         meters = telemetry["DistanceRoundTrack"]
+        self.history.update(now, telemetry)
         for at in self.messages:
             distance = abs(at - meters)
             # only read every 20 seconds and if we are close
-            if (
-                distance < 2
-                and now - self.messages[at]["read"] > self.msg_read_interval
-            ):
-                self.messages[at]["read"] = now
-                return self.messages[at]["msg"]
+            msg = self.messages[at]
+            if "enabled" in msg and not msg["enabled"]:
+                continue
+            if distance < 2 and now - msg["read"] > self.msg_read_interval:
+                if "fn" in self.messages[at]:
+                    self.messages[at]["read"] = now
+                    message = self.messages[at]["fn"](*self.messages[at]["args"])
+                    if message:
+                        return message
+                else:
+                    self.messages[at]["read"] = now
+                    return self.messages[at]["msg"]
 
         return None
 
