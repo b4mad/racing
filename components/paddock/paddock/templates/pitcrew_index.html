@@ -6,6 +6,7 @@
       <div class="row">
         <div class="col-sm-6">
           <h3>Drivers</h3>
+          <p>... there is a total of {{ drivers_total }} drivers.</p>
           <ul>
             {% for driver in drivers %}
             <li><a href="/pitcrew/{{ driver.name }}">{{ driver.name }}</a></li>
