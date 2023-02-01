@@ -19,6 +19,11 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 kaleido = "*"
 ipykernel = "*"
+tslearn = {git = "https://github.com/tslearn-team/tslearn"}
+ruptures = "*"
+stumpy = "*"
+sktime = "*"
+hmmlearn = "*"
 
 [dev-packages]
 mypy = "*"
