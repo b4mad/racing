@@ -62,16 +62,22 @@ class Coach:
         if segment.gear != gear:
             # enable gear notification
             self.enable_msg(segment)
-            return f"gear should be {gear}"
+            return f"gear should be {segment.gear}"
         else:
             self.disable_msg(segment)
 
     def eval_brake(self, segment):
         brake = self.history.driver_brake(segment)
-        delta = abs(segment.brake - brake)
-        if delta > 40:
-            # enable brake notification
+        delta = segment.brake - brake
+        if abs(delta) > 50:
             self.enable_msg(segment)
+            logging.debug("%s / %s : delta: %s", brake, segment.brake, delta)
+        elif abs(delta) > 10:
+            self.disable_msg(segment)
+            if delta > 0:
+                return "Brake %s meters later" % round(abs(delta))
+            else:
+                return "Brake %s meters earlier" % round(abs(delta))
         else:
             self.disable_msg(segment)
 

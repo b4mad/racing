@@ -21,6 +21,8 @@ class Analyzer:
         count = max
         count = int(count / freq)
         df.set_index("DistanceRoundTrack", inplace=True)
+        # remove duplicates
+        df = df[~df.index.duplicated(keep="first")]
         # display(df)
 
         resampled = np.linspace(min, max, count)
