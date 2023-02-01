@@ -6,7 +6,7 @@ from .influx import Influx
 from .analyzer import Analyzer
 
 
-class FastLapAnalyzer:
+class FastLapAnalyzerV2:
     def __init__(self, laps):
         self.influx = Influx()
         self.analyzer = Analyzer()
