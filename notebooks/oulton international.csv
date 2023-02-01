@@ -1,0 +1,4 @@
+game,session,track,car,lap,start,end,time,length,valid
+iRacing,1673537226,oulton international,Mazda MX-5 Cup,13,2023-01-12 16:11:26.609394+00:00,2023-01-12 16:13:21.619012+00:00,115.029839,4289,True
+iRacing,1673550700,oulton international,Mazda MX-5 Cup,2,2023-01-12 19:16:06.435686+00:00,2023-01-12 19:18:01.454068+00:00,115.0448,4289,True
+iRacing,1673550700,oulton international,Mazda MX-5 Cup,9,2023-01-12 19:29:38.831723+00:00,2023-01-12 19:31:33.866040+00:00,115.057365,4289,True

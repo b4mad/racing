@@ -62,16 +62,22 @@ class Coach:
         if segment.gear != gear:
             # enable gear notification
             self.enable_msg(segment)
-            return f"gear should be {gear}"
+            return f"gear should be {segment.gear}"
         else:
             self.disable_msg(segment)
 
     def eval_brake(self, segment):
         brake = self.history.driver_brake(segment)
-        delta = abs(segment.brake - brake)
-        if delta > 40:
-            # enable brake notification
+        delta = segment.brake - brake
+        if abs(delta) > 50:
             self.enable_msg(segment)
+            logging.debug("%s / %s : delta: %s", brake, segment.brake, delta)
+        elif abs(delta) > 10:
+            self.disable_msg(segment)
+            if delta > 0:
+                return "Brake %s meters later" % round(abs(delta))
+            else:
+                return "Brake %s meters earlier" % round(abs(delta))
         else:
             self.disable_msg(segment)
 
@@ -119,10 +125,11 @@ class Coach:
                         "read": 0,
                     }
 
-                if segment.brake:
-                    at = segment.start % track_length
+                if segment.mark == "brake":
+                    at = (segment.start - 100) % track_length
                     # This message takes 5.3 seconds to read
-                    msg = "Brake in 3 .. 2 .. 1 .. brake"
+                    # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
+                    msg = "Brake %s in 100" % (round(segment.force / 10) * 10)
                     self.messages[at] = {
                         "msg": msg,
                         "read": 0,
@@ -134,6 +141,19 @@ class Coach:
                         "fn": self.eval_brake,
                         "args": [segment],
                         "read": 0,
+                    }
+
+                if segment.mark == "throttle":
+                    at = (segment.start - 100) % track_length
+                    to = round(segment.force / 10) * 10
+                    if to > 0:
+                        msg = "Throttle to %s in 100" % to
+                    else:
+                        msg = "Lift throttle in 100"
+                    self.messages[at] = {
+                        "msg": msg,
+                        "read": 0,
+                        "enabled": True,
                     }
 
             logging.debug(f"loaded messages: {self.messages}")
