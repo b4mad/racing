@@ -69,6 +69,18 @@ spec:
               memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
       serviceAccount: paddock
       serviceAccountName: paddock
       initContainers:

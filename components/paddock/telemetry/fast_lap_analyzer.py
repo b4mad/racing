@@ -77,8 +77,13 @@ class FastLapAnalyzer:
             end_i = throttle_changes[i + 1]
             # find the closest number in the brake_idx array
 
-            brake_i = brake_changes[np.abs(brake_changes - start_i).argmin()]
-            # how far is the brake_idx from the start_idx
+            if len(brake_changes):
+                # how far is the brake_idx from the start_idx
+                brake_i = brake_changes[np.abs(brake_changes - start_i).argmin()]
+            else:
+                # no brake changes
+                brake_i = 999999
+
             distance = np.abs(brake_i - start_i)
             segment = {
                 "type": "brake",
@@ -87,9 +92,9 @@ class FastLapAnalyzer:
                 "color": "yellow",
             }
             if distance > 20:
+                # we are not braking in this segment
                 segment["type"] = "throttle"
                 segment["color"] = "green"
-                # we are not braking in this segment
                 segment["start"] = start_i
                 segment["end"] = end_i
 
@@ -158,7 +163,7 @@ class FastLapAnalyzer:
             average = search_df[search_df[column] < high][column].mean()
 
         if np.isnan(average):
-            raise Exception("average is NaN")
+            average = (high + low) / 2
 
         return {
             "high": high,
@@ -182,6 +187,8 @@ class FastLapAnalyzer:
         return change_indices
 
     def remove_close_indices(self, indices, threshold=50):
+        if len(indices) == 0:
+            return indices
         # merge throttle changes that are close together
         new_indices = [
             indices[0],
