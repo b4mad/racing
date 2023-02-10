@@ -26,6 +26,7 @@ matplotlib = "*"
 scipy = "*"
 locked-dict = "*"
 scikit-learn = "*"
+flask-healthz = "*"
 
 [dev-packages]
 black = "*"
