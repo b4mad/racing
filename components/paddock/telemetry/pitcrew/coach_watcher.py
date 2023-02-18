@@ -36,11 +36,11 @@ class CoachWatcher:
             time.sleep(self.sleep_time)
             drivers = self.drivers()
             # collect all driver names
-            driver_names = [driver.name for driver in drivers]
-            logging.info("checking coaches for drivers: %s", ", ".join(driver_names))
+            # driver_names = [driver.name for driver in drivers]
+            # logging.info("checking coaches for drivers: %s", ", ".join(driver_names))
             coaches = Coach.objects.filter(driver__in=drivers)
             for coach in coaches:
-                logging.info(f"{coach.driver} coach enabled: {coach.enabled}")
+                # logging.info(f"{coach.driver} coach enabled: {coach.enabled}")
                 if coach.enabled:
                     if coach.driver.name not in self.active_coaches.keys():
                         logging.debug(f"activating coach for {coach.driver}")

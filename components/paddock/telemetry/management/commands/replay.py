@@ -161,6 +161,8 @@ class Command(BaseCommand):
             ltp = payload["telemetry"].get("LapTimePrevious", -1)
             clv = payload["telemetry"].get("CurrentLapIsValid", True)
             plv = payload["telemetry"].get("PreviousLapWasValid", True)
+            # current_lap = payload["telemetry"].get("CurrentLap", None)
+            # print("CurrentLap:          ", current_lap)
             if ltp > 0 or not clv or not plv:
                 print("LapTimePrevious:     ", ltp)
                 print("CurrentLapIsValid:   ", clv)

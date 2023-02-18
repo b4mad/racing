@@ -33,7 +33,7 @@ class SessionSaver:
                             name=session.driver
                         )
                         session.game, created = Game.objects.get_or_create(
-                            name=session.game
+                            name=session.game_name
                         )
                         (
                             session.session_type,
@@ -91,7 +91,7 @@ class SessionSaver:
                                     start=lap["start"],
                                     end=lap["end"],
                                     length=lap["length"],
-                                    valid=True,
+                                    valid=lap["valid"],
                                     time=lap["time"],
                                 )
                                 logging.info(

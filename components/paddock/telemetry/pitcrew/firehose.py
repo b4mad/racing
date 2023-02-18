@@ -78,7 +78,7 @@ class Firehose:
             session = Session(topic)
             session.driver = driver
             session.session_id = session_id
-            session.game = game
+            session.game_name = game
             session.track = track
             session.car = car
             session.session_type = session_type
