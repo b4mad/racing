@@ -23,7 +23,7 @@ class Crew:
         self.coach_watcher = CoachWatcher(self.firehose)
         self.coach_watcher.sleep_time = 3
 
-        self.session_saver = SessionSaver(self.firehose)
+        self.session_saver = SessionSaver(self.firehose, debug=debug)
         self.session_saver.sleep_time = 5
 
         self._stop_event = threading.Event()
@@ -58,12 +58,15 @@ class Crew:
         threads = []
 
         t = threading.Thread(target=self.firehose.run)
+        t.name = "firehose"
         threads.append(t)
 
         t = threading.Thread(target=self.coach_watcher.run)
+        t.name = "coach_watcher"
         threads.append(t)
 
         t = threading.Thread(target=self.session_saver.run)
+        t.name = "session_saver"
         threads.append(t)
 
         for t in threads:

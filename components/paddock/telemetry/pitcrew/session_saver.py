@@ -1,13 +1,14 @@
 import threading
 import logging
 import time
-from telemetry.models import Game, Driver, SessionType
+from telemetry.models import Game, Driver, SessionType, Session
 
 
 class SessionSaver:
-    def __init__(self, firehose):
+    def __init__(self, firehose, debug=False):
         self.firehose = firehose
         self.sleep_time = 10
+        self.debug = debug
 
         self._stop_event = threading.Event()
 
@@ -44,16 +45,30 @@ class SessionSaver:
                         session.track, created = session.game.tracks.get_or_create(
                             name=session.track
                         )
-                        session.record, created = session.driver.sessions.get_or_create(
-                            session_id=session.session_id,
-                            session_type=session.session_type,
-                            game=session.game,
-                            defaults={"start": session.start, "end": session.end},
-                        )
+                        if self.debug:
+                            session.record = Session(
+                                driver=session.driver,
+                                session_id=session.session_id,
+                                session_type=session.session_type,
+                                game=session.game,
+                            )
+                        else:
+                            (
+                                session.record,
+                                created,
+                            ) = session.driver.sessions.get_or_create(
+                                session_id=session.session_id,
+                                session_type=session.session_type,
+                                game=session.game,
+                                defaults={"start": session.start, "end": session.end},
+                            )
                     except Exception as e:
                         # TODO add error to session to expire
                         logging.error(f"Error saving session {session_id}: {e}")
                         continue
+
+                if self.debug:
+                    continue
 
                 # iterate over laps with index
                 for lap in session.laps:

@@ -129,11 +129,21 @@ class Coach:
                     at = (segment.start - 100) % track_length
                     # This message takes 5.3 seconds to read
                     # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
-                    msg = "Brake %s in 100" % (round(segment.force / 10) * 10)
+                    msg = "%s %%" % (round(segment.force / 10) * 10)
                     self.messages[at] = {
                         "msg": msg,
                         "read": 0,
                         "enabled": True,
+                        "segment": segment,
+                    }
+
+                    at = segment.start
+                    msg = "brake"
+                    self.messages[at] = {
+                        "msg": msg,
+                        "read": 0,
+                        "enabled": True,
+                        "segment": segment,
                     }
 
                     at = (segment.brake + 20) % track_length
@@ -141,6 +151,7 @@ class Coach:
                         "fn": self.eval_brake,
                         "args": [segment],
                         "read": 0,
+                        "segment": segment,
                     }
 
                 if segment.mark == "throttle":
@@ -154,6 +165,7 @@ class Coach:
                         "msg": msg,
                         "read": 0,
                         "enabled": True,
+                        "segment": segment,
                     }
 
             logging.debug(f"loaded messages: {self.messages}")

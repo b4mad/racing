@@ -26,6 +26,9 @@ class Session:
         speed = telemetry.get("SpeedMs", None)
         lap_time = telemetry.get("CurrentLapTime", None)
         current_lap = telemetry.get("CurrentLap", None)
+        # lap_time_previous = telemetry.get("LapTimePrevious", None)
+        # current_lap_is_valid = telemetry.get("CurrentLapIsValid", None)
+        # previous_lap_was_valid = telemetry.get("PreviousLapWasValid", None)
 
         if length is None or speed is None or lap_time is None or current_lap is None:
             logging.error("Invalid telemetry: %s", telemetry)
