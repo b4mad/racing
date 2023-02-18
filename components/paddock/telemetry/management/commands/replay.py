@@ -57,9 +57,12 @@ class Command(BaseCommand):
             default=None,
             help="seconds to sleep between messages",
         )
+        parser.add_argument("--live", action="store_true")
 
     def handle(self, *args, **options):
         influx = Influx()
+        self.live = options["live"]
+
         if options["session_ids"]:
             for session_id in options["session_ids"]:
                 session = influx.session(
@@ -143,7 +146,10 @@ class Command(BaseCommand):
                 car,
                 session_type,
             ) = topic.split("/")
-            topic = f"replay/{prefix}/durandom/{new_session_id}/{game}/{track}/{car}/{session_type}"
+            if self.live:
+                topic = f"{prefix}/durandom/{new_session_id}/{game}/{track}/{car}/{session_type}"
+            else:
+                topic = f"replay/{prefix}/durandom/{new_session_id}/{game}/{track}/{car}/{session_type}"
 
             if line_count == 0:
                 print(topic)
@@ -152,6 +158,13 @@ class Command(BaseCommand):
             # convert payload to json string
             payload_string = json.dumps(payload)
             # print(payload)
+            ltp = payload["telemetry"].get("LapTimePrevious", -1)
+            clv = payload["telemetry"].get("CurrentLapIsValid", True)
+            plv = payload["telemetry"].get("PreviousLapWasValid", True)
+            if ltp > 0 or not clv or not plv:
+                print("LapTimePrevious:     ", ltp)
+                print("CurrentLapIsValid:   ", clv)
+                print("PreviousLapWasValid: ", plv)
 
             mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
 

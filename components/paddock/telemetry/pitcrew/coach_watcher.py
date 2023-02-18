@@ -34,10 +34,13 @@ class CoachWatcher:
         while True and not self.stopped():
             # sleep longer than save_sessions, to make sure all DB objects are initialized
             time.sleep(self.sleep_time)
-            # logging.info("checking coaches")
-            coaches = Coach.objects.filter(driver__in=self.drivers())
+            drivers = self.drivers()
+            # collect all driver names
+            driver_names = [driver.name for driver in drivers]
+            logging.info("checking coaches for drivers: %s", ", ".join(driver_names))
+            coaches = Coach.objects.filter(driver__in=drivers)
             for coach in coaches:
-                # logging.info(f"checking coach for {coach.driver}")
+                logging.info(f"{coach.driver} coach enabled: {coach.enabled}")
                 if coach.enabled:
                     if coach.driver.name not in self.active_coaches.keys():
                         logging.debug(f"activating coach for {coach.driver}")
@@ -45,40 +48,42 @@ class CoachWatcher:
                 else:
                     if coach.driver.name in self.active_coaches.keys():
                         logging.debug(f"deactivating coach for {coach.driver}")
-                        self.stop_coach(coach.driver)
+                        self.stop_coach(coach.driver.name)
 
-    def stop_coach(self, driver):
-        if driver not in self.active_coaches.keys():
+    def stop_coach(self, driver_name):
+        if driver_name not in self.active_coaches.keys():
             return
-        self.active_coaches[driver][0].disconnect()
-        self.active_coaches[driver][1].disconnect()
-        del self.active_coaches[driver]
+        self.active_coaches[driver_name][0].disconnect()
+        self.active_coaches[driver_name][1].disconnect()
+        del self.active_coaches[driver_name]
 
-    def start_coach(self, driver, coach, debug=False, replay=False):
+    def start_coach(self, driver_name, coach, debug=False, replay=False):
         history = History()
         coach = PitCrewCoach(history, coach, debug=debug)
-        mqtt = Mqtt(coach, driver, replay=replay)
+        mqtt = Mqtt(coach, driver_name, replay=replay)
 
         def history_thread():
-            logging.info(f"History thread starting for {driver}")
+            logging.info(f"History thread starting for {driver_name}")
             history.run()
-            logging.info(f"History thread stopped for {driver}")
+            logging.info(f"History thread stopped for {driver_name}")
 
         h = threading.Thread(target=history_thread)
+        h.name = f"history-{driver_name}"
 
         def mqtt_thread():
-            logging.info(f"MQTT thread starting for {driver}")
+            logging.info(f"MQTT thread starting for {driver_name}")
             mqtt.run()
-            logging.info(f"MQTT thread stopped for {driver}")
+            logging.info(f"MQTT thread stopped for {driver_name}")
 
         c = threading.Thread(target=mqtt_thread)
+        c.name = f"mqtt-{driver_name}"
 
         threads = list()
         threads.append(h)
         threads.append(c)
         c.start()
         h.start()
-        self.active_coaches[driver] = [history, mqtt]
+        self.active_coaches[driver_name] = [history, mqtt]
 
     def run(self):
         try:
