@@ -29,7 +29,7 @@ class Command(BaseCommand):
             # get all fastlaps where driver is not empty
             FastLap.objects.filter(driver__isnull=False).delete()
         else:
-            if not crew.replay:
+            if not crew.replay and not options["no_save"]:
 
                 def start_flask():
                     app = Flask(__name__)

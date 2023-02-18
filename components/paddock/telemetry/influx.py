@@ -118,6 +118,8 @@ class Influx:
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> filter(fn: (r) => {' or '.join(lap_filter)})
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+                |> group(columns: [])
+                |> sort(columns: ["_time"])
             """
         elif lap:
             start = lap.start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -130,6 +132,8 @@ class Influx:
                 |> filter(fn: (r) => r["_measurement"] == "laps_cc")
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+                |> group(columns: [])
+                |> sort(columns: ["_time"])
             """
         else:
             query = f"""
@@ -138,6 +142,8 @@ class Influx:
                 |> filter(fn: (r) => r["_measurement"] == "laps_cc")
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+                |> group(columns: [])
+                |> sort(columns: ["_time"])
             """
 
         records = self.query_api.query_stream(query=query)
