@@ -1,0 +1,159 @@
+❯  cd /Users/mhild/src/durandom/racing ; /usr/bin/env /Users/mhild/.local/share/virtualenvs/paddock-X4au0dXh/bin/python /Users/mhild/.vscode/extensions/ms-python.python-2023.2.0/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher 54772 -- /Users/mhild/src/durandom/racing/components/paddock/manage.py pitcrew -c durandom
+2023-02-19 15:33:31,774 INFO MQTT thread starting for durandom
+2023-02-19 15:33:31,775 INFO History thread starting for durandom
+2023-02-19 15:33:31,885 INFO Subscribed to crewchief/durandom/#
+2023-02-19 15:33:31,994 DEBUG on_connect rc: 0
+2023-02-19 15:33:32,093 DEBUG subscribed: mid='1', granted_qos='(0,)'
+2023-02-19 15:33:32,154 DEBUG new session crewchief/durandom/1676816282/iRacing/lemans full/Ferrari 488 GT3 Evo 2020/LonePractice
+2023-02-19 15:34:57,641 DEBUG loading segments for iRacing lemans full - Ferrari 488 GT3 Evo 2020
+2023-02-19 15:34:57,744 DEBUG loaded 0 segments
+2023-02-19 15:34:57,951 ERROR no history found for iRacing Ferrari 488 GT3 Evo 2020 lemans full
+2023-02-19 15:34:58,660 DEBUG at 0: brake
+2023-02-19 15:34:58,661 DEBUG at 100: now
+2023-02-19 15:34:58,661 DEBUG at 200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,661 DEBUG at 500: brake
+2023-02-19 15:34:58,661 DEBUG at 600: now
+2023-02-19 15:34:58,661 DEBUG at 700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,661 DEBUG at 1000: brake
+2023-02-19 15:34:58,661 DEBUG at 1100: now
+2023-02-19 15:34:58,661 DEBUG at 1200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,661 DEBUG at 1500: brake
+2023-02-19 15:34:58,661 DEBUG at 1600: now
+2023-02-19 15:34:58,661 DEBUG at 1700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,662 DEBUG at 2000: brake
+2023-02-19 15:34:58,662 DEBUG at 2100: now
+2023-02-19 15:34:58,662 DEBUG at 2200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,662 DEBUG at 2500: brake
+2023-02-19 15:34:58,662 DEBUG at 2600: now
+2023-02-19 15:34:58,662 DEBUG at 2700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,662 DEBUG at 3000: brake
+2023-02-19 15:34:58,662 DEBUG at 3100: now
+2023-02-19 15:34:58,662 DEBUG at 3200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,663 DEBUG at 3500: brake
+2023-02-19 15:34:58,663 DEBUG at 3600: now
+2023-02-19 15:34:58,663 DEBUG at 3700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,663 DEBUG at 4000: brake
+2023-02-19 15:34:58,663 DEBUG at 4100: now
+2023-02-19 15:34:58,663 DEBUG at 4200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,663 DEBUG at 4500: brake
+2023-02-19 15:34:58,663 DEBUG at 4600: now
+2023-02-19 15:34:58,663 DEBUG at 4700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,663 DEBUG at 5000: brake
+2023-02-19 15:34:58,663 DEBUG at 5100: now
+2023-02-19 15:34:58,663 DEBUG at 5200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,663 DEBUG at 5500: brake
+2023-02-19 15:34:58,664 DEBUG at 5600: now
+2023-02-19 15:34:58,664 DEBUG at 5700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,664 DEBUG at 6000: brake
+2023-02-19 15:34:58,664 DEBUG at 6100: now
+2023-02-19 15:34:58,664 DEBUG at 6200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,664 DEBUG at 6500: brake
+2023-02-19 15:34:58,664 DEBUG at 6600: now
+2023-02-19 15:34:58,664 DEBUG at 6700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,664 DEBUG at 7000: brake
+2023-02-19 15:34:58,664 DEBUG at 7100: now
+2023-02-19 15:34:58,664 DEBUG at 7200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,664 DEBUG at 7500: brake
+2023-02-19 15:34:58,665 DEBUG at 7600: now
+2023-02-19 15:34:58,665 DEBUG at 7700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,665 DEBUG at 8000: brake
+2023-02-19 15:34:58,665 DEBUG at 8100: now
+2023-02-19 15:34:58,665 DEBUG at 8200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,665 DEBUG at 8500: brake
+2023-02-19 15:34:58,665 DEBUG at 8600: now
+2023-02-19 15:34:58,665 DEBUG at 8700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,665 DEBUG at 9000: brake
+2023-02-19 15:34:58,665 DEBUG at 9100: now
+2023-02-19 15:34:58,665 DEBUG at 9200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,665 DEBUG at 9500: brake
+2023-02-19 15:34:58,665 DEBUG at 9600: now
+2023-02-19 15:34:58,666 DEBUG at 9700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,666 DEBUG at 10000: brake
+2023-02-19 15:34:58,666 DEBUG at 10100: now
+2023-02-19 15:34:58,666 DEBUG at 10200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,666 DEBUG at 10500: brake
+2023-02-19 15:34:58,666 DEBUG at 10600: now
+2023-02-19 15:34:58,666 DEBUG at 10700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,666 DEBUG at 11000: brake
+2023-02-19 15:34:58,666 DEBUG at 11100: now
+2023-02-19 15:34:58,666 DEBUG at 11200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,666 DEBUG at 11500: brake
+2023-02-19 15:34:58,666 DEBUG at 11600: now
+2023-02-19 15:34:58,666 DEBUG at 11700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,667 DEBUG at 12000: brake
+2023-02-19 15:34:58,667 DEBUG at 12100: now
+2023-02-19 15:34:58,667 DEBUG at 12200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,667 DEBUG at 12500: brake
+2023-02-19 15:34:58,667 DEBUG at 12600: now
+2023-02-19 15:34:58,667 DEBUG at 12700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,667 DEBUG at 13000: brake
+2023-02-19 15:34:58,667 DEBUG at 13100: now
+2023-02-19 15:34:58,667 DEBUG at 13200: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:34:58,667 DEBUG at 13500: brake
+2023-02-19 15:34:58,667 DEBUG at 13600: now
+2023-02-19 15:34:58,667 DEBUG at 13700: <bound method Coach.eval_brake_debug of <telemetry.pitcrew.coach.Coach object at 0x17e7123e0>>
+2023-02-19 15:35:45,619 DEBUG r: 'brake' at 499.516571
+2023-02-19 15:35:47,854 DEBUG r: 'now' at 599.071533
+2023-02-19 15:35:49,984 DEBUG eval_brake: 600 / 658.470764 : delta: -58 speed: 37.13381  ratio: -1.56
+2023-02-19 15:35:49,985 DEBUG r: 'delta: -58 ratio -1.561918908940397' at 699.001
+2023-02-19 15:35:59,500 DEBUG r: 'brake' at 999.123047
+2023-02-19 15:36:01,826 DEBUG r: 'now' at 1099.01367
+2023-02-19 15:36:03,867 DEBUG eval_brake: 1100 / 1159.11768 : delta: -59 speed: 45.187252  ratio: -1.31
+2023-02-19 15:36:03,867 DEBUG r: 'delta: -59 ratio -1.305677981922866' at 1199.38757
+2023-02-19 15:36:11,311 DEBUG r: 'brake' at 1499.50525
+2023-02-19 15:36:13,862 DEBUG r: 'now' at 1599.05371
+2023-02-19 15:36:16,223 DEBUG eval_brake: 1600 / 1652.39453 : delta: -52 speed: 39.40813  ratio: -1.32
+2023-02-19 15:36:16,223 DEBUG r: 'delta: -52 ratio -1.3195246767608613' at 1699.34741
+2023-02-19 15:36:22,780 DEBUG r: 'brake' at 1999.71912
+2023-02-19 15:36:24,709 DEBUG r: 'now' at 2099.72949
+2023-02-19 15:36:26,452 DEBUG eval_brake: 2100 / 2178.32153 : delta: -78 speed: 53.7561073  ratio: -1.45
+2023-02-19 15:36:26,452 DEBUG r: 'delta: -78 ratio -1.4509979222398048' at 2199.17188
+2023-02-19 15:36:31,656 DEBUG r: 'brake' at 2499.1626
+2023-02-19 15:36:33,241 DEBUG r: 'now' at 2599.02881
+2023-02-19 15:36:34,760 DEBUG eval_brake: 2600 / None : no driver_brake_start
+2023-02-19 15:36:39,121 DEBUG r: 'brake' at 2999.51074
+2023-02-19 15:36:40,523 DEBUG r: 'now' at 3099.18115
+2023-02-19 15:36:41,932 DEBUG eval_brake: 3100 / 3191.75146 : delta: -91 speed: 71.49764  ratio: -1.27
+2023-02-19 15:36:41,932 DEBUG r: 'delta: -91 ratio -1.2727692830140966' at 3200.17529
+2023-02-19 15:36:46,359 DEBUG r: 'brake' at 3499.514
+2023-02-19 15:36:47,778 DEBUG r: 'now' at 3599.79175
+2023-02-19 15:36:49,170 DEBUG eval_brake: 3600 / None : no driver_brake_start
+2023-02-19 15:36:53,313 DEBUG r: 'brake' at 3999.16357
+2023-02-19 15:36:55,867 DEBUG eval_brake: 4100 / None : no driver_brake_start
+2023-02-19 15:37:00,485 DEBUG r: 'brake' at 4499.773
+2023-02-19 15:37:01,931 DEBUG r: 'now' at 4599.47363
+2023-02-19 15:37:03,412 DEBUG eval_brake: 4600 / 4697.67871 : delta: -97 speed: 69.816925  ratio: -1.39
+2023-02-19 15:37:03,413 DEBUG r: 'delta: -97 ratio -1.3893479267383948' at 4700.0083
+2023-02-19 15:37:08,216 DEBUG r: 'brake' at 4999.927
+2023-02-19 15:37:09,757 DEBUG r: 'now' at 5100.001
+2023-02-19 15:37:11,204 DEBUG eval_brake: 5100 / None : no driver_brake_start
+2023-02-19 15:37:15,474 DEBUG r: 'brake' at 5499.326
+2023-02-19 15:37:16,868 DEBUG r: 'now' at 5599.243
+2023-02-19 15:37:18,280 DEBUG eval_brake: 5600 / 5690.355 : delta: -90 speed: 71.90365  ratio: -1.25
+2023-02-19 15:37:18,280 DEBUG r: 'delta: -90 ratio -1.2516749845105222' at 5700.04736
+2023-02-19 15:37:24,936 DEBUG r: 'brake' at 5999.30029
+2023-02-19 15:37:28,163 DEBUG r: 'now' at 6099.228
+2023-02-19 15:37:32,125 DEBUG eval_brake: 6100 / 6121.49951 : delta: -21 speed: 31.8077927  ratio: -0.66
+2023-02-19 15:37:32,125 DEBUG r: 'delta: -21 ratio -0.6602155703812795' at 6199.45166
+2023-02-19 15:37:38,981 DEBUG r: 'brake' at 6499.00537
+2023-02-19 15:37:40,837 DEBUG r: 'now' at 6599.924
+2023-02-19 15:37:42,534 DEBUG eval_brake: 6600 / None : no driver_brake_start
+2023-02-19 15:37:47,255 DEBUG r: 'brake' at 6999.35938
+2023-02-19 15:37:48,801 DEBUG r: 'now' at 7099.4375
+2023-02-19 15:37:50,233 DEBUG eval_brake: 7100 / None : no driver_brake_start
+2023-02-19 15:37:55,002 DEBUG r: 'brake' at 7499.49
+2023-02-19 15:37:56,813 DEBUG r: 'now' at 7599.77148
+2023-02-19 15:38:00,357 DEBUG eval_brake: 7600 / 7600.57666 : delta: 0 speed: 20.08208  ratio: 0.00
+2023-02-19 15:38:00,358 DEBUG r: 'delta: 0 ratio 0.0' at 7699.048
+2023-02-19 15:38:08,249 DEBUG r: 'brake' at 7999.48926
+2023-02-19 15:38:10,566 DEBUG r: 'now' at 8099.44629
+2023-02-19 15:38:13,074 DEBUG eval_brake: 8100 / 8152.116 : delta: -52 speed: 29.434267  ratio: -1.77
+2023-02-19 15:38:13,074 DEBUG r: 'delta: -52 ratio -1.7666483761936387' at 8199.127
+2023-02-19 15:38:22,083 DEBUG r: 'brake' at 8499.382
+2023-02-19 15:38:26,226 DEBUG r: 'now' at 8599.021
+2023-02-19 15:38:31,483 DEBUG eval_brake: 8600 / 8628.738 : delta: -28 speed: 25.78931  ratio: -1.09
+2023-02-19 15:38:31,484 DEBUG r: 'delta: -28 ratio -1.0857211767201216' at 8699.021
+2023-02-19 15:38:39,669 DEBUG r: 'brake' at 8999.172
+2023-02-19 15:38:41,937 DEBUG r: 'now' at 9099.192
+2023-02-19 15:38:44,359 DEBUG eval_brake: 9100 / 9158.999 : delta: -58 speed: 27.46899  ratio: -2.11
+2023-02-19 15:38:44,359 DEBUG r: 'delta: -58 ratio -2.111471881565358' at 9199.196

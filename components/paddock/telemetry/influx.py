@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import logging
 import os
@@ -6,6 +6,7 @@ import csv
 import influxdb_client
 from influxdb_client.client.warnings import MissingPivotFunction
 import warnings
+from dateutil import parser
 
 warnings.simplefilter("ignore", MissingPivotFunction)
 
@@ -103,9 +104,24 @@ class Influx:
 
         return data
 
-    def session(self, session_id=None, lap=None, lap_numbers=[]):
+    def session(self, session_id=None, lap=None, lap_numbers=[], start=None, end=None):
 
         lap_filter = []
+
+        if start and end:
+            # subtract one hour from start and add one hour to end
+            start = parser.parse(start) - timedelta(hours=1)
+            end = parser.parse(end) - timedelta(hours=1)
+            start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        if lap:
+            start = lap.start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            end = lap.end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            session_id = lap.session.session_id
+
+        logging.debug(
+            f"session_id: {session_id}, start: {start}, end: {end}, lap_numbers: {lap_numbers}"
+        )
 
         if lap_numbers and session_id:
             for lap_number in lap_numbers:
@@ -121,11 +137,7 @@ class Influx:
                 |> group(columns: [])
                 |> sort(columns: ["_time"])
             """
-        elif lap:
-            start = lap.start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            end = lap.end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            session_id = lap.session.session_id
-
+        elif start and end and session_id:
             query = f"""
                 from(bucket: "racing")
                 |> range(start: {start}, stop: {end})
