@@ -110,10 +110,11 @@ class Firehose:
             logging.debug(f"{topic}\n\t deleting inactive session")
 
     def on_connect(self, mqttc, obj, flags, rc):
-        logging.debug("rc: %s", str(rc))
+        logging.debug("on_connect rc: %s", str(rc))
 
     def on_publish(self, mqttc, obj, mid):
-        logging.debug("mid: %s", str(mid))
+        # logging.debug("mid: %s", str(mid))
+        pass
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
         logging.debug(

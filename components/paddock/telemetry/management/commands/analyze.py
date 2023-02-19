@@ -209,7 +209,7 @@ class Command(BaseCommand):
                 length__lt=median_length * 1.05,
                 time__gt=median_time * 0.95,
                 time__lt=median_time * 1.05,
-            ).order_by("time")[:3]
+            ).order_by("-valid", "time")[:3]
 
             if laps.count() == 0:
                 logging.info("No laps found for threshold")
@@ -225,6 +225,7 @@ class Command(BaseCommand):
                 if lap.time <= threshold:
                     # print(f"{lap.time} is <= {threshold}")
                     fast_laps.append(lap)
+                    logging.debug(lap)
 
             if options["save_csv"]:
                 for lap in fast_laps:

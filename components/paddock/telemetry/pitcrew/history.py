@@ -177,20 +177,25 @@ class History:
         # logging.debug("driver gear %s", driver_segment.gear)
         return driver_segment.gear
 
-    def driver_brake(self, segment):
-        driver_segment = self.driver_segments[segment.turn]
-        df = self.telemetry_segment(segment.start, segment.brake + 200)
-        # find the DistanceRoundTrack where Brake is > 0.1
+    def driver_brake_start(self, start, end):
+        df = self.telemetry_segment(start, end)
 
+        # find the DistanceRoundTrack where Brake is > 0.1
         brake = df[df["Brake"] > 0.1]["DistanceRoundTrack"].min()
 
         if not np.isnan(brake):
+            return brake
+
+        return None
+
+    def driver_brake(self, segment):
+        driver_segment = self.driver_segments[segment.turn]
+        brake = self.driver_brake_start(segment.start, segment.end + 200)
+        if brake:
             self.driver_data[segment.turn]["brake"].append(brake)
             brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
             driver_segment.brake = round(brake)
             driver_segment.save()
-
-        # logging.debug("driver gear %s", driver_segment.gear)
         return driver_segment.brake
 
     # def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
@@ -235,6 +240,7 @@ class History:
             "turn"
         ):
             self.segments.append(segment)
+            logging.debug("segment %s", segment)
 
         logging.debug("loaded %s segments", len(self.segments))
 
