@@ -32,7 +32,9 @@ class Session:
 
     def log_laps(self):
         for lap in self.laps:
-            logging.debug("lap: %s", lap)
+            logging.debug(
+                f"lap {lap['number']:02d} - {lap['time']} - v{lap['valid']} - f{lap['finished']}"
+            )
 
     def new_lap(self, now):
         lap = {
@@ -67,6 +69,12 @@ class Session:
         lap["valid"] = current_lap_is_valid
 
         if lap_time_previous > 0 and previous_lap:
+            if lap_time_previous != previous_lap["time"]:
+                logging.debug(
+                    "previous lap time from %s to %s",
+                    previous_lap["time"],
+                    lap_time_previous,
+                )
             previous_lap["time"] = lap_time_previous
             previous_lap["finished"] = True
             previous_lap["valid"] = telemetry.get("PreviousLapWasValid", False)

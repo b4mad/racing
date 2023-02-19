@@ -28,68 +28,37 @@ class Coach:
         self.history.set_filter(filter)
         self.messages = {}
 
-    def gear(self, segment):
-        gear_h = self.history.gear(segment)
-        if not gear_h:
-            return True
-
-        gear = segment.gear
-        if abs(gear - gear_h) > 0.2:
-            _LOGGER.debug("turn: %s, gear: %s, gear_h: %s", segment.turn, gear, gear_h)
-            return True
-        return False
-
-    def brake_start(self, segment):
-        start = segment.brake
-        start_h = self.history.brake_start(segment)
-
-        if not start_h:
-            return 10000
-
-        distance_to_ideal = start - start_h  # negative if too late
-        if abs(distance_to_ideal) > 10:
-            _LOGGER.debug(
-                "turn: %s, brake: %s, brake_h: %s",
-                segment.turn,
-                start,
-                start_h,
-            )
-            return int(distance_to_ideal)
-        return False
-
-    def eval_gear(self, segment):
-        gear = self.history.driver_gear(segment)
-        if segment.gear != gear:
-            # enable gear notification
-            self.enable_msg(segment)
-            return f"gear should be {segment.gear}"
-        else:
-            self.disable_msg(segment)
-
-    def eval_brake(self, segment):
-        brake = self.history.driver_brake(segment)
-        delta = segment.brake - brake
-        if abs(delta) > 50:
-            self.enable_msg(segment)
-            logging.debug("%s / %s : delta: %s", brake, segment.brake, delta)
-        elif abs(delta) > 10:
-            self.disable_msg(segment)
-            if delta > 0:
-                return "Brake %s meters later" % round(abs(delta))
-            else:
-                return "Brake %s meters earlier" % round(abs(delta))
-        else:
-            self.disable_msg(segment)
-
     def disable_msg(self, segment):
         self.enable_msg(segment, False)
 
     def enable_msg(self, segment, enabled=True):
         # iterate over messages and enable the one for this segment
-        for msg in self.messages.values():
+        for at in self.messages:
+            msg = self.messages[at]
             if "segment" in msg and "enabled" in msg:
                 if msg["segment"] == segment:
-                    msg["enabled"] = enabled
+                    if isinstance(msg["msg"], str):
+                        if msg["enabled"] != enabled:
+                            msg["enabled"] = enabled
+                            logging.debug(f"at {at}: {msg['msg']} enabled: {enabled}")
+
+    def new_msg(self, at, msg, segment):
+        message = {
+            "msg": msg,
+            "read": 0,
+            "enabled": True,
+            "segment": segment,
+        }
+        while at in self.messages:
+            at += 1
+        self.messages[at] = message
+        return message
+
+    def new_fn(self, at, fn, segment):
+        message = self.new_msg(at, fn, segment)
+        message["args"] = [segment]
+        message["kwargs"] = {}
+        return message
 
     def get_response(self, telemetry):
         if not self.history.ready:
@@ -102,140 +71,126 @@ class Coach:
                 return None
         # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
-        now = time.time()
         # build self.messages from fast laps segments
         if not self.messages:
-            track_length = self.history.track.length
-            for segment in self.history.segments:
-                # add gear notification
-                if segment.gear:
-                    at = (segment.accelerate - 100) % track_length
-                    msg = f"gear {segment.gear}"
-                    self.messages[at] = {
-                        "msg": msg,
-                        "read": 0,
-                        "enabled": True,
-                        "segment": segment,
-                    }
+            self.init_messages()
 
-                    at = (segment.accelerate + 20) % track_length
-                    self.messages[at] = {
-                        "fn": self.eval_gear,
-                        "args": [segment],
-                        "read": 0,
-                    }
-
-                if segment.mark == "brake":
-                    at = (segment.start - 100) % track_length
-                    # This message takes 5.3 seconds to read
-                    # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
-                    msg = "%s %%" % (round(segment.force / 10) * 10)
-                    self.messages[at] = {
-                        "msg": msg,
-                        "read": 0,
-                        "enabled": True,
-                        "segment": segment,
-                    }
-
-                    at = segment.start
-                    msg = "brake"
-                    self.messages[at] = {
-                        "msg": msg,
-                        "read": 0,
-                        "enabled": True,
-                        "segment": segment,
-                    }
-
-                    at = (segment.brake + 20) % track_length
-                    self.messages[at] = {
-                        "fn": self.eval_brake,
-                        "args": [segment],
-                        "read": 0,
-                        "segment": segment,
-                    }
-
-                if segment.mark == "throttle":
-                    at = (segment.start - 100) % track_length
-                    to = round(segment.force / 10) * 10
-                    if to > 0:
-                        msg = "Throttle to %s in 100" % to
-                    else:
-                        msg = "Lift throttle in 100"
-                    self.messages[at] = {
-                        "msg": msg,
-                        "read": 0,
-                        "enabled": True,
-                        "segment": segment,
-                    }
-
-            logging.debug(f"loaded messages: {self.messages}")
-
+        now = time.time()
         # loop over all messages and check the distance, if we have something to say
-        meters = telemetry["DistanceRoundTrack"]
+        distance_round_track = telemetry["DistanceRoundTrack"]
         self.history.update(now, telemetry)
         for at in self.messages:
-            distance = abs(at - meters)
+            distance = abs(at - distance_round_track)
             # only read every 20 seconds and if we are close
             msg = self.messages[at]
             if "enabled" in msg and not msg["enabled"]:
                 continue
-            if distance < 2 and now - msg["read"] > self.msg_read_interval:
-                if "fn" in self.messages[at]:
+            if distance <= 1 and now - msg["read"] > self.msg_read_interval:
+                msg = self.messages[at]["msg"]
+                if isinstance(msg, str):
                     self.messages[at]["read"] = now
-                    message = self.messages[at]["fn"](*self.messages[at]["args"])
+                    return msg
+                if callable(msg):
+                    self.messages[at]["read"] = now
+                    kwargs = self.messages[at]["kwargs"].copy()
+                    kwargs["distance_round_track"] = distance_round_track
+                    kwargs["at"] = at
+                    message = msg(*self.messages[at]["args"], **kwargs)
                     if message:
                         return message
-                else:
-                    self.messages[at]["read"] = now
-                    return self.messages[at]["msg"]
 
-        return None
+    def eval_brake_debug(self, brake_start, distance_round_track=-1, at=-1):
+        driver_brake_start = self.history.driver_brake_start(
+            brake_start, distance_round_track
+        )
 
-        meters = telemetry["DistanceRoundTrack"]
-        speed = telemetry["SpeedMs"]
-        segment = self.history.segment(meters)
-        # logging.debug(f"{meters}: {segment}")
-        if not segment:
-            return None
+        if driver_brake_start:
+            delta = brake_start - driver_brake_start
+            logging.debug(
+                "eval_brake: %s / %s : delta: %s",
+                brake_start,
+                driver_brake_start,
+                delta,
+            )
+            return "delta: %s" % delta
+        else:
+            logging.debug(
+                "eval_brake: %s / %s : no driver_brake_start",
+                brake_start,
+                driver_brake_start,
+            )
 
-        if self.msg["turn"] != segment.turn:
-            self.msg["turn"] = segment.turn
-            self.msg["msg"] = {}
+    def init_messages_debug(self):
+        track_length = self.history.track.length
+        for at in range(0, track_length, 500):
+            self.new_msg(at, "3 .. 2 .. 1", None)
+            self.new_msg(at + 100, "brake", None)
+            msg = self.new_fn(at + 150, self.eval_brake_debug, None)
+            msg["args"] = [at + 100]
 
-            # announce segment start if debugging
-            if self.debug:
-                self.msg["msg"][meters + 5] = f"Turn {segment.turn}"
+    def init_messages(self):
+        track_length = self.history.track.length
+        for segment in self.history.segments:
+            if segment.mark == "brake":
+                at = (segment.start - 100) % track_length
+                # This message takes 5.3 seconds to read
+                # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
+                msg = "%s %%" % (round(segment.force / 10) * 10)
+                self.new_msg(at, msg, segment)
 
-            # do we have something to say about the current segment?
-            if self.gear(segment):
-                # coach on correct gear
+                at = segment.start
+                msg = "brake"
+                self.new_msg(at, msg, segment)
 
-                at = segment.start + 100
-                self.msg["msg"][at] = "Gear %s" % segment.gear
-                _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
+                at = (segment.end + 20) % track_length
+                self.new_fn(at, self.eval_brake, segment)
 
-            brake = self.brake_start(segment)
-            if brake and self.debug:
-                # calculate where we are in 5.3 seconds
-                travel_distance = speed * 5.3
-                # print(f"travel_distance: {travel_distance} at speed: {speed}")
-                at = segment.brake - travel_distance
-                self.msg["msg"][at] = "Brake in 3 .. 2 .. 1 .. brake"
-                # if abs(brake) > 50:
-                #     self.msg["msg"][at] = segment["mark"]
-                # elif brake > 0:
-                #     self.msg["msg"][at] = "Brake %s meters earlier" % brake
-                # else:
-                #     self.msg["msg"][at] = "Brake %s meters later" % abs(brake)
-                _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
+            if segment.mark == "throttle":
+                at = (segment.start - 100) % track_length
+                to = round(segment.force / 10) * 10
+                msg = "throttle to %s" % to
+                self.new_msg(at, msg, segment)
 
-        # loop over all messages and check the distance, if we have something to say
-        for at in self.msg["msg"]:
-            distance = abs(at - meters)
-            if distance < 2:
-                return self.msg["msg"].pop(at)
+                at = segment.start
+                msg = "now"
+                self.new_msg(at, msg, segment)
 
-        return None
+            if segment.gear:
+                at = (segment.accelerate - 100) % track_length
+                msg = f"gear {segment.gear}"
+                self.new_msg(at, msg, segment)
+
+                at = (segment.accelerate + 20) % track_length
+                self.new_fn(at, self.eval_gear, segment)
+
+        for at in self.messages:
+            logging.debug(f"at {at}: {self.messages[at]['msg']}")
+
+    def eval_gear(self, segment, **kwargs):
+        gear = self.history.driver_gear(segment)
+        if segment.gear != gear:
+            # enable gear notification
+            self.enable_msg(segment)
+            return f"gear should be {segment.gear}"
+        else:
+            self.disable_msg(segment)
+
+    def eval_brake(self, segment, **kwargs):
+        driver_brake_start = self.history.driver_brake(segment)
+        delta = segment.start - driver_brake_start
+        logging.debug(
+            "eval_brake: %s / %s : delta: %s", driver_brake_start, segment.start, delta
+        )
+        if abs(delta) > 50:
+            self.enable_msg(segment)
+        elif abs(delta) > 10:
+            self.disable_msg(segment)
+            if delta > 0:
+                return "Brake %s meters later" % round(abs(delta))
+            else:
+                return "Brake %s meters earlier" % round(abs(delta))
+        else:
+            self.disable_msg(segment)
 
 
 if __name__ == "__main__":
