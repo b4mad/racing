@@ -154,11 +154,24 @@ class History:
         # logging.debug("telemetry: %s", self.telemetry)
 
     def telemetry_segment(self, start, end):
+        # FIXME: mod track length
         df = self.telemetry
-        df = df[df["_time"] > time.time() - 30]
-        df = df[df["DistanceRoundTrack"].between(start, end)]
+        # go back until we have the first index where DistanceRoundTrack is between start and end
+        idx = len(df) - 1
 
-        return df
+        end_idx = -1
+        distance = df.iloc[idx]["DistanceRoundTrack"]
+        while distance >= start and idx > 0:
+            if distance <= end and end_idx == -1:
+                end_idx = idx
+
+            idx -= 1
+            distance = df.iloc[idx]["DistanceRoundTrack"]
+
+        start_idx = idx
+
+        return df.iloc[start_idx:end_idx]
+        # df = df[df["DistanceRoundTrack"].between(start, end)]
 
     def driver_gear(self, segment):
         driver_segment = self.driver_segments[segment.turn]
@@ -187,6 +200,18 @@ class History:
             return brake
 
         return None
+
+    def driver_speed_at(self, meters):
+        start = meters - 2
+        end = meters + 2
+        df = self.telemetry_segment(start, end)
+
+        speed = df["SpeedMs"].mean()
+
+        if not np.isnan(speed):
+            return speed
+
+        return 0
 
     def driver_brake(self, segment):
         driver_segment = self.driver_segments[segment.turn]

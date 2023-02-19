@@ -54,10 +54,12 @@ class Command(BaseCommand):
             "--wait",
             nargs="?",
             type=float,
-            default=None,
+            default=0.001,
             help="seconds to sleep between messages",
         )
         parser.add_argument("--live", action="store_true")
+        parser.add_argument("--start", type=str, default=None)
+        parser.add_argument("--end", type=str, default=None)
 
     def handle(self, *args, **options):
         influx = Influx()
@@ -66,7 +68,10 @@ class Command(BaseCommand):
         if options["session_ids"]:
             for session_id in options["session_ids"]:
                 session = influx.session(
-                    session_id=session_id, lap_numbers=options["lap_numbers"]
+                    session_id=session_id,
+                    lap_numbers=options["lap_numbers"],
+                    start=options["start"],
+                    end=options["end"],
                 )
                 if options["new_session_id"]:
                     new_session_id = options["new_session_id"]

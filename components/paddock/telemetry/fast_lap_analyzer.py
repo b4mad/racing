@@ -97,6 +97,7 @@ class FastLapAnalyzer:
                 segment["color"] = "green"
                 segment["start"] = start_i
                 segment["end"] = end_i
+                segment["speed"] = df["SpeedMs"][start_i]
 
                 avg_data = self.get_average(
                     df, start_i, end_i, column="Throttle", max=False
@@ -111,6 +112,7 @@ class FastLapAnalyzer:
                 min = search_df["Brake"].min()
                 brake_start_i = search_df[search_df["Brake"] == min].index.max()
                 segment["start"] = brake_start_i
+                segment["speed"] = df["SpeedMs"][brake_start_i]
 
                 search_df = df[brake_start_i:end_i]
                 brake_end_i = search_df[search_df["Brake"] > min].index.max()

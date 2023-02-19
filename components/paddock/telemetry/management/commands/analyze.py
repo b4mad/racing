@@ -60,6 +60,7 @@ class Command(BaseCommand):
             default=None,
             help="save to csv",
         )
+        parser.add_argument("--create-empty", action="store_true")
 
     def import_csv(self, options):
         for csv_file in options["import_csv"]:
@@ -168,6 +169,10 @@ class Command(BaseCommand):
 
         sql = f"select count(id) as c, track_id, car_id from telemetry_lap {where_clause} group by track_id, car_id"
 
+        if options["create_empty"]:
+            self.create_empty(car=car, track=track, game=filter_game)
+            return
+
         with connection.cursor() as cursor:
             cursor.execute(sql)
             rows = cursor.fetchall()
@@ -251,6 +256,12 @@ class Command(BaseCommand):
         if options["save_csv"]:
             csv_file.close()
 
+    def create_empty(self, car=None, track=None, game=None):
+        fast_lap, created = FastLap.objects.get_or_create(
+            car=car, track=track, game=game, driver=None
+        )
+        logging.debug(f"created: {created}, fast_lap: {fast_lap}")
+
     def save_fastlap(self, track_info, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(
             car=car, track=track, game=game, driver=None
@@ -262,6 +273,14 @@ class Command(BaseCommand):
             print(brakepoint)
             fast_lap.fast_lap_segments.create(**brakepoint)
             i += 1
+        # also delete user segments
+        # FIXME only delete user segements if they changed?
+        r = (
+            FastLap.objects.filter(car=car, track=track, game=game)
+            .exclude(driver=None)
+            .delete()
+        )
+        logging.debug(f"deleted {r} user segments")
 
     def handle_influx(self, *args, **options):
         # Driver.objects.all().delete()
