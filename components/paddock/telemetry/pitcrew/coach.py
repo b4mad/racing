@@ -141,10 +141,11 @@ class Coach:
             msg["args"] = [brake_point]
 
     def init_messages(self):
+        speed_factor = 1.2
         self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment.mark == "brake":
-                at = segment.start - 100
+                at = segment.start - (3 * segment.speed * speed_factor)
                 # This message takes 5.3 seconds to read
                 # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
                 msg = "%s percent" % (round(segment.force / 10) * 10)
@@ -154,7 +155,7 @@ class Coach:
                 #    brake+delta=actual
                 #    ratio=delta/speed
                 #    delta=ratio*speed
-                at = segment.start - (segment.speed * 1.2)
+                at = segment.start - (segment.speed * speed_factor)
                 msg = "brake"
                 self.new_msg(at, msg, segment)
 
@@ -162,7 +163,7 @@ class Coach:
                 self.new_fn(at, self.eval_brake, segment)
 
             if segment.mark == "throttle":
-                at = segment.start - 100
+                at = segment.start - (3 * segment.speed * speed_factor)
                 to = round(segment.force / 10) * 10
                 msg = "throttle to %s" % to
                 self.new_msg(at, msg, segment)
@@ -172,11 +173,11 @@ class Coach:
                 self.new_msg(at, msg, segment)
 
             if segment.gear:
-                at = segment.accelerate - 100
+                at = segment.start - (4 * segment.speed * speed_factor)
                 msg = f"gear {segment.gear}"
                 self.new_msg(at, msg, segment)
 
-                at = segment.accelerate + 20
+                at = segment.end + 60
                 self.new_fn(at, self.eval_gear, segment)
 
     def eval_gear(self, segment, **kwargs):
