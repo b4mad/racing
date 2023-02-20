@@ -160,7 +160,7 @@ class Command(BaseCommand):
             where.append(f" track_id={track.pk}")
         if options["car"]:
             # get the first car with this name
-            car = Car.objects.get(name=options["car"])
+            car = filter_game.cars.filter(name=options["car"]).first()
             where.append(f"car_id={car.pk}")
 
         where_clause = ""
