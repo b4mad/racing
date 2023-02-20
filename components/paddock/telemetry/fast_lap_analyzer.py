@@ -30,10 +30,12 @@ class FastLapAnalyzer:
 
     def analyze(self):
         if not self.assert_can_analyze():
+            logging.info("Can't analyze")
             return
 
         laps = self.influx.telemetry_for_laps([self.laps[0]])
         if len(laps) == 0:
+            logging.info("No laps found")
             return
 
         cleaned_laps = []
@@ -51,6 +53,9 @@ class FastLapAnalyzer:
             )
             cleaned_laps.append(df)
 
+        if len(cleaned_laps) == 0:
+            logging.info("No cleaned laps found")
+            return
         segments = self.get_segments(cleaned_laps[0])
         track_info = sorted(segments, key=lambda k: k["start"])
 
@@ -102,6 +107,8 @@ class FastLapAnalyzer:
                 avg_data = self.get_average(
                     df, start_i, end_i, column="Throttle", max=False
                 )
+                if len(avg_data) == 0:
+                    continue
                 segment |= avg_data
             else:
                 # search back 20 meters to find the start of the brake
@@ -109,17 +116,21 @@ class FastLapAnalyzer:
                 if search_start < 0:
                     search_start = 0
                 search_df = df[search_start:brake_i]
+                if len(search_df) == 0:
+                    continue
                 min = search_df["Brake"].min()
                 brake_start_i = search_df[search_df["Brake"] == min].index.max()
                 segment["start"] = brake_start_i
                 segment["speed"] = df["SpeedMs"][brake_start_i]
 
                 search_df = df[brake_start_i:end_i]
-                brake_end_i = search_df[search_df["Brake"] > min].index.max()
+                brake_end_i = search_df[search_df["Brake"] >= min].index.max()
                 segment["end"] = brake_end_i
 
                 # find the max brake value
                 avg_data = self.get_average(df, brake_i, end_i)
+                if len(avg_data) == 0:
+                    continue
                 segment |= avg_data
 
             # get lowest gear in this segment
@@ -148,6 +159,8 @@ class FastLapAnalyzer:
 
     def get_average(self, df, start_i, end_i, column="Brake", max=True):
         search_df = df[start_i:end_i]
+        if len(search_df) == 0:
+            return {}
 
         if max:
             high = abs(round(search_df[column].max(), 2))
