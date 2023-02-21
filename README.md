@@ -18,9 +18,8 @@ or do some [data science](ai/)
 2. Enable the telemetry collection by checking 'MQTT Telemetry enabled' in the CrewChief Properties
 3. Choose a 'MQTT drivername' in the CrewChief Properties ![cc_settings_mqtt](docs/cc_settings_mqtt.png)
 4. Enable text to speech ![cc_settings_tts](docs/cc_settings_tts.png)
-5. Download [mqtt_telemetry.json](https://raw.githubusercontent.com/b4mad/racing/main/docs/mqtt_telemetry.json) and place it in the CrewChief Documents folder ![cc_folder](docs/cc_folder.png)
-6. If all works you should see connection messages in the CrewChief console ![cc_log](docs/cc_log.png)
-7. Join our [Discord](https://discord.com/invite/MaUQuSGSbJ) and say hello :wave:
+5. If all works you should see connection messages in the CrewChief console ![cc_log](docs/cc_log.png)
+6. Join our [Discord](https://discord.com/invite/MaUQuSGSbJ) and say hello :wave:
 
 Drive some laps to send some initial data. Now any time you run your simulator you will be sending data.
 

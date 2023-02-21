@@ -31,3 +31,10 @@ To run the application, you can use the following command:
 ```bash
 python manage.py runserver
 ```
+
+### updating models
+
+
+```
+Lap.objects.update(valid=False)
+```

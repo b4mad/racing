@@ -145,7 +145,7 @@ class Coach:
         self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment.mark == "brake":
-                at = segment.start - (3 * segment.speed * speed_factor)
+                at = segment.start - (3.5 * segment.speed * speed_factor)
                 # This message takes 5.3 seconds to read
                 # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
                 msg = "%s percent" % (round(segment.force / 10) * 10)
@@ -173,7 +173,7 @@ class Coach:
                 self.new_msg(at, msg, segment)
 
             if segment.gear:
-                at = segment.start - (4 * segment.speed * speed_factor)
+                at = segment.start - (4.5 * segment.speed * speed_factor)
                 msg = f"gear {segment.gear}"
                 self.new_msg(at, msg, segment)
 
@@ -185,7 +185,7 @@ class Coach:
         if segment.gear != gear:
             # enable gear notification
             self.enable_msg(segment)
-            return f"gear should be {segment.gear}"
+            # return f"gear should be {segment.gear}"
         else:
             self.disable_msg(segment)
 
