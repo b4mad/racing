@@ -6,6 +6,9 @@ from telemetry.models import Lap
 from telemetry.influx import Influx
 import logging
 import paho.mqtt.client as mqtt
+from rich.console import Console
+from rich.table import Column
+from rich.progress import Progress, TextColumn
 
 B4MAD_RACING_CLIENT_USER = os.environ.get("B4MAD_RACING_CLIENT_USER", "crewchief")
 B4MAD_RACING_CLIENT_PASSWORD = os.environ.get(
@@ -64,7 +67,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         influx = Influx()
         self.live = options["live"]
-
+        self.console = Console()
+        text_column = TextColumn("{task.fields[meters]}", table_column=Column(ratio=1))
+        # bar_column = BarColumn(bar_width=None, table_column=Column(ratio=2))
+        self.progress = Progress(text_column, expand=True)
+        self.task = self.progress.add_task("Replaying", total=100, meters=0, topic="")
         if options["session_ids"]:
             for session_id in options["session_ids"]:
                 session = influx.session(
@@ -77,12 +84,13 @@ class Command(BaseCommand):
                     new_session_id = options["new_session_id"]
                 else:
                     new_session_id = int(time.time())
-                logging.info(
-                    f"Replaying session {session_id} as new session {new_session_id}"
-                )
-                self.replay(
-                    session, wait=options["wait"], new_session_id=new_session_id
-                )
+                msg = f"[green] Replaying session {session_id} as new session {new_session_id}"
+                self.progress.console.print(msg)
+
+                with self.progress:
+                    self.replay(
+                        session, wait=options["wait"], new_session_id=new_session_id
+                    )
 
         if options["lap_ids"]:
             for lap_id in options["lap_ids"]:
@@ -106,6 +114,13 @@ class Command(BaseCommand):
         logging.info("Connected to telemetry.b4mad.racing")
         # epoch = datetime.datetime.utcfromtimestamp(0)
 
+        prev_payload = {"telemetry": {}}
+        monitor_fields = [
+            "LapTimePrevious",
+            "CurrentLapIsValid",
+            "PreviousLapWasValid",
+            "CurrentLap",
+        ]
         line_count = 0
         for record in session:
             topic = record["topic"]
@@ -157,25 +172,39 @@ class Command(BaseCommand):
                 topic = f"replay/{prefix}/durandom/{new_session_id}/{game}/{track}/{car}/{session_type}"
 
             if line_count == 0:
-                print(topic)
+                self.progress.console.print(f"[bold blue] {topic}")
             line_count += 1
 
             # convert payload to json string
             payload_string = json.dumps(payload)
-            # print(payload)
-            ltp = payload["telemetry"].get("LapTimePrevious", -1)
-            clv = payload["telemetry"].get("CurrentLapIsValid", True)
-            plv = payload["telemetry"].get("PreviousLapWasValid", True)
-            # current_lap = payload["telemetry"].get("CurrentLap", None)
-            # print("CurrentLap:          ", current_lap)
-            if ltp > 0 or not clv or not plv:
-                print("LapTimePrevious:     ", ltp)
-                print("CurrentLapIsValid:   ", clv)
-                print("PreviousLapWasValid: ", plv)
+
+            distance_round_track = payload["telemetry"].get("DistanceRoundTrack", 0)
+            self.progress.update(
+                self.task, advance=1, meters=distance_round_track, topic=topic
+            )
+
+            for field in monitor_fields:
+                value = payload["telemetry"].get(field, None)
+                prev_value = prev_payload["telemetry"].get(field, None)
+                if value != prev_value:
+                    self.progress.console.print(
+                        f"{distance_round_track}: {field}: {prev_value} -> {value}"
+                    )
+
+            # ltp = payload["telemetry"].get("LapTimePrevious", None)
+            # clv = payload["telemetry"].get("CurrentLapIsValid", None)
+            # plv = payload["telemetry"].get("PreviousLapWasValid", None)
+            # # current_lap = payload["telemetry"].get("CurrentLap", None)
+            # # print("CurrentLap:          ", current_lap)
+            # if ltp > 0 or not clv or not plv:
+            #     print("LapTimePrevious:     ", ltp)
+            #     print("CurrentLapIsValid:   ", clv)
+            #     print("PreviousLapWasValid: ", plv)
 
             mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
 
             # print dot without newline
-            print(".", end="", flush=True)
-            print(payload["telemetry"]["DistanceRoundTrack"])
+            # print(".", end="", flush=True)
+            # print(payload["telemetry"]["DistanceRoundTrack"])
+            prev_payload = payload
             time.sleep(wait)

@@ -27,6 +27,7 @@ scipy = "*"
 locked-dict = "*"
 scikit-learn = "*"
 flask-healthz = "*"
+rich = "*"
 
 [dev-packages]
 black = "*"
