@@ -62,7 +62,36 @@ class FastLapAnalyzer:
         # convert track_info, which is an array of dict, to a pandas dataframe
         df = pd.DataFrame(track_info)
         logging.info(df.style.format(precision=1).to_string())
-        return track_info
+
+        distance_time = self.get_distance_time(cleaned_laps[0])
+        data = {
+            "distance_time": distance_time,
+        }
+        return track_info, data
+
+    def get_distance_time(self, lap):
+        # find the index where the lap starts, thats where CurrentLapTime is minimal
+        # only keep the part of the lap after the start
+        lap = lap[["id", "DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
+        lap = self.analyzer.resample(lap, freq=1, columns=["CurrentLapTime", "SpeedMs"])
+        lap_start = lap["CurrentLapTime"].idxmin()
+
+        # display(lap_start)
+
+        # for all indices until lap_start, calculate a new value for CurrentLapTime
+        # CurrentLapTime = DistanceRoundTrack * SpeedMs
+
+        lap.loc[:lap_start, "CurrentLapTime"] = (
+            lap.loc[:lap_start, "DistanceRoundTrack"] / lap.loc[:lap_start, "SpeedMs"]
+        )
+        # lap.loc[lap_start-10:lap_start+10]
+        # remove id and SpeedMs column
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime"]]
+        # round DistanceRoundTrack to 1 decimal
+        lap["DistanceRoundTrack"] = lap["DistanceRoundTrack"].round(1)
+        # round CurrentLapTime to 3 decimals
+        lap["CurrentLapTime"] = lap["CurrentLapTime"].round(3)
+        return lap
 
     def get_segments(self, df):
 
