@@ -33,7 +33,8 @@ class Session:
     def log_laps(self):
         for lap in self.laps:
             logging.debug(
-                f"lap {lap['number']:02d} - {lap['time']} - v{lap['valid']} - f{lap['finished']}"
+                f"{self.driver} lap {lap['number']:02d}: {lap['time']}"
+                + f" - valid: {lap['valid']} - finished: {lap['finished']}"
             )
 
     def new_lap(self, now):
@@ -56,7 +57,7 @@ class Session:
             lap = self.new_lap(now)
             lap["number"] = current_lap
             self.current_lap = current_lap
-            self.log_laps()
+            logging.debug(f"{self.driver} new lap: {lap['number']}")
 
         lap = self.laps[-1]
         previous_lap = self.laps[-2] if len(self.laps) > 1 else None
@@ -71,22 +72,13 @@ class Session:
         if lap_time_previous > 0 and previous_lap:
             if lap_time_previous != previous_lap["time"]:
                 logging.debug(
-                    "previous lap time from %s to %s",
-                    previous_lap["time"],
-                    lap_time_previous,
+                    f"{self.driver} setting previous lap time from"
+                    + f"{previous_lap['time']} to {lap_time_previous}"
                 )
-            previous_lap["time"] = lap_time_previous
-            previous_lap["finished"] = True
-            previous_lap["valid"] = telemetry.get("PreviousLapWasValid", False)
-
-            # logging.debug("previous lap time to %s - valid: %s", lap_time_previous, previous_lap["valid"])
-
-        # if lap_time_previous > 0 and previous_lap and previous_lap["time"] < 0:
-        #     previous_lap["time"] = lap_time_previous
-        #     previous_lap["finished"] = True
-        #     previous_lap["valid"] = telemetry.get("PreviousLapWasValid", False)
-
-        #     logging.debug("previous lap time to %s - valid: %s", lap_time_previous, previous_lap["valid"])
+                previous_lap["time"] = lap_time_previous
+                previous_lap["valid"] = telemetry.get("PreviousLapWasValid", False)
+                previous_lap["finished"] = True
+                self.log_laps()
 
     def analyze(self, telemetry, now):
         length = telemetry.get("DistanceRoundTrack", None)
