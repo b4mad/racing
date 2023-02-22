@@ -1,5 +1,6 @@
 from django.db import models
 from dirtyfields import DirtyFieldsMixin
+from picklefield.fields import PickledObjectField
 import datetime
 
 
@@ -99,6 +100,8 @@ class FastLap(models.Model):
     driver = models.ForeignKey(
         Driver, on_delete=models.CASCADE, related_name="fast_laps", null=True
     )
+    # add binary field to hold arbitrary data
+    data = PickledObjectField(null=True)
 
     def __str__(self):
         return f"{self.game} {self.car} {self.track}"

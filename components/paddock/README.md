@@ -38,3 +38,10 @@ python manage.py runserver
 ```
 Lap.objects.update(valid=False)
 ```
+
+### replaying
+
+```
+# speed ratio, lemans, brake now -> brake
+pipenv run ./manage.py replay --session-id 1676816282 --start "2023-02-19 16:35:34" --end "2023-02-19 16:38:48"
+```

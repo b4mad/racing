@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96b3272024f71d05e844a0af8aa2a2d9b0bf7b92ea2184830b470b4174363cd2"
+            "sha256": "fc36a2197a74e88464953affbf334854811dc81cead0dff37dd1552345964737"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -245,6 +245,14 @@
             ],
             "index": "pypi",
             "version": "==0.9.0"
+        },
+        "django-picklefield": {
+            "hashes": [
+                "sha256:c786cbeda78d6def2b43bff4840d19787809c8909f7ad683961703060398d356",
+                "sha256:d77c504df7311e8ec14e8b779f10ca6fec74de6c7f8e2c136e1ef60cf955125d"
+            ],
+            "index": "pypi",
+            "version": "==3.1"
         },
         "django-plotly-dash": {
             "hashes": [
@@ -716,7 +724,8 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:6a2948ec427dfcc7c983027b1044b355db6aaa8be374f54ad2015471f7d81c5b"
+                "sha256:6a2948ec427dfcc7c983027b1044b355db6aaa8be374f54ad2015471f7d81c5b",
+                "sha256:d5d73d4b5eb1a92ba884a88962b157f49b71e06c4348b417dd622b25cdd3800b"
             ],
             "markers": "python_full_version >= '3.7.0'",
             "version": "==3.0.37"

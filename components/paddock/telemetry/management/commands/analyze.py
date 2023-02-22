@@ -249,9 +249,9 @@ class Command(BaseCommand):
                     csv_writer.writerow(row)
             else:
                 fl = FastLapAnalyzer(fast_laps)
-                track_info = fl.analyze()
+                track_info, data = fl.analyze()
                 if track_info:
-                    self.save_fastlap(track_info, car=car, track=track, game=game)
+                    self.save_fastlap(track_info, data, car=car, track=track, game=game)
 
         if options["save_csv"]:
             csv_file.close()
@@ -262,10 +262,12 @@ class Command(BaseCommand):
         )
         logging.debug(f"created: {created}, fast_lap: {fast_lap}")
 
-    def save_fastlap(self, track_info, car=None, track=None, game=None):
+    def save_fastlap(self, track_info, data, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(
             car=car, track=track, game=game, driver=None
         )
+        fast_lap.data = data
+        fast_lap.save()
         fast_lap.fast_lap_segments.all().delete()
         i = 1
         for brakepoint in track_info:
