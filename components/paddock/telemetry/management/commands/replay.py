@@ -120,6 +120,7 @@ class Command(BaseCommand):
             "CurrentLapIsValid",
             "PreviousLapWasValid",
             "CurrentLap",
+            # "CurrentLapTime",
         ]
         line_count = 0
         for record in session:
@@ -177,6 +178,7 @@ class Command(BaseCommand):
 
             # convert payload to json string
             payload_string = json.dumps(payload)
+            self.progress.console.print_json(payload_string)
 
             distance_round_track = payload["telemetry"].get("DistanceRoundTrack", 0)
             self.progress.update(
@@ -191,20 +193,6 @@ class Command(BaseCommand):
                         f"{distance_round_track}: {field}: {prev_value} -> {value}"
                     )
 
-            # ltp = payload["telemetry"].get("LapTimePrevious", None)
-            # clv = payload["telemetry"].get("CurrentLapIsValid", None)
-            # plv = payload["telemetry"].get("PreviousLapWasValid", None)
-            # # current_lap = payload["telemetry"].get("CurrentLap", None)
-            # # print("CurrentLap:          ", current_lap)
-            # if ltp > 0 or not clv or not plv:
-            #     print("LapTimePrevious:     ", ltp)
-            #     print("CurrentLapIsValid:   ", clv)
-            #     print("PreviousLapWasValid: ", plv)
-
             mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
-
-            # print dot without newline
-            # print(".", end="", flush=True)
-            # print(payload["telemetry"]["DistanceRoundTrack"])
             prev_payload = payload
             time.sleep(wait)

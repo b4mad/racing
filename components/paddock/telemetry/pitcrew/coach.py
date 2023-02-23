@@ -50,6 +50,10 @@ class Coach:
             "segment": segment,
         }
         at = at % self.history.track_length
+        # there's a delay of 1.2 seconds until the message is read
+        new_at = self.history.offset_distance(at, seconds=1.2)
+        logging.debug(f"offset 1.2 seconds: {at} -> {new_at}")
+        at = new_at
         while at in self.messages:
             at += 1
             at = at % self.history.track_length
@@ -103,42 +107,6 @@ class Coach:
                     message = msg(*self.messages[at]["args"], **kwargs)
                     if message:
                         return message
-
-    def eval_brake_debug(self, brake_start, **kwargs):
-        telemetry = kwargs["telemetry"]
-        distance_round_track = telemetry["DistanceRoundTrack"]
-        speed_ms = self.history.driver_speed_at(brake_start)
-        driver_brake_start = self.history.driver_brake_start(
-            brake_start, distance_round_track
-        )
-
-        if driver_brake_start:
-            delta = int(brake_start - driver_brake_start)
-            ratio = delta / speed_ms
-            logging.debug(
-                "eval_brake: %s / %s : delta: %s speed: %.0f  ratio: %.2f",
-                brake_start,
-                driver_brake_start,
-                delta,
-                speed_ms,
-                ratio,
-            )
-            return f"delta: {delta} ratio {ratio:.2f}"
-        else:
-            logging.debug(
-                "eval_brake: %s / %s : no driver_brake_start",
-                brake_start,
-                driver_brake_start,
-            )
-
-    def init_messages_debug(self):
-        self.track_length = self.history.track.length
-        for at in range(0, self.track_length, 500):
-            self.new_msg(at, "brake", None)
-            brake_point = at + 100
-            self.new_msg(brake_point, "now", None)
-            msg = self.new_fn(brake_point + 100, self.eval_brake_debug, None)
-            msg["args"] = [brake_point]
 
     def init_messages(self):
         speed_factor = 1.2
@@ -206,6 +174,58 @@ class Coach:
         #         return "Brake %s meters earlier" % round(abs(delta))
         else:
             self.disable_msg(segment)
+
+    # debug stuff
+    def brake_debug(self, segment, **kwargs):
+        telemetry = kwargs["telemetry"]
+        self.brake_debug_time = telemetry["CurrentLapTime"]
+        return "now"
+
+    def eval_brake_debug(self, brake_start, **kwargs):
+        telemetry = kwargs["telemetry"]
+        distance_round_track = telemetry["DistanceRoundTrack"]
+        speed_ms = self.history.driver_speed_at(brake_start)
+        driver_brake_start = self.history.driver_brake_start(
+            brake_start, distance_round_track
+        )
+
+        real_brake_time = self.history.driver_telemetry_start(
+            brake_start, distance_round_track, field="CurrentLapTime"
+        )
+        time_delta = real_brake_time - self.brake_debug_time
+
+        if driver_brake_start:
+            delta = int(brake_start - driver_brake_start)
+            ratio = delta / speed_ms
+            logging.debug(
+                "eval_brake: %s / %s : delta: %s speed: %.0f ratio: %.2f time_delta: %.2f",
+                brake_start,
+                driver_brake_start,
+                delta,
+                speed_ms,
+                ratio,
+                time_delta,
+            )
+            return f"delta: {delta:.0f}"
+        else:
+            logging.debug(
+                "eval_brake: %s / %s : no driver_brake_start",
+                brake_start,
+                driver_brake_start,
+            )
+
+    def init_messages_debug(self):
+        self.track_length = self.history.track.length
+        self.brake_debug_time = 0
+        for at in range(0, self.track_length, 500):
+            self.new_msg(at, "brake", None)
+            brake_point = at + 100
+            # self.new_msg(brake_point, "now", None)
+            # this message says "now" and stores the time
+            msg = self.new_fn(brake_point, self.brake_debug, None)
+            # this message calculates the delta
+            msg = self.new_fn(brake_point + 100, self.eval_brake_debug, None)
+            msg["args"] = [brake_point]
 
 
 if __name__ == "__main__":

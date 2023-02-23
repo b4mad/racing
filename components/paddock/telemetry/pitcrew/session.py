@@ -65,6 +65,8 @@ class Session:
         lap_time_previous = telemetry.get("LapTimePrevious", -1)
         current_lap_is_valid = telemetry.get("CurrentLapIsValid", False)
 
+        # its an outlap if CurrentLapTime is 0
+
         lap["end"] = now
         lap["length"] = telemetry.get("DistanceRoundTrack", -1)
         lap["valid"] = current_lap_is_valid
