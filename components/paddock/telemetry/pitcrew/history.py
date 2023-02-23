@@ -136,22 +136,32 @@ class History:
         return start <= meters <= end
 
     def update(self, time, telemetry):
-        # add telemetry['Gear'] to dataframe
-        t = pd.DataFrame(
-            [
-                {
-                    "_time": time,
-                    "DistanceRoundTrack": telemetry["DistanceRoundTrack"],
-                    "Gear": telemetry["Gear"],
-                    "SpeedMs": telemetry["SpeedMs"],
-                    "Throttle": telemetry["Throttle"],
-                    "Brake": telemetry["Brake"],
-                }
-            ]
-        )
+        telemetry["_time"] = time
+        t = pd.DataFrame([telemetry])
 
         self.telemetry = pd.concat([self.telemetry, t])
         # logging.debug("telemetry: %s", self.telemetry)
+
+    def offset_distance(self, distance, seconds=0.0):
+        if self.fast_lap.data:
+            distance_time = self.fast_lap.data.get("distance_time", {})
+            # check if distance_time is a pandas dataframe
+            if isinstance(distance_time, pd.DataFrame):
+                # check if index at distance exists
+                distance = round(distance)
+                if distance < len(distance_time):
+                    lap_time = distance_time.loc[distance]["CurrentLapTime"]
+                    lap_time_at_offset = lap_time - seconds
+
+                    if lap_time_at_offset < 0:
+                        # FIXME wrap around and start counting back from the end of the track
+                        return 0
+
+                    # loop backwards until we find the first index where CurrentLapTime is smaller than offset
+                    while lap_time > lap_time_at_offset and distance > 0:
+                        distance -= 1
+                        lap_time = distance_time.loc[distance]["CurrentLapTime"]
+        return distance
 
     def telemetry_segment(self, start, end):
         # FIXME: mod track length
@@ -190,16 +200,23 @@ class History:
         # logging.debug("driver gear %s", driver_segment.gear)
         return driver_segment.gear
 
-    def driver_brake_start(self, start, end):
+    def driver_telemetry_start(
+        self, start, end, column="Brake", field="DistanceRoundTrack"
+    ):
         df = self.telemetry_segment(start, end)
 
         # find the DistanceRoundTrack where Brake is > 0.1
-        brake = df[df["Brake"] > 0.1]["DistanceRoundTrack"].min()
+        brake = df[df[column] > 0.1][field].min()
 
         if not np.isnan(brake):
             return brake
 
-        return None
+        return 0
+
+    def driver_brake_start(self, start, end):
+        return self.driver_telemetry_start(
+            start, end, column="Brake", field="DistanceRoundTrack"
+        )
 
     def driver_speed_at(self, meters):
         start = meters - 2
@@ -223,28 +240,6 @@ class History:
             driver_segment.save()
         return driver_segment.brake
 
-    # def segment(self, meters: int, idx=None, depth=0) -> FastLapSegment:
-    #     if len(self.segments) == 0:
-    #         return None
-    #     # stop the recursion if we are too deep
-    #     if depth > len(self.segments):
-    #         return None
-
-    #     if idx is None:
-    #         idx = self.segment_idx
-
-    #     if idx >= len(self.segments):
-    #         idx = 0
-
-    #     segment = self.segments[idx]
-
-    #     # check if meters is between .start and .end
-    #     if segment.start <= meters < segment.end:
-    #         self.segment_idx = idx
-    #         return segment
-
-    #     return self.segment(meters, idx=idx + 1, depth=depth + 1)
-
     def init_segments(self) -> bool:
         """Load the segments from DB."""
         fast_lap = FastLap.objects.filter(
@@ -266,6 +261,8 @@ class History:
         ):
             self.segments.append(segment)
             logging.debug("segment %s", segment)
+
+        self.fast_lap = fast_lap
 
         logging.debug("loaded %s segments", len(self.segments))
 

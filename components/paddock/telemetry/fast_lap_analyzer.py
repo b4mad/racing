@@ -67,7 +67,7 @@ class FastLapAnalyzer:
         data = {
             "distance_time": distance_time,
         }
-        return track_info, data
+        return [track_info, data]
 
     def get_distance_time(self, lap):
         # find the index where the lap starts, thats where CurrentLapTime is minimal

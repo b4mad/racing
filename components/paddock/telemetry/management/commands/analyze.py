@@ -249,8 +249,10 @@ class Command(BaseCommand):
                     csv_writer.writerow(row)
             else:
                 fl = FastLapAnalyzer(fast_laps)
-                track_info, data = fl.analyze()
-                if track_info:
+                result = fl.analyze()
+                if result:
+                    track_info = result[0]
+                    data = result[1]
                     self.save_fastlap(track_info, data, car=car, track=track, game=game)
 
         if options["save_csv"]:
