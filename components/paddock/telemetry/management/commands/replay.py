@@ -178,7 +178,7 @@ class Command(BaseCommand):
 
             # convert payload to json string
             payload_string = json.dumps(payload)
-            self.progress.console.print_json(payload_string)
+            # self.progress.console.print_json(payload_string)
 
             distance_round_track = payload["telemetry"].get("DistanceRoundTrack", 0)
             self.progress.update(

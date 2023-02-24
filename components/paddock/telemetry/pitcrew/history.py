@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-import statistics
 import threading
 import os
 
 # import pickle
 import pandas as pd
-import numpy as np
 import time
 import logging
 from telemetry.models import Game, FastLap, FastLapSegment, Driver
@@ -77,18 +75,17 @@ class History:
         self.init_driver()
 
         self.error = None
-        self.telemetry = pd.DataFrame(
-            [
-                {
-                    "_time": time.time(),
-                    "DistanceRoundTrack": 0,
-                    "Gear": 0,
-                    "SpeedMs": 0,
-                    "Throttle": 0,
-                    "Brake": 0,
-                }
-            ]
-        )
+        self.telemetry_fields = [
+            "DistanceRoundTrack",
+            "Gear",
+            "SpeedMs",
+            "Throttle",
+            "Brake",
+            "CurrentLapTime",
+        ]
+        self.telemetry = {"_time": []}
+        for field in self.telemetry_fields:
+            self.telemetry[field] = []
 
         return True
 
@@ -136,11 +133,9 @@ class History:
         return start <= meters <= end
 
     def update(self, time, telemetry):
-        telemetry["_time"] = time
-        t = pd.DataFrame([telemetry])
-
-        self.telemetry = pd.concat([self.telemetry, t])
-        # logging.debug("telemetry: %s", self.telemetry)
+        self.telemetry["_time"].append(time)
+        for field in self.telemetry_fields:
+            self.telemetry[field].append(telemetry[field])
 
     def offset_distance(self, distance, seconds=0.0):
         if self.fast_lap.data:
@@ -163,82 +158,72 @@ class History:
                         lap_time = distance_time.loc[distance]["CurrentLapTime"]
         return distance
 
-    def telemetry_segment(self, start, end):
+    def t_segment(self, start, end):
         # FIXME: mod track length
-        df = self.telemetry
+        distance_round_track = self.telemetry["DistanceRoundTrack"]
         # go back until we have the first index where DistanceRoundTrack is between start and end
-        idx = len(df) - 1
+        idx = len(distance_round_track) - 1
 
-        end_idx = -1
-        distance = df.iloc[idx]["DistanceRoundTrack"]
-        while distance >= start and idx > 0:
-            if distance <= end and end_idx == -1:
-                end_idx = idx
+        distance = distance_round_track[idx]
 
+        # find the end index where DistanceRoundTrack is smaller than end
+        while distance >= end and idx > 0:
             idx -= 1
-            distance = df.iloc[idx]["DistanceRoundTrack"]
+            distance = distance_round_track[idx]
+        end_idx = idx
 
+        # find the start index where DistanceRoundTrack is smaller than start
+        while distance >= start and idx > 0:
+            idx -= 1
+            distance = distance_round_track[idx]
         start_idx = idx
 
-        return df.iloc[start_idx:end_idx]
-        # df = df[df["DistanceRoundTrack"].between(start, end)]
+        if start_idx == end_idx:
+            if start_idx > 0:
+                start_idx -= 1
+            else:
+                end_idx += 1
 
-    def driver_gear(self, segment):
-        driver_segment = self.driver_segments[segment.turn]
-        df = self.telemetry_segment(segment.start, segment.end)
+        return start_idx, end_idx
 
-        gear = df[df["Gear"] > 0]["Gear"].min()
+    def t_start_idx(self, start, end, column="Brake"):
+        start_idx, end_idx = self.t_segment(start, end)
 
-        if not np.isnan(gear):
-            logging.debug("gear: %s", gear)
+        idx = start_idx
+        while idx < end_idx:
+            if self.telemetry[column][idx] > 0.001:
+                return idx
+            idx += 1
+        return start_idx
 
-            self.driver_data[segment.turn]["gear"].append(gear)
-            gear = statistics.median(self.driver_data[segment.turn]["gear"][-5:])
-            driver_segment.gear = round(gear)
-            driver_segment.save()
+    def t_start_distance(self, start, end, column="Brake"):
+        idx = self.t_start_idx(start, end, column)
+        return self.telemetry["DistanceRoundTrack"][idx]
 
-        # logging.debug("driver gear %s", driver_segment.gear)
-        return driver_segment.gear
+    def t_at_distance(self, meters, column="SpeedMs"):
+        start = meters - 1
+        end = meters + 1
+        start_idx, end_idx = self.t_segment(start, end)
 
-    def driver_telemetry_start(
-        self, start, end, column="Brake", field="DistanceRoundTrack"
-    ):
-        df = self.telemetry_segment(start, end)
+        idx = end_idx
+        distance = self.telemetry["DistanceRoundTrack"][idx]
+        while distance > meters and idx > start_idx:
+            idx -= 1
+            distance = self.telemetry["DistanceRoundTrack"][idx]
 
-        # find the DistanceRoundTrack where Brake is > 0.1
-        brake = df[df[column] > 0.1][field].min()
-
-        if not np.isnan(brake):
-            return brake
-
-        return 0
-
-    def driver_brake_start(self, start, end):
-        return self.driver_telemetry_start(
-            start, end, column="Brake", field="DistanceRoundTrack"
-        )
-
-    def driver_speed_at(self, meters):
-        start = meters - 2
-        end = meters + 2
-        df = self.telemetry_segment(start, end)
-
-        speed = df["SpeedMs"].mean()
-
-        if not np.isnan(speed):
-            return speed
-
-        return 0
+        value = self.telemetry[column][idx]
+        return value
 
     def driver_brake(self, segment):
-        driver_segment = self.driver_segments[segment.turn]
-        brake = self.driver_brake_start(segment.start, segment.end + 200)
-        if brake:
-            self.driver_data[segment.turn]["brake"].append(brake)
-            brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
-            driver_segment.brake = round(brake)
-            driver_segment.save()
-        return driver_segment.brake
+        pass
+        # driver_segment = self.driver_segments[segment.turn]
+        # brake = self.driver_brake_start(segment.start - 50, segment.end)
+        # if brake:
+        #     self.driver_data[segment.turn]["brake"].append(brake)
+        #     brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
+        #     driver_segment.brake = round(brake)
+        #     driver_segment.save()
+        # return driver_segment.brake
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
