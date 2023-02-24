@@ -19,6 +19,7 @@ class Coach:
         }
         self.messages = {}
         self.debug = debug
+        self.debug_data = {}
 
         self.msg_read_interval = 20
         if self.debug:
@@ -27,44 +28,6 @@ class Coach:
     def set_filter(self, filter):
         self.history.set_filter(filter)
         self.messages = {}
-
-    def disable_msg(self, segment):
-        self.enable_msg(segment, False)
-
-    def enable_msg(self, segment, enabled=True):
-        # iterate over messages and enable the one for this segment
-        for at in self.messages:
-            msg = self.messages[at]
-            if "segment" in msg and "enabled" in msg:
-                if msg["segment"] == segment:
-                    if isinstance(msg["msg"], str):
-                        if msg["enabled"] != enabled:
-                            msg["enabled"] = enabled
-                            logging.debug(f"at {at}: {msg['msg']} enabled: {enabled}")
-
-    def new_msg(self, at, msg, segment):
-        message = {
-            "msg": msg,
-            "read": 0,
-            "enabled": True,
-            "segment": segment,
-        }
-        at = at % self.history.track_length
-        # there's a delay of 1.2 seconds until the message is read
-        new_at = self.history.offset_distance(at, seconds=1.2)
-        logging.debug(f"offset 1.2 seconds: {at} -> {new_at}")
-        at = new_at
-        while at in self.messages:
-            at += 1
-            at = at % self.history.track_length
-        self.messages[at] = message
-        return message
-
-    def new_fn(self, at, fn, segment):
-        message = self.new_msg(at, fn, segment)
-        message["args"] = [segment]
-        message["kwargs"] = {}
-        return message
 
     def get_response(self, telemetry):
         if not self.history.ready:
@@ -109,71 +72,156 @@ class Coach:
                         return message
 
     def init_messages(self):
-        speed_factor = 1.2
         self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment.mark == "brake":
-                at = segment.start - (3.5 * segment.speed * speed_factor)
-                # This message takes 5.3 seconds to read
-                # msg = "Brake in 3 .. 2 .. 1 .. brake"                    # This message takes 5.3 seconds to read
-                msg = "%s percent" % (round(segment.force / 10) * 10)
-                self.new_msg(at, msg, segment)
-
-                # 1.2 is calculated by init_messages_debug stuff
-                #    brake+delta=actual
-                #    ratio=delta/speed
-                #    delta=ratio*speed
-                at = segment.start - (segment.speed * speed_factor)
-                msg = "brake"
-                self.new_msg(at, msg, segment)
-
-                at = segment.end + 20
-                self.new_fn(at, self.eval_brake, segment)
-
-            if segment.mark == "throttle":
-                at = segment.start - (3 * segment.speed * speed_factor)
-                to = round(segment.force / 10) * 10
-                msg = "throttle to %s" % to
-                self.new_msg(at, msg, segment)
+                gear = ""
+                if segment.gear:
+                    gear = f"gear {segment.gear} "
+                text = gear + "%s percent" % (round(segment.force / 10) * 10)
+                at = segment.start
+                self.new_msg_done_by(at, text, segment)
 
                 at = segment.start
-                msg = "now"
-                self.new_msg(at, msg, segment)
+                text = "brake"
+                msg = self.new_msg(at, text, segment)
 
-            if segment.gear:
-                at = segment.start - (4.5 * segment.speed * speed_factor)
-                msg = f"gear {segment.gear}"
-                self.new_msg(at, msg, segment)
+                at = segment.end + 20
+                self.new_fn(at, self.eval_brake, segment, brake_msg_at=msg["at"])
 
-                at = segment.end + 60
-                self.new_fn(at, self.eval_gear, segment)
+            if segment.mark == "throttle":
+                at = segment.start - 100
+                to = round(segment.force / 10) * 10
+                text = "throttle to %s" % to
+                self.new_msg_done_by(at, text, segment)
+
+                at = segment.start
+                text = "now"
+                self.new_msg(at, text, segment)
+
+            # if segment.gear:
+            #     at = segment.start - 80
+            #     text = f"gear {segment.gear}"
+            #     self.new_msg(at, text, segment)
+
+            #     at = segment.end + 60
+            #     self.new_fn(at, self.eval_gear, segment)
 
     def eval_gear(self, segment, **kwargs):
-        gear = self.history.driver_gear(segment)
-        if segment.gear != gear:
-            # enable gear notification
-            self.enable_msg(segment)
-            # return f"gear should be {segment.gear}"
-        else:
-            self.disable_msg(segment)
+        pass
+        # gear = self.history.driver_gear(segment)
+        # if segment.gear != gear:
+        #     # enable gear notification
+        #     self.enable_msg(segment)
+        #     # return f"gear should be {segment.gear}"
+        # else:
+        #     self.disable_msg(segment)
 
     def eval_brake(self, segment, **kwargs):
-        driver_brake_start = self.history.driver_brake(segment)
-        delta = segment.start - driver_brake_start
-        logging.debug(
-            "eval_brake: %s / %s : delta: %s", driver_brake_start, segment.start, delta
+        # driver_brake_start = self.history.driver_brake(segment)
+        meters = kwargs["telemetry"]["DistanceRoundTrack"]
+        driver_brake_start = self.history.t_start_distance(
+            segment.start - 50, segment.end, "Brake"
         )
-        if abs(delta) > 50:
-            self.enable_msg(segment)
-        elif abs(delta) > 10:
-            self.enable_msg(segment)
+        delta = driver_brake_start - segment.start
+        # brake_msg_at = kwargs["brake_msg_at"]
+        # time_brake_msg_at = self.history.t_at_distance(
+        #     brake_msg_at, "CurrentLapTime"
+        # )
+        time_segment_at = self.history.t_at_distance(segment.start, "CurrentLapTime")
+        time_driver_brake_start = self.history.t_at_distance(
+            driver_brake_start, "CurrentLapTime"
+        )
+        # time_delta = time_brake_msg_at - time_driver_brake_start
+        time_delta = time_driver_brake_start - time_segment_at
+        speed = self.history.t_at_distance(driver_brake_start, "SpeedMs")
+
+        if abs(time_delta) < 0.5:
+            debug_deltas = self.debug_data.get("deltas", [])
+            debug_deltas.append(time_delta)
+            self.debug_data["deltas"] = debug_deltas
+
+        logging.debug(
+            "eval_brake: %i driver: %i - segment: %i : delta: %i, time_delta: %.2f, speed: %i, avg_time_delta: %.2f",
+            meters,
+            driver_brake_start,
+            segment.start,
+            delta,
+            time_delta,
+            speed,
+            self.debug_data["deltas"]
+            and sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"])
+            or 0,
+        )
+        # logging.debug(f"deltas: {self.debug_data.get('deltas', [])}")
+        # if abs(delta) > 50:
+        #     self.enable_msg(segment)
+        # elif abs(delta) > 10:
+        #     self.enable_msg(segment)
         #     self.disable_msg(segment)
         #     if delta > 0:
         #         return "Brake %s meters later" % round(abs(delta))
         #     else:
         #         return "Brake %s meters earlier" % round(abs(delta))
-        else:
-            self.disable_msg(segment)
+        # else:
+        #     self.disable_msg(segment)
+
+    def disable_msg(self, segment):
+        self.enable_msg(segment, False)
+
+    def enable_msg(self, segment, enabled=True):
+        # iterate over messages and enable the one for this segment
+        for at in self.messages:
+            msg = self.messages[at]
+            if "segment" in msg and "enabled" in msg:
+                if msg["segment"] == segment:
+                    if isinstance(msg["msg"], str):
+                        if msg["enabled"] != enabled:
+                            msg["enabled"] = enabled
+                            logging.debug(f"at {at}: {msg['msg']} enabled: {enabled}")
+
+    def msg_read_time(self, msg):
+        # count the number of words
+        words = len(msg.split(" "))
+        return words * 0.8  # avg ms per word
+
+    def new_msg(self, at, msg, segment, finish_reading_at=False):
+        message = {
+            "msg": msg,
+            "read": 0,
+            "enabled": True,
+            "segment": segment,
+            "at": at,
+        }
+        at = at % self.history.track_length
+
+        # there's a delay of x seconds to read the message at the requested meters
+        # offset = 1.0  # time_delta 0.1
+        offset = 1.1
+
+        # if the message should be finished at the requested meters
+        if finish_reading_at:
+            read_time = self.msg_read_time(msg)
+            offset += read_time
+
+        new_at = self.history.offset_distance(at, seconds=offset)
+        logging.debug(f"offset {offset:.2f} seconds: {at} -> {new_at}")
+        at = new_at
+        while at in self.messages:
+            at += 1
+            at = at % self.history.track_length
+        self.messages[at] = message
+        message["at"] = at
+        return message
+
+    def new_msg_done_by(self, at, msg, segment):
+        return self.new_msg(at, msg, segment, finish_reading_at=True)
+
+    def new_fn(self, at, fn, segment, **kwargs):
+        message = self.new_msg(at, fn, segment)
+        message["args"] = [segment]
+        message["kwargs"] = kwargs
+        return message
 
     # debug stuff
     def brake_debug(self, segment, **kwargs):

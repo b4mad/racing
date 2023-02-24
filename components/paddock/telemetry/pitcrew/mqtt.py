@@ -87,7 +87,7 @@ class Mqtt:
         # meters = telemetry["telemetry"]["DistanceRoundTrack"]
         response = self.coach.get_response(telemetry)
         if response:
-            _LOGGER.debug("r-->: %s at %s", response, telemetry["DistanceRoundTrack"])
+            _LOGGER.debug("r-->: %i: %s", telemetry["DistanceRoundTrack"], response)
             mqttc.publish(f"/coach/{self.driver}", response)
 
     def on_connect(self, mqttc, obj, flags, rc):
