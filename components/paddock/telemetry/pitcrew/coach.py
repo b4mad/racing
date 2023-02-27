@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import logging
 import time
 from .history import History
@@ -20,6 +21,7 @@ class Coach:
         self.messages = {}
         self.debug = debug
         self.debug_data = {}
+        self.json_response = db_coach.driver.name == "durandom"
 
         self.msg_read_interval = 20
         if self.debug:
@@ -59,9 +61,6 @@ class Coach:
                 continue
             if distance <= 1 and now - msg["read"] > self.msg_read_interval:
                 msg = self.messages[at]["msg"]
-                if isinstance(msg, str):
-                    self.messages[at]["read"] = now
-                    return msg
                 if callable(msg):
                     self.messages[at]["read"] = now
                     kwargs = self.messages[at]["kwargs"].copy()
@@ -70,6 +69,12 @@ class Coach:
                     message = msg(*self.messages[at]["args"], **kwargs)
                     if message:
                         return message
+                elif isinstance(msg, dict):
+                    self.messages[at]["read"] = now
+                    return json.dumps(msg)
+                else:
+                    self.messages[at]["read"] = now
+                    return msg
 
     def init_messages(self):
         self.track_length = self.history.track.length
@@ -84,7 +89,8 @@ class Coach:
 
                 at = segment.start
                 text = "brake"
-                msg = self.new_msg(at, text, segment)
+                msg = self.schedule_msg(at, text, segment)
+                # msg = self.new_msg(at, text, segment)
 
                 at = segment.end + 20
                 self.new_fn(at, self.eval_brake, segment, brake_msg_at=msg["at"])
@@ -97,7 +103,8 @@ class Coach:
 
                 at = segment.start
                 text = "now"
-                self.new_msg(at, text, segment)
+                self.schedule_msg(at, text, segment)
+                # self.new_msg(at, text, segment)
 
             # if segment.gear:
             #     at = segment.start - 80
@@ -136,10 +143,10 @@ class Coach:
         time_delta = time_driver_brake_start - time_segment_at
         speed = self.history.t_at_distance(driver_brake_start, "SpeedMs")
 
+        debug_deltas = self.debug_data.get("deltas", [])
         if abs(time_delta) < 0.5:
-            debug_deltas = self.debug_data.get("deltas", [])
             debug_deltas.append(time_delta)
-            self.debug_data["deltas"] = debug_deltas
+        self.debug_data["deltas"] = debug_deltas
 
         logging.debug(
             "eval_brake: %i driver: %i - segment: %i : delta: %i, time_delta: %.2f, speed: %i, avg_time_delta: %.2f",
@@ -198,15 +205,17 @@ class Coach:
         # there's a delay of x seconds to read the message at the requested meters
         # offset = 1.0  # time_delta 0.1
         offset = 1.1
+        offset = 0
 
         # if the message should be finished at the requested meters
         if finish_reading_at:
             read_time = self.msg_read_time(msg)
             offset += read_time
 
-        new_at = self.history.offset_distance(at, seconds=offset)
-        logging.debug(f"offset {offset:.2f} seconds: {at} -> {new_at}")
-        at = new_at
+        if offset:
+            new_at = self.history.offset_distance(at, seconds=offset)
+            logging.debug(f"offset {offset:.2f} seconds: {at} -> {new_at}")
+            at = new_at
         while at in self.messages:
             at += 1
             at = at % self.history.track_length
@@ -216,6 +225,18 @@ class Coach:
 
     def new_msg_done_by(self, at, msg, segment):
         return self.new_msg(at, msg, segment, finish_reading_at=True)
+
+    def schedule_msg(self, at, msg, segment):
+        if self.json_response:
+            respond_at = at - 50
+            payload = {
+                "message": msg,
+                "distance": at,
+                "priority": 9,
+            }
+            return self.new_msg(respond_at, payload, segment)
+        else:
+            return self.new_msg(at, msg, segment)
 
     def new_fn(self, at, fn, segment, **kwargs):
         message = self.new_msg(at, fn, segment)
@@ -265,15 +286,22 @@ class Coach:
     def init_messages_debug(self):
         self.track_length = self.history.track.length
         self.brake_debug_time = 0
-        for at in range(0, self.track_length, 500):
-            self.new_msg(at, "brake", None)
-            brake_point = at + 100
-            # self.new_msg(brake_point, "now", None)
-            # this message says "now" and stores the time
-            msg = self.new_fn(brake_point, self.brake_debug, None)
-            # this message calculates the delta
-            msg = self.new_fn(brake_point + 100, self.eval_brake_debug, None)
-            msg["args"] = [brake_point]
+        # for at in range(0, self.track_length, 500):
+        #     self.new_msg(at, "brake", None)
+        #     brake_point = at + 100
+        #     # self.new_msg(brake_point, "now", None)
+        #     # this message says "now" and stores the time
+        #     msg = self.new_fn(brake_point, self.brake_debug, None)
+        #     # this message calculates the delta
+        #     msg = self.new_fn(brake_point + 100, self.eval_brake_debug, None)
+        #     msg["args"] = [brake_point]
+        for at in range(0, self.track_length, 100):
+            msg = {
+                "message": "brake",
+                "meters": at + 50,
+                "priority": 10,
+            }
+            self.new_msg(at, msg, None)
 
 
 if __name__ == "__main__":
