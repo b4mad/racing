@@ -15,7 +15,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: 10Gi
+            storage: 64Gi
       resources:
         limits:
           cpu: 2000m
