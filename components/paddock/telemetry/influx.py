@@ -8,19 +8,24 @@ from influxdb_client.client.warnings import MissingPivotFunction
 import warnings
 from dateutil import parser
 
+# import asyncio
+from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
+
 warnings.simplefilter("ignore", MissingPivotFunction)
 
 
 class Influx:
     def __init__(self):
         # configure influxdb client
-        org = "b4mad"
-        token = os.environ.get(
+        self.org = "b4mad"
+        self.token = os.environ.get(
             "INFLUXDB_TOKEN",
             "citqAMr66LLb25hvaaZm2LezOc88k2ocOFJcJDR6QB-RmLJa_-sAr9kYB4vSFYaz8bt26lm7SokVgpQKdgKFKA==",
         )
-        url = "https://telemetry.b4mad.racing/"
-        self.influx = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+        self.url = "https://telemetry.b4mad.racing/"
+        self.influx = influxdb_client.InfluxDBClient(
+            url=self.url, token=self.token, org=self.org, timeout=(10_000, 300_000)
+        )
         self.query_api = self.influx.query_api()
 
     def laps_from_file(self, filename="tracks.csv"):
@@ -210,6 +215,45 @@ class Influx:
         df = df[df["Gear"] != 0]
 
         return df
+
+    # https://community.influxdata.com/t/how-to-copy-data-between-measurements/22582/14
+    def copy_session(self, session_id, start="-1d", end="now()"):
+        if type(start) == datetime:
+            start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        if type(end) == datetime:
+            end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+        query = """
+            from(bucket: "racing")
+            // |> range(start: %s, stop: %s)
+            |> range(start: -10y, stop: now())
+            |> filter(fn: (r) => r._measurement == "laps_cc")
+            |> filter(fn: (r) => r["SessionId"] == "%s")
+            |> set(key: "_measurement", value: "fast_laps")
+            |> to(bucket: "racing")
+            |> filter(fn: (r) => false)
+            |> yield()
+        """ % (
+            start,
+            end,
+            session_id,
+        )
+        logging.debug(query)
+
+        # asyncio.run(self.run_query_async(query))
+        records = self.query_api.query_stream(query)
+        for record in records:
+            pass
+
+    async def run_query_async(self, query):
+        async with InfluxDBClientAsync(
+            url=self.url, token=self.token, org=self.org
+        ) as client:
+            # Stream of FluxRecords
+            query_api = client.query_api()
+            records = await query_api.query_stream(query)
+            async for record in records:
+                print(".", end="", flush=True)
 
 
 # def track(influx):
