@@ -61,6 +61,7 @@ class Command(BaseCommand):
             help="save to csv",
         )
         parser.add_argument("--create-empty", action="store_true")
+        parser.add_argument("--copy-influx", action="store_true")
 
     def import_csv(self, options):
         for csv_file in options["import_csv"]:
@@ -177,6 +178,7 @@ class Command(BaseCommand):
             cursor.execute(sql)
             rows = cursor.fetchall()
 
+        influx = Influx()
         for count, track_id, car_id in rows:
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
@@ -247,6 +249,14 @@ class Command(BaseCommand):
                         "valid": lap.valid,
                     }
                     csv_writer.writerow(row)
+            if options["copy_influx"]:
+                sessions = set()
+                for lap in fast_laps:
+                    sessions.add(lap.session)
+                for session in sessions:
+                    influx.copy_session(
+                        session.session_id, start=session.start, end=session.end
+                    )
             else:
                 fl = FastLapAnalyzer(fast_laps)
                 result = fl.analyze()
