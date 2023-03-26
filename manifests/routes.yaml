@@ -6,6 +6,7 @@ metadata:
   creationTimestamp: null
   annotations:
     kubernetes.io/tls-acme: "true"
+    haproxy.router.openshift.io/timeout: 5m
 spec:
   host: telemetry.b4mad.racing
   to:

@@ -116,6 +116,11 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **options):
+        influx = Influx()
+        influx_fast_sessions = set()
+        if options["copy_influx"]:
+            influx_fast_sessions = influx.session_ids()
+
         if options["save_csv"]:
             csv_file = open(options["save_csv"], "w")
             # open a file for appending
@@ -178,7 +183,6 @@ class Command(BaseCommand):
             cursor.execute(sql)
             rows = cursor.fetchall()
 
-        influx = Influx()
         for count, track_id, car_id in rows:
             car = Car.objects.get(id=car_id)
             track = Track.objects.get(id=track_id)
@@ -234,6 +238,19 @@ class Command(BaseCommand):
                     fast_laps.append(lap)
                     logging.debug(lap)
 
+            if options["copy_influx"]:
+                sessions = set()
+                for lap in fast_laps:
+                    sessions.add(lap.session)
+
+                for session in sessions:
+                    if session.session_id in influx_fast_sessions:
+                        influx_fast_sessions.remove(session.session_id)
+                        continue
+                    influx.copy_session(
+                        session.session_id, start=session.start, end=session.end
+                    )
+
             if options["save_csv"]:
                 for lap in fast_laps:
                     row = {
@@ -249,14 +266,6 @@ class Command(BaseCommand):
                         "valid": lap.valid,
                     }
                     csv_writer.writerow(row)
-            if options["copy_influx"]:
-                sessions = set()
-                for lap in fast_laps:
-                    sessions.add(lap.session)
-                for session in sessions:
-                    influx.copy_session(
-                        session.session_id, start=session.start, end=session.end
-                    )
             else:
                 fl = FastLapAnalyzer(fast_laps)
                 result = fl.analyze()
@@ -267,6 +276,9 @@ class Command(BaseCommand):
 
         if options["save_csv"]:
             csv_file.close()
+
+        if options["copy_influx"]:
+            logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
     def create_empty(self, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(
