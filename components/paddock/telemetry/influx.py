@@ -24,7 +24,7 @@ class Influx:
         )
         self.url = "https://telemetry.b4mad.racing/"
         self.influx = influxdb_client.InfluxDBClient(
-            url=self.url, token=self.token, org=self.org, timeout=(10_000, 300_000)
+            url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
         )
         self.query_api = self.influx.query_api()
 
@@ -180,6 +180,24 @@ class Influx:
         records = self.query_api.query_stream(query=query)
         for record in records:
             yield record["_value"]
+
+    def session_ids(self, measurement="fast_laps"):
+        query = f"""
+            import "influxdata/influxdb/schema"
+            schema.tagValues(
+                bucket: "racing",
+                tag: "SessionId",
+                predicate: (r) => r["_measurement"] == "{measurement}",
+                start: -10y,
+                stop: now()
+            )
+        """
+        records = self.query_api.query_stream(query=query)
+        ids = set()
+        for record in records:
+            ids.add(record["_value"])
+
+        return ids
 
     def session_df(self, session_id, lap_number=None, start="-1d", end="now()"):
         if type(start) == datetime:
