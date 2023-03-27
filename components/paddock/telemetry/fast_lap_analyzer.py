@@ -33,7 +33,7 @@ class FastLapAnalyzer:
             logging.info("Can't analyze")
             return
 
-        laps = self.influx.telemetry_for_laps([self.laps[0]])
+        laps = self.influx.telemetry_for_laps([self.laps[0]], measurement="fast_laps")
         if len(laps) == 0:
             logging.info("No laps found")
             return

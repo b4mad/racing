@@ -27,7 +27,7 @@ spec:
               name: analyze
               command: ["/bin/sh", "-c"]
               args:
-                - python /opt/app-root/src/manage.py analyze --game "iRacing"
+                - python /opt/app-root/src/manage.py analyze --copy-influx
               resources:
                 limits:
                   cpu: "2"

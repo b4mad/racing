@@ -21,8 +21,7 @@ class SessionSaver:
     def save_sessions(self):
         while True and not self.stopped():
             time.sleep(self.sleep_time)
-            # FIXME: purge old sessions
-            session_ids = self.firehose.sessions.keys()
+            session_ids = list(self.firehose.sessions.keys())
             for session_id in session_ids:
                 session = self.firehose.sessions.get(session_id)
 
