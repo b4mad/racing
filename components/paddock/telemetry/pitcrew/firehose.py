@@ -89,6 +89,7 @@ class Firehose:
         session = self.sessions[topic]
         session.signal(payload)
 
+    # TODO: clear sessions every now and then
     def clear_sessions(self, now):
         delete_sessions = []
         for topic, session in self.sessions.items():

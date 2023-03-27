@@ -85,7 +85,7 @@ class Influx:
                             data.append(df)
         return data
 
-    def telemetry_for_laps(self, laps=[]):
+    def telemetry_for_laps(self, laps=[], measurement="laps_cc"):
         data = []
         for lap in laps:
             game = lap.session.game.name
@@ -100,7 +100,11 @@ class Influx:
 
             try:
                 df = self.session_df(
-                    session, lap_number=lap_number, start=lap.start, end=lap.end
+                    session,
+                    lap_number=lap_number,
+                    start=lap.start,
+                    end=lap.end,
+                    measurement=measurement,
                 )
                 if len(df) > 100:
                     data.append(df)
@@ -199,7 +203,14 @@ class Influx:
 
         return ids
 
-    def session_df(self, session_id, lap_number=None, start="-1d", end="now()"):
+    def session_df(
+        self,
+        session_id,
+        lap_number=None,
+        start="-1d",
+        end="now()",
+        measurement="laps_cc",
+    ):
         if type(start) == datetime:
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         if type(end) == datetime:
@@ -208,7 +219,7 @@ class Influx:
         query = f"""
         from(bucket: "racing")
         |> range(start: {start}, stop: {end})
-        |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+        |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["SessionId"] == "{session_id}")
         |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
         |> filter(fn: (r) => r["CurrentLap"] == "{lap_number}")
