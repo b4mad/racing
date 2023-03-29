@@ -244,9 +244,9 @@ class Command(BaseCommand):
                     sessions.add(lap.session)
 
                 for session in sessions:
-                    # if session.session_id in influx_fast_sessions:
-                    #     influx_fast_sessions.remove(session.session_id)
-                    #     continue
+                    if session.session_id in influx_fast_sessions:
+                        influx_fast_sessions.remove(session.session_id)
+                        continue
                     influx.copy_session(
                         session.session_id, start=session.start, end=session.end
                     )
