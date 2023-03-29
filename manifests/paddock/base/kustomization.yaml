@@ -10,4 +10,3 @@ resources:
   - service_monitor.yaml
   - service.yaml
   - cronjob_analyze.yaml
-  - job_analyze.yaml
