@@ -17,12 +17,12 @@ warnings.simplefilter("ignore", MissingPivotFunction)
 class Influx:
     def __init__(self):
         # configure influxdb client
-        self.org = "b4mad"
-        self.token = os.environ.get(
-            "INFLUXDB_TOKEN",
-            "citqAMr66LLb25hvaaZm2LezOc88k2ocOFJcJDR6QB-RmLJa_-sAr9kYB4vSFYaz8bt26lm7SokVgpQKdgKFKA==",
+        self.org = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
+        self.token = os.environ.get("B4MAD_RACING_INFLUX_TOKEN", "")
+        self.url = os.environ.get(
+            "B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/"
         )
-        self.url = "https://telemetry.b4mad.racing/"
+
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
         )
@@ -85,7 +85,7 @@ class Influx:
                             data.append(df)
         return data
 
-    def telemetry_for_laps(self, laps=[], measurement="laps_cc"):
+    def telemetry_for_laps(self, laps=[], measurement="laps_cc", bucket="racing"):
         data = []
         for lap in laps:
             game = lap.session.game.name
@@ -105,6 +105,7 @@ class Influx:
                     start=lap.start,
                     end=lap.end,
                     measurement=measurement,
+                    bucket=bucket,
                 )
                 if len(df) > 100:
                     data.append(df)
@@ -185,11 +186,11 @@ class Influx:
         for record in records:
             yield record["_value"]
 
-    def session_ids(self, measurement="fast_laps"):
+    def session_ids(self, measurement="fast_laps", bucket="racing"):
         query = f"""
             import "influxdata/influxdb/schema"
             schema.tagValues(
-                bucket: "racing",
+                bucket: "{bucket}",
                 tag: "SessionId",
                 predicate: (r) => r["_measurement"] == "{measurement}",
                 start: -10y,
@@ -210,6 +211,7 @@ class Influx:
         start="-1d",
         end="now()",
         measurement="laps_cc",
+        bucket="racing",
     ):
         if type(start) == datetime:
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -217,7 +219,7 @@ class Influx:
             end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
         query = f"""
-        from(bucket: "racing")
+        from(bucket: "{bucket}")
         |> range(start: {start}, stop: {end})
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["SessionId"] == "{session_id}")
@@ -246,27 +248,29 @@ class Influx:
         return df
 
     # https://community.influxdata.com/t/how-to-copy-data-between-measurements/22582/14
-    def copy_session(self, session_id, start="-1d", end="now()"):
+    def copy_session(
+        self,
+        session_id,
+        start="-1d",
+        end="now()",
+        from_bucket="racing",
+        to_bucket="fast_laps",
+    ):
         if type(start) == datetime:
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         if type(end) == datetime:
             end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
-        query = """
-            from(bucket: "racing")
-            // |> range(start: %s, stop: %s)
+        query = f"""
+            from(bucket: "{from_bucket}")
             |> range(start: -10y, stop: now())
             |> filter(fn: (r) => r._measurement == "laps_cc")
-            |> filter(fn: (r) => r["SessionId"] == "%s")
+            |> filter(fn: (r) => r["SessionId"] == "{session_id}")
             |> set(key: "_measurement", value: "fast_laps")
-            |> to(bucket: "racing")
+            |> to(bucket: "{to_bucket}")
             |> filter(fn: (r) => false)
             |> yield()
-        """ % (
-            start,
-            end,
-            session_id,
-        )
+        """
         logging.debug(query)
 
         # asyncio.run(self.run_query_async(query))
@@ -283,6 +287,20 @@ class Influx:
             records = await query_api.query_stream(query)
             async for record in records:
                 print(".", end="", flush=True)
+
+    def delete_data(self, start="", end=""):
+        if type(start) == datetime:
+            start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        if type(end) == datetime:
+            end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+        predicate = """
+            _measurement="laps_cc"
+        """
+
+        self.influx.delete_api().delete(
+            start=start, stop=end, predicate=predicate, bucket="racing"
+        )
 
 
 # def track(influx):

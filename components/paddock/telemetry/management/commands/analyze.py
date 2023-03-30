@@ -119,7 +119,7 @@ class Command(BaseCommand):
         influx = Influx()
         influx_fast_sessions = set()
         if options["copy_influx"]:
-            influx_fast_sessions = influx.session_ids()
+            influx_fast_sessions = influx.session_ids(bucket="fast_laps")
 
         if options["save_csv"]:
             csv_file = open(options["save_csv"], "w")

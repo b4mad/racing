@@ -6,10 +6,11 @@ from .analyzer import Analyzer
 
 
 class FastLapAnalyzer:
-    def __init__(self, laps):
+    def __init__(self, laps, bucket="fast_laps"):
         self.influx = Influx()
         self.analyzer = Analyzer()
         self.laps = laps
+        self.bucket = bucket
 
     def assert_can_analyze(self):
         # game = self.laps[0].session.game
@@ -33,7 +34,9 @@ class FastLapAnalyzer:
             logging.info("Can't analyze")
             return
 
-        laps = self.influx.telemetry_for_laps([self.laps[0]], measurement="fast_laps")
+        laps = self.influx.telemetry_for_laps(
+            [self.laps[0]], measurement="fast_laps", bucket=self.bucket
+        )
         if len(laps) == 0:
             logging.info("No laps found")
             return

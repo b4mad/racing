@@ -10,7 +10,7 @@ stringData:
     B4MAD_RACING_CLIENT_USER: ENC[AES256_GCM,data:xpZlCLgBePMW,iv:vV00KtZ0ZPUpoPmG6BYivHeSvRvaNiddsrSNmdg0MvI=,tag:Hg64EWtNRHV/lDd3Jb4H2A==,type:str]
     B4MAD_RACING_CLIENT_PASSWORD: ENC[AES256_GCM,data:BGeHpNl0G2Q7,iv:tdj1f/t2cyYXoltZ7WJbFCmFPm4uwqyycxDkbY6sLZM=,tag:7DUwHo5Qf0wdia765OkUjw==,type:str]
     B4MAD_RACING_INFLUX_ORG: ENC[AES256_GCM,data:dlcymLM=,iv:4tJsUkD6nXzvvRO7NqZEidTEjzhvr4ERY1r88OhMffk=,tag:/IIwK7Og7f0cdXl16ze9UA==,type:str]
-    B4MAD_RACING_INFLUX_TOKEN: ENC[AES256_GCM,data:QmJu4GuED4YFJIUjarp2lwJeVYMhD8MUBKEaQSWHDB3SAPmiUA5qekirqJvZzitmnUSdQ65FUHpyxsbaFLt15sjp9yV04bc4rLWS1Q8pMzykar9Sy3skTA==,iv:7SiyFE78pgRuq8GgUVqud/tsL+W/W8mn9kkWcyCviA0=,tag:Gdkyf114tEgCfuZEqa7clg==,type:str]
+    B4MAD_RACING_INFLUX_TOKEN: ENC[AES256_GCM,data:/dZ+IayBSTgrVgXgXeXo2tKat31I3cM8KKAdLD88BMIJM+4nF/QnaQm0IBaZHQAx//lZ4/A0VHp4XXS92hoKQ6DfB9rmWSLsSBsE1WOgSTkJ4SBV0k2uYg==,iv:AZB90NIa28PXo/mLS5a8exBWp4YtsSmO3zpvCBZrfyk=,tag:UmRUsVWnJ9sZxqYvPZHgEg==,type:str]
     B4MAD_RACING_INFLUX_URL: ENC[AES256_GCM,data:4+fekYQh6LDNoSush1W6LUv6PIy8XAT7zsJzsSk5kQ==,iv:23/JZS+QHht43/P289IGmVmPh6mB4RnIALByCyGd2kE=,tag:aYTzlL10kwA08ZQpUS7tZA==,type:str]
     READONLY_DATABASE_URL: ENC[AES256_GCM,data:xJiO++V/JI4lNK1vxBm9Cjkenrqo0FtjYDmlDH4a1wUpV6oE8nTRXoEsgjI2bc+I0kecFc5dX3raoHloc3sRvbQ4+K5wJ0/kTwZ57gmCjx1COR6IquEEr/d5uQ==,iv:NbuSXlprxqk1Md6bXAfq2CmxhhulyrQ8ZLnvnKr5tB8=,tag:hqYnsPx8QW4f6oFEas3nsw==,type:str]
 type: Opaque
@@ -20,8 +20,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2022-12-29T18:15:21Z"
-    mac: ENC[AES256_GCM,data:IucSzJVxqY2pCLNHSD7l96F0P5EBGMakBA8NP1puW9QBnw1q6DYNFhgwt2x8JF/qYPZroyW5p3ukOrmo2RGt+IyjdDxUComzOohB6QNwrZXlKku+dVfA8J2GAkFlC2EMxf4X6c9v+wxRJcdQIyIkJOWCOPGvyvPxzFszZ+IxplE=,iv:7Gmu0VL8aa4/cDz12eXnM/rjbcRMl1Em74y+qY+UEek=,tag:h+tLuaG09SEatSoRqWwwaA==,type:str]
+    lastmodified: "2023-03-30T14:22:48Z"
+    mac: ENC[AES256_GCM,data:C83Ji6IzvqcOSPwV377CKMnmBZqOwB8GPIbujxFZ+Lc1LXCnjgyhYoPAn7gP59DuTlDMDQRnhrm+J3uh9qy+qwo2j+zlpNcZmLHcbgv5xUpN2+377wWV+VUgvELbcaM3xFg3DNcSctX6lfGQZ5th6SJHPhjOUly5imBfGLMNrJE=,iv:GlSAT/oN4EsvlfMpUPxvUgDwNJxxXkPTxRbliTc3mGI=,tag:xwM5qICTtszgJRpMX8GdjA==,type:str]
     pgp:
         - created_at: "2022-10-27T12:21:52Z"
           enc: |
