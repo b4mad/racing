@@ -1,5 +1,9 @@
 FROM quay.io/thoth-station/s2i-thoth-f35-py310:v0.35.1
 
+LABEL org.opencontainers.image.source=https://github.com/b4mad/racing
+LABEL org.opencontainers.image.description="This is the #B4mad Racing Paddock component"
+LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
+
 USER 0
 ADD . /tmp/src
 RUN /usr/bin/fix-permissions /tmp/src
