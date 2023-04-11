@@ -97,7 +97,6 @@ class FastLapAnalyzer:
         return lap
 
     def get_segments(self, df):
-
         throttle_changes = self.get_change_indices(
             df, "Throttle", threshold=0.95, below=True
         )

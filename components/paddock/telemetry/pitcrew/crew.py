@@ -48,7 +48,6 @@ class Crew:
             raise HealthError("not ready yet")
 
     def run(self):
-
         # log my process id
         logging.info(f"starting Crew with pid {os.getpid()}")
 

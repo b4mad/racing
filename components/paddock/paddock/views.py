@@ -36,7 +36,6 @@ def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs
 
 
 def pitcrew_index(request, template_name="pitcrew_index.html", **kwargs):
-
     drivers = Driver.objects.order_by("name")
     drivers_total = drivers.count()
     fast_laps = FastLap.objects.filter(driver=None).all()

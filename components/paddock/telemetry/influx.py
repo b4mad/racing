@@ -115,7 +115,6 @@ class Influx:
         return data
 
     def session(self, session_id=None, lap=None, lap_numbers=[], start=None, end=None):
-
         lap_filter = []
 
         if start and end:
