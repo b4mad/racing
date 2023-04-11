@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.5.1
     hooks:
       - id: remove-tabs
 
@@ -41,7 +41,7 @@ repos:
   #       args: [--ignore-missing-imports]
 
   - repo: https://github.com/psf/black
-    rev: "22.10.0"
+    rev: "23.3.0"
     hooks:
       - id: black
 

@@ -1,0 +1,20 @@
+name: CI checks
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build paddock image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Buildah Action
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: paddock
+        tags: ${{ github.sha }}
+        containerfiles: |
+          ./components/paddock/Containerfile
