@@ -6,7 +6,11 @@ on:
 
 env:
     IMAGE_NAME: paddock
+<<<<<<< HEAD
     IMAGE_TAGS: ${{ github.sha }}
+=======
+    IMAGE_TAGS: latest ${{ github.sha }}
+>>>>>>> 4c27884 (add step to action to push to github container registry)
     IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
     REGISTRY_USER: ${{ github.actor }}
     REGISTRY_PASSWORD: ${{ github.token }}
