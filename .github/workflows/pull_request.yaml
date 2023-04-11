@@ -1,4 +1,4 @@
-name: build on each pull request
+name: Build and Push 'paddock' container image on pull request
 on:
   pull_request:
     types: [opened, reopened, edited]
