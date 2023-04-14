@@ -24,6 +24,8 @@ jobs:
       with:
         image: ${{ env.IMAGE_NAME }}
         tags: ${{ env.IMAGE_TAGS }}
+        oci: true
+        context: components/paddock
         containerfiles: |
           ./components/paddock/Containerfile
 
