@@ -34,20 +34,27 @@ python manage.py runserver
 
 ### updating models
 
-
-```
+```bash
 Lap.objects.update(valid=False)
 ```
 
 ### replaying
 
-```
+```bash
 # speed ratio, oschersleben, brake now -> brake
-pipenv run ./manage.py replay --session-id 1677132130
+python manage.py replay --session-id 1677132130
 ```
 
 ### profiling
 
-```
+```bash
 sudo austin -i 100 -o ../../.vscode/output.austin  ./manage.py pitcrew -c durandom --replay
+```
+
+## production server
+
+is using asgi, see https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/uvicorn/
+
+```bash
+python -m gunicorn paddock.asgi:application -k uvicorn.workers.UvicornWorker
 ```

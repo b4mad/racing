@@ -30,8 +30,7 @@ spec:
           name: paddock
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py collectstatic -i "*.py" -i "*.pyc" --noinput --link;
-              uwsgi --http "0.0.0.0:8000" --module paddock.wsgi:application --master --processes 4 --threads 2 --static-map /static=/opt/app-root/src/static
+            - python -m gunicorn --bind 0.0.0.0:8000 paddock.asgi:application -k uvicorn.workers.UvicornWorker
           ports:
             - containerPort: 8000
               name: django-http
