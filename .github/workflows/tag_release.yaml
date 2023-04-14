@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    name: Build paddock image
+    name: paddock container image
     runs-on: ubuntu-latest
 
     steps:
