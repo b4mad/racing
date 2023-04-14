@@ -35,6 +35,7 @@ jobs:
         tags: ${{ env.IMAGE_TAGS }}
         containerfiles: |
           ./components/paddock/Containerfile
+        oci: true
 
     - name: Push To GitHub Container Registry
       uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2.7.1
