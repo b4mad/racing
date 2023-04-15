@@ -15,7 +15,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: 64Gi
+            storage: 128Gi
       resources:
         limits:
           cpu: 2000m
@@ -49,7 +49,7 @@ spec:
                 - "ReadWriteOnce"
               resources:
                 requests:
-                  storage: 16Gi
+                  storage: 32Gi
   proxy:
     pgBouncer:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1
