@@ -18,6 +18,7 @@ https://www.architect.io/blog/2022-08-04/deploy-python-django-kubernetes/
 import environ
 import os
 from pathlib import Path
+import sys
 
 env = environ.Env(
     # set casting, default value
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     "django_plotly_dash.apps.DjangoPlotlyDashConfig",
     "bootstrap4",
     "dpd_static_support",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -110,6 +112,14 @@ DATABASES = {
     "default": env.db_url("DATABASE_URL"),
     "readonly": env.db_url("READONLY_DATABASE_URL"),
 }
+if "test" in sys.argv or "test_coverage" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        },
+        "readonly": env.db_url("READONLY_DATABASE_URL"),
+    }
 
 # DATABASES = {
 #     "sqlite3": {

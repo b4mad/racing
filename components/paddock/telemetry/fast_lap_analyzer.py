@@ -34,15 +34,29 @@ class FastLapAnalyzer:
             logging.info("Can't analyze")
             return
 
-        laps = self.influx.telemetry_for_laps(
-            [self.laps[0]], measurement="fast_laps", bucket=self.bucket
-        )
-        if len(laps) == 0:
-            logging.info("No laps found")
-            return
+        for lap in self.laps:
+            laps = self.influx.telemetry_for_laps(
+                [lap], measurement="fast_laps", bucket=self.bucket
+            )
+            if len(laps) == 0:
+                logging.info("No laps found")
+                continue
 
-        cleaned_laps = []
-        for df in laps:
+            df = laps[0]
+            # Check if the value is increasing compared to the previous value
+            is_increasing = df["DistanceRoundTrack"] > df["DistanceRoundTrack"].shift(1)
+
+            # Get the indices where the value is not increasing
+            not_increasing_indices = is_increasing[
+                is_increasing == False  # noqa: E712
+            ].index.tolist()
+
+            if len(not_increasing_indices) > 1:
+                logging.info(
+                    f"Found {len(not_increasing_indices)} not increasing indices"
+                )
+                continue
+
             df = self.analyzer.drop_decreasing(df)
             # dataframes with less than 100 points are not reliable
             if len(df) < 100:
@@ -54,23 +68,19 @@ class FastLapAnalyzer:
                 freq=1,
                 columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime"],
             )
-            cleaned_laps.append(df)
 
-        if len(cleaned_laps) == 0:
-            logging.info("No cleaned laps found")
-            return
-        segments = self.get_segments(cleaned_laps[0])
-        track_info = sorted(segments, key=lambda k: k["start"])
+            segments = self.get_segments(df)
+            track_info = sorted(segments, key=lambda k: k["start"])
 
-        # convert track_info, which is an array of dict, to a pandas dataframe
-        df = pd.DataFrame(track_info)
-        logging.info(df.style.format(precision=1).to_string())
+            # convert track_info, which is an array of dict, to a pandas dataframe
+            track_info_df = pd.DataFrame(track_info)
+            logging.info(track_info_df.style.format(precision=1).to_string())
 
-        distance_time = self.get_distance_time(cleaned_laps[0])
-        data = {
-            "distance_time": distance_time,
-        }
-        return [track_info, data]
+            distance_time = self.get_distance_time(df)
+            data = {
+                "distance_time": distance_time,
+            }
+            return [track_info, data]
 
     def get_distance_time(self, lap):
         # find the index where the lap starts, thats where CurrentLapTime is minimal
@@ -97,7 +107,6 @@ class FastLapAnalyzer:
         return lap
 
     def get_segments(self, df):
-
         throttle_changes = self.get_change_indices(
             df, "Throttle", threshold=0.95, below=True
         )
@@ -230,7 +239,7 @@ class FastLapAnalyzer:
         # if len(change_indices) is odd, then the last value is a change
         if len(change_indices) % 2 == 1:
             print("adding last index")
-            change_indices = np.append(change_indices, len(x))
+            change_indices = np.append(change_indices, len(x) - 1)
         return change_indices
 
     def remove_close_indices(self, indices, threshold=50):

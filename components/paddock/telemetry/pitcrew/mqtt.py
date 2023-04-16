@@ -3,11 +3,9 @@
 import os
 import json
 import logging
+import threading
 
 import paho.mqtt.client as mqtt
-
-from .coach import Coach
-from .history import History
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +17,7 @@ B4MAD_RACING_CLIENT_PASSWORD = os.environ.get(
 
 
 class Mqtt:
-    def __init__(self, coach: Coach, driver: str, replay: bool = False):
+    def __init__(self, observer, topic, replay: bool = False):
         mqttc = mqtt.Client()
         mqttc.on_message = self.on_message
         mqttc.on_connect = self.on_connect
@@ -27,11 +25,11 @@ class Mqtt:
         mqttc.on_subscribe = self.on_subscribe
         mqttc.username_pw_set(B4MAD_RACING_CLIENT_USER, B4MAD_RACING_CLIENT_PASSWORD)
         self.mqttc = mqttc
-        self.coach = coach
-        self.topic = ""
         self.do_disconnect = False
-        self.driver = driver
         self.replay = replay
+        self.topic = topic
+        self.observer = observer
+        self._stop_event = threading.Event()
 
     # def __del__(self):
     #     # disconnect from broker
@@ -39,20 +37,11 @@ class Mqtt:
     def disconnect(self):
         self.mqttc.disconnect()
 
-    def filter_from_topic(self, topic):
-        frags = topic.split("/")
-        driver = frags[1]
-        # session = frags[2]
-        game = frags[3]
-        track = frags[4]
-        car = frags[5]
-        filter = {
-            "Driver": driver,
-            "GameName": game,
-            "TrackCode": track,
-            "CarModel": car,
-        }
-        return filter
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
     def on_message(self, mqttc, obj, msg):
         """Handle incoming messages, we are only interested in the telemetry.
@@ -70,25 +59,25 @@ class Mqtt:
         #     _LOGGER.debug("stopping MQTT")
         #     mqttc.disconnect()
 
-        if self.topic != msg.topic:
-            topic = msg.topic
-            if self.replay:
-                # remove replay/ prefix from session
-                topic = topic[7:]
+        if self.stopped():
+            self.mqttc.disconnect()
 
-            _LOGGER.debug("new session %s", msg.topic)
-            self.topic = msg.topic
-            self.coach.set_filter(self.filter_from_topic(topic))
+        topic = msg.topic
+        if self.replay:
+            # remove replay/ prefix from session
+            topic = topic[7:]
 
-        # print('.', end='')
-        telemetry = json.loads(msg.payload.decode("utf-8"))["telemetry"]
-        # print(telemetry["DistanceRoundTrack"])
+        try:
+            payload = json.loads(msg.payload.decode("utf-8")).get("telemetry")
+        except Exception as e:
+            logging.error("Error decoding payload: %s", e)
+            return
 
-        # meters = telemetry["telemetry"]["DistanceRoundTrack"]
-        response = self.coach.get_response(telemetry)
+        response = self.observer.notify(topic, payload)
         if response:
-            _LOGGER.debug("r-->: %i: %s", telemetry["DistanceRoundTrack"], response)
-            mqttc.publish(f"/coach/{self.driver}", response)
+            (r_topic, r_payload) = response
+            # _LOGGER.debug("r-->: %i: %s", telemetry["DistanceRoundTrack"], response)
+            mqttc.publish(r_topic, r_payload)
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("on_connect rc: %s", str(rc))
@@ -108,24 +97,24 @@ class Mqtt:
 
     def run(self):
         self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)
-        topic = f"crewchief/{self.driver}/#"
+        # topic = f"crewchief/{self.driver}/#"
         if self.replay:
-            topic = f"replay/{topic}"
+            self.topic = f"replay/{self.topic}"
 
-        s = self.mqttc.subscribe(topic, 0)
+        s = self.mqttc.subscribe(self.topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
-            _LOGGER.info(f"Subscribed to {topic}")
+            _LOGGER.info(f"Subscribed to {self.topic}")
             self.mqttc.loop_forever()
         else:
-            _LOGGER.error(f"Failed to subscribe to {topic}")
+            _LOGGER.error(f"Failed to subscribe to {self.topic}")
             exit(1)
 
 
-if __name__ == "__main__":
-    _LOGGER.info("Starting MQTT client")
+# if __name__ == "__main__":
+#     _LOGGER.info("Starting MQTT client")
 
-    history = History()
-    coach = Coach(history)
+#     history = History()
+#     coach = Coach(history)
 
-    m = Mqtt(coach)
-    m.run()
+#     m = Mqtt(coach)
+#     m.run()

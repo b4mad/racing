@@ -26,11 +26,9 @@ class Command(BaseCommand):
 
         crew = Crew(debug=options["no_save"], replay=options["replay"])
         if options["coach"]:
-            driver = Driver.objects.get(name=options["coach"])
+            driver, created = Driver.objects.get_or_create(name=options["coach"])
             coach, created = Coach.objects.get_or_create(driver=driver)
-            crew.coach_watcher.start_coach(
-                driver.name, coach, debug=True, replay=options["replay"]
-            )
+            crew.coach_watcher.start_coach(driver.name, coach, debug=True)
         elif options["session_saver"]:
             t = threading.Thread(target=crew.firehose.run)
             t.name = "firehose"
@@ -51,3 +49,4 @@ class Command(BaseCommand):
                 flask_thread.start()
 
             crew.run()
+            # TODO: if we end up here, we should probably exit the flask thread

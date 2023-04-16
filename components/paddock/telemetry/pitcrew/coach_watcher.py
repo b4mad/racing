@@ -9,10 +9,11 @@ from .mqtt import Mqtt
 
 
 class CoachWatcher:
-    def __init__(self, firehose):
+    def __init__(self, firehose, replay=False):
         self.firehose = firehose
         self.sleep_time = 3
         self.active_coaches = {}
+        self.replay = replay
 
         self._stop_event = threading.Event()
 
@@ -57,10 +58,12 @@ class CoachWatcher:
         self.active_coaches[driver_name][1].disconnect()
         del self.active_coaches[driver_name]
 
-    def start_coach(self, driver_name, coach, debug=False, replay=False):
+    def start_coach(self, driver_name, coach, debug=False):
         history = History()
         coach = PitCrewCoach(history, coach, debug=debug)
-        mqtt = Mqtt(coach, driver_name, replay=replay)
+
+        topic = f"crewchief/{driver_name}/#"
+        mqtt = Mqtt(coach, topic, replay=self.replay)
 
         def history_thread():
             logging.info(f"History thread starting for {driver_name}")

@@ -32,11 +32,25 @@ To run the application, you can use the following command:
 python manage.py runserver
 ```
 
+### admin
+
+```
+pipenv run ./manage.py createsuperuser
+```
+
 ### updating models
 
 
 ```
 Lap.objects.update(valid=False)
+```
+
+### tests
+
+```
+pipenv run ./manage.py test telemetry
+pipenv run ./manage.py test telemetry.tests.TestSession
+
 ```
 
 ### replaying
@@ -51,3 +65,20 @@ pipenv run ./manage.py replay --session-id 1677132130
 ```
 sudo austin -i 100 -o ../../.vscode/output.austin  ./manage.py pitcrew -c durandom --replay
 ```
+
+
+### notebooks
+
+https://blog.theodo.com/2020/11/django-jupyter-vscode-setup/
+
+
+```
+pipenv run ./manage.py shell_plus --notebook
+```
+
+
+### scratch
+
+* check all valid laps for consistency
+  * same length as track
+  * end - start == lap time

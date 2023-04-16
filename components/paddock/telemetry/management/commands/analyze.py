@@ -220,7 +220,7 @@ class Command(BaseCommand):
                 length__lt=median_length * 1.05,
                 time__gt=median_time * 0.95,
                 time__lt=median_time * 1.05,
-            ).order_by("-valid", "time")[:3]
+            ).order_by("-valid", "time")[:10]
 
             if laps.count() == 0:
                 logging.info("No laps found for threshold")

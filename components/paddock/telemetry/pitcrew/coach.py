@@ -21,11 +21,40 @@ class Coach:
         self.messages = {}
         self.debug = debug
         self.debug_data = {}
-        self.json_response = db_coach.driver.name == "durandom"
+        # self.json_response = db_coach.driver.name == "durandom"
+        self.json_response = True
+
+        self.response_topic = f"/coach/{db_coach.driver.name}"
 
         self.msg_read_interval = 20
         if self.debug:
             self.msg_read_interval = 1
+        self.topic = ""
+
+    def filter_from_topic(self, topic):
+        frags = topic.split("/")
+        driver = frags[1]
+        # session = frags[2]
+        game = frags[3]
+        track = frags[4]
+        car = frags[5]
+        filter = {
+            "Driver": driver,
+            "GameName": game,
+            "TrackCode": track,
+            "CarModel": car,
+        }
+        return filter
+
+    def notify(self, topic, payload):
+        if self.topic != topic:
+            self.topic = topic
+            logging.debug("new session %s", topic)
+            self.set_filter(self.filter_from_topic(topic))
+
+        response = self.get_response(payload)
+        if response:
+            return (self.response_topic, response)
 
     def set_filter(self, filter):
         self.history.set_filter(filter)
