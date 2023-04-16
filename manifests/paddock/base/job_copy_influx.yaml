@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: analyze
+  name: copy-influx
   namespace: b4mad-racing
 spec:
   selector: {}
   template:
     metadata:
-      name: analyze
+      name: copy-influx
     spec:
       containers:
         - env:
@@ -21,14 +21,14 @@ spec:
                 name: paddock-settings
           image: paddock:latest
           imagePullPolicy: Always
-          name: analyze
+          name: copy-influx
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py analyze --copy-influx
+            - python /opt/app-root/src/manage.py analyze --copy-influx --game "iRacing"
           resources:
             limits:
-              cpu: "1"
-              memory: 4Gi
+              cpu: "2"
+              memory: 1Gi
             requests:
               cpu: 100m
               memory: 256Mi
