@@ -5,11 +5,11 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <h3>Drivers</h3>
-          <p>... there is a total of {{ drivers_total }} drivers.</p>
+          <h3>Coaches</h3>
+
           <ul>
-            {% for driver in drivers %}
-            <li><a href="/pitcrew/{{ driver.name }}">{{ driver.name }}</a></li>
+            {% for lap in fast_laps %}
+            <li><a href="/fastlap/{{ lap.pk }}">{{ lap }}</a></li>
             {% endfor %}
           </ul>
         </div>

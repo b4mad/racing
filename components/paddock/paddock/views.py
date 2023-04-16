@@ -13,6 +13,18 @@ def fastlap_view(request, template_name="fastlap.html", fastlap_id="", **kwargs)
     return render(request, template_name=template_name, context=context)
 
 
+def fastlap_index(request, template_name="fastlap_index.html"):
+    # fast_laps = FastLap.objects.filter(driver=None).all()
+    fast_laps = (
+        FastLap.objects.select_related("game", "car", "track").filter(driver=None).all()
+    )
+    context = {
+        "fast_laps": fast_laps,
+    }
+
+    return render(request, template_name=template_name, context=context)
+
+
 def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs):
     "Example view that inserts content into the dash context passed to the dash application"
 
@@ -36,14 +48,11 @@ def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs
 
 
 def pitcrew_index(request, template_name="pitcrew_index.html", **kwargs):
-
     drivers = Driver.objects.order_by("name")
     drivers_total = drivers.count()
-    fast_laps = FastLap.objects.filter(driver=None).all()
     context = {
         "drivers": drivers,
         "drivers_total": drivers_total,
-        "fast_laps": fast_laps,
     }
 
     return render(request, template_name=template_name, context=context)
