@@ -29,6 +29,8 @@ flask-healthz = "*"
 rich = "*"
 django-picklefield = "*"
 influxdb-client = {extras = ["async"], version = "*"}
+jupyter = "*"
+django-extensions = "*"
 
 [dev-packages]
 black = "*"

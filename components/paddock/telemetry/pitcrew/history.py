@@ -47,8 +47,7 @@ class History:
             time.sleep(5)
             if self.do_init:
                 self.ready = self.init()
-                if self.ready:
-                    self.do_init = False
+                self.do_init = False
 
     def set_filter(self, filter):
         self.filter = filter
@@ -234,6 +233,7 @@ class History:
             self.error = f"no data found for game {self.filter['GameName']}"
             self.error += f"on track {self.filter['TrackCode']}"
             self.error += f"in car {self.filter['CarModel']}"
+            logging.error(self.error)
             return False
 
         logging.debug(

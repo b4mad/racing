@@ -26,6 +26,7 @@ class SessionSaver:
                 session = self.firehose.sessions.get(session_id)
 
                 # save session to database
+                # TODO: update session details if they change (e.g. end time)
                 if not session.record:
                     try:
                         session.driver, created = Driver.objects.get_or_create(
@@ -63,57 +64,61 @@ class SessionSaver:
                             )
                     except Exception as e:
                         # TODO add error to session to expire
-                        logging.error(f"Error saving session {session_id}: {e}")
+                        logging.error(
+                            f"{session.session_id}: Error saving session {session_id}: {e}"
+                        )
                         continue
 
                 if self.debug:
                     continue
 
                 # iterate over laps with index
-                for lap in session.laps:
-                    if (
-                        session.record
-                        and lap["finished"]
-                        and not lap.get("delete", False)
-                    ):
+                for lap_number, lap in session.laps.items():
+                    if session.record and lap.finished and not lap.persisted:
                         # check if lap length is within 98% of the track length
                         track = session.track
-                        track_length = track.length
-                        lap["delete"] = True  # mark lap for deletion
 
-                        if lap["length"] > track_length * 0.98:
-                            try:
-                                lap_record = session.record.laps.create(
-                                    number=lap["number"],
-                                    car=session.car,
-                                    track=track,
-                                    start=lap["start"],
-                                    end=lap["end"],
-                                    length=lap["length"],
-                                    valid=lap["valid"],
-                                    time=lap["time"],
-                                )
-                                logging.info(
-                                    f"Saving lap {lap_record} for session {session_id}"
-                                )
-                                session.record.end = session.end
-                                session.record.save_dirty_fields()
-                            except Exception as e:
-                                logging.error(f"Error saving lap {lap['number']}: {e}")
-                        else:
-                            lstring = (
-                                f"{lap['number']}: {lap['time']}s {lap['length']}m"
+                        # track_length = track.length
+                        # if lap.length < track_length * 0.98:
+                        #     lstring = (
+                        #         f"{lap.number}: {lap.time}s {lap.length}m"
+                        #     )
+                        #     logging.info(
+                        #         f"{session.session_id}: Discard lap {lstring} - track length {track_length}m"
+                        #     )
+                        #     # FIXME: this is a hack to prevent the lap from being saved again
+                        #     lap.persisted = True
+                        #     continue
+
+                        try:
+                            lap_record = session.record.laps.create(
+                                number=lap.number,
+                                car=session.car,
+                                track=track,
+                                start=lap.start,
+                                end=lap.end,
+                                length=lap.length,
+                                valid=lap.valid,
+                                time=lap.time,
                             )
                             logging.info(
-                                f"Discard lap {lstring} for session {session_id} - track length {track_length}m"
+                                f"{session.session_id}: Saving lap {lap_record}"
+                            )
+                            session.record.end = session.end
+                            session.record.save_dirty_fields()
+                            lap.persisted = True
+                        except Exception as e:
+                            logging.error(
+                                f"{session.session_id}: Error saving lap {lap.number}: {e}"
                             )
 
-                        lap_length = int(lap["length"])
+                        lap_length = int(lap.length)
                         if lap_length > track.length:
                             track.refresh_from_db()
                             if lap_length > track.length:
                                 logging.info(
-                                    f"updating {track.name} length from {track.length} to {lap_length}"
+                                    f"{session.session_id}: updating {track.name} "
+                                    + f"length from {track.length} to {lap_length}"
                                 )
                                 track.length = lap_length
                                 track.save()

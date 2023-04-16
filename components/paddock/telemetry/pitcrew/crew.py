@@ -5,6 +5,7 @@ import time
 import signal
 
 from .firehose import Firehose
+from .mqtt import Mqtt
 from .coach_watcher import CoachWatcher
 from .session_saver import SessionSaver
 
@@ -18,15 +19,19 @@ class Crew:
         self.debug = debug
         self.replay = replay
 
-        self.firehose = Firehose(debug=debug, replay=replay)
+        topic = "crewchief/#"
 
-        self.coach_watcher = CoachWatcher(self.firehose)
+        self.firehose = Firehose(debug=debug)
+        self.mqtt = Mqtt(self.firehose, topic, replay=replay)
+
+        self.coach_watcher = CoachWatcher(self.firehose, replay=replay)
         self.coach_watcher.sleep_time = 3
 
         self.session_saver = SessionSaver(self.firehose, debug=debug)
         self.session_saver.sleep_time = 5
 
         self._stop_event = threading.Event()
+        logging.debug("Crew initialized")
 
     def stop(self):
         self._live = False
@@ -48,7 +53,6 @@ class Crew:
             raise HealthError("not ready yet")
 
     def run(self):
-
         # log my process id
         logging.info(f"starting Crew with pid {os.getpid()}")
 
@@ -57,8 +61,8 @@ class Crew:
 
         threads = []
 
-        t = threading.Thread(target=self.firehose.run)
-        t.name = "firehose"
+        t = threading.Thread(target=self.mqtt.run)
+        t.name = "mqtt"
         threads.append(t)
 
         t = threading.Thread(target=self.coach_watcher.run)
@@ -84,7 +88,7 @@ class Crew:
                     logging.error(f"Thread {t} died")
                     break
 
-        self.firehose.stop()
+        self.mqtt.stop()
         self.coach_watcher.stop()
         self.session_saver.stop()
 
