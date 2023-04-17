@@ -18,6 +18,9 @@ jobs:
   build:
     name: Build paddock image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Harden Runner
