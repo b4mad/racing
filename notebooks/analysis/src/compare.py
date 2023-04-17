@@ -116,7 +116,6 @@ def analyse_csv(expert_path, student_path, n_suggestions):
 
 
 if __name__ == "__main__":
-
     expert_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap11.csv"
     student_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap13.csv"
     n_suggestions = 10

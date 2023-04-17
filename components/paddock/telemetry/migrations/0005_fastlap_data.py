@@ -5,7 +5,6 @@ import picklefield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("telemetry", "0004_lap_end"),
     ]
