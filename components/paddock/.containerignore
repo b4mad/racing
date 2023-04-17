@@ -1,0 +1,7 @@
+.env
+.env.example
+db.sqlite3
+.mypy_cache/
+venv/
+.vscode/
+.thoth_last_analysis_id
