@@ -1,20 +1,21 @@
-name: Build and Push 'paddock' container image on pull request
+name: Deliver Container Image
 on:
   pull_request:
-    types: [opened, reopened, edited]
+    types: [opened, reopened, synchronize]
 
 env:
     IMAGE_NAME: paddock
     IMAGE_TAGS: ${{ github.sha }}
     IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
     REGISTRY_USER: ${{ github.actor }}
-    REGISTRY_PASSWORD: ${{ github.token }}
+    REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
   contents: read
 
 jobs:
   lint-and-format:
+    name: linting and formatting
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -22,10 +23,9 @@ jobs:
     - uses: pre-commit/action@v3.0.0
 
   build:
-    name: Build paddock image
+    name: build and push
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
 
     steps:

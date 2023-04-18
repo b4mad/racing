@@ -1,4 +1,4 @@
-name: Build and Push 'paddock' container image on v-tag release
+name: Deliver Container Image
 on:
   push:
     tags:
@@ -9,17 +9,16 @@ env:
     IMAGE_TAGS: ${{ github.ref_name }}
     IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
     REGISTRY_USER: ${{ github.actor }}
-    REGISTRY_PASSWORD: ${{ github.token }}
+    REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build paddock image
+    name: build and push
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
 
     steps:
