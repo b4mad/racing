@@ -1,4 +1,4 @@
-name: Build and Push 'paddock' container image on push to main branch
+name: Deliver Container Image
 on:
   push:
     branches:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    name: Build paddock image
+    name: build and push
     runs-on: ubuntu-latest
     permissions:
       contents: read
