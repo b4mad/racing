@@ -7,7 +7,7 @@ class Firehose:
         self.debug = debug
         self.sessions = {}
 
-    def notify(self, topic, payload):
+    def notify(self, topic, payload, now=None):
         if topic not in self.sessions:
             try:
                 (
@@ -34,7 +34,7 @@ class Firehose:
             self.sessions[topic] = session
 
         session = self.sessions[topic]
-        session.signal(payload)
+        session.signal(payload, now)
 
     # TODO: clear sessions every now and then
     def clear_sessions(self, now):

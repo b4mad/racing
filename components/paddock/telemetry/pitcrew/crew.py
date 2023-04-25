@@ -27,7 +27,7 @@ class Crew:
         self.coach_watcher = CoachWatcher(self.firehose, replay=replay)
         self.coach_watcher.sleep_time = 3
 
-        self.session_saver = SessionSaver(self.firehose, debug=debug)
+        self.session_saver = SessionSaver(self.firehose)
         self.session_saver.sleep_time = 5
 
         self._stop_event = threading.Event()
