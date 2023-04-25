@@ -8,6 +8,18 @@ spec:
   replicas: 1
   selector:
     deploymentConfig: paddock
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - paddock
+      - pitcrew
+      from:
+        kind: ImageStreamTag
+        name: paddock:latest
+        namespace: b4mad-racing
+    type: ImageChange
   template:
     metadata:
       labels:
