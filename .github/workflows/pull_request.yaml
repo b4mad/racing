@@ -23,10 +23,8 @@ jobs:
     - uses: pre-commit/action@v3.0.0
 
   build:
-    name: build and push
+    name: build
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
 
     steps:
     - name: Harden Runner
@@ -46,19 +44,3 @@ jobs:
         context: components/paddock
         containerfiles: |
           ./components/paddock/Containerfile
-
-    - name: Push To GitHub Container Registry
-      uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2.7.1
-      id: push_to_ghcr
-      with:
-        image: ${{ steps.build_image.outputs.image }}
-        tags: ${{ steps.build_image.outputs.tags }}
-        registry: ${{ env.IMAGE_REGISTRY }}
-        username: ${{ env.REGISTRY_USER }}
-        password: ${{ env.REGISTRY_PASSWORD }}
-        extra-args: |
-          --disable-content-trust
-
-    - name: Echo outputs
-      run: |
-        echo "${{ toJSON(steps.push.outputs) }}"
