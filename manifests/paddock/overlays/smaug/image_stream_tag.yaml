@@ -7,7 +7,8 @@ spec:
   - from:
       kind: DockerImage
       name: ghcr.io/b4mad/paddock:latest
-    importPolicy: {}
+    importPolicy:
+      scheduled: true
     name: latest
     referencePolicy:
-      type: Local
+      type: Source

@@ -5,6 +5,7 @@
 via helm:
 
 ```shell
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm upgrade --install influxdb2 bitnami/influxdb \
   --namespace b4mad-racing \
   --values influxdb2-values.yaml
