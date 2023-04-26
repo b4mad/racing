@@ -63,7 +63,11 @@ pipenv run ./manage.py replay --session-id 1677132130
 ### profiling
 
 ```
+pipenv shell
 sudo austin -i 100 -o ../../.vscode/output.austin  ./manage.py pitcrew -c durandom --replay
+in vscode open the output.austin file
+https://marketplace.visualstudio.com/items?itemName=p403n1x87.austin-vscode
+shift-cmd-p view flamegraph
 ```
 
 

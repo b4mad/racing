@@ -122,10 +122,19 @@ class Influx:
 
         return data
 
-    def session(self, session_id=None, lap=None, lap_numbers=[], start=None, end=None):
+    def session(
+        self,
+        session_id=None,
+        lap=None,
+        lap_numbers=[],
+        start=None,
+        end=None,
+        measurement="laps_cc",
+        bucket="racing",
+    ):
         lap_filter = []
 
-        if start and end:
+        if start and end and session_id:
             # subtract one hour from start and add one hour to end
             start = parser.parse(start) - timedelta(hours=1)
             end = parser.parse(end) - timedelta(hours=1)
@@ -145,9 +154,9 @@ class Influx:
                 lap_filter.append(f'r["CurrentLap"] == "{lap_number}"')
 
             query = f"""
-                from(bucket: "racing")
+                from(bucket: "{bucket}")
                 |> range(start: -10y, stop: now())
-                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["_measurement"] == "{measurement}")
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> filter(fn: (r) => {' or '.join(lap_filter)})
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
@@ -156,9 +165,9 @@ class Influx:
             """
         elif start and end and session_id:
             query = f"""
-                from(bucket: "racing")
+                from(bucket: "{bucket}")
                 |> range(start: {start}, stop: {end})
-                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["_measurement"] == "{measurement}")
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
                 |> group(columns: [])
@@ -166,18 +175,67 @@ class Influx:
             """
         else:
             query = f"""
-                from(bucket: "racing")
+                from(bucket: "{bucket}")
                 |> range(start: -10y, stop: now())
-                |> filter(fn: (r) => r["_measurement"] == "laps_cc")
+                |> filter(fn: (r) => r["_measurement"] == "{measurement}")
                 |> filter(fn: (r) => r["SessionId"] == "{session_id}")
                 |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
                 |> group(columns: [])
                 |> sort(columns: ["_time"])
             """
 
+        logging.debug(query)
         records = self.query_api.query_stream(query=query)
         for record in records:
             yield record
+
+    def raw_stream(
+        self,
+        start="-1d",
+        end="now()",
+        measurement="laps_cc",
+        bucket="racing",
+        delta="5m",
+    ):
+        end_d = datetime.now()
+        start_d = datetime.now()
+        if delta.endswith("d"):
+            delta = timedelta(days=int(delta[:-1]))
+        elif delta.endswith("h"):
+            delta = timedelta(hours=int(delta[:-1]))
+        elif delta.endswith("m"):
+            delta = timedelta(hours=int(delta[:-1]))
+
+        if start.startswith("-"):
+            if start.endswith("d"):
+                start_d = end_d - timedelta(days=int(start[1:-1]))
+            elif start.endswith("h"):
+                start_d = end_d - timedelta(hours=int(start[1:-1]))
+            elif start.endswith("m"):
+                start_d = end_d - timedelta(minutes=int(start[1:-1]))
+                delta = timedelta(minutes=1)
+        else:
+            start_d = parser.parse(start)
+
+        while start_d < end_d:
+            start = start_d.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            end = (start_d + delta).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            logging.debug(f"start: {start}, end: {end}")
+
+            query = f"""
+                    from(bucket: "{bucket}")
+                    |> range(start: {start}, stop: {end})
+                    |> filter(fn: (r) => r["_measurement"] == "{measurement}")
+                    |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+                    |> group(columns: [])
+                    |> sort(columns: ["_time"])
+                """
+            print(query)
+            records = self.query_api.query_stream(query=query)
+            for record in records:
+                yield record
+
+            start_d = start_d + delta
 
     def sessions(self, start="-1d", stop="now()"):
         query = f"""

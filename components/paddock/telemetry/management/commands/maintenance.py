@@ -1,6 +1,7 @@
 import datetime
 from django.core.management.base import BaseCommand
 from telemetry.influx import Influx
+from telemetry.models import Session
 import logging
 
 
@@ -13,6 +14,12 @@ class Command(BaseCommand):
             "-d",
             "--delete-influx",
             help="delete old influx data",
+            action="store_true",
+        )
+
+        parser.add_argument(
+            "--delete-sessions",
+            help="delete sessions",
             action="store_true",
         )
 
@@ -32,24 +39,32 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        influx = Influx()
+        self.influx = Influx()
         if options["delete_influx"]:
-            if options["start"]:
-                start = datetime.datetime.strptime(options["start"], "%Y-%m-%d")
-            else:
-                start = datetime.datetime.now() - datetime.timedelta(days=30)
+            self.delete_influx(options["start"], options["end"])
+        elif options["delete_sessions"]:
+            self.delete_sessions(options["start"], options["end"])
 
-            if options["end"]:
-                end = datetime.datetime.strptime(options["end"], "%Y-%m-%d")
-            else:
-                end = start + datetime.timedelta(days=1)
+    def delete_sessions(self, start, end):
+        Session.objects.all().delete()
 
-            # delete in on hour chunks
-            while start < end:
-                end_delta = start + datetime.timedelta(hours=4)
-                logging.debug(f"Deleting data from {start} to {end_delta}")
-                now = datetime.datetime.now()
-                influx.delete_data(start=start, end=end_delta)
-                # log how long it took
-                logging.debug(f"... {datetime.datetime.now() - now}")
-                start = end_delta
+    def delete_influx(self, start, end):
+        if start:
+            start = datetime.datetime.strptime(start, "%Y-%m-%d")
+        else:
+            start = datetime.datetime.now() - datetime.timedelta(days=30)
+
+        if end:
+            end = datetime.datetime.strptime(end, "%Y-%m-%d")
+        else:
+            end = start + datetime.timedelta(days=1)
+
+        # delete in on hour chunks
+        while start < end:
+            end_delta = start + datetime.timedelta(hours=4)
+            logging.debug(f"Deleting data from {start} to {end_delta}")
+            now = datetime.datetime.now()
+            self.influx.delete_data(start=start, end=end_delta)
+            # log how long it took
+            logging.debug(f"... {datetime.datetime.now() - now}")
+            start = end_delta

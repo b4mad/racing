@@ -4,7 +4,9 @@ LABEL \
     org.opencontainers.image.source=https://github.com/b4mad/racing \
     org.opencontainers.image.description="This is the #B4mad Racing Paddock component" \
     org.opencontainers.image.licenses="GPL-3.0-or-later" \
-    org.opencontainers.image.base.name="quay.io/fedora/python-310"
+    org.opencontainers.image.base.name="quay.io/fedora/python-310" \
+    io.openshift.non-scalable=true
+
 
 ENV \
     DISABLE_SETUP_PY_PROCESSING=1 \

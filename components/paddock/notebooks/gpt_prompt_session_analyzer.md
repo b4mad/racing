@@ -1,41 +1,17 @@
+Here's the code for session.py
+
+```
 import django.utils.timezone
 import logging
 from telemetry.models import Game
 
 
-class Lap:
-    def __init__(
-        self,
-        number,
-        time=-1.0,
-        valid=False,
-        length=-1,
-        start=None,
-        end=None,
-        finished=False,
-    ):
-        self.number = number
-        self.start = start
-        self.end = end
-        self.length = length
-        self.time = time
-        self.finished = finished
-        self.valid = valid
-        self.persisted = False
-
-    def __str__(self):
-        return f"Lap {self.number}: {self.time} / l: {self.length} / v: {self.valid} / f: {self.finished}"
-
-    def __repr__(self):
-        return self.__str__()
-
-
 class Session:
-    def __init__(self, id, start=None):
+    def __init__(self, id):
         self.id = id
-        self.start = start or django.utils.timezone.now()
+        self.start = django.utils.timezone.now()
         self.end = self.start
-        self.laps = {}
+        self.laps = []
         self.driver = ""
         self.session_id = ""
         self.game = Game()
@@ -47,29 +23,15 @@ class Session:
 
         self.current_lap_time = -1
         self.distance_round_track = 1_000_000_000
-        self.current_lap = None
-        self.previous_lap = None
-        self.previous_distance = -1
-        self.previous_lap_time = -1
-        self.previous_lap_time_previous = -1
-        self.telemetry_valid = True
+        self.current_lap = -1
 
-    def log(self, message, level=logging.DEBUG):
-        if level == logging.DEBUG:
-            logging.debug(f"{self.session_id}: {message}")
-        elif level == logging.INFO:
-            logging.info(f"{self.session_id}: {message}")
-
-    def log_debug(self, message):
-        self.log(message, level=logging.DEBUG)
-
-    def log_info(self, message):
-        self.log(message, level=logging.INFO)
-
-    def signal(self, telemetry, now=None):
-        now = now or django.utils.timezone.now()
+    def signal(self, telemetry):
+        now = django.utils.timezone.now()
         self.end = now
-        self.analyze(telemetry, now)
+        if self.game_name == "iRacing":
+            self.analyze_iracing(telemetry, now)
+        else:
+            self.analyze(telemetry, now)
 
     def log_laps(self):
         for lap in self.laps:
@@ -78,81 +40,18 @@ class Session:
                 + f" - valid: {lap['valid']} - finished: {lap['finished']}"
             )
 
-    def new_lap(self, now, lap_number):
-        lap = Lap(lap_number, start=now, end=now)
-        self.laps.get(lap_number, lap)
-        self.laps[lap_number] = lap
-        self.previous_lap = self.current_lap
-        if self.previous_lap:
-            self.previous_lap.end = now
-        self.current_lap = lap
-
-        self.log_debug(f"new lap: {lap_number}")
-        # self.log_debug(f"\tdistance: {distance} / {self.previous_distance}")
-        # self.log_debug(f"\tcurrent_lap: {self.current_lap.number}") if self.current_lap else None
+    def new_lap(self, now):
+        lap = {
+            "start": now,
+            "end": now,
+            "number": -1,
+            "length": -1,
+            "time": -1,
+            "finished": False,
+            "valid": False,
+        }
+        self.laps.append(lap)
         return lap
-
-    def analyze(self, telemetry, now):
-        try:
-            distance = telemetry["DistanceRoundTrack"]
-            current_lap = telemetry["CurrentLap"]
-            lap_time = telemetry["CurrentLapTime"]
-            lap_time_previous = telemetry["LapTimePrevious"]
-            lap_is_valid = telemetry["CurrentLapIsValid"]
-            previous_lap_was_valid = telemetry["PreviousLapWasValid"]
-        except KeyError:
-            if self.telemetry_valid:
-                self.log_debug(f"Invalid telemetry: {telemetry}")
-                self.telemetry_valid = False
-            return
-
-        if (
-            distance is None
-            or current_lap is None
-            or lap_time is None
-            or lap_is_valid is None
-        ):
-            if self.telemetry_valid:
-                self.log_debug(f"fields are None: {telemetry}")
-                self.telemetry_valid = False
-            return
-
-        self.telemetry_valid = True
-        # check if we're in a new lap, i.e. we're driving over the finish line
-        #   ie. distance is lower than the previous distance
-        #   and below a threshold of 10 meters
-        # self.log_debug(f"distance: {distance}")
-
-        crossed_finish_line = distance < self.previous_distance and distance < 10
-        lap_number_increased = (
-            self.current_lap and current_lap > self.current_lap.number
-        )
-
-        if crossed_finish_line and not self.current_lap:
-            # first lap
-            self.new_lap(now, current_lap)
-        elif lap_number_increased:
-            self.new_lap(now, current_lap)
-
-        if self.current_lap:
-            if distance > self.current_lap.length:
-                self.current_lap.length = distance
-            self.current_lap.valid = lap_is_valid
-            # self.current_lap.time = lap_time
-
-        if lap_time_previous != self.previous_lap_time_previous:
-            if self.previous_lap:
-                self.previous_lap.time = lap_time_previous
-                self.previous_lap.valid = previous_lap_was_valid
-                self.previous_lap.finished = True
-                self.log_debug(
-                    f"lap {self.previous_lap.number} time {lap_time_previous} valid {previous_lap_was_valid}"
-                )
-
-        self.previous_distance = distance
-        self.previous_lap_time = lap_time
-        self.previous_lap_time_previous = lap_time_previous
-        return
 
     def analyze_iracing(self, telemetry, now):
         current_lap = int(telemetry.get("CurrentLap", -1))
@@ -169,7 +68,13 @@ class Session:
         lap_time_previous = telemetry.get("LapTimePrevious", -1)
         current_lap_is_valid = telemetry.get("CurrentLapIsValid", False)
 
+        # pipenv run ./manage.py replay --session-id 1681021274
         # its an outlap if CurrentLapTime is 0
+        # and it's an outlap if CurrentLapIsValid is False
+        # CurrentLapTime also increases if reset to the pit
+        # if we cross the start/finish line CurrentLapIsValid is set to True
+        # if PreviousLapWasValid toggles to False we need to set the previous lap to invalid
+        #    immediately after this toggle, PreviousLapWasValid is switches back to True!
 
         lap["end"] = now
         lap["length"] = telemetry.get("DistanceRoundTrack", -1)
@@ -186,7 +91,7 @@ class Session:
                 previous_lap["finished"] = True
                 self.log_laps()
 
-    def analyze_old(self, telemetry, now):
+    def analyze(self, telemetry, now):
         length = telemetry.get("DistanceRoundTrack", None)
         speed = telemetry.get("SpeedMs", None)
         lap_time = telemetry.get("CurrentLapTime", None)
@@ -285,3 +190,6 @@ class Session:
                     logging.info(
                         f"{self.session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}"
                     )
+```
+
+Refactor this, so that we dont have a specific method for the game iRacing. The logic should be just in the analyzse method. Just give me the code
