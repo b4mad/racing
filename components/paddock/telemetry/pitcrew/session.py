@@ -4,27 +4,36 @@ from telemetry.models import Game
 
 
 class Lap:
-    def __init__(self, number, time=-1.0, valid=False, length=-1, start=None, end=None):
+    def __init__(
+        self,
+        number,
+        time=-1.0,
+        valid=False,
+        length=-1,
+        start=None,
+        end=None,
+        finished=False,
+    ):
         self.number = number
         self.start = start
         self.end = end
         self.length = length
         self.time = time
-        self.finished = False
+        self.finished = finished
         self.valid = valid
         self.persisted = False
 
     def __str__(self):
-        return f"Lap {self.number}: {self.time} / valid {self.valid}"
+        return f"Lap {self.number}: {self.time} / l: {self.length} / v: {self.valid} / f: {self.finished}"
 
     def __repr__(self):
         return self.__str__()
 
 
 class Session:
-    def __init__(self, id):
+    def __init__(self, id, start=None):
         self.id = id
-        self.start = django.utils.timezone.now()
+        self.start = start or django.utils.timezone.now()
         self.end = self.start
         self.laps = {}
         self.driver = ""
@@ -77,39 +86,57 @@ class Session:
         if self.previous_lap:
             self.previous_lap.end = now
         self.current_lap = lap
+
+        self.log_debug(f"new lap: {lap_number}")
+        # self.log_debug(f"\tdistance: {distance} / {self.previous_distance}")
+        # self.log_debug(f"\tcurrent_lap: {self.current_lap.number}") if self.current_lap else None
         return lap
 
     def analyze(self, telemetry, now):
-        distance = telemetry.get("DistanceRoundTrack", None)
-        current_lap = telemetry.get("CurrentLap", None)
-        lap_time_previous = telemetry.get("LapTimePrevious", None)
-        lap_is_valid = telemetry.get("CurrentLapIsValid", None)
-        previous_lap_was_valid = telemetry.get("PreviousLapWasValid", None)
-        lap_time = telemetry.get("CurrentLapTime", None)
+        try:
+            distance = telemetry["DistanceRoundTrack"]
+            current_lap = telemetry["CurrentLap"]
+            lap_time = telemetry["CurrentLapTime"]
+            lap_time_previous = telemetry["LapTimePrevious"]
+            lap_is_valid = telemetry["CurrentLapIsValid"]
+            previous_lap_was_valid = telemetry["PreviousLapWasValid"]
+        except KeyError:
+            if self.telemetry_valid:
+                self.log_debug(f"Invalid telemetry: {telemetry}")
+                self.telemetry_valid = False
+            return
 
         if (
             distance is None
             or current_lap is None
-            or lap_time_previous is None
-            or lap_is_valid is None
             or lap_time is None
-            or previous_lap_was_valid is None
+            or lap_is_valid is None
         ):
             if self.telemetry_valid:
-                self.log_debug(f"Invalid telemetry: {telemetry}")
-            self.telemetry_valid = False
+                self.log_debug(f"fields are None: {telemetry}")
+                self.telemetry_valid = False
             return
 
         self.telemetry_valid = True
         # check if we're in a new lap, i.e. we're driving over the finish line
         #   ie. distance is lower than the previous distance
         #   and below a threshold of 10 meters
-        if distance < self.previous_distance and distance < 10:
+        # self.log_debug(f"distance: {distance}")
+
+        crossed_finish_line = distance < self.previous_distance and distance < 10
+        lap_number_increased = (
+            self.current_lap and current_lap > self.current_lap.number
+        )
+
+        if crossed_finish_line and not self.current_lap:
+            # first lap
             self.new_lap(now, current_lap)
-            self.log_debug(f"{self.driver} new lap: {current_lap}")
+        elif lap_number_increased:
+            self.new_lap(now, current_lap)
 
         if self.current_lap:
-            self.current_lap.length = distance
+            if distance > self.current_lap.length:
+                self.current_lap.length = distance
             self.current_lap.valid = lap_is_valid
             # self.current_lap.time = lap_time
 

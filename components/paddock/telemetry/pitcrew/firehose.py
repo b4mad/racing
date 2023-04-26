@@ -23,7 +23,7 @@ class Firehose:
                 # ignore invalid session
                 return
 
-            session = Session(topic)
+            session = Session(topic, start=now)
             session.driver = driver
             session.session_id = session_id
             logging.debug(f"{session_id}: New session: {topic}")

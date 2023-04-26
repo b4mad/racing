@@ -64,8 +64,9 @@ class SessionSaver:
                     )
                     continue
 
-            # iterate over laps with index
-            for lap_number, lap in session.laps.items():
+            lap_numbers = list(session.laps.keys())
+            for lap_number in lap_numbers:
+                lap = session.laps.get(lap_number)
                 if session.record and lap.finished and not lap.persisted:
                     # check if lap length is within 98% of the track length
                     track = session.track

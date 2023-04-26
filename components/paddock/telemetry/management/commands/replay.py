@@ -71,6 +71,9 @@ class Command(BaseCommand):
         parser.add_argument("--start", type=str, default=None)
         parser.add_argument("--end", type=str, default=None)
         parser.add_argument("--change-driver", type=str, default=None)
+        parser.add_argument("--bucket", type=str, default="racing")
+        parser.add_argument("--measurement", type=str, default="laps_cc")
+        parser.add_argument("--delta", type=str, default=None)
         parser.add_argument("--quiet", action="store_true")
         parser.add_argument("--keep-session-id", action="store_true")
 
@@ -86,6 +89,9 @@ class Command(BaseCommand):
         self.keep_session_id = options["keep_session_id"]
         self.quiet = options["quiet"]
         self.session_saver = None
+        self.session_save_thread = None
+        bucket = options["bucket"]
+        measurement = options["measurement"]
 
         if options["firehose"]:
             self.firehose = Firehose()
@@ -114,6 +120,8 @@ class Command(BaseCommand):
                     lap_numbers=options["lap_numbers"],
                     start=options["start"],
                     end=options["end"],
+                    bucket=bucket,
+                    measurement=measurement,
                 )
                 if options["new_session_id"]:
                     new_session_id = options["new_session_id"]
@@ -124,7 +132,11 @@ class Command(BaseCommand):
         elif options["lap_ids"]:
             for lap_id in options["lap_ids"]:
                 lap = Lap.objects.get(id=lap_id)
-                session = influx.session(lap=lap)
+                session = influx.session(
+                    lap=lap,
+                    bucket=bucket,
+                    measurement=measurement,
+                )
                 if options["new_session_id"]:
                     new_session_id = options["new_session_id"]
                 else:
@@ -134,7 +146,13 @@ class Command(BaseCommand):
                 )
                 self.progress.console.print(msg)
         else:
-            session = influx.raw_stream(start=options["start"], end=options["end"])
+            session = influx.raw_stream(
+                start=options["start"],
+                end=options["end"],
+                bucket=bucket,
+                measurement=measurement,
+                delta=options["delta"],
+            )
             new_session_id = None
             msg = f"[green] Replaying from start {options['start']} to end {options['end']}"
             self.progress.console.print(msg)
@@ -171,6 +189,9 @@ class Command(BaseCommand):
             "CurrentLap",
             # "CurrentLapTime",
         ]
+        monitor_fields_in_payload = {}
+        for field in monitor_fields:
+            monitor_fields_in_payload[field] = True
         line_count = 0
         for record in session:
             topic = record["topic"]
@@ -239,13 +260,19 @@ class Command(BaseCommand):
                 )
 
             for field in monitor_fields:
-                value = payload["telemetry"].get(field, None)
-                prev_value = prev_payload["telemetry"].get(field, None)
-                if value != prev_value:
-                    if not self.quiet:
-                        self.progress.console.print(
-                            f"{distance_round_track}: {field}: {prev_value} -> {value}"
-                        )
+                try:
+                    value = payload["telemetry"][field]
+                    prev_value = prev_payload["telemetry"].get(field)
+                    if value != prev_value:
+                        if not self.quiet:
+                            self.progress.console.print(
+                                f"{distance_round_track}: {field}: {prev_value} -> {value}"
+                            )
+                except KeyError:
+                    if monitor_fields_in_payload[field]:
+                        monitor_fields_in_payload[field] = False
+                        msg = f"[red] {field} not in payload"
+                        self.progress.console.print(msg)
             self.observer(topic, payload)
             prev_payload = payload
             time.sleep(wait)
