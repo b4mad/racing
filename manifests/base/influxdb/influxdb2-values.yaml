@@ -71,7 +71,7 @@ metrics:
     externalTrafficPolicy: Cluster
 
   serviceMonitor:
-    enabled: false
+    enabled: true
 
 backup:
   enabled: false

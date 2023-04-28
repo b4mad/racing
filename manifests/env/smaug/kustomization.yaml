@@ -6,14 +6,12 @@ commonLabels:
   app.kubernetes.io/name: b4mad-racing
   app.kubernetes.io/version: v0.1.0-dev
 namespace: b4mad-racing
-  # - grafana/overlays/smaug/
-  # - influxdb/overlays/smaug/
 resources:
-- namespace.yaml
-- mosquitto/
-  # - paddock/overlays/smaug/
-  # - postgresql/
-  # - routes.yaml
-  # - telegraf/overlays/smaug/
+- ../../base/mosquitto
+- telegraf
+- grafana
+- influxdb
+- ../../base/postgresql
+- paddock
 generatorOptions:
   disableNameSuffixHash: true

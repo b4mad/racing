@@ -5,7 +5,7 @@ commonLabels:
 generators:
   - secret-generator.yaml
 resources:
-  - ../../base/
+  - ../../../base/grafana
   - dashboards
   - datasource.yaml
   - route.yaml
