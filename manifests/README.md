@@ -1,5 +1,8 @@
 # Deploy Telemetry infrastructure
 
+the structure of this folder is inspired by https://github.com/kostis-codefresh/gitops-environment-promotion
+
+
 ## deploy Influxdb2
 
 via helm:
