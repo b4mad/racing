@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-influxdb-client = ">=1.31.0"
 jupyter = "*"
 matplotlib = "*"
 numpy = "*"
@@ -24,6 +23,8 @@ ruptures = "*"
 stumpy = "*"
 sktime = "*"
 hmmlearn = "*"
+rich = "*"
+influxdb-client = {extras = ["async"], version = "*"}
 
 [dev-packages]
 mypy = "*"

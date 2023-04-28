@@ -49,7 +49,7 @@ Lap.objects.update(valid=False)
 
 ```
 pipenv run ./manage.py test telemetry
-pipenv run ./manage.py test telemetry.tests.TestSession
+pipenv run ./manage.py test telemetry.tests.TestSession.test_iracing
 
 ```
 

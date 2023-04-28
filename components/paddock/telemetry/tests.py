@@ -3,6 +3,7 @@ from telemetry.pitcrew.session import Session, Lap
 from telemetry.influx import Influx
 import os
 import pandas as pd
+import numpy as np
 from pprint import pprint
 
 
@@ -33,6 +34,8 @@ class TestSession(TestCase):
         # Call the signal method with values from the dataframe
         # sort session_df by time
         session_df = session_df.sort_values(by="_time")
+        session_df = session_df.replace(np.nan, None)
+
         for index, row in session_df.iterrows():
             # convert row to dict
             row = row.to_dict()
@@ -146,6 +149,6 @@ class TestSession(TestCase):
         session = self._test_session(session_id)
 
         expected_laps = {
-            11: Lap(2, time=-1, valid=False, finished=False),
+            11: Lap(11, time=-1, length=82, valid=True, finished=False),
         }
-        self.assertEqual(session.laps, expected_laps)
+        self._assert_laps(session, expected_laps)
