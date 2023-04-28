@@ -67,6 +67,13 @@ Table: keys: []
 --------------------------
                       1788
 
+# count the number of points
+influx query 'from(bucket:"racing") |> range(start:-10y) |> filter(fn: (r) => r["_measurement"] == "fast_laps") |> group() |> count()'
+influx query 'from(bucket:"racing") |> range(start:-10y) |> filter(fn: (r) => r["_measurement"] == "fast_laps") |> filter(fn: (r) => r["SessionId"] == "1677384694") |> group() |> count()'
+
+# delete all points in a measurement
+influx delete --bucket racing --start '2022-11-27T00:00:00Z' --stop $(date +"%Y-%m-%dT%H:%M:%SZ") \
+  --predicate '_measurement="fast_laps"'
 ```
 
 ### telegraf
