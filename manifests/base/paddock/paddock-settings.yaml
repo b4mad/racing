@@ -1,0 +1,17 @@
+kind: Secret
+apiVersion: v1
+metadata:
+    name: paddock-settings
+stringData:
+    SECRET_KEY: 7a54cf2d6fce83d7de860cf2a82e7f49b9d3045f
+    DJANGO_SUPERUSER_PASSWORD: 1a9fce4d655c94d66b9ea2aec85380d8ad54a790
+    DJANGO_SUPERUSER_EMAIL: info@b4mad.racing
+    DJANGO_SUPERUSER_USERNAME: admin
+    B4MAD_RACING_CLIENT_USER: crewchief
+    B4MAD_RACING_CLIENT_PASSWORD: crewchief
+    B4MAD_RACING_INFLUX_ORG: b4mad
+    B4MAD_RACING_INFLUX_TOKEN: 41e593a879202f9ebc0e5bc6f1b18a40e0a0d855
+    B4MAD_RACING_INFLUX_URL: http://influxdb2.b4mad-racing.svc/
+    READONLY_DATABASE_URL: postgresql://reader:995f43ad3dc7ce93c4ae7504b4d7c229deb7c5ae@b4mad-racing-primary.b4mad-racing.svc:5432/paddock
+    ALLOWED_HOST: "*"
+type: Opaque

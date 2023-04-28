@@ -1,0 +1,575 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: grafana-deployment-59bb6fb8f5-
+  annotations:
+    k8s.v1.cni.cncf.io/network-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.131.5.88"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    k8s.v1.cni.cncf.io/networks-status: |-
+      [{
+          "name": "openshift-sdn",
+          "interface": "eth0",
+          "ips": [
+              "10.131.5.88"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    openshift.io/scc: restricted
+    prometheus.io/port: '3000'
+    prometheus.io/scrape: 'true'
+  resourceVersion: '2748022111'
+  name: grafana-deployment-59bb6fb8f5-zv6l4
+  uid: 0085098d-1c6d-4645-be83-45cf1627ee0d
+  creationTimestamp: '2023-04-26T00:24:25Z'
+  managedFields:
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2023-04-26T00:24:25Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:prometheus.io/port': {}
+            'f:prometheus.io/scrape': {}
+          'f:generateName': {}
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:pod-template-hash': {}
+          'f:ownerReferences':
+            .: {}
+            'k:{"uid":"b533524a-b07d-4294-8ac8-7c5a4c494632"}': {}
+        'f:spec':
+          'f:volumes':
+            'k:{"name":"grafana-provision-dashboards"}':
+              .: {}
+              'f:emptyDir': {}
+              'f:name': {}
+            'k:{"name":"grafana-plugins"}':
+              .: {}
+              'f:emptyDir': {}
+              'f:name': {}
+            .: {}
+            'k:{"name":"grafana-config"}':
+              .: {}
+              'f:configMap':
+                .: {}
+                'f:defaultMode': {}
+                'f:name': {}
+              'f:name': {}
+            'k:{"name":"grafana-provision-plugins"}':
+              .: {}
+              'f:emptyDir': {}
+              'f:name': {}
+            'k:{"name":"grafana-data"}':
+              .: {}
+              'f:name': {}
+              'f:persistentVolumeClaim':
+                .: {}
+                'f:claimName': {}
+            'k:{"name":"grafana-datasources"}':
+              .: {}
+              'f:configMap':
+                .: {}
+                'f:defaultMode': {}
+                'f:name': {}
+              'f:name': {}
+            'k:{"name":"grafana-logs"}':
+              .: {}
+              'f:emptyDir': {}
+              'f:name': {}
+            'k:{"name":"grafana-provision-notifiers"}':
+              .: {}
+              'f:emptyDir': {}
+              'f:name': {}
+            'k:{"name":"configmap-grafana-dashboards"}':
+              .: {}
+              'f:configMap':
+                .: {}
+                'f:defaultMode': {}
+                'f:name': {}
+              'f:name': {}
+          'f:containers':
+            'k:{"name":"grafana"}':
+              'f:envFrom': {}
+              'f:image': {}
+              'f:volumeMounts':
+                'k:{"mountPath":"/var/lib/grafana"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/etc/grafana-configmaps/grafana-dashboards"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/etc/grafana/provisioning/dashboards"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/etc/grafana/provisioning/plugins"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                .: {}
+                'k:{"mountPath":"/etc/grafana/"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/var/lib/grafana/plugins"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/etc/grafana/provisioning/notifiers"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/etc/grafana/provisioning/datasources"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+                'k:{"mountPath":"/var/log/grafana"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+              'f:terminationMessagePolicy': {}
+              .: {}
+              'f:resources':
+                .: {}
+                'f:limits':
+                  .: {}
+                  'f:cpu': {}
+                  'f:memory': {}
+                'f:requests':
+                  .: {}
+                  'f:cpu': {}
+                  'f:memory': {}
+              'f:args': {}
+              'f:livenessProbe':
+                .: {}
+                'f:failureThreshold': {}
+                'f:httpGet':
+                  .: {}
+                  'f:path': {}
+                  'f:port': {}
+                  'f:scheme': {}
+                'f:initialDelaySeconds': {}
+                'f:periodSeconds': {}
+                'f:successThreshold': {}
+                'f:timeoutSeconds': {}
+              'f:env':
+                .: {}
+                'k:{"name":"INFLUX_GRAFANA_READER_TOKEN"}':
+                  .: {}
+                  'f:name': {}
+                  'f:valueFrom':
+                    .: {}
+                    'f:secretKeyRef': {}
+                'k:{"name":"LAST_CONFIG"}':
+                  .: {}
+                  'f:name': {}
+                  'f:value': {}
+                'k:{"name":"LAST_CREDENTIALS"}':
+                  .: {}
+                  'f:name': {}
+                'k:{"name":"LAST_DATASOURCES"}':
+                  .: {}
+                  'f:name': {}
+                  'f:value': {}
+              'f:readinessProbe':
+                .: {}
+                'f:failureThreshold': {}
+                'f:httpGet':
+                  .: {}
+                  'f:path': {}
+                  'f:port': {}
+                  'f:scheme': {}
+                'f:initialDelaySeconds': {}
+                'f:periodSeconds': {}
+                'f:successThreshold': {}
+                'f:timeoutSeconds': {}
+              'f:securityContext': {}
+              'f:terminationMessagePath': {}
+              'f:imagePullPolicy': {}
+              'f:ports':
+                .: {}
+                'k:{"containerPort":3000,"protocol":"TCP"}':
+                  .: {}
+                  'f:containerPort': {}
+                  'f:name': {}
+                  'f:protocol': {}
+                'k:{"containerPort":9094,"protocol":"TCP"}':
+                  .: {}
+                  'f:containerPort': {}
+                  'f:name': {}
+                  'f:protocol': {}
+                'k:{"containerPort":9094,"protocol":"UDP"}':
+                  .: {}
+                  'f:containerPort': {}
+                  'f:name': {}
+                  'f:protocol': {}
+              'f:name': {}
+          'f:dnsPolicy': {}
+          'f:serviceAccount': {}
+          'f:restartPolicy': {}
+          'f:schedulerName': {}
+          'f:terminationGracePeriodSeconds': {}
+          'f:initContainers':
+            .: {}
+            'k:{"name":"grafana-plugins-init"}':
+              'f:image': {}
+              'f:volumeMounts':
+                .: {}
+                'k:{"mountPath":"/opt/plugins"}':
+                  .: {}
+                  'f:mountPath': {}
+                  'f:name': {}
+              'f:terminationMessagePolicy': {}
+              .: {}
+              'f:resources':
+                .: {}
+                'f:limits':
+                  .: {}
+                  'f:cpu': {}
+                  'f:memory': {}
+                'f:requests':
+                  .: {}
+                  'f:cpu': {}
+                  'f:memory': {}
+              'f:env':
+                .: {}
+                'k:{"name":"GRAFANA_PLUGINS"}':
+                  .: {}
+                  'f:name': {}
+                  'f:value': {}
+              'f:securityContext': {}
+              'f:terminationMessagePath': {}
+              'f:imagePullPolicy': {}
+              'f:name': {}
+          'f:serviceAccountName': {}
+          'f:enableServiceLinks': {}
+          'f:securityContext': {}
+          'f:affinity': {}
+    - manager: multus
+      operation: Update
+      apiVersion: v1
+      time: '2023-04-26T00:24:28Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:k8s.v1.cni.cncf.io/network-status': {}
+            'f:k8s.v1.cni.cncf.io/networks-status': {}
+      subresource: status
+    - manager: kubelet
+      operation: Update
+      apiVersion: v1
+      time: '2023-04-26T00:24:35Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:conditions':
+            'k:{"type":"ContainersReady"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Initialized"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Ready"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+          'f:containerStatuses': {}
+          'f:hostIP': {}
+          'f:initContainerStatuses': {}
+          'f:phase': {}
+          'f:podIP': {}
+          'f:podIPs':
+            .: {}
+            'k:{"ip":"10.131.5.88"}':
+              .: {}
+              'f:ip': {}
+          'f:startTime': {}
+      subresource: status
+  namespace: b4mad-racing
+  ownerReferences:
+    - apiVersion: apps/v1
+      kind: ReplicaSet
+      name: grafana-deployment-59bb6fb8f5
+      uid: b533524a-b07d-4294-8ac8-7c5a4c494632
+      controller: true
+      blockOwnerDeletion: true
+  labels:
+    app: grafana
+    pod-template-hash: 59bb6fb8f5
+spec:
+  restartPolicy: Always
+  initContainers:
+    - resources:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 128Mi
+      terminationMessagePath: /dev/termination-log
+      name: grafana-plugins-init
+      env:
+        - name: GRAFANA_PLUGINS
+          value: 'michaeldmoore-scatter-panel:1.1.0'
+      securityContext:
+        capabilities:
+          drop:
+            - KILL
+            - MKNOD
+            - SETGID
+            - SETUID
+        runAsUser: 1001920000
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - name: grafana-plugins
+          mountPath: /opt/plugins
+        - name: kube-api-access-tgmdz
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      image: 'quay.io/grafana-operator/grafana_plugins_init:0.1.0'
+  serviceAccountName: grafana-serviceaccount
+  imagePullSecrets:
+    - name: grafana-serviceaccount-dockercfg-pbkmk
+  priority: 0
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  affinity: {}
+  terminationGracePeriodSeconds: 30
+  preemptionPolicy: PreemptLowerPriority
+  nodeName: oct-03-09-compute
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c44,c14'
+    fsGroup: 1001920000
+  containers:
+    - resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+      readinessProbe:
+        httpGet:
+          path: /api/health
+          port: 3000
+          scheme: HTTP
+        initialDelaySeconds: 5
+        timeoutSeconds: 3
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 1
+      terminationMessagePath: /dev/termination-log
+      name: grafana
+      livenessProbe:
+        httpGet:
+          path: /api/health
+          port: 3000
+          scheme: HTTP
+        initialDelaySeconds: 60
+        timeoutSeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 10
+      env:
+        - name: LAST_CONFIG
+          value: 482c1dfff17927a388ac0c696b6bff62ad1d387bcbb6a511403e17ca8c587ae2
+        - name: LAST_DATASOURCES
+          value: 6afe2c5a6f3d996d76440c0d2351a8b1976ba5002ffb861ac817f52d72aa55d1
+        - name: LAST_CREDENTIALS
+        - name: INFLUX_GRAFANA_READER_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: grafana-credentials
+              key: INFLUX_GRAFANA_READER_TOKEN
+      securityContext:
+        capabilities:
+          drop:
+            - KILL
+            - MKNOD
+            - SETGID
+            - SETUID
+        runAsUser: 1001920000
+      ports:
+        - name: grafana-http
+          containerPort: 3000
+          protocol: TCP
+        - name: grafana-alert
+          containerPort: 9094
+          protocol: TCP
+        - name: grafana-alert-u
+          containerPort: 9094
+          protocol: UDP
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - name: grafana-config
+          mountPath: /etc/grafana/
+        - name: grafana-data
+          mountPath: /var/lib/grafana
+        - name: grafana-plugins
+          mountPath: /var/lib/grafana/plugins
+        - name: grafana-provision-plugins
+          mountPath: /etc/grafana/provisioning/plugins
+        - name: grafana-provision-dashboards
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: grafana-provision-notifiers
+          mountPath: /etc/grafana/provisioning/notifiers
+        - name: grafana-logs
+          mountPath: /var/log/grafana
+        - name: grafana-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: configmap-grafana-dashboards
+          mountPath: /etc/grafana-configmaps/grafana-dashboards
+        - name: kube-api-access-tgmdz
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      envFrom:
+        - secretRef:
+            name: grafana-credentials
+      image: 'quay.io/operate-first/grafana:9.1.1'
+      args:
+        - '-config=/etc/grafana/grafana.ini'
+  serviceAccount: grafana-serviceaccount
+  volumes:
+    - name: grafana-provision-plugins
+      emptyDir: {}
+    - name: grafana-provision-dashboards
+      emptyDir: {}
+    - name: grafana-provision-notifiers
+      emptyDir: {}
+    - name: grafana-config
+      configMap:
+        name: grafana-config
+        defaultMode: 420
+    - name: grafana-logs
+      emptyDir: {}
+    - name: grafana-data
+      persistentVolumeClaim:
+        claimName: grafana-pvc
+    - name: grafana-plugins
+      emptyDir: {}
+    - name: grafana-datasources
+      configMap:
+        name: grafana-datasources
+        defaultMode: 420
+    - name: configmap-grafana-dashboards
+      configMap:
+        name: grafana-dashboards
+        defaultMode: 420
+    - name: kube-api-access-tgmdz
+      projected:
+        sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              name: kube-root-ca.crt
+              items:
+                - key: ca.crt
+                  path: ca.crt
+          - downwardAPI:
+              items:
+                - path: namespace
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+          - configMap:
+              name: openshift-service-ca.crt
+              items:
+                - key: service-ca.crt
+                  path: service-ca.crt
+        defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/memory-pressure
+      operator: Exists
+      effect: NoSchedule
+status:
+  containerStatuses:
+    - restartCount: 0
+      started: true
+      ready: true
+      name: grafana
+      state:
+        running:
+          startedAt: '2023-04-26T00:24:30Z'
+      imageID: >-
+        quay.io/operate-first/grafana@sha256:279e6fb5637e3beb4f28bfe61229537c8dff3b8efac805254721261965753da5
+      image: 'quay.io/operate-first/grafana:9.1.1'
+      lastState: {}
+      containerID: 'cri-o://eab33c8ef331e56158521802929d07425e2e10721fcaa358ec40fda499fac632'
+  qosClass: Burstable
+  podIPs:
+    - ip: 10.131.5.88
+  podIP: 10.131.5.88
+  hostIP: 128.52.62.194
+  startTime: '2023-04-26T00:24:25Z'
+  initContainerStatuses:
+    - name: grafana-plugins-init
+      state:
+        terminated:
+          exitCode: 0
+          reason: Completed
+          startedAt: '2023-04-26T00:24:29Z'
+          finishedAt: '2023-04-26T00:24:29Z'
+          containerID: >-
+            cri-o://f8c7dda4b3ad85a3742162bc71500d38b8f2d87801559005a8e99aeb6f8e020c
+      lastState: {}
+      ready: true
+      restartCount: 0
+      image: 'quay.io/grafana-operator/grafana_plugins_init:0.1.0'
+      imageID: >-
+        quay.io/grafana-operator/grafana_plugins_init@sha256:d01fd0b563187b1962b0bde24f6d52d001021d995d7a01dcf2bf7efabe2eab70
+      containerID: 'cri-o://f8c7dda4b3ad85a3742162bc71500d38b8f2d87801559005a8e99aeb6f8e020c'
+  conditions:
+    - type: Initialized
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2023-04-26T00:24:30Z'
+    - type: Ready
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2023-04-26T00:24:35Z'
+    - type: ContainersReady
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2023-04-26T00:24:35Z'
+    - type: PodScheduled
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2023-04-26T00:24:25Z'
+  phase: Running

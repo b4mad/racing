@@ -20,6 +20,14 @@ spec:
                     secretKeyRef:
                       name: b4mad-racing-pguser-paddock
                       key: uri
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
               envFrom:
                 - secretRef:
                     name: paddock-settings

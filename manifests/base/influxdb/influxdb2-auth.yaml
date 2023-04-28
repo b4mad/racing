@@ -1,0 +1,11 @@
+kind: Secret
+apiVersion: v1
+metadata:
+    name: influxdb2-auth
+stringData:
+    admin-user-password: dfe67d27fb5f99d7425687b38326c08c0229c062
+    admin-user-token: 22177b6516f68683b2f58cb875c820285cc18f1e
+    user-password: c989c81fcccdc8d2e0db6055dbcfcfb83a784952
+    read-user-password: da7b28cdcf6ced950e6e394f6a58914a5fe8a1a0
+    write-user-password: eadc78dc81c283f6ebd4f8a6c7ea2ca428bf1f8c
+type: Opaque

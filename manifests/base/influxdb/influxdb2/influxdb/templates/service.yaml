@@ -1,0 +1,31 @@
+---
+# Source: influxdb/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb2
+  namespace: "b4mad-racing"
+  labels:
+    app.kubernetes.io/name: influxdb
+    helm.sh/chart: influxdb-5.4.23
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: influxdb
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - port: 8086
+      targetPort: http
+      protocol: TCP
+      name: http
+      nodePort: null
+    - port: 8088
+      targetPort: rpc
+      protocol: TCP
+      name: rpc
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: influxdb
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/component: influxdb

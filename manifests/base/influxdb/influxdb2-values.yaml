@@ -1,19 +1,19 @@
-global:
-  imageRegistry: ""
-  ## E.g.
-  ## imagePullSecrets:
-  ##   - myRegistryKeySecretName
-  ##
-  imagePullSecrets: []
-  storageClass: ""
+# global:
+#   imageRegistry: ""
+#   ## E.g.
+#   ## imagePullSecrets:
+#   ##   - myRegistryKeySecretName
+#   ##
+#   imagePullSecrets: []
+#   storageClass: ""
 
-image:
-  registry: docker.io
-  repository: bitnami/influxdb
-  tag: 2.5.1-debian-11-r7
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-  debug: false
+# image:
+#   registry: docker.io
+#   repository: bitnami/influxdb
+#   tag: 2.5.1-debian-11-r7
+#   pullPolicy: IfNotPresent
+#   pullSecrets: []
+#   debug: false
 
 architecture: standalone
 
@@ -25,6 +25,7 @@ auth:
     username: admin
     org: b4mad
     bucket: racing
+    retention: 30d
   readUser:
     username: reader
   writeUser:
@@ -32,6 +33,10 @@ auth:
   createUserToken: false
 
 influxdb:
+  # initdbScriptsSecret: influxdb2-auth
+  # initdbScripts:
+  #   creata_db.sh: |
+  #     influx -host localhost -port "$INFLUXDB_HTTP_PORT_NUMBER" -username "${INFLUXDB_ADMIN_USER}" -password "${INFLUXDB_ADMIN_USER_PASSWORD}" -execute "create database agentMetrix;"
   updateStrategy:
     type: Recreate
   podSecurityContext:

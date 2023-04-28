@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 commonLabels:
-  app.kubernetes.io/component: eclipse-mosquitto
+  app.kubernetes.io/component: mosquitto
 resources:
   - deployment.yaml
   - services.yaml

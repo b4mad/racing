@@ -1,0 +1,359 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      },
+      {
+        "datasource": "Racing",
+        "enable": true,
+        "iconColor": "red",
+        "mappings": {
+          "tags": {
+            "source": "field",
+            "value": "CurrentLap {CarModel=\"BMW M3 GT2\", GameName=\"AssettoCorsa\", SessionId=\"5450cced-5b25-4fdd-aeb2-f9a22be6a83e\", TrackCode=\"ks_nordschleife-nordschleife\", UserId=\"41483f24-12e7-40ed-9760-8f642c067c3f\", host=\"telegraf\", topic=\"racing/goern/41483f24-12e7-40ed-9760-8f642c067c3f/5450cced-5b25-4fdd-aeb2-f9a22be6a83e/AssettoCorsa/ks_nordschleife-nordschleife/BMW M3 GT2\", user=\"goern\"}"
+          },
+          "text": {
+            "source": "field",
+            "value": "Value"
+          },
+          "time": {
+            "source": "field",
+            "value": "Time"
+          },
+          "timeEnd": {
+            "source": "field",
+            "value": "Time"
+          },
+          "title": {
+            "source": "field",
+            "value": "Value"
+          }
+        },
+        "name": "lap",
+        "target": {
+          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")  \n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLap\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> sort(columns: [\"_time\"])\n  |> keep(columns: [\"_time\", \"_value\"])\n  |> yield(name: \"mean\")",
+          "refId": "Anno"
+        }
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 15,
+  "iteration": 1651779666112,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SessionId"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "http://google.com/q?${__value.text}\n\n"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P64B7521F1D8D151A"
+          },
+          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Gear\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: false)\n  |> first()\n  |> group(columns: [])\n  |> drop(columns: [\"_value\"])\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent Sessions",
+      "type": "table"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name} ${__field.labels.CarModel}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P64B7521F1D8D151A"
+          },
+          "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"Brake\" or r[\"_field\"] == \"Clutch\" or r[\"_field\"] == \"Throttle\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Inputs",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 11,
+      "options": {
+        "border": {
+          "color": "yellow",
+          "size": 0
+        },
+        "fieldSets": [
+          {
+            "col": 0,
+            "color": "#318596",
+            "dotSize": 3,
+            "hidden": false,
+            "lineSize": 1,
+            "lineType": "simple",
+            "polynomialOrder": 3,
+            "sizeCol": -1
+          },
+          {
+            "col": -1,
+            "color": "#d85443",
+            "dotSize": 2,
+            "hidden": false,
+            "lineSize": 0,
+            "lineType": "simple",
+            "polynomialOrder": 3,
+            "sizeCol": -1
+          }
+        ],
+        "grid": {
+          "color": "gray"
+        },
+        "label": {
+          "col": -1,
+          "color": "#CCC",
+          "textSize": 2
+        },
+        "legend": {
+          "show": false,
+          "size": 3
+        },
+        "xAxis": {
+          "col": 1,
+          "inverted": false
+        },
+        "xAxisExtents": {
+          "min": null,
+          "max": null
+        },
+        "xAxisTitle": {
+          "text": "TrackPositionPercent",
+          "color": "white",
+          "textSize": 2,
+          "rotated": false,
+          "logScale": false
+        },
+        "xMargins": {
+          "lower": 30,
+          "upper": 10
+        },
+        "yAxisExtents": {
+          "min": null,
+          "max": null
+        },
+        "yAxisTitle": {
+          "text": "",
+          "color": "#777",
+          "textSize": 1,
+          "rotated": false,
+          "logScale": false
+        },
+        "yMargins": {
+          "lower": 20,
+          "upper": 20
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P64B7521F1D8D151A"
+          },
+          "query": "brake = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Brake\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\nx = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps\")\n  |> filter(fn: (r) => r[\"_field\"] == \"TrackPositionPercent\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\njoin(tables: {brake: brake, x: x}, on: [\"_time\"] )\n  |> keep(columns: [\"_value_brake\", \"_value_x\"])\n  |> sort(columns: [\"_value_x\"], desc: false)\n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Brake on track",
+      "type": "michaeldmoore-scatter-panel"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "49080d03-6f93-47fb-8602-be3dadab2567",
+          "value": "49080d03-6f93-47fb-8602-be3dadab2567"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "SessionId",
+        "multi": false,
+        "name": "SessionId",
+        "options": [
+          {
+            "selected": true,
+            "text": "49080d03-6f93-47fb-8602-be3dadab2567",
+            "value": "49080d03-6f93-47fb-8602-be3dadab2567"
+          }
+        ],
+        "query": "49080d03-6f93-47fb-8602-be3dadab2567",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "B4mad Racing Details",
+  "uid": "oPyrx7lnz",
+  "version": 9,
+  "weekStart": ""
+}

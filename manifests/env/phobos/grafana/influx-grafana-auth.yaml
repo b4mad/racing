@@ -1,0 +1,7 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: influx-grafana-auth
+stringData:
+  GRAFANA_READER_TOKEN: to-be-updated
+type: Opaque

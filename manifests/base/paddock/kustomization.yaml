@@ -1,7 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-#commonLabels:
-# FIXME app.kubernetes.io/component: postgresql
 resources:
   - deployment_config.yaml
   - image_stream.yaml
@@ -10,3 +8,4 @@ resources:
   - service_monitor.yaml
   - service.yaml
   - cronjob_analyze.yaml
+  - paddock-settings.yaml

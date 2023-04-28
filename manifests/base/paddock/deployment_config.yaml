@@ -32,7 +32,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
+                  name: db-pguser-paddock
                   key: uri
           envFrom:
             - secretRef:
@@ -50,7 +50,7 @@ spec:
               protocol: TCP
           resources:
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 1Gi
             requests:
               cpu: 100m
@@ -61,7 +61,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
+                  name: db-pguser-paddock
                   key: uri
           envFrom:
             - secretRef:
@@ -74,7 +74,7 @@ spec:
             - python /opt/app-root/src/manage.py pitcrew
           resources:
             limits:
-              cpu: "2"
+              cpu: 1000m
               memory: 1Gi
             requests:
               cpu: 100m
@@ -103,7 +103,7 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: b4mad-racing-pguser-paddock
+                  name: db-pguser-paddock
                   key: uri
           envFrom:
             - secretRef:
