@@ -14,6 +14,7 @@ class CoachWatcher:
         self.sleep_time = 3
         self.active_coaches = {}
         self.replay = replay
+        self.ready = False
 
         self._stop_event = threading.Event()
 
@@ -34,7 +35,6 @@ class CoachWatcher:
     def watch_coaches(self):
         while True and not self.stopped():
             # sleep longer than save_sessions, to make sure all DB objects are initialized
-            time.sleep(self.sleep_time)
             drivers = self.drivers()
             # collect all driver names
             # driver_names = [driver.name for driver in drivers]
@@ -50,6 +50,8 @@ class CoachWatcher:
                     if coach.driver.name in self.active_coaches.keys():
                         logging.debug(f"deactivating coach for {coach.driver}")
                         self.stop_coach(coach.driver.name)
+            time.sleep(self.sleep_time)
+            self.ready = True
 
     def stop_coach(self, driver_name):
         if driver_name not in self.active_coaches.keys():

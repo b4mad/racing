@@ -32,6 +32,7 @@ class Mqtt:
         self.topic = topic
         self.observer = observer
         self._stop_event = threading.Event()
+        self.ready = False
 
     # def __del__(self):
     #     # disconnect from broker
@@ -106,6 +107,7 @@ class Mqtt:
         s = self.mqttc.subscribe(self.topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             _LOGGER.info(f"Subscribed to {self.topic}")
+            self.ready = True
             self.mqttc.loop_forever()
         else:
             _LOGGER.error(f"Failed to subscribe to {self.topic}")
