@@ -10,10 +10,9 @@ import paho.mqtt.client as mqtt
 _LOGGER = logging.getLogger(__name__)
 
 
-B4MAD_RACING_CLIENT_USER = os.environ.get("B4MAD_RACING_CLIENT_USER", "crewchief")
-B4MAD_RACING_CLIENT_PASSWORD = os.environ.get(
-    "B4MAD_RACING_CLIENT_PASSWORD", "crewchief"
-)
+B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "localhost")
+B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "user")
+B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "password")
 
 
 class Mqtt:
@@ -23,7 +22,7 @@ class Mqtt:
         mqttc.on_connect = self.on_connect
         mqttc.on_publish = self.on_publish
         mqttc.on_subscribe = self.on_subscribe
-        mqttc.username_pw_set(B4MAD_RACING_CLIENT_USER, B4MAD_RACING_CLIENT_PASSWORD)
+        mqttc.username_pw_set(B4MAD_RACING_MQTT_USER, B4MAD_RACING_MQTT_PASSWORD)
         self.mqttc = mqttc
         self.do_disconnect = False
         self.replay = replay
@@ -96,7 +95,7 @@ class Mqtt:
         pass
 
     def run(self):
-        self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)
+        self.mqttc.connect(B4MAD_RACING_MQTT_HOST, 31883, 60)
         # topic = f"crewchief/{self.driver}/#"
         if self.replay:
             self.topic = f"replay/{self.topic}"
