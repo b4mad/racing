@@ -10,6 +10,7 @@ class SessionSaver:
         self.sleep_time = 10
 
         self._stop_event = threading.Event()
+        self.ready = False
 
     def stop(self):
         self._stop_event.set()
@@ -19,8 +20,9 @@ class SessionSaver:
 
     def save_sessions_loop(self):
         while True and not self.stopped():
-            time.sleep(self.sleep_time)
             self.save_sessions()
+            self.ready = True
+            time.sleep(self.sleep_time)
 
     def save_sessions(self):
         session_ids = list(self.firehose.sessions.keys())

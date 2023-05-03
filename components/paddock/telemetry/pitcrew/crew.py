@@ -77,6 +77,17 @@ class Crew:
             logging.debug(f"starting Thread {t}")
             t.start()
 
+        logging.debug("waiting for threads to be ready...")
+        while True:
+            if (
+                self.mqtt.ready
+                and self.coach_watcher.ready
+                and self.session_saver.ready
+            ):
+                break
+            time.sleep(1)
+
+        logging.debug("..threads are ready")
         self._ready = True
         self._live = True
 

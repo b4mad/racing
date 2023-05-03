@@ -10,7 +10,10 @@ import paho.mqtt.client as mqtt
 _LOGGER = logging.getLogger(__name__)
 
 
-B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "localhost")
+B4MAD_RACING_MQTT_HOST = os.environ.get(
+    "B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing"
+)
+B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
 B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "user")
 B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "password")
 
@@ -29,6 +32,7 @@ class Mqtt:
         self.topic = topic
         self.observer = observer
         self._stop_event = threading.Event()
+        self.ready = False
 
     # def __del__(self):
     #     # disconnect from broker
@@ -95,7 +99,7 @@ class Mqtt:
         pass
 
     def run(self):
-        self.mqttc.connect(B4MAD_RACING_MQTT_HOST, 31883, 60)
+        self.mqttc.connect(B4MAD_RACING_MQTT_HOST, B4MAD_RACING_MQTT_PORT, 60)
         # topic = f"crewchief/{self.driver}/#"
         if self.replay:
             self.topic = f"replay/{self.topic}"
@@ -103,6 +107,7 @@ class Mqtt:
         s = self.mqttc.subscribe(self.topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             _LOGGER.info(f"Subscribed to {self.topic}")
+            self.ready = True
             self.mqttc.loop_forever()
         else:
             _LOGGER.error(f"Failed to subscribe to {self.topic}")

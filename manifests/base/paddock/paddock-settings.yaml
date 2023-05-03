@@ -10,6 +10,7 @@ stringData:
     B4MAD_RACING_MQTT_USER: crewchief
     B4MAD_RACING_MQTT_PASSWORD: crewchief
     B4MAD_RACING_MQTT_HOST: mosquitto-tcp.b4mad-racing.svc.cluster.local
+    B4MAD_RACING_MQTT_PORT: "1883"
     B4MAD_RACING_INFLUX_ORG: b4mad
     B4MAD_RACING_INFLUX_TOKEN: 41e593a879202f9ebc0e5bc6f1b18a40e0a0d855
     B4MAD_RACING_INFLUX_URL: http://influxdb2.b4mad-racing.svc.cluster.local/
