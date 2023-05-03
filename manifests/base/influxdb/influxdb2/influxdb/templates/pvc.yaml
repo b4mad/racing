@@ -1,0 +1,19 @@
+---
+# Source: influxdb/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: influxdb2
+  namespace: "b4mad-racing"
+  labels:
+    app.kubernetes.io/name: influxdb
+    helm.sh/chart: influxdb-5.4.23
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: influxdb
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "768Gi"

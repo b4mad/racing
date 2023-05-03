@@ -1,69 +1,69 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: b4mad-racing
+  name: db
 spec:
-  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.5-1
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.7-0
   postgresVersion: 14
   service:
     type: NodePort
     nodePort: 31884
   instances:
-    - name: instance1
+    - name: instance
       dataVolumeClaimSpec:
         accessModes:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: 256Gi
-      resources:
-        limits:
-          cpu: 2000m
-          memory: 2Gi
-        requests:
-          cpu: 2000m
-          memory: 2Gi
+            storage: 2Gi
+      # resources:
+      #   limits:
+      #     cpu: 2000m
+      #     memory: 2Gi
+      #   requests:
+      #     cpu: 2000m
+      #     memory: 2Gi
   backups:
     pgbackrest:
-      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.40-0
-      global:
-        # Save backups for 14 days, this means 2 full backups with 6 differential ones in between
-        repo1-retention-full: "1"
-        repo1-retention-full-type: count
-      repoHost:
-        resources:
-          limits:
-            cpu: 300m
-          requests:
-            cpu: 200m
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
+      # global:
+      #   # Save backups for 14 days, this means 2 full backups with 6 differential ones in between
+      #   repo1-retention-full: "1"
+      #   repo1-retention-full-type: count
+      # repoHost:
+      #   resources:
+      #     limits:
+      #       cpu: 300m
+      #     requests:
+      #       cpu: 200m
       repos:
-        - name: repo1
-          schedules:
-            # Every sunday at 01:00 full backup
-            full: "0 1 * * 0"
-            # Monday through saturday at 01:00 differential backup
-            differential: "0 1 * * 1-6"
+        - name: backup
+          # schedules:
+          #   # Every sunday at 01:00 full backup
+          #   full: "0 1 * * 0"
+          #   # Monday through saturday at 01:00 differential backup
+          #   differential: "0 1 * * 1-6"
           volume:
             volumeClaimSpec:
               accessModes:
                 - "ReadWriteOnce"
               resources:
                 requests:
-                  storage: 64Gi
-  proxy:
-    pgBouncer:
-      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1
-      replicas: 1
+                  storage: 2Gi
+  # proxy:
+  #   pgBouncer:
+  #     image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1
+  #     replicas: 1
   users:
-    - name: free-practice
-      databases:
-        - fp1
-        - fp2
-      options: "NOSUPERUSER"
-    - name: telegraf
-      databases:
-        - stats
-      options: "NOSUPERUSER"
+    # - name: free-practice
+    #   databases:
+    #     - fp1
+    #     - fp2
+    #   options: "NOSUPERUSER"
+    # - name: telegraf
+    #   databases:
+    #     - stats
+    #   options: "NOSUPERUSER"
     - name: paddock
       databases:
         - paddock

@@ -33,6 +33,14 @@ spec:
                 secretKeyRef:
                   key: influx-token
                   name: telegraf
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
           image: telegraf:1.22.3
           name: telegraf
           ports:

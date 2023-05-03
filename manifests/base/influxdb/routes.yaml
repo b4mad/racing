@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: telemetry
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    haproxy.router.openshift.io/timeout: 15m
+spec:
+  to:
+    kind: Service
+    name: influxdb2
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None

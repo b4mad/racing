@@ -1,0 +1,25 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: racing
+spec:
+  secrets:
+    - influx-grafana-auth
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  datasource:
+    name: Racing
+    access: proxy
+    editable: true
+    isDefault: true
+    type: influxdb
+    url: "http://influxdb2.b4mad-racing.svc.cluster.local:8086"
+    jsonData:
+      defaultBucket: "racing"
+      httpMode: "POST"
+      organization: "b4mad"
+      version: "Flux"
+      timeInterval: "10ms"
+    secureJsonData:
+      token: "${GRAFANA_READER_TOKEN}"

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: b4mad-racing-mosquitto
+  name: mosquitto
   annotations:
     original-image-tag.thoth-station.ninja: 2.0.15-openssl
   labels:
@@ -21,6 +21,15 @@ spec:
       containers:
         - name: mosquitto
           image: docker.io/eclipse-mosquitto@sha256:4ee2d823259ed813fc3761ac63dcf5a940231017bfb6aa4fa74615f63f1a477f
+          # Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "mosquitto" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "mosquitto" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "mosquitto" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "mosquitto" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+          securityContext:
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                - ALL
           ports:
             - name: mqtt
               containerPort: 1883

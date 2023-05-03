@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influxdb-init
+  namespace: b4mad-racing
+spec:
+  template:
+    metadata:
+      name: influxdb-init
+    spec:
+      containers:
+        - name: influxdb-init
+          image: docker.io/bitnami/influxdb:2.7.0-debian-11-r1
+          env:
+            - name: INFLUXDB_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: admin-user-token
+            - name: INFLUX_GRAFANA_READER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: INFLUX_GRAFANA_READER_TOKEN
+          command:
+            - bash
+            - -c
+            - |
+              . /opt/bitnami/scripts/libinfluxdb.sh
+
+              influx config create \
+                --configs-path /tmp/configs \
+                -n b4mad-admin \
+                -u http://influxdb2.b4mad-racing.svc.cluster.local:8086 \
+                -t "$INFLUXDB_ADMIN_TOKEN" \
+                --active -o b4mad
+              influx config ls --configs-path /tmp/configs
+              influx bucket create --configs-path /tmp/configs --name fast_laps --retention 0
+              influx auth   create --configs-path /tmp/configs --read-bucket racing --token "$INFLUX_GRAFANA_READER_TOKEN"
+      restartPolicy: Never

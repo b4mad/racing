@@ -1,0 +1,155 @@
+---
+# Source: influxdb/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb2
+  namespace: "b4mad-racing"
+  labels:
+    app.kubernetes.io/name: influxdb
+    helm.sh/chart: influxdb-5.4.23
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: influxdb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: influxdb
+      app.kubernetes.io/instance: influxdb2
+      app.kubernetes.io/component: influxdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: influxdb
+        helm.sh/chart: influxdb-5.4.23
+        app.kubernetes.io/instance: influxdb2
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: influxdb
+    spec:
+
+      affinity:
+        podAffinity:
+
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: influxdb
+                    app.kubernetes.io/instance: influxdb2
+                    app.kubernetes.io/component: influxdb
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+
+      priorityClassName: ""
+      serviceAccountName: influxdb2
+      initContainers:
+      containers:
+        - name: influxdb
+          image: docker.io/bitnami/influxdb:2.7.0-debian-11-r1
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: INFLUXDB_HTTP_AUTH_ENABLED
+              value: "true"
+            - name: INFLUXDB_CREATE_USER_TOKEN
+              value: "no"
+            - name: INFLUXDB_ADMIN_USER
+              value: "admin"
+            - name: INFLUXDB_ADMIN_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: admin-user-password
+            - name: INFLUXDB_ADMIN_USER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: admin-user-token
+            - name: INFLUXDB_ADMIN_BUCKET
+              value: "racing"
+            - name: INFLUXDB_ADMIN_ORG
+              value: "b4mad"
+            - name: INFLUXDB_ADMIN_RETENTION
+              value: "30d"
+            - name: INFLUXDB_READ_USER
+              value: "reader"
+            - name: INFLUXDB_READ_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: read-user-password
+            - name: INFLUXDB_WRITE_USER
+              value: "writer"
+            - name: INFLUXDB_WRITE_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: influxdb2-auth
+                  key: write-user-password
+          envFrom:
+          ports:
+            - name: http
+              containerPort: 8086
+              protocol: TCP
+            - name: rpc
+              containerPort: 8088
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 180
+            periodSeconds: 45
+            successThreshold: 1
+            timeoutSeconds: 30
+            exec:
+              command:
+                - bash
+                - -c
+                - |
+                  . /opt/bitnami/scripts/libinfluxdb.sh
+
+                  influxdb_env
+                  export INFLUX_USERNAME="$INFLUXDB_ADMIN_USER"
+                  export INFLUX_PASSWORD="$INFLUXDB_ADMIN_USER_PASSWORD"
+
+                  timeout 29s influx ping --host http://$POD_IP:8086
+          readinessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 45
+            successThreshold: 1
+            timeoutSeconds: 30
+            exec:
+              command:
+                - bash
+                - -c
+                - |
+                  . /opt/bitnami/scripts/libinfluxdb.sh
+
+                  influxdb_env
+                  export INFLUX_USERNAME="$INFLUXDB_ADMIN_USER"
+                  export INFLUX_PASSWORD="$INFLUXDB_ADMIN_USER_PASSWORD"
+
+                  timeout 29s influx ping --host http://$POD_IP:8086
+          resources:
+            limits:
+              cpu: 8000m
+              memory: 16Gi
+            requests:
+              cpu: 4000m
+              memory: 8Gi
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/influxdb
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: influxdb2

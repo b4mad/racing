@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
     haproxy.router.openshift.io/timeout: 45s
 spec:
-  host: paddock.b4mad.racing
+  # host: paddock.b4mad.racing
   tls:
     termination: edge
   to:

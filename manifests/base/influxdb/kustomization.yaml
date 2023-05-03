@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- influxdb2/influxdb/templates/deployment.yaml
+- influxdb2/influxdb/templates/pvc.yaml
+- influxdb2/influxdb/templates/service.yaml
+- influxdb2/influxdb/templates/serviceaccount.yaml
+- influxdb2-auth.yaml
+- influxdb2-backup.yaml
+- routes.yaml
+patchesStrategicMerge:
+  - deployment.yaml
