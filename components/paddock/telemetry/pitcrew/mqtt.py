@@ -14,8 +14,8 @@ B4MAD_RACING_MQTT_HOST = os.environ.get(
     "B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing"
 )
 B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
-B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "user")
-B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "password")
+B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
+B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
 
 
 class Mqtt:
@@ -84,6 +84,8 @@ class Mqtt:
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("on_connect rc: %s", str(rc))
+        if rc == mqtt.MQTT_ERR_SUCCESS:
+            self.ready = True
 
     def on_publish(self, mqttc, obj, mid):
         # _LOGGER.debug("mid: %s", str(mid))
@@ -107,7 +109,6 @@ class Mqtt:
         s = self.mqttc.subscribe(self.topic, 0)
         if s[0] == mqtt.MQTT_ERR_SUCCESS:
             _LOGGER.info(f"Subscribed to {self.topic}")
-            self.ready = True
             self.mqttc.loop_forever()
         else:
             _LOGGER.error(f"Failed to subscribe to {self.topic}")
