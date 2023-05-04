@@ -2,6 +2,7 @@ import threading
 import logging
 import time
 from telemetry.models import Game, Driver, SessionType
+from django.db import IntegrityError
 
 
 class SessionSaver:
@@ -99,6 +100,11 @@ class SessionSaver:
                         logging.info(f"{session.session_id}: Saving lap {lap_record}")
                         session.record.end = session.end
                         session.record.save_dirty_fields()
+                        lap.persisted = True
+                    except IntegrityError as e:
+                        logging.error(
+                            f"{session.session_id}: Error saving lap {lap.number}: {e}"
+                        )
                         lap.persisted = True
                     except Exception as e:
                         logging.error(
