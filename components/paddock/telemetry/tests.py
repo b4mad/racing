@@ -1,6 +1,10 @@
 from django.test import TestCase
+import django.utils.timezone
+from django.db import IntegrityError
 from telemetry.pitcrew.session import Session, Lap
 from telemetry.influx import Influx
+from telemetry.models import Session as SessionModel
+from telemetry.models import Track, Car, Game, Driver, SessionType
 import os
 import pandas as pd
 import numpy as np
@@ -152,3 +156,27 @@ class TestSession(TestCase):
             11: Lap(11, time=-1, length=82, valid=True, finished=False),
         }
         self._assert_laps(session, expected_laps)
+
+    def test_duplicate_lap(self):
+        # create 2 laps with the same number
+        game = Game.objects.create(name="test_game")
+        track = Track.objects.create(name="test_track", game=game)
+        car = Car.objects.create(name="test_car", game=game)
+        driver = Driver.objects.create(name="test_driver")
+        session_type = SessionType.objects.create(type="test_session_type")
+        session = SessionModel.objects.create(
+            session_id=666, driver=driver, game=game, session_type=session_type
+        )
+
+        now = django.utils.timezone.now()
+
+        session.laps.create(number=1, car=car, track=track, start=now)
+        try:
+            session.laps.create(number=2, car=car, track=track, start=now)
+        except IntegrityError as e:
+            self.assertEqual(
+                e.args[0],
+                "UNIQUE constraint failed: telemetry_lap.session_id, telemetry_lap.start",
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception: {e}")
