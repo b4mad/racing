@@ -29,6 +29,12 @@ class Influx:
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
         )
+        if self.influx.ping():
+            logging.debug(f"Influx: Connected to {self.url}")
+        else:
+            logging.error(f"Influx: Connection to {self.url} failed")
+            exit(1)
+
         self.query_api = self.influx.query_api()
 
     def laps_from_file(self, filename="tracks.csv"):

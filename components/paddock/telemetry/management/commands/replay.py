@@ -114,6 +114,9 @@ class Command(BaseCommand):
                 B4MAD_RACING_MQTT_USER, B4MAD_RACING_MQTT_PASSWORD
             )
             self.mqttc.connect(B4MAD_RACING_MQTT_HOST, B4MAD_RACING_MQTT_PORT, 60)
+            logging.debug(
+                f"connected to {B4MAD_RACING_MQTT_HOST}:{B4MAD_RACING_MQTT_PORT}"
+            )
             self.observer = self.mqtt_notify
 
         if options["session_ids"]:
@@ -181,7 +184,6 @@ class Command(BaseCommand):
         self.mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
 
     def replay(self, session, wait=0.001, new_session_id=None):
-        logging.info("Connected to telemetry.b4mad.racing")
         # epoch = datetime.datetime.utcfromtimestamp(0)
 
         prev_payload = {"telemetry": {}}
