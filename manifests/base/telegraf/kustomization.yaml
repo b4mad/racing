@@ -13,4 +13,4 @@ resources:
   - service_account.yaml
   - service_monitor.yaml
   - services.yaml
-  - secret.yaml
+  # - secret.yaml # will be created by setup script

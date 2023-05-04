@@ -96,7 +96,7 @@ spec:
       serviceAccount: paddock
       serviceAccountName: paddock
       initContainers:
-        - name: django-manage-migrate
+        - name: migrate
           image: paddock:latest
           imagePullPolicy: Always
           env:

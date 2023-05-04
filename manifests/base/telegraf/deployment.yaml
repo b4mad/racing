@@ -20,19 +20,19 @@ spec:
             - name: USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: input-username
-                  name: telegraf
+                  name: mosquitto
+                  key: crewchief-username
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: input-password
-                  name: telegraf
+                  name: mosquitto
+                  key: crewchief-password
             - name: INFLUX_TOKEN
               # create this via the influx UI as a writer token for the racing bucket
               valueFrom:
                 secretKeyRef:
-                  key: influx-token
-                  name: telegraf
+                  name: influx-telegraf
+                  key: token
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false

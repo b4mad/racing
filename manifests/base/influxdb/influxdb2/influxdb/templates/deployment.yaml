@@ -141,11 +141,9 @@ spec:
                   timeout 29s influx ping --host http://$POD_IP:8086
           resources:
             limits:
-              cpu: 8000m
-              memory: 16Gi
-            requests:
-              cpu: 4000m
-              memory: 8Gi
+              cpu: 200m
+              memory: 400M
+            requests: {}
           volumeMounts:
             - name: data
               mountPath: /bitnami/influxdb
