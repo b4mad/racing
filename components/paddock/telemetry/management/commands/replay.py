@@ -16,10 +16,12 @@ from rich.console import Console
 from rich.table import Column
 from rich.progress import Progress, TextColumn
 
-B4MAD_RACING_CLIENT_USER = os.environ.get("B4MAD_RACING_CLIENT_USER", "crewchief")
-B4MAD_RACING_CLIENT_PASSWORD = os.environ.get(
-    "B4MAD_RACING_CLIENT_PASSWORD", "crewchief"
+B4MAD_RACING_MQTT_HOST = os.environ.get(
+    "B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing"
 )
+B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
+B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
+B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
 
 
 class Command(BaseCommand):
@@ -106,11 +108,12 @@ class Command(BaseCommand):
                 logging.debug("starting Thread session_saver")
                 self.session_save_thread.start()
         else:
+            # FIXME: use mqtt class
             self.mqttc = mqtt.Client()
             self.mqttc.username_pw_set(
-                B4MAD_RACING_CLIENT_USER, B4MAD_RACING_CLIENT_PASSWORD
+                B4MAD_RACING_MQTT_USER, B4MAD_RACING_MQTT_PASSWORD
             )
-            self.mqttc.connect("telemetry.b4mad.racing", 31883, 60)
+            self.mqttc.connect(B4MAD_RACING_MQTT_HOST, B4MAD_RACING_MQTT_PORT, 60)
             self.observer = self.mqtt_notify
 
         if options["session_ids"]:
