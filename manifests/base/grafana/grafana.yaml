@@ -20,7 +20,6 @@ spec:
     log:
       level: warn
       mode: console
-    dashboards:
       default_home_dashboard_path: "/etc/grafana-configmaps/grafana-dashboards/landingpage.json"
   dashboardLabelSelector:
     - matchLabels:

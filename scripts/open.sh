@@ -14,7 +14,7 @@ case $1 in
     URL=$(oc get routes/telemetry --template='https://{{ .spec.host }}')
     ;;
   grafana)
-    URL=$(oc get routes/grafana-route --template='https://{{ .spec.host }}')
+    URL=$(oc get routes/grafana --template='https://{{ .spec.host }}')
     ;;
   paddock)
     URL=$(oc get routes/paddock --template='https://{{ .spec.host }}')

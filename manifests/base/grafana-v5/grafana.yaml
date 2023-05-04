@@ -5,6 +5,24 @@ metadata:
   labels:
     dashboards: "grafana"
 spec:
+  ingress:
+    spec:
+      # ingressClassName: nginx
+      rules:
+        - host: pitwall.b4mad.racing
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: grafana-service
+                    port:
+                      number: 3000
+                path: /
+                pathType: Prefix
+      tls:
+        - hosts:
+            - pitwall.b4mad.racing
+          secretName: core-cert
   client:
     preferIngress: true
   persistentVolumeClaim:

@@ -1,19 +1,22 @@
 apiVersion: v1
-data:
-    passwd: ENC[AES256_GCM,data:adVw/7XMcWc6MVyEAV6lmIXNCaEsYp2i776GNH4ikyb6Br4KHEj5R5BuiubP94ZsPg2xohOyIYjuDL1uFhQgqd4Z+DS+Rh82pJ5xqN/e/4t7ByQ5B/PUYZFHr7GC2E6hIK8HWNrkLCv6mwRnM6740jliZnRI/iMZ+AzsUjP8UzicYSXyzX4P7DN79RLiZlxPyyDNZTzMr+y2QpJLGkiZ+08l7KqbTpEo9x+YIuYLbwvmcieyn8PJJ8CpOegdwQkyLapbd/vFjSfckZusqoZvFUFjgT7QZWwdIMm/SJ7hxLFyGZZE5+J/hGfaYlYZK+DuAm6iSz/JnEp70Ox8SyNkx1Ph1m8LwlU0IrV5ybt6g93LcF9Kz7Z18oILm5IpqnwblR/zI/Lf3jL/RreJX2XTeFcOMMx2LDZP,iv:SLtOMF3PncQzsGkKP/cnOpMaL1aziGECoHs5NVXvkxo=,tag:TNZH4r4MPnfnAZDeostHfQ==,type:str]
 kind: Secret
 metadata:
-    creationTimestamp: null
     name: mosquitto
+stringData:
+    passwords: ENC[AES256_GCM,data:GyM4LGmE4RNZjRmQi7GUlC7i5wXCnwOOCO+9z/+rOyrc/y+3CduCyFzad37H9CLdM4ssYImNknVsNLDBWUvp1lscahpdpzoYyjlnYoGshVGml0+SxXNurAc+/Df/cyUo3CbUpjkiHeGxXG2W2xjQ7J5xx/PVkn9B9DSvjLFyIYDtcP1hrNiBmmkV2hqyz53IFrTv1kyD0N0Ps8ggMT0PP1hOKaH5+WhWNhnb/90AZllN6hmwwr5ubq9YXuThlyIq6yQc0RBkbQIrg3TLzFKg2MMmW72jhAQy00bjgGyxtI7zvnAGM0No2maS,iv:r3wNYdFyAt2KKno2aOdorLZnf0F+lJfZzPasMpp7ZD8=,tag:qeRwCYGnUIixT1ztNvP59A==,type:str]
+    crewchief-username: ENC[AES256_GCM,data:q92u30fjSiWY,iv:rgiwqG/aZfMW6jvsYvLKfd7OJ7sMF8AigK89OqOZeyQ=,tag:wA6YGHv7PE7ey1a9B5yzQA==,type:str]
+    crewchief-password: ENC[AES256_GCM,data:EhWtVUzznnqY,iv:MhUc29KASmKE5K/yyG8P+sjhdyNGalBdU/jowbk2HOQ=,tag:w1CHc2C0EoVbB9yRmTGHXg==,type:str]
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
-    lastmodified: '2022-10-04T12:48:36Z'
-    mac: ENC[AES256_GCM,data:ECa869qnGcU7w202v7jLD7CS6KymNajRifd4k13DQnOE9mubAI4DpKD+RC3j0gdEf2oelU4dRpuq4x4bksxlzFBXlVAVQ1Q1Hrp5DNPAWLbBVoDzYbgCgUrphGhN2FracbrxglVrJRs4gEOJR6HVrpnxpoa49eSeWufTFzIxNK8=,iv:SUCMRI3FCpXeY1S33ZxSgEKouQVLwAgg8H3SdvnZiL8=,tag:dTjzo7xl9wfG67vDqL5KOw==,type:str]
+    hc_vault: []
+    age: []
+    lastmodified: "2023-05-04T15:06:02Z"
+    mac: ENC[AES256_GCM,data:5LDL4Ne8A/zWpKX4tuHDhSZM94ZIU7+VYl1QOOoCDpRtwwM+Gu/SNxyqJd7PwbrUgHH/RoDagBNlnGBNifdGXE7BydnCb4+zXGafMJ78KutYpZp3f9rJBMhUd2vjYfZG+1OpcvnlQSRhQXoEMDOkvUtIn2t4E0XZeJh3caFTEeo=,iv:rLijUjY023VmhPWxrhuYS1VAZUMRLOwtHCLpkZ508gY=,tag:/IQGd8luH9fBFF7U+8W2WQ==,type:str]
     pgp:
-    -   created_at: '2022-10-04T12:48:35Z'
-        enc: |
+        - created_at: "2022-10-04T12:48:35Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA1gbAjViyxWYARAAv8No3wehJGVxMGbzSGBm7xEgEDQxCzMxkjYdHukWvE+l
@@ -31,9 +34,9 @@ sops:
             hdCfRupThR/3OyboRGSSVzfF7AMMcy0YrWwECjW6RdlJunDDecBHMMYVnLU2eF8=
             =eSAK
             -----END PGP MESSAGE-----
-        fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
-    -   created_at: '2022-10-04T12:48:35Z'
-        enc: |
+          fp: 34AFE2A7C8E00ED66916D95DA9FBD7DE773B2A34
+        - created_at: "2022-10-04T12:48:35Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA+/WpawS9RPbAQgAl8+pat25GYF3iQWvk8FQ8EYIaXf4NuQt5opsynWz+dmk
@@ -46,9 +49,9 @@ sops:
             j4/BGywTtXV8+TbsCFgXqhbIshKHoZKj7KPWF2D1EA==
             =sKQQ
             -----END PGP MESSAGE-----
-        fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
-    -   created_at: '2022-10-04T12:48:35Z'
-        enc: |
+          fp: 87FC5D0ACF3AA48FCC029086262A80E41BCEEBF7
+        - created_at: "2022-10-04T12:48:35Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQEMA/irrHa183bxAQgApsHa6umk1BogdWup8BXLM6nV5EI3I/2d+Qq3Z3OrftXw
@@ -61,9 +64,9 @@ sops:
             w8riqu3brticBEoUq0dI34XxLbo2Kzb7eZAVHTvTRQ==
             =1Bco
             -----END PGP MESSAGE-----
-        fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
-    -   created_at: '2022-10-04T12:48:35Z'
-        enc: |
+          fp: EFDB9AFBD18936D9AB6B2EECBD2C73FF891FBC7E
+        - created_at: "2022-10-04T12:48:35Z"
+          enc: |
             -----BEGIN PGP MESSAGE-----
 
             hQIMA9aKBcudqifiAQ//Sa3VKjCp9kR/kcIUFaKIH7CsNLSNQpEh2DgSCn+S1YyG
@@ -81,6 +84,6 @@ sops:
             R+U0QAB2WOKrGvLjZ9SkRObAX9hJGEuo6QEzF5zqdUMIyx4hxUbas2/DF0yNgZQ=
             =lzBH
             -----END PGP MESSAGE-----
-        fp: 0508677DD04952D06A943D5B4DC4116D360E3276
+          fp: 0508677DD04952D06A943D5B4DC4116D360E3276
     encrypted_regex: ^(data|stringData|tls)$
-    version: 3.5.0
+    version: 3.7.2

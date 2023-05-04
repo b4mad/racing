@@ -11,6 +11,6 @@ fi
 CLIENT_ID=$(hostname)-$$
 
 mosquitto_pub -u crewchief -P crewchief \
-  -t "replay/crewchief/durandom/1669233999/iRacing/sebring international/Ferrari 488 GT3 Evo 2021/Race" \
+  -t "/crewchief/durandom/1669233999/iRacing/sebring international/Ferrari 488 GT3 Evo 2021/Race" \
   -p 31883 -h $MQTT_HOST -i $CLIENT_ID -d \
   -m "`cat sample.json`"

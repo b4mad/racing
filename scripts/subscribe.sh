@@ -10,5 +10,5 @@ CLIENT_ID=$(hostname)-$$
 
 
 mosquitto_sub -u crewchief -P crewchief \
-  -t "replay/crewchief/#" \
+  -t "/crewchief/#" \
   -p 31883 -h $MQTT_HOST -i $CLIENT_ID -d

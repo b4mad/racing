@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rebuild
+  namespace: b4mad-racing
+spec:
+  selector: {}
+  template:
+    metadata:
+      name: rebuild
+    spec:
+      containers:
+        - name: rebuild
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: uri
+          image: paddock:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py replay --firehose --live --keep-session-id --end 'now()' --start=2023-04-01 --wait=0 --quiet --bucket=fast_laps --measurement=fast_laps --delta=1d
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      restartPolicy: Never

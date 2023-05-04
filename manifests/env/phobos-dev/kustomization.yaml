@@ -3,80 +3,57 @@ kind: Kustomization
 labels:
 - pairs:
     app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing
+    app.kubernetes.io/name: b4mad-racing-dev
     app.kubernetes.io/version: v0.1.0-dev
-namespace: b4mad-racing
+namespace: b4mad-racing-dev
 resources:
 - namespace.yaml
+- ../../base/grafana-v5
 - ../../base/mosquitto
 - ../../base/influxdb
 - ../../base/telegraf
 - ../../base/postgresql
 - ../../base/paddock
-- ../../base/grafana-v5
-generators:
-  - secret-generator.yaml
 generatorOptions:
   disableNameSuffixHash: true
 patches:
-  # - target:
-  #     kind: Grafana
-  #     name: grafana
-  #   patch: |-
-  #     - op: replace
-  #       path: /spec/route/spec/host
-  #       value: pitwall.b4mad.racing
   - target:
       kind: Service
       name: mosquitto-tcp
     patch: |-
       - op: replace
         path: /spec/ports/0/nodePort
-        value: 31883
+        value: 31884
   - target:
       kind: PostgresCluster
       name: db
     patch: |-
       - op: replace
         path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
-        value: "4Gi"
+        value: "2Gi"
       - op: replace
         path: /spec/instances/0/resources/limits/cpu
-        value: "500m"
+        value: "500M"
       - op: replace
         path: /spec/instances/0/resources/limits/memory
         value: "500M"
-  - target:
-      kind: Route
-      name: telemetry
-    patch: |-
-      - op: replace
-        path: /spec/host
-        value: telemetry.b4mad.racing
   - target:
       kind: PersistentVolumeClaim
       name: influxdb2
     patch: |-
       - op: replace
         path: /spec/resources/requests/storage
-        value: "80Gi"
+        value: "2Gi"
   - target:
       kind: Deployment
       name: influxdb2
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/cpu
-        value: "2000m"
+        value: "500m"
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: "16Gi"
-  - target:
-      kind: Route
-      name: paddock
-    patch: |-
-      - op: replace
-        path: /spec/host
-        value: paddock.b4mad.racing
+        value: "500M"
 images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock

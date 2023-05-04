@@ -16,13 +16,10 @@ spec:
         resources:
           requests:
             storage: 2Gi
-      # resources:
-      #   limits:
-      #     cpu: 2000m
-      #     memory: 2Gi
-      #   requests:
-      #     cpu: 2000m
-      #     memory: 2Gi
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 2Gi
   backups:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
@@ -37,7 +34,7 @@ spec:
       #     requests:
       #       cpu: 200m
       repos:
-        - name: backup
+        - name: repo1
           # schedules:
           #   # Every sunday at 01:00 full backup
           #   full: "0 1 * * 0"
