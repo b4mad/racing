@@ -55,7 +55,6 @@ class FastLapAnalyzer:
                 logging.info(
                     f"Found {len(not_increasing_indices)} not increasing indices"
                 )
-                continue
 
             df = self.analyzer.drop_decreasing(df)
             # dataframes with less than 100 points are not reliable
