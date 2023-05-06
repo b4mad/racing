@@ -7,5 +7,5 @@ resources:
   - service_account.yaml
   - service_monitor.yaml
   - service.yaml
-  # - cronjob_analyze.yaml
+  - cronjob_analyze.yaml
   - paddock-settings.yaml

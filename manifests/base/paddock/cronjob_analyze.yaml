@@ -18,7 +18,7 @@ spec:
                 - name: DATABASE_URL
                   valueFrom:
                     secretKeyRef:
-                      name: b4mad-racing-pguser-paddock
+                      name: db-pguser-paddock
                       key: uri
               securityContext:
                 runAsNonRoot: true
