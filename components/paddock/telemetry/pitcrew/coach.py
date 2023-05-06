@@ -14,11 +14,8 @@ class Coach:
         self.history = history
         self.previous_history_error = None
         self.db_coach = db_coach
-        self.msg = {
-            "msg": {},
-            "turn": None,
-        }
-        self.messages = {}
+        self.messages = []
+        self.previous_distance = 0
         self.debug = debug
         self.debug_data = {}
         # self.json_response = db_coach.driver.name == "durandom"
@@ -56,9 +53,10 @@ class Coach:
 
     def set_filter(self, filter):
         self.history.set_filter(filter)
-        self.messages = {}
+        self.messages = []
 
     def get_response(self, telemetry, now):
+        # FIXME: refactor all this init stuff into an init method
         if not self.history.ready:
             if self.history.error != self.previous_history_error:
                 self.previous_history_error = self.history.error
@@ -68,25 +66,28 @@ class Coach:
             else:
                 return None
 
-        distance_round_track = telemetry["DistanceRoundTrack"]
         self.history.update(now, telemetry)
+
         if not self.messages:
             self.init_messages()
 
-        message_stack = self.get_message_stack(distance_round_track)
-        top_msg = message_stack[0]
-        distance = abs(top_msg["at"] - distance_round_track)
+        distance_round_track = telemetry["DistanceRoundTrack"]
+        if distance_round_track < self.previous_distance:
+            self.messages = self.sort_messages(distance_round_track)
 
-        if distance <= 1:
-            msg = top_msg["msg"]
+        next_message = self.messages[0]
+        distance = abs(next_message["at"] - distance_round_track)
+
+        if distance < 10:
+            self.messages.append(self.messages.pop(0))
+            msg = next_message["msg"]
             if callable(msg):
-                kwargs = top_msg["kwargs"].copy()
+                kwargs = next_message["kwargs"].copy()
                 kwargs["telemetry"] = telemetry
-                kwargs["at"] = top_msg["at"]
-                message = msg(*top_msg["args"], **kwargs)
-                if message:
-                    message_stack.append(message_stack.pop(0))
-                    return message
+                kwargs["at"] = next_message["at"]
+                response = msg(*next_message["args"], **kwargs)
+                if response:
+                    return response
             elif isinstance(msg, dict):
                 return json.dumps(msg)
             else:
@@ -101,7 +102,7 @@ class Coach:
                     gear = f"gear {segment.gear} "
                 text = gear + "%s percent" % (round(segment.force / 10) * 10)
                 at = segment.start
-                self.new_msg_done_by(at, text, segment)
+                self.schedule_msg_done_by(at, text, segment)
 
                 at = segment.start
                 text = "brake"
@@ -114,18 +115,24 @@ class Coach:
                 at = segment.start - 100
                 to = round(segment.force / 10) * 10
                 text = "throttle to %s" % to
-                self.new_msg_done_by(at, text, segment)
+                self.schedule_msg_done_by(at, text, segment)
 
                 at = segment.start
                 text = "now"
                 self.schedule_msg(at, text, segment)
 
-    def get_message_stack(self, distance):
-        sorted_messages = sorted(self.messages.items(), key=lambda x: x[0])
-        message_stack = [msg for _, msg in sorted_messages if "enabled" not in msg or msg["enabled"]]
-        while message_stack and message_stack[0]["at"] < distance:
-            message_stack.append(message_stack.pop(0))
-        return message_stack
+    def sort_messages(self, distance):
+        # sort messages by distance, keyword argument 'at'
+        messages = sorted(self.messages, key=lambda k: k["at"])
+        index_of_first_item = 0
+
+        # loop through messages and find index of first item larger than distance
+        for i, msg in enumerate(messages):
+            index_of_first_item = i
+            if msg["at"] > distance:
+                break
+
+        return messages[index_of_first_item:] + messages[:index_of_first_item]
 
     def eval_gear(self, segment, **kwargs):
         pass
@@ -167,18 +174,6 @@ class Coach:
             speed,
             self.debug_data["deltas"] and sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"]) or 0,
         )
-        # logging.debug(f"deltas: {self.debug_data.get('deltas', [])}")
-        # if abs(delta) > 50:
-        #     self.enable_msg(segment)
-        # elif abs(delta) > 10:
-        #     self.enable_msg(segment)
-        #     self.disable_msg(segment)
-        #     if delta > 0:
-        #         return "Brake %s meters later" % round(abs(delta))
-        #     else:
-        #         return "Brake %s meters earlier" % round(abs(delta))
-        # else:
-        #     self.disable_msg(segment)
 
     def disable_msg(self, segment):
         self.enable_msg(segment, False)
@@ -199,11 +194,49 @@ class Coach:
         words = len(msg.split(" "))
         return words * 0.8  # avg ms per word
 
-    def new_msg(self, at, msg, segment, finish_reading_at=False):
-        long_ago = django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)
+    def new_msg(self, at, msg, segment):
         message = {
             "msg": msg,
-            "read": long_ago,
+            "enabled": True,
+            "segment": segment,
+            "at": at,
+        }
+
+        at = at % self.history.track_length
+        message["at"] = at
+        self.messages.append(message)
+        return message
+
+    def schedule_msg(self, at, msg, segment):
+        read_time = self.msg_read_time(msg)
+        respond_at = self.history.offset_distance(at, seconds=read_time)
+        payload = {
+            "message": msg,
+            "distance": at,
+            "priority": 9,
+        }
+        return self.new_msg(respond_at, payload, segment)
+
+    def new_msg_done_by(self, at, msg, segment):
+        read_time = self.msg_read_time(msg)
+        new_at = self.history.offset_distance(at, seconds=read_time)
+        return self.new_msg(new_at, msg, segment)
+
+    def schedule_msg_done_by(self, at, msg, segment):
+        read_time = self.msg_read_time(msg)
+        new_at = self.history.offset_distance(at, seconds=read_time)
+        return self.schedule_msg(new_at, msg, segment)
+
+    def new_fn(self, at, fn, segment, **kwargs):
+        message = self.new_msg(at, fn, segment)
+        message["args"] = [segment]
+        message["kwargs"] = kwargs
+        return message
+
+    # FIXME: refactor the offset code
+    def new_msg_old(self, at, msg, segment, finish_reading_at=False):
+        message = {
+            "msg": msg,
             "enabled": True,
             "segment": segment,
             "at": at,
@@ -213,7 +246,6 @@ class Coach:
 
         # there's a delay of x seconds to read the message at the requested meters
         # offset = 1.0  # time_delta 0.1
-        offset = 1.1
         offset = 0
 
         # if the message should be finished at the requested meters
@@ -228,112 +260,6 @@ class Coach:
         while at in self.messages:
             at += 1
             at = at % self.history.track_length
-        self.messages[at] = message
         message["at"] = at
+        self.messages.append(message)
         return message
-
-    def new_msg_done_by(self, at, msg, segment):
-        return self.new_msg(at, msg, segment, finish_reading_at=True)
-
-    def schedule_msg(self, at, msg, segment):
-        if self.json_response:
-            respond_at = at - 50
-            payload = {
-                "message": msg,
-                "distance": at,
-                "priority": 9,
-            }
-            return self.new_msg(respond_at, payload, segment)
-        else:
-            return self.new_msg(at, msg, segment)
-
-    def new_fn(self, at, fn, segment, **kwargs):
-        message = self.new_msg(at, fn, segment)
-        message["args"] = [segment]
-        message["kwargs"] = kwargs
-        return message
-
-    # debug stuff
-    def brake_debug(self, segment, **kwargs):
-        telemetry = kwargs["telemetry"]
-        self.brake_debug_time = telemetry["CurrentLapTime"]
-        return "now"
-
-    def eval_brake_debug(self, brake_start, **kwargs):
-        telemetry = kwargs["telemetry"]
-        distance_round_track = telemetry["DistanceRoundTrack"]
-        speed_ms = self.history.driver_speed_at(brake_start)
-        driver_brake_start = self.history.driver_brake_start(brake_start, distance_round_track)
-
-        real_brake_time = self.history.driver_telemetry_start(brake_start, distance_round_track, field="CurrentLapTime")
-        time_delta = real_brake_time - self.brake_debug_time
-
-        if driver_brake_start:
-            delta = int(brake_start - driver_brake_start)
-            ratio = delta / speed_ms
-            logging.debug(
-                "eval_brake: %s / %s : delta: %s speed: %.0f ratio: %.2f time_delta: %.2f",
-                brake_start,
-                driver_brake_start,
-                delta,
-                speed_ms,
-                ratio,
-                time_delta,
-            )
-            return f"delta: {delta:.0f}"
-        else:
-            logging.debug(
-                "eval_brake: %s / %s : no driver_brake_start",
-                brake_start,
-                driver_brake_start,
-            )
-
-    def init_messages_debug(self):
-        self.track_length = self.history.track.length
-        self.brake_debug_time = 0
-        # for at in range(0, self.track_length, 500):
-        #     self.new_msg(at, "brake", None)
-        #     brake_point = at + 100
-        #     # self.new_msg(brake_point, "now", None)
-        #     # this message says "now" and stores the time
-        #     msg = self.new_fn(brake_point, self.brake_debug, None)
-        #     # this message calculates the delta
-        #     msg = self.new_fn(brake_point + 100, self.eval_brake_debug, None)
-        #     msg["args"] = [brake_point]
-        for at in range(0, self.track_length, 100):
-            msg = {
-                "message": "brake",
-                "meters": at + 50,
-                "priority": 10,
-            }
-            self.new_msg(at, msg, None)
-
-
-if __name__ == "__main__":
-    history = History()
-    history.pickle = True
-    coach = Coach(history)
-
-    track = "okayama full"
-    track_length = 3500
-    track = "summit summit raceway"
-    track_length = 3000
-
-    car = "Ferrari 488 GT3 Evo 2020"
-    filter = {
-        "user": "durandom",
-        "GameName": "iRacing",
-        "TrackCode": track,
-        "CarModel": car,
-    }
-    coach.set_filter(filter)
-    history.init()
-    # history.write_cache_to_file()
-
-    for j in range(1, 4):
-        _LOGGER.info("lap %s", j)
-        for i in range(0, track_length):
-            response = coach.get_response(i)
-            # time.sleep(0.2)
-            if response:
-                _LOGGER.info("meters: %s, response: %s", i, response)
