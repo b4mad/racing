@@ -28,9 +28,7 @@ class TestCoach(TransactionTestCase):
 
         coach = PitCrewCoach(history, coach)
 
-        session_df = get_session_df(
-            session_id, measurement="laps_cc", bucket="racing-smaug"
-        )
+        session_df = get_session_df(session_id, measurement="laps_cc", bucket="racing-smaug")
 
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")
@@ -55,32 +53,17 @@ class TestCoach(TransactionTestCase):
         expected_responses = [
             ("/coach/durandom", '{"message": "brake", "distance": 586, "priority": 9}'),
             ("/coach/durandom", "gear 4 90 percent"),
-            (
-                "/coach/durandom",
-                '{"message": "brake", "distance": 1198, "priority": 9}',
-            ),
+            ("/coach/durandom", '{"message": "brake", "distance": 1198, "priority": 9}'),
             ("/coach/durandom", "throttle to 0"),
             ("/coach/durandom", '{"message": "now", "distance": 1497, "priority": 9}'),
             ("/coach/durandom", "gear 2 100 percent"),
-            (
-                "/coach/durandom",
-                '{"message": "brake", "distance": 1889, "priority": 9}',
-            ),
+            ("/coach/durandom", '{"message": "brake", "distance": 1889, "priority": 9}'),
             ("/coach/durandom", "gear 3 100 percent"),
-            (
-                "/coach/durandom",
-                '{"message": "brake", "distance": 2688, "priority": 9}',
-            ),
+            ("/coach/durandom", '{"message": "brake", "distance": 2688, "priority": 9}'),
             ("/coach/durandom", "gear 2 100 percent"),
-            (
-                "/coach/durandom",
-                '{"message": "brake", "distance": 2981, "priority": 9}',
-            ),
+            ("/coach/durandom", '{"message": "brake", "distance": 2981, "priority": 9}'),
             ("/coach/durandom", "gear 2 70 percent"),
-            (
-                "/coach/durandom",
-                '{"message": "brake", "distance": 3500, "priority": 9}',
-            ),
+            ("/coach/durandom", '{"message": "brake", "distance": 3500, "priority": 9}'),
             ("/coach/durandom", "gear 1 100 percent"),
         ]
         self.assertEqual(captured_responses, expected_responses)
