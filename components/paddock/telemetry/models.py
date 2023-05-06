@@ -5,6 +5,11 @@ import datetime
 
 
 class Driver(models.Model):
+    class Meta:
+        ordering = [
+            "name",
+        ]
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -12,6 +17,11 @@ class Driver(models.Model):
 
 
 class Game(models.Model):
+    class Meta:
+        ordering = [
+            "name",
+        ]
+
     name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -19,6 +29,11 @@ class Game(models.Model):
 
 
 class Track(models.Model):
+    class Meta:
+        ordering = [
+            "name",
+        ]
+
     name = models.CharField(max_length=200)
     length = models.IntegerField(default=0)
 
@@ -29,6 +44,11 @@ class Track(models.Model):
 
 
 class Car(models.Model):
+    class Meta:
+        ordering = [
+            "name",
+        ]
+
     name = models.CharField(max_length=200)
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="cars")
@@ -82,6 +102,9 @@ class Lap(DirtyFieldsMixin, models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="laps")
 
     class Meta:
+        ordering = [
+            "number",
+        ]
         unique_together = ("session", "start")
 
     def __str__(self):

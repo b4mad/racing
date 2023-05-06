@@ -23,7 +23,6 @@ repos:
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer
-      - id: name-tests-test
       - id: trailing-whitespace
 
   # - repo: https://github.com/pycqa/pydocstyle.git
@@ -44,11 +43,15 @@ repos:
     rev: "23.3.0"
     hooks:
       - id: black
+        args:
+          ["--line-length=120"]
 
   - repo: https://github.com/tomcatling/black-nb
     rev: "0.7"
     hooks:
       - id: black-nb
+        args:
+          ["--max-line-length=120"]
 
   # Enable this in repositories with python packages.
   # - repo: https://github.com/mgedmin/check-manifest

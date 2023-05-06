@@ -1,0 +1,16 @@
+[
+  {
+    "model": "telemetry.game",
+    "pk": 1,
+    "fields": {
+      "name": "iRacing"
+    }
+  },
+  {
+    "model": "telemetry.game",
+    "pk": 5,
+    "fields": {
+      "name": "Automobilista 2"
+    }
+  }
+]

@@ -44,6 +44,7 @@ class History:
 
     def run(self):
         while self.do_run:
+            # TODO: rework time consuming stuff to be executed async
             time.sleep(5)
             if self.do_init:
                 self.ready = self.init()
@@ -96,7 +97,7 @@ class History:
         )
         # check if fast_lap has any fast_lap_segments
         if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
-            logging.error("no history found for %s", fast_lap)
+            logging.debug(f"driver {self.driver} has no history for {fast_lap}")
             # initialize with segments from fast_lap
             for segment in self.segments:
                 FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)

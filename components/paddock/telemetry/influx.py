@@ -78,7 +78,8 @@ class Influx:
                             lap_time = lap["time"]
                             length = lap["length"]
                             logging.info(
-                                f"Processing {game} {track} : {session} - {lap_number: >2} : {length} - {lap_time}"
+                                f"Processing {game} {track} : session {session} : "
+                                + f"lap #{lap_number: >2} : length {length} : time {lap_time}"
                             )
                             # 2022-12-05 19:52:18.141110+00:00
                             start = datetime.strptime(
@@ -105,11 +106,11 @@ class Influx:
             game = lap.session.game.name
             session = lap.session.session_id
             track = lap.track.name
-            car = lap.car.name
             lap_number = lap.number
 
             logging.info(
-                f"Processing {lap.id}: {game} {track} {car} : {session} - {lap_number: >2} : {lap.length} - {lap.time}"
+                f"Processing {game} {track} : session {session} : "
+                + f"lap.id {lap.id} : length {lap.length} : time {lap.time}"
             )
 
             try:

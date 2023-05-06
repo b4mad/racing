@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "bootstrap4",
     "dpd_static_support",
     "django_extensions",
+    "django_admin_listfilter_dropdown",
 ]
 
 MIDDLEWARE = [
