@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: Always
           command: ["/bin/sh", "-c"]
           args:
-            - python /opt/app-root/src/manage.py replay --firehose --live --keep-session-id --end 'now()' --start=2023-04-01 --wait=0 --quiet --bucket=fast_laps --measurement=fast_laps --delta=1d
+            - python /opt/app-root/src/manage.py replay --firehose --live --keep-session-id --end 'now()' --start=-50d --wait=0 --quiet --delta=1h --bucket=racing-smaug
           resources:
             limits:
               cpu: "2"
