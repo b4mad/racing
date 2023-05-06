@@ -6,7 +6,6 @@ from telemetry.models import Driver
 import time
 from .utils import get_session_df
 
-
 class TestCoach(TransactionTestCase):
     fixtures = [
         "game.json",
@@ -17,24 +16,6 @@ class TestCoach(TransactionTestCase):
         "driver.json",
         "coach.json",
     ]
-
-    def _assert_laps(self, test_session, expected_laps):
-        # Iterate over the expected_laps dictionary and compare to the test_session.laps
-        for lap_number, expected_lap in expected_laps.items():
-            lap = test_session.laps[lap_number]
-
-            self.assertEqual(lap.number, expected_lap.number)
-            self.assertEqual(lap.time, expected_lap.time)
-            self.assertEqual(lap.valid, expected_lap.valid)
-            self.assertEqual(lap.finished, expected_lap.finished)
-            self.assertAlmostEqual(int(lap.length), int(expected_lap.length), places=0)
-
-            if lap.time != -1:
-                # the difference between lap.end and lap.start should be equal to lap.time
-                time_delta = lap.end - lap.start
-                self.assertAlmostEqual(
-                    time_delta.total_seconds(), expected_lap.time, places=0
-                )
 
     def test_coach(self):
         session_id = "1681897871"
@@ -60,15 +41,19 @@ class TestCoach(TransactionTestCase):
         while not history.ready:
             time.sleep(0.1)
 
-        for index, row in session_df.iterrows():
-            # convert row to dict
-            row = row.to_dict()
-            # now = row["_time"]
-            response = coach.notify(topic, row)
-            if response:
-                print(response)
-
-        history.disconnect()
+        try:
+            for index, row in session_df.iterrows():
+                # convert row to dict
+                row = row.to_dict()
+                # now = row["_time"]
+                response = coach.notify(topic, row)
+                if response:
+                    print("out:", response)
+        except Exception as e:
+            raise e
+        finally:
+            print("stopping history thread")
+            history.disconnect()
 
 
 # Loading .env environment variables...

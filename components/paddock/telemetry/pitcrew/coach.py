@@ -3,6 +3,7 @@
 import json
 import logging
 import time
+import django.utils.timezone
 from .history import History
 from telemetry.models import Coach as DbCoach
 
@@ -26,9 +27,7 @@ class Coach:
 
         self.response_topic = f"/coach/{db_coach.driver.name}"
 
-        self.msg_read_interval = 20
-        if self.debug:
-            self.msg_read_interval = 1
+        self.msg_read_interval = django.utils.timezone.timedelta(seconds=20)
         self.topic = ""
 
     def filter_from_topic(self, topic):
@@ -46,13 +45,14 @@ class Coach:
         }
         return filter
 
-    def notify(self, topic, payload):
+    def notify(self, topic, payload, now=None):
+        now = now or django.utils.timezone.now()
         if self.topic != topic:
             self.topic = topic
             logging.debug("new session %s", topic)
             self.set_filter(self.filter_from_topic(topic))
 
-        response = self.get_response(payload)
+        response = self.get_response(payload, now)
         if response:
             return (self.response_topic, response)
 
@@ -60,7 +60,7 @@ class Coach:
         self.history.set_filter(filter)
         self.messages = {}
 
-    def get_response(self, telemetry):
+    def get_response(self, telemetry, now):
         if not self.history.ready:
             if self.history.error != self.previous_history_error:
                 self.previous_history_error = self.history.error
@@ -78,7 +78,6 @@ class Coach:
             for at in self.messages:
                 logging.debug(f"at {at}: {self.messages[at]['msg']}")
 
-        now = time.time()
         # loop over all messages and check the distance, if we have something to say
         distance_round_track = telemetry["DistanceRoundTrack"]
         self.history.update(now, telemetry)
@@ -222,13 +221,15 @@ class Coach:
         return words * 0.8  # avg ms per word
 
     def new_msg(self, at, msg, segment, finish_reading_at=False):
+        long_ago = django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)
         message = {
             "msg": msg,
-            "read": 0,
+            "read": long_ago,
             "enabled": True,
             "segment": segment,
             "at": at,
         }
+
         at = at % self.history.track_length
 
         # there's a delay of x seconds to read the message at the requested meters

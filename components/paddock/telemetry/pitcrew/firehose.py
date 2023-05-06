@@ -1,5 +1,6 @@
 import logging
 from .session import Session
+import django.utils.timezone
 
 
 class Firehose:
@@ -8,6 +9,7 @@ class Firehose:
         self.sessions = {}
 
     def notify(self, topic, payload, now=None):
+        now = now or django.utils.timezone.now()
         if topic not in self.sessions:
             try:
                 (

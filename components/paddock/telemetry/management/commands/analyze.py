@@ -49,6 +49,7 @@ class Command(BaseCommand):
             help="car name to analyze",
         )
         parser.add_argument("-i", "--import-csv", nargs="*", type=str, default=None)
+        parser.add_argument("--from-bucket", nargs="?", type=str, default="racing")
         parser.add_argument(
             "-n", "--new", action="store_true", help="only analyze new coaches"
         )
@@ -118,6 +119,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         influx = Influx()
         influx_fast_sessions = set()
+        from_bucket = options["from_bucket"]
         if options["copy_influx"]:
             influx_fast_sessions = influx.session_ids(bucket="fast_laps")
 
@@ -248,7 +250,8 @@ class Command(BaseCommand):
                         influx_fast_sessions.remove(session.session_id)
                         continue
                     influx.copy_session(
-                        session.session_id, start=session.start, end=session.end
+                        session.session_id, start=session.start, end=session.end,
+                        from_bucket=from_bucket
                     )
 
             if options["save_csv"]:
