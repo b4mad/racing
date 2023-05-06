@@ -2,7 +2,6 @@
 
 import json
 import logging
-import time
 import django.utils.timezone
 from .history import History
 from telemetry.models import Coach as DbCoach
@@ -27,7 +26,6 @@ class Coach:
 
         self.response_topic = f"/coach/{db_coach.driver.name}"
 
-        self.msg_read_interval = django.utils.timezone.timedelta(seconds=20)
         self.topic = ""
 
     def filter_from_topic(self, topic):
@@ -69,40 +67,30 @@ class Coach:
                 return self.history.error
             else:
                 return None
-        # _LOGGER.debug(f"meters: {meters}, msg: {self.msg}")
 
-        # build self.messages from fast laps segments
-        if not self.messages:
-            self.init_messages()
-            # self.init_messages_debug()
-            for at in self.messages:
-                logging.debug(f"at {at}: {self.messages[at]['msg']}")
-
-        # loop over all messages and check the distance, if we have something to say
         distance_round_track = telemetry["DistanceRoundTrack"]
         self.history.update(now, telemetry)
-        for at in self.messages:
-            distance = abs(at - distance_round_track)
-            # only read every 20 seconds and if we are close
-            msg = self.messages[at]
-            if "enabled" in msg and not msg["enabled"]:
-                continue
-            if distance <= 1 and now - msg["read"] > self.msg_read_interval:
-                msg = self.messages[at]["msg"]
-                if callable(msg):
-                    self.messages[at]["read"] = now
-                    kwargs = self.messages[at]["kwargs"].copy()
-                    kwargs["telemetry"] = telemetry
-                    kwargs["at"] = at
-                    message = msg(*self.messages[at]["args"], **kwargs)
-                    if message:
-                        return message
-                elif isinstance(msg, dict):
-                    self.messages[at]["read"] = now
-                    return json.dumps(msg)
-                else:
-                    self.messages[at]["read"] = now
-                    return msg
+        if not self.messages:
+            self.init_messages()
+
+        message_stack = self.get_message_stack(distance_round_track)
+        top_msg = message_stack[0]
+        distance = abs(top_msg["at"] - distance_round_track)
+
+        if distance <= 1:
+            msg = top_msg["msg"]
+            if callable(msg):
+                kwargs = top_msg["kwargs"].copy()
+                kwargs["telemetry"] = telemetry
+                kwargs["at"] = top_msg["at"]
+                message = msg(*top_msg["args"], **kwargs)
+                if message:
+                    message_stack.append(message_stack.pop(0))
+                    return message
+            elif isinstance(msg, dict):
+                return json.dumps(msg)
+            else:
+                return msg
 
     def init_messages(self):
         self.track_length = self.history.track.length
@@ -118,7 +106,6 @@ class Coach:
                 at = segment.start
                 text = "brake"
                 msg = self.schedule_msg(at, text, segment)
-                # msg = self.new_msg(at, text, segment)
 
                 at = segment.end + 20
                 self.new_fn(at, self.eval_brake, segment, brake_msg_at=msg["at"])
@@ -132,15 +119,13 @@ class Coach:
                 at = segment.start
                 text = "now"
                 self.schedule_msg(at, text, segment)
-                # self.new_msg(at, text, segment)
 
-            # if segment.gear:
-            #     at = segment.start - 80
-            #     text = f"gear {segment.gear}"
-            #     self.new_msg(at, text, segment)
-
-            #     at = segment.end + 60
-            #     self.new_fn(at, self.eval_gear, segment)
+    def get_message_stack(self, distance):
+        sorted_messages = sorted(self.messages.items(), key=lambda x: x[0])
+        message_stack = [msg for _, msg in sorted_messages if "enabled" not in msg or msg["enabled"]]
+        while message_stack and message_stack[0]["at"] < distance:
+            message_stack.append(message_stack.pop(0))
+        return message_stack
 
     def eval_gear(self, segment, **kwargs):
         pass
@@ -155,18 +140,14 @@ class Coach:
     def eval_brake(self, segment, **kwargs):
         # driver_brake_start = self.history.driver_brake(segment)
         meters = kwargs["telemetry"]["DistanceRoundTrack"]
-        driver_brake_start = self.history.t_start_distance(
-            segment.start - 50, segment.end, "Brake"
-        )
+        driver_brake_start = self.history.t_start_distance(segment.start - 50, segment.end, "Brake")
         delta = driver_brake_start - segment.start
         # brake_msg_at = kwargs["brake_msg_at"]
         # time_brake_msg_at = self.history.t_at_distance(
         #     brake_msg_at, "CurrentLapTime"
         # )
         time_segment_at = self.history.t_at_distance(segment.start, "CurrentLapTime")
-        time_driver_brake_start = self.history.t_at_distance(
-            driver_brake_start, "CurrentLapTime"
-        )
+        time_driver_brake_start = self.history.t_at_distance(driver_brake_start, "CurrentLapTime")
         # time_delta = time_brake_msg_at - time_driver_brake_start
         time_delta = time_driver_brake_start - time_segment_at
         speed = self.history.t_at_distance(driver_brake_start, "SpeedMs")
@@ -184,9 +165,7 @@ class Coach:
             delta,
             time_delta,
             speed,
-            self.debug_data["deltas"]
-            and sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"])
-            or 0,
+            self.debug_data["deltas"] and sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"]) or 0,
         )
         # logging.debug(f"deltas: {self.debug_data.get('deltas', [])}")
         # if abs(delta) > 50:
@@ -284,13 +263,9 @@ class Coach:
         telemetry = kwargs["telemetry"]
         distance_round_track = telemetry["DistanceRoundTrack"]
         speed_ms = self.history.driver_speed_at(brake_start)
-        driver_brake_start = self.history.driver_brake_start(
-            brake_start, distance_round_track
-        )
+        driver_brake_start = self.history.driver_brake_start(brake_start, distance_round_track)
 
-        real_brake_time = self.history.driver_telemetry_start(
-            brake_start, distance_round_track, field="CurrentLapTime"
-        )
+        real_brake_time = self.history.driver_telemetry_start(brake_start, distance_round_track, field="CurrentLapTime")
         time_delta = real_brake_time - self.brake_debug_time
 
         if driver_brake_start:
