@@ -2,43 +2,18 @@ from django.test import TestCase
 import django.utils.timezone
 from django.db import IntegrityError
 from telemetry.pitcrew.session import Session, Lap
-from telemetry.influx import Influx
 from telemetry.models import Session as SessionModel
 from telemetry.models import Track, Car, Game, Driver, SessionType
-import os
-import pandas as pd
-import numpy as np
 from pprint import pprint
+from .utils import get_session_df
 
 
 class TestSession(TestCase):
     def _test_session(self, session_id, measurement="fast_laps", bucket="fast_laps"):
-        influx = Influx()
-
-        measurement = measurement
-        bucket = bucket
-        start = "-10y"
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        file_path = f"{dir_path}/test_data/{session_id}_df.csv.gz"
-
-        if os.path.exists(file_path):
-            session_df = pd.read_csv(
-                file_path, compression="gzip", parse_dates=["_time"]
-            )
-            # session_df['_time'] = pd.to_datetime(session_df['_time'])
-        else:
-            session_df = influx.session_df(
-                session_id, measurement=measurement, bucket=bucket, start=start
-            )
-            session_df.to_csv(file_path, compression="gzip", index=False)
+        session_df = get_session_df(session_id, measurement=measurement, bucket=bucket)
 
         # Create an instance of the Session class
         test_session = Session(666)
-
-        # Call the signal method with values from the dataframe
-        # sort session_df by time
-        session_df = session_df.sort_values(by="_time")
-        session_df = session_df.replace(np.nan, None)
 
         for index, row in session_df.iterrows():
             # convert row to dict

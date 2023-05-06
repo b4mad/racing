@@ -1,5 +1,10 @@
 from django.contrib import admin
 from django_admin_relation_links import AdminChangeLinksMixin
+from django_admin_listfilter_dropdown.filters import (
+    DropdownFilter,
+    RelatedDropdownFilter,
+    # ChoiceDropdownFilter,
+)
 from .models import Game, Driver, Car, Track, Session, SessionType, Lap
 from .models import FastLap, FastLapSegment
 from .models import Coach
@@ -43,6 +48,16 @@ class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
         "start",
         "end",
     ]
+    # list_filter = ["car", "track"]
+    list_filter = (
+        # for ordinary fields
+        ("valid", DropdownFilter),
+        # for choice fields
+        # ('valid', ChoiceDropdownFilter),
+        # for related fields
+        ("car", RelatedDropdownFilter),
+        ("track", RelatedDropdownFilter),
+    )
 
     # https://stackoverflow.com/questions/163823/can-list-display-in-a-django-modeladmin-display-attributes-of-foreignkey-field
     @admin.display(ordering="session__driver", description="Driver")
@@ -71,7 +86,7 @@ class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 class CarAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name", "game"]
-    # changelist_links = ["laps"]
+    changelist_links = ["laps"]
 
 
 class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):

@@ -1,0 +1,128 @@
+[
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1929,
+    "fields": {
+      "turn": "1",
+      "start": 586,
+      "end": 812,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 99,
+      "gear": 1,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 20,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1930,
+    "fields": {
+      "turn": "2",
+      "start": 1198,
+      "end": 1312,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 91,
+      "gear": 4,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 42,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1931,
+    "fields": {
+      "turn": "3",
+      "start": 1497,
+      "end": 1756,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 1,
+      "gear": 4,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 44,
+      "mark": "throttle",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1932,
+    "fields": {
+      "turn": "4",
+      "start": 1889,
+      "end": 2045,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 97,
+      "gear": 2,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 23,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1933,
+    "fields": {
+      "turn": "5",
+      "start": 2688,
+      "end": 2820,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 99,
+      "gear": 3,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 33,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1934,
+    "fields": {
+      "turn": "6",
+      "start": 2981,
+      "end": 3380,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 96,
+      "gear": 2,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 22,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1935,
+    "fields": {
+      "turn": "7",
+      "start": 3500,
+      "end": 3653,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 73,
+      "gear": 2,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 23,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  }
+]

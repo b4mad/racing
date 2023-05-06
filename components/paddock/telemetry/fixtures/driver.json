@@ -1,0 +1,9 @@
+[
+  {
+    "model": "telemetry.driver",
+    "pk": 10,
+    "fields": {
+      "name": "durandom"
+    }
+  }
+]
