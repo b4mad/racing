@@ -47,8 +47,10 @@ class FastLapAnalyzer:
 
             df = laps[0]
 
-            (track_info, data) = self.analyze_df(df)
-            return (track_info, data, [lap])
+            result = self.analyze_df(df)
+            if result:
+                result.append([lap])
+                return result
 
     def analyze_df(self, df):
         df = self.preprocess(df)
