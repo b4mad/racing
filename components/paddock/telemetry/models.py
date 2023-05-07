@@ -69,12 +69,8 @@ class Session(DirtyFieldsMixin, models.Model):
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
 
-    driver = models.ForeignKey(
-        Driver, on_delete=models.CASCADE, related_name="sessions"
-    )
-    session_type = models.ForeignKey(
-        SessionType, on_delete=models.CASCADE, related_name="sessions"
-    )
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="sessions")
+    session_type = models.ForeignKey(SessionType, on_delete=models.CASCADE, related_name="sessions")
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="sessions")
 
     class Meta:
@@ -119,9 +115,8 @@ class FastLap(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    driver = models.ForeignKey(
-        Driver, on_delete=models.CASCADE, related_name="fast_laps", null=True
-    )
+    lap = models.ForeignKey(Lap, on_delete=models.CASCADE, null=True)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="fast_laps", null=True)
     # add binary field to hold arbitrary data
     data = PickledObjectField(null=True)
 
@@ -143,9 +138,7 @@ class FastLapSegment(models.Model):
     speed = models.IntegerField(default=0)
     mark = models.CharField(max_length=256, default="")
 
-    fast_lap = models.ForeignKey(
-        FastLap, on_delete=models.CASCADE, related_name="fast_lap_segments"
-    )
+    fast_lap = models.ForeignKey(FastLap, on_delete=models.CASCADE, related_name="fast_lap_segments")
 
     def __str__(self):
         repr = f"{self.turn}: {self.start} - {self.end} brake: {self.brake} "
