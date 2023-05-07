@@ -164,16 +164,17 @@ class Coach:
             debug_deltas.append(time_delta)
         self.debug_data["deltas"] = debug_deltas
 
-        logging.debug(
-            "eval_brake: %i driver: %i - segment: %i : delta: %i, time_delta: %.2f, speed: %i, avg_time_delta: %.2f",
-            meters,
-            driver_brake_start,
-            segment.start,
-            delta,
-            time_delta,
-            speed,
-            self.debug_data["deltas"] and sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"]) or 0,
-        )
+        avg_time_delta = 0
+        if self.debug_data["deltas"]:
+            avg_time_delta = sum(self.debug_data["deltas"]) / len(self.debug_data["deltas"])
+
+        logging.debug(f"eval_brake at {meters}")
+        logging.debug(f"   driver: {driver_brake_start}")
+        logging.debug(f"   segment: {segment.start}")
+        logging.debug(f"   delta: {delta}")
+        logging.debug(f"   time_delta: {time_delta:.2f}, ")
+        logging.debug(f"   speed: {speed}")
+        logging.debug(f"   avg_time_delta: {avg_time_delta:.2f}")
 
     def disable_msg(self, segment):
         self.enable_msg(segment, False)

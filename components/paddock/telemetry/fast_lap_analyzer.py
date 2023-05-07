@@ -6,7 +6,7 @@ from .analyzer import Analyzer
 
 
 class FastLapAnalyzer:
-    def __init__(self, laps = [], bucket="fast_laps"):
+    def __init__(self, laps=[], bucket="fast_laps"):
         self.analyzer = Analyzer()
         self.laps = laps
         self.bucket = bucket
@@ -16,7 +16,6 @@ class FastLapAnalyzer:
         if not self.influx_client:
             self.influx_client = Influx()
         return self.influx_client
-
 
     def assert_can_analyze(self):
         # game = self.laps[0].session.game
@@ -41,48 +40,43 @@ class FastLapAnalyzer:
             return
 
         for lap in self.laps:
-            laps = self.influx().telemetry_for_laps(
-                [lap], measurement="fast_laps", bucket=self.bucket
-            )
+            laps = self.influx().telemetry_for_laps([lap], measurement="fast_laps", bucket=self.bucket)
             if len(laps) == 0:
                 logging.info("No laps found")
                 continue
 
             df = laps[0]
 
-            return self.analyze_df(df)
+            (track_info, data) = self.analyze_df(df)
+            return (track_info, data, [lap])
 
     def analyze_df(self, df):
-            df = self.preprocess(df)
-            if df is None:
-                return
+        df = self.preprocess(df)
+        if df is None:
+            return
 
-            segments = self.get_segments(df)
-            track_info = sorted(segments, key=lambda k: k["start"])
+        segments = self.get_segments(df)
+        track_info = sorted(segments, key=lambda k: k["start"])
 
-            # convert track_info, which is an array of dict, to a pandas dataframe
-            track_info_df = pd.DataFrame(track_info)
-            logging.info(track_info_df.style.format(precision=1).to_string())
+        # convert track_info, which is an array of dict, to a pandas dataframe
+        track_info_df = pd.DataFrame(track_info)
+        logging.info(track_info_df.style.format(precision=1).to_string())
 
-            distance_time = self.get_distance_time(df)
-            data = {
-                "distance_time": distance_time,
-            }
-            return [track_info, data]
+        distance_time = self.get_distance_time(df)
+        data = {
+            "distance_time": distance_time,
+        }
+        return [track_info, data]
 
     def preprocess(self, df):
         # Check if the value is increasing compared to the previous value
         is_increasing = df["DistanceRoundTrack"] > df["DistanceRoundTrack"].shift(1)
 
         # Get the indices where the value is not increasing
-        not_increasing_indices = is_increasing[
-            is_increasing == False  # noqa: E712
-        ].index.tolist()
+        not_increasing_indices = is_increasing[is_increasing == False].index.tolist()  # noqa: E712
 
         if len(not_increasing_indices) > 1:
-            logging.info(
-                f"Found {len(not_increasing_indices)} not increasing indices"
-            )
+            logging.info(f"Found {len(not_increasing_indices)} not increasing indices")
 
         df = self.analyzer.drop_decreasing(df)
         # dataframes with less than 100 points are not reliable
@@ -96,7 +90,6 @@ class FastLapAnalyzer:
             columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime"],
         )
         return df
-
 
     def get_distance_time(self, lap):
         # find the index where the lap starts, thats where CurrentLapTime is minimal
@@ -123,12 +116,8 @@ class FastLapAnalyzer:
         return lap
 
     def get_segments(self, df):
-        throttle_changes = self.get_change_indices(
-            df, "Throttle", threshold=0.95, below=True
-        )
-        brake_changes = self.get_change_indices(
-            df, "Brake", threshold=0.005, below=False
-        )
+        throttle_changes = self.get_change_indices(df, "Throttle", threshold=0.95, below=True)
+        brake_changes = self.get_change_indices(df, "Brake", threshold=0.005, below=False)
 
         throttle_changes = self.remove_close_indices(throttle_changes)
         brake_changes = self.remove_close_indices(brake_changes)
@@ -161,9 +150,7 @@ class FastLapAnalyzer:
                 segment["end"] = end_i
                 segment["speed"] = df["SpeedMs"][start_i]
 
-                avg_data = self.get_average(
-                    df, start_i, end_i, column="Throttle", max=False
-                )
+                avg_data = self.get_average(df, start_i, end_i, column="Throttle", max=False)
                 if len(avg_data) == 0:
                     continue
                 segment |= avg_data
@@ -191,12 +178,8 @@ class FastLapAnalyzer:
                 segment |= avg_data
 
             # get lowest gear in this segment
-            segment["gear"] = df["Gear"][
-                segment["seg_start"] : segment["seg_end"]
-            ].min()
-            segment["speed"] = df["SpeedMs"][
-                segment["seg_start"] : segment["seg_end"]
-            ].min()
+            segment["gear"] = df["Gear"][segment["seg_start"] : segment["seg_end"]].min()
+            segment["speed"] = df["SpeedMs"][segment["seg_start"] : segment["seg_end"]].min()
             segments.append(segment)
 
         track_info = []

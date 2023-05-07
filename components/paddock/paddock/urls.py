@@ -32,7 +32,6 @@ urlpatterns = [
     path("fastlap/", views.fastlap_index, name="fastlap_index"),
     path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
-    # path("stewards/", include("stewards.urls")),
     path("admin/", admin.site.urls),
     path("explorer/", include("explorer.urls")),
     path("django_plotly_dash/", include("django_plotly_dash.urls")),
