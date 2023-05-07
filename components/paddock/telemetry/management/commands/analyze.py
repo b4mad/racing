@@ -50,9 +50,7 @@ class Command(BaseCommand):
         )
         parser.add_argument("-i", "--import-csv", nargs="*", type=str, default=None)
         parser.add_argument("--from-bucket", nargs="?", type=str, default="racing")
-        parser.add_argument(
-            "-n", "--new", action="store_true", help="only analyze new coaches"
-        )
+        parser.add_argument("-n", "--new", action="store_true", help="only analyze new coaches")
         parser.add_argument(
             "-s",
             "--save-csv",
@@ -71,9 +69,7 @@ class Command(BaseCommand):
             game, created = Game.objects.get_or_create(name="iRacing")
             rcar, created = Car.objects.get_or_create(name=car, game=game)
             rtrack, created = Track.objects.get_or_create(name=track, game=game)
-            fast_lap, created = FastLap.objects.get_or_create(
-                car=rcar, track=rtrack, game=game
-            )
+            fast_lap, created = FastLap.objects.get_or_create(car=rcar, track=rtrack, game=game)
 
             with open(csv_file, mode="r") as infile:
                 reader = csv.DictReader(infile)
@@ -112,9 +108,7 @@ class Command(BaseCommand):
                     print(segment)
                     print(created)
 
-            self.stdout.write(
-                self.style.SUCCESS('Successfully imported "%s"' % csv_file)
-            )
+            self.stdout.write(self.style.SUCCESS('Successfully imported "%s"' % csv_file))
 
     def handle(self, *args, **options):
         influx = Influx()
@@ -193,12 +187,8 @@ class Command(BaseCommand):
                 continue
 
             if options["new"]:
-                if FastLap.objects.filter(
-                    car=car, track=track, game=game, driver=None
-                ).exists():
-                    logging.info(
-                        f"Fastlap already exists for {game.name} / {track.name} / {car.name}"
-                    )
+                if FastLap.objects.filter(car=car, track=track, game=game, driver=None).exists():
+                    logging.info(f"Fastlap already exists for {game.name} / {track.name} / {car.name}")
                     continue
 
             logging.info(f"{count} laps for {game.name} / {track.name} / {car.name}")
@@ -250,8 +240,7 @@ class Command(BaseCommand):
                         influx_fast_sessions.remove(session.session_id)
                         continue
                     influx.copy_session(
-                        session.session_id, start=session.start, end=session.end,
-                        from_bucket=from_bucket
+                        session.session_id, start=session.start, end=session.end, from_bucket=from_bucket
                     )
 
             if options["save_csv"]:
@@ -275,7 +264,8 @@ class Command(BaseCommand):
                 if result:
                     track_info = result[0]
                     data = result[1]
-                    self.save_fastlap(track_info, data, car=car, track=track, game=game)
+                    used_laps = result[2]
+                    self.save_fastlap(track_info, data, laps=used_laps, car=car, track=track, game=game)
 
         if options["save_csv"]:
             csv_file.close()
@@ -284,16 +274,13 @@ class Command(BaseCommand):
             logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
     def create_empty(self, car=None, track=None, game=None):
-        fast_lap, created = FastLap.objects.get_or_create(
-            car=car, track=track, game=game, driver=None
-        )
+        fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
         logging.debug(f"created: {created}, fast_lap: {fast_lap}")
 
-    def save_fastlap(self, track_info, data, car=None, track=None, game=None):
-        fast_lap, created = FastLap.objects.get_or_create(
-            car=car, track=track, game=game, driver=None
-        )
+    def save_fastlap(self, track_info, data, laps=None, car=None, track=None, game=None):
+        fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
         fast_lap.data = data
+        fast_lap.laps.set(laps)
         fast_lap.save()
         fast_lap.fast_lap_segments.all().delete()
         i = 1
@@ -304,9 +291,5 @@ class Command(BaseCommand):
             i += 1
         # also delete user segments
         # FIXME only delete user segements if they changed?
-        r = (
-            FastLap.objects.filter(car=car, track=track, game=game)
-            .exclude(driver=None)
-            .delete()
-        )
+        r = FastLap.objects.filter(car=car, track=track, game=game).exclude(driver=None).delete()
         logging.debug(f"deleted {r} user segments")
