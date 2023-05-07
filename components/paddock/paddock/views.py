@@ -15,9 +15,9 @@ def fastlap_view(request, template_name="fastlap.html", fastlap_id="", **kwargs)
 
 def fastlap_index(request, template_name="fastlap_index.html"):
     # fast_laps = FastLap.objects.filter(driver=None).all()
-    fast_laps = (
-        FastLap.objects.select_related("game", "car", "track").filter(driver=None).all()
-    )
+    fast_laps = FastLap.objects.select_related("game", "car", "track").filter(driver=None).all()
+    # sort by str representation of fastlap
+    fast_laps = sorted(fast_laps, key=lambda x: str(x))
     context = {
         "fast_laps": fast_laps,
     }
