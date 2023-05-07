@@ -13,5 +13,20 @@
       "track": 409,
       "car": 9
     }
+  },
+  {
+    "model": "telemetry.lap",
+    "pk": 40781,
+    "fields": {
+      "number": 18,
+      "start": "2023-05-06T18:18:12.119Z",
+      "end": "2023-05-06T18:19:56.392Z",
+      "time": 104.26001,
+      "length": 6435,
+      "valid": true,
+      "session": 26684,
+      "track": 83,
+      "car": 351
+    }
   }
 ]

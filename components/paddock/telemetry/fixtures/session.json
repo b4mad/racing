@@ -10,5 +10,17 @@
       "session_type": 2,
       "game": 1
     }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 26684,
+    "fields": {
+      "session_id": "1683388042",
+      "start": "2023-05-06T17:47:21.475Z",
+      "end": "2023-05-06T19:08:39.206Z",
+      "driver": 1,
+      "session_type": 2,
+      "game": 5
+    }
   }
 ]

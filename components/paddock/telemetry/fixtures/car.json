@@ -6,5 +6,13 @@
       "name": "Ferrari 488 GT3 Evo 2020",
       "game": 1
     }
+  },
+  {
+    "model": "telemetry.car",
+    "pk": 351,
+    "fields": {
+      "name": "Reynard 95i Ford-Cosworth",
+      "game": 5
+    }
   }
 ]
