@@ -4,14 +4,22 @@
   <div class="card-body">
     <div class="container">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
           <h3>Coaches</h3>
-
-          <ul>
+          <table>
+            <tr>
+              <th>game</th>
+              <th>car</th>
+              <th>track</th>
+            </tr>
             {% for lap in fast_laps %}
-            <li><a href="/fastlap/{{ lap.pk }}">{{ lap }}</a></li>
+            <tr>
+              <td>{{ lap.game }}</td>
+              <td>{{ lap.car }}</td>
+              <td><a href="/fastlap/{{ lap.pk }}">{{ lap.track }}</a></td>
+            </tr>
             {% endfor %}
-          </ul>
+          </table>
         </div>
       </div>
     </div>
