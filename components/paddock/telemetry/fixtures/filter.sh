@@ -9,3 +9,6 @@ jq '[.[] | select(.fields.car == 9 and .fields.track == 409 )]' ../fixtures.all/
 jq '[.[] | select(.fields.fast_lap == 157 )]' ../fixtures.all/fastlapsegment.json > fastlapsegment.json
 jq '[.[] | select(.pk == 10 )]' ../fixtures.all/coach.json > coach.json
 jq '[.[] | select(.pk == 10 )]' ../fixtures.all/driver.json > driver.json
+jq '[.[] | select(.pk == 37672 )]' ../fixtures.all/lap.json > lap.json
+jq '[.[] | select(.pk == 24222 )]' ../fixtures.all/session.json > session.json
+cp ../fixtures.all/sessiontype.json sessiontype.json

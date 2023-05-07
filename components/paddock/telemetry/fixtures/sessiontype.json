@@ -1,0 +1,37 @@
+[
+{
+  "model": "telemetry.sessiontype",
+  "pk": 1,
+  "fields": {
+    "type": "Practice"
+  }
+},
+{
+  "model": "telemetry.sessiontype",
+  "pk": 2,
+  "fields": {
+    "type": "Race"
+  }
+},
+{
+  "model": "telemetry.sessiontype",
+  "pk": 3,
+  "fields": {
+    "type": "LonePractice"
+  }
+},
+{
+  "model": "telemetry.sessiontype",
+  "pk": 4,
+  "fields": {
+    "type": "Qualify"
+  }
+},
+{
+  "model": "telemetry.sessiontype",
+  "pk": 5,
+  "fields": {
+    "type": "HotLap"
+  }
+}
+]

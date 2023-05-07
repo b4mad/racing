@@ -109,7 +109,7 @@ class Influx:
             lap_number = lap.number
 
             logging.info(
-                f"Processing {game} {track} : session {session} : "
+                f"Processing {game} - {track} - {lap.car} : session {session} : "
                 + f"lap.id {lap.id} : length {lap.length} : time {lap.time}"
             )
 

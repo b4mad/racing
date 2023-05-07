@@ -1,0 +1,14 @@
+[
+  {
+    "model": "telemetry.session",
+    "pk": 24222,
+    "fields": {
+      "session_id": "1682107191",
+      "start": "2023-04-21T21:59:50.421Z",
+      "end": "2023-04-21T22:13:13.386Z",
+      "driver": 10,
+      "session_type": 2,
+      "game": 1
+    }
+  }
+]

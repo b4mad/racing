@@ -1,0 +1,17 @@
+[
+  {
+    "model": "telemetry.lap",
+    "pk": 37672,
+    "fields": {
+      "number": 4,
+      "start": "2023-04-21T22:04:53.148Z",
+      "end": "2023-04-21T22:06:30.157Z",
+      "time": 97.0107,
+      "length": 4459,
+      "valid": true,
+      "session": 24222,
+      "track": 409,
+      "car": 9
+    }
+  }
+]
