@@ -3,7 +3,7 @@
     "model": "telemetry.coach",
     "pk": 10,
     "fields": {
-      "error": "start coaching for game iRacingon track lemans fullin car Ferrari 488 GT3 Evo 2020",
+      "error": "no data found for game Automobilista 2on track Bathurst:Bathurst_2020in car Roco 001",
       "enabled": true
     }
   }

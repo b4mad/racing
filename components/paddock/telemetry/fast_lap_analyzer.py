@@ -6,11 +6,17 @@ from .analyzer import Analyzer
 
 
 class FastLapAnalyzer:
-    def __init__(self, laps, bucket="fast_laps"):
-        self.influx = Influx()
+    def __init__(self, laps = [], bucket="fast_laps"):
         self.analyzer = Analyzer()
         self.laps = laps
         self.bucket = bucket
+        self.influx_client = None
+
+    def influx(self):
+        if not self.influx_client:
+            self.influx_client = Influx()
+        return self.influx_client
+
 
     def assert_can_analyze(self):
         # game = self.laps[0].session.game
@@ -35,7 +41,7 @@ class FastLapAnalyzer:
             return
 
         for lap in self.laps:
-            laps = self.influx.telemetry_for_laps(
+            laps = self.influx().telemetry_for_laps(
                 [lap], measurement="fast_laps", bucket=self.bucket
             )
             if len(laps) == 0:
@@ -43,30 +49,13 @@ class FastLapAnalyzer:
                 continue
 
             df = laps[0]
-            # Check if the value is increasing compared to the previous value
-            is_increasing = df["DistanceRoundTrack"] > df["DistanceRoundTrack"].shift(1)
 
-            # Get the indices where the value is not increasing
-            not_increasing_indices = is_increasing[
-                is_increasing == False  # noqa: E712
-            ].index.tolist()
+            return self.analyze_df(df)
 
-            if len(not_increasing_indices) > 1:
-                logging.info(
-                    f"Found {len(not_increasing_indices)} not increasing indices"
-                )
-
-            df = self.analyzer.drop_decreasing(df)
-            # dataframes with less than 100 points are not reliable
-            if len(df) < 100:
-                continue
-            df = df[df["Gear"] != 0]
-            # display(df)
-            df = self.analyzer.resample(
-                df,
-                freq=1,
-                columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime"],
-            )
+    def analyze_df(self, df):
+            df = self.preprocess(df)
+            if df is None:
+                return
 
             segments = self.get_segments(df)
             track_info = sorted(segments, key=lambda k: k["start"])
@@ -81,10 +70,38 @@ class FastLapAnalyzer:
             }
             return [track_info, data]
 
+    def preprocess(self, df):
+        # Check if the value is increasing compared to the previous value
+        is_increasing = df["DistanceRoundTrack"] > df["DistanceRoundTrack"].shift(1)
+
+        # Get the indices where the value is not increasing
+        not_increasing_indices = is_increasing[
+            is_increasing == False  # noqa: E712
+        ].index.tolist()
+
+        if len(not_increasing_indices) > 1:
+            logging.info(
+                f"Found {len(not_increasing_indices)} not increasing indices"
+            )
+
+        df = self.analyzer.drop_decreasing(df)
+        # dataframes with less than 100 points are not reliable
+        if len(df) < 100:
+            return
+        df = df[df["Gear"] != 0]
+        # display(df)
+        df = self.analyzer.resample(
+            df,
+            freq=1,
+            columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime"],
+        )
+        return df
+
+
     def get_distance_time(self, lap):
         # find the index where the lap starts, thats where CurrentLapTime is minimal
         # only keep the part of the lap after the start
-        lap = lap[["id", "DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
         lap = self.analyzer.resample(lap, freq=1, columns=["CurrentLapTime", "SpeedMs"])
         lap_start = lap["CurrentLapTime"].idxmin()
 

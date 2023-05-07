@@ -1,50 +1,50 @@
 [
   {
     "model": "telemetry.fastlapsegment",
-    "pk": 1929,
+    "pk": 99963,
     "fields": {
       "turn": "1",
-      "start": 586,
-      "end": 812,
+      "start": 573,
+      "end": 775,
       "brake": 0,
       "turn_in": 0,
-      "force": 99,
-      "gear": 1,
+      "force": 79,
+      "gear": 2,
       "stop": 0,
       "accelerate": 0,
-      "speed": 20,
+      "speed": 17,
       "mark": "brake",
       "fast_lap": 157
     }
   },
   {
     "model": "telemetry.fastlapsegment",
-    "pk": 1930,
+    "pk": 99964,
     "fields": {
       "turn": "2",
-      "start": 1198,
-      "end": 1312,
+      "start": 1204,
+      "end": 1360,
       "brake": 0,
       "turn_in": 0,
-      "force": 91,
+      "force": 41,
       "gear": 4,
       "stop": 0,
       "accelerate": 0,
-      "speed": 42,
+      "speed": 43,
       "mark": "brake",
       "fast_lap": 157
     }
   },
   {
     "model": "telemetry.fastlapsegment",
-    "pk": 1931,
+    "pk": 99965,
     "fields": {
       "turn": "3",
-      "start": 1497,
-      "end": 1756,
+      "start": 1462,
+      "end": 1807,
       "brake": 0,
       "turn_in": 0,
-      "force": 1,
+      "force": 0,
       "gear": 4,
       "stop": 0,
       "accelerate": 0,
@@ -55,73 +55,91 @@
   },
   {
     "model": "telemetry.fastlapsegment",
-    "pk": 1932,
+    "pk": 99966,
     "fields": {
       "turn": "4",
-      "start": 1889,
-      "end": 2045,
+      "start": 1877,
+      "end": 2027,
       "brake": 0,
       "turn_in": 0,
-      "force": 97,
+      "force": 59,
       "gear": 2,
       "stop": 0,
       "accelerate": 0,
-      "speed": 23,
+      "speed": 28,
       "mark": "brake",
       "fast_lap": 157
     }
   },
   {
     "model": "telemetry.fastlapsegment",
-    "pk": 1933,
+    "pk": 99967,
     "fields": {
       "turn": "5",
-      "start": 2688,
-      "end": 2820,
-      "brake": 0,
-      "turn_in": 0,
-      "force": 99,
-      "gear": 3,
-      "stop": 0,
-      "accelerate": 0,
-      "speed": 33,
-      "mark": "brake",
-      "fast_lap": 157
-    }
-  },
-  {
-    "model": "telemetry.fastlapsegment",
-    "pk": 1934,
-    "fields": {
-      "turn": "6",
-      "start": 2981,
-      "end": 3380,
-      "brake": 0,
-      "turn_in": 0,
-      "force": 96,
-      "gear": 2,
-      "stop": 0,
-      "accelerate": 0,
-      "speed": 22,
-      "mark": "brake",
-      "fast_lap": 157
-    }
-  },
-  {
-    "model": "telemetry.fastlapsegment",
-    "pk": 1935,
-    "fields": {
-      "turn": "7",
-      "start": 3500,
-      "end": 3653,
+      "start": 2676,
+      "end": 2823,
       "brake": 0,
       "turn_in": 0,
       "force": 73,
+      "gear": 4,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 37,
+      "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 99968,
+    "fields": {
+      "turn": "6",
+      "start": 2974,
+      "end": 3109,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 38,
       "gear": 2,
       "stop": 0,
       "accelerate": 0,
-      "speed": 23,
+      "speed": 27,
       "mark": "brake",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 99969,
+    "fields": {
+      "turn": "7",
+      "start": 3198,
+      "end": 3374,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 0,
+      "gear": 2,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 24,
+      "mark": "throttle",
+      "fast_lap": 157
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 99970,
+    "fields": {
+      "turn": "8",
+      "start": 3462,
+      "end": 3638,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 0,
+      "gear": 2,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 24,
+      "mark": "throttle",
       "fast_lap": 157
     }
   }

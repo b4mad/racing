@@ -1,6 +1,13 @@
 [
   {
     "model": "telemetry.driver",
+    "pk": 1,
+    "fields": {
+      "name": "Jim"
+    }
+  },
+  {
+    "model": "telemetry.driver",
     "pk": 10,
     "fields": {
       "name": "durandom"

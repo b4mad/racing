@@ -22,9 +22,7 @@ class Influx:
             "B4MAD_RACING_INFLUX_TOKEN",
             "A4Wyqh-I6rYc-HD9frSpx66gHZRfwdwCqDLoNUnIaGNK1sXScMSIiob2JTfvBt3kyrXByZ_DnECs8IhYNHwoVg==",
         )
-        self.url = os.environ.get(
-            "B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/"
-        )
+        self.url = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
 
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
@@ -82,12 +80,8 @@ class Influx:
                                 + f"lap #{lap_number: >2} : length {length} : time {lap_time}"
                             )
                             # 2022-12-05 19:52:18.141110+00:00
-                            start = datetime.strptime(
-                                lap["start"], "%Y-%m-%d %H:%M:%S.%f%z"
-                            )
-                            end = datetime.strptime(
-                                lap["end"], "%Y-%m-%d %H:%M:%S.%f%z"
-                            )
+                            start = datetime.strptime(lap["start"], "%Y-%m-%d %H:%M:%S.%f%z")
+                            end = datetime.strptime(lap["end"], "%Y-%m-%d %H:%M:%S.%f%z")
 
                             df = self.session_df(
                                 session,
@@ -108,10 +102,11 @@ class Influx:
             track = lap.track.name
             lap_number = lap.number
 
-            logging.info(
-                f"Processing {game} {track} : session {session} : "
-                + f"lap.id {lap.id} : length {lap.length} : time {lap.time}"
-            )
+            logging.info(f"Processing {game} - {track} - {lap.car}")
+            logging.info(f"  track.id {lap.track.id} car.id {lap.car.id}")
+            logging.info(f"  session {session} lap.id {lap.id} number {lap_number}")
+            logging.info(f"  length {lap.length} time {lap.time} valid {lap.valid}")
+            logging.info(f"  start {lap.start} end {lap.end}")
 
             try:
                 df = self.session_df(
@@ -152,9 +147,7 @@ class Influx:
             end = lap.end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             session_id = lap.session.session_id
 
-        logging.debug(
-            f"session_id: {session_id}, start: {start}, end: {end}, lap_numbers: {lap_numbers}"
-        )
+        logging.debug(f"session_id: {session_id}, start: {start}, end: {end}, lap_numbers: {lap_numbers}")
 
         if lap_numbers and session_id:
             for lap_number in lap_numbers:
@@ -358,9 +351,7 @@ class Influx:
             pass
 
     async def run_query_async(self, query):
-        async with InfluxDBClientAsync(
-            url=self.url, token=self.token, org=self.org
-        ) as client:
+        async with InfluxDBClientAsync(url=self.url, token=self.token, org=self.org) as client:
             # Stream of FluxRecords
             query_api = client.query_api()
             records = await query_api.query_stream(query)
@@ -377,9 +368,7 @@ class Influx:
             _measurement="laps_cc"
         """
 
-        self.influx.delete_api().delete(
-            start=start, stop=end, predicate=predicate, bucket="racing"
-        )
+        self.influx.delete_api().delete(start=start, stop=end, predicate=predicate, bucket="racing")
 
 
 # def track(influx):
