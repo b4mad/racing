@@ -1,10 +1,6 @@
 from django.test import TransactionTestCase
-from telemetry.pitcrew.coach import Coach as PitCrewCoach
-from telemetry.pitcrew.history import History
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
 from telemetry.analyzer import Analyzer
-from telemetry.models import Driver
-import time
 from .utils import get_lap_df, get_session_df
 from pprint import pprint  # noqa
 import pandas as pd
@@ -22,7 +18,7 @@ class TestFastLapAnalyser(TransactionTestCase):
         "coach.json",
         "session.json",
         "lap.json",
-        "sessiontype.json"
+        "sessiontype.json",
     ]
 
     def test_analyze(self):
@@ -53,14 +49,14 @@ class TestFastLapAnalyser(TransactionTestCase):
         lap_df = get_lap_df(lap_id)
         fast_lap_analyzer = FastLapAnalyzer()
         segments = [
-            {'end': 775, 'force': 79.0, 'gear': 2.0, 'mark': 'brake', 'speed': 17.2139874, 'start': 573},
-            {'end': 1360, 'force': 41.0, 'gear': 4.0, 'mark': 'brake', 'speed': 43.4393044, 'start': 1204},
-            {'end': 1807, 'force': 0.0, 'gear': 4.0, 'mark': 'throttle', 'speed': 44.4776535, 'start': 1462},
-            {'end': 2027, 'force': 59.0, 'gear': 2.0, 'mark': 'brake', 'speed': 28.81261, 'start': 1877},
-            {'end': 2823, 'force': 73.0, 'gear': 4.0, 'mark': 'brake', 'speed': 37.3594437, 'start': 2676},
-            {'end': 3109, 'force': 38.0, 'gear': 2.0, 'mark': 'brake', 'speed': 27.04253, 'start': 2974},
-            {'end': 3374, 'force': 0.0, 'gear': 2.0, 'mark': 'throttle', 'speed': 24.6307, 'start': 3198},
-            {'end': 3638, 'force': 0.0, 'gear': 2.0, 'mark': 'throttle', 'speed': 24.46673, 'start': 3462}
+            {"end": 775, "force": 79.0, "gear": 2.0, "mark": "brake", "speed": 17.2139874, "start": 573},
+            {"end": 1360, "force": 41.0, "gear": 4.0, "mark": "brake", "speed": 43.4393044, "start": 1204},
+            {"end": 1807, "force": 0.0, "gear": 4.0, "mark": "throttle", "speed": 44.4776535, "start": 1462},
+            {"end": 2027, "force": 59.0, "gear": 2.0, "mark": "brake", "speed": 28.81261, "start": 1877},
+            {"end": 2823, "force": 73.0, "gear": 4.0, "mark": "brake", "speed": 37.3594437, "start": 2676},
+            {"end": 3109, "force": 38.0, "gear": 2.0, "mark": "brake", "speed": 27.04253, "start": 2974},
+            {"end": 3374, "force": 0.0, "gear": 2.0, "mark": "throttle", "speed": 24.6307, "start": 3198},
+            {"end": 3638, "force": 0.0, "gear": 2.0, "mark": "throttle", "speed": 24.46673, "start": 3462},
         ]
 
         (track_info, data) = fast_lap_analyzer.analyze_df(lap_df)
@@ -76,14 +72,13 @@ class TestFastLapAnalyser(TransactionTestCase):
         fast_lap_analyzer = FastLapAnalyzer()
         pprint(fast_lap_analyzer.analyze_df(session_df))
 
-
     def _create_synthetic_dataframe(self):
         np.random.seed(42)
         distance_round_track = np.linspace(0, 1000, 2000)
         brake = np.random.uniform(0, 1, 2000)
         gear = np.random.randint(0, 6, 2000)
 
-        df = pd.DataFrame({'DistanceRoundTrack': distance_round_track, 'Brake': brake, 'Gear': gear})
+        df = pd.DataFrame({"DistanceRoundTrack": distance_round_track, "Brake": brake, "Gear": gear})
         return df
 
     def test_resample(self):
@@ -93,6 +88,4 @@ class TestFastLapAnalyser(TransactionTestCase):
         for freq in [0.5, 1, 2, 2.5]:
             resampled_df = analyzer.resample(df, ["Brake", "Gear"], freq=freq)
             # print(resampled_df.head())
-            self.assertEqual(len(resampled_df), 1000/freq)
-
-
+            self.assertEqual(len(resampled_df), 1000 / freq)
