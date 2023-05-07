@@ -1,7 +1,7 @@
 from django.test import TransactionTestCase
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
 from telemetry.analyzer import Analyzer
-from .utils import get_lap_df, get_session_df
+from .utils import get_lap_df
 from pprint import pprint  # noqa
 import pandas as pd
 import numpy as np
@@ -34,7 +34,11 @@ class TestFastLapAnalyser(TransactionTestCase):
         #  2: 16:43:49 - 16:45:27 97.924s 4459m valid: True
         #  4: 15:05:04 - 15:06:42 97.9808s 4459m valid: True
         #  Influx: Connected to http://influxdb2.b4mad-racing.svc.cluster.local:8086/
-        # Processing iRacing fuji nochicane : session 1682107191 : lap.id 37672 : length 4459 : time 97.0107
+        #  Processing iRacing - fuji nochicane - Ferrari 488 GT3 Evo 2020
+        #    track.id 409 car.id 9
+        #    session 1682107191 lap.id 37672 number 4
+        #    length 4459 time 97.0107 valid True
+        #    start 2023-04-21 22:04:53.148000+00:00 end 2023-04-21 22:06:30.157000+00:00
         # Found 5 not increasing indices
         #  mark start end gear force speed
         # 0 brake 573 775 2.0 79.0 17.2
@@ -60,17 +64,30 @@ class TestFastLapAnalyser(TransactionTestCase):
         ]
 
         (track_info, data) = fast_lap_analyzer.analyze_df(lap_df)
-        pprint(track_info, width=200)
+        # pprint(track_info, width=200)
         self.assertEqual(track_info, segments)
 
     def test_analyze_2(self):
         # Processing Automobilista 2 Road_America:Road_America_RC
         #    Reynard 95i Ford-Cosworth
         #    : session 1683388042 : lap.id 40781 : length 6435 : time 104.26001
-        session_id = "1683388042"
-        session_df = get_session_df(session_id)
+        lap_id = 40781
+        lap_df = get_lap_df(lap_id)
         fast_lap_analyzer = FastLapAnalyzer()
-        pprint(fast_lap_analyzer.analyze_df(session_df))
+        segments = [
+            {"end": 738, "force": 97.0, "gear": 3.0, "mark": "brake", "speed": 51.6653442, "start": 501},
+            {"end": 1190, "force": 100.0, "gear": 2.0, "mark": "brake", "speed": 38.2091522, "start": 988},
+            {"end": 2342, "force": 97.0, "gear": 1.0, "mark": "brake", "speed": 28.5301781, "start": 2091},
+            {"end": 2653, "force": 83.0, "gear": 1.0, "mark": "brake", "speed": 30.9640713, "start": 2488},
+            {"end": 2861, "force": 37.0, "gear": 3.0, "mark": "throttle", "speed": 58.16961, "start": 2776},
+            {"end": 3296, "force": 88.0, "gear": 1.0, "mark": "brake", "speed": 29.4386826, "start": 3113},
+            {"end": 3724, "force": 30.0, "gear": 3.0, "mark": "throttle", "speed": 55.9043846, "start": 3408},
+            {"end": 5158, "force": 98.0, "gear": 1.0, "mark": "brake", "speed": 35.71367, "start": 4940},
+            {"end": 5386, "force": 15.0, "gear": 3.0, "mark": "throttle", "speed": 61.6778336, "start": 5348},
+        ]
+        (track_info, data) = fast_lap_analyzer.analyze_df(lap_df)
+        pprint(track_info, width=200)
+        self.assertEqual(track_info, segments)
 
     def _create_synthetic_dataframe(self):
         np.random.seed(42)

@@ -11,20 +11,23 @@ class Analyzer:
     def __init__(self):
         pass
 
-    def resample(self, df, columns=["Brake", "SpeedMs"], method='nearest', freq=1):
+    def resample(self, df, columns=["Brake", "SpeedMs"], method="nearest", freq=1):
+        df = df.replace({None: np.nan}).dropna(subset=["DistanceRoundTrack"])
+
         target_rows = int(df["DistanceRoundTrack"].max() / freq)
-        min_distance = df['DistanceRoundTrack'].min()
-        max_distance = df['DistanceRoundTrack'].max()
+        min_distance = df["DistanceRoundTrack"].min()
+        max_distance = df["DistanceRoundTrack"].max()
 
         new_distance_round_track = np.linspace(min_distance, max_distance, target_rows)
 
         new_distance_round_track = np.round(new_distance_round_track, decimals=2)
         new_distance_round_track[0] = max(new_distance_round_track[0], min_distance)
+        new_distance_round_track[-1] = min(new_distance_round_track[-1], max_distance)
 
-        resampled_df = pd.DataFrame({'DistanceRoundTrack': new_distance_round_track})
+        resampled_df = pd.DataFrame({"DistanceRoundTrack": new_distance_round_track})
 
         for column in columns:
-            interp = interp1d(df['DistanceRoundTrack'], df[column], kind=method)
+            interp = interp1d(df["DistanceRoundTrack"], df[column], kind=method)
             interpolated_values = interp(new_distance_round_track)
 
             if np.issubdtype(df[column].dtype, np.integer):
@@ -47,17 +50,11 @@ class Analyzer:
         # Find local peaks
 
         if column == "Gear":
-            min = df.iloc[argrelextrema(df[column].values, np.less_equal, order=n)[0]][
-                column
-            ]
-            max = df.iloc[
-                argrelextrema(df[column].values, np.greater_equal, order=n)[0]
-            ][column]
+            min = df.iloc[argrelextrema(df[column].values, np.less_equal, order=n)[0]][column]
+            max = df.iloc[argrelextrema(df[column].values, np.greater_equal, order=n)[0]][column]
         else:
             min = df.iloc[argrelextrema(df[column].values, np.less, order=n)[0]][column]
-            max = df.iloc[argrelextrema(df[column].values, np.greater, order=n)[0]][
-                column
-            ]
+            max = df.iloc[argrelextrema(df[column].values, np.greater, order=n)[0]][column]
 
         # select only the indexes of minima and maximma in the original dataframe
         min_max = df.loc[min.index.union(max.index)]
@@ -67,14 +64,12 @@ class Analyzer:
         if mode == "min":
             # now find the local minima again
             real = min_max[column][
-                (min_max[column].shift(1) >= min_max[column])
-                & (min_max[column].shift(-1) > min_max[column])
+                (min_max[column].shift(1) >= min_max[column]) & (min_max[column].shift(-1) > min_max[column])
             ]
         else:
             # now find the local maxima again
             real = min_max[column][
-                (min_max[column].shift(1) <= min_max[column])
-                & (min_max[column].shift(-1) < min_max[column])
+                (min_max[column].shift(1) <= min_max[column]) & (min_max[column].shift(-1) < min_max[column])
             ]
 
         return df.loc[real.index]
@@ -85,12 +80,8 @@ class Analyzer:
         # df['max'] = df.Gear[(df.Gear.shift(1) <= df.Gear) & (df.Gear.shift(-1) < df.Gear)]
         # df = in_df.copy()
 
-        min = df[column][
-            (df[column].shift(1) >= df[column]) & (df[column].shift(-1) > df[column])
-        ]
-        max = df[column][
-            (df[column].shift(1) <= df[column]) & (df[column].shift(-1) < df[column])
-        ]
+        min = df[column][(df[column].shift(1) >= df[column]) & (df[column].shift(-1) > df[column])]
+        max = df[column][(df[column].shift(1) <= df[column]) & (df[column].shift(-1) < df[column])]
 
         # select only the indexes of minima in the original dataframe
         min_max = df.loc[min.index.union(max.index)]
@@ -99,8 +90,7 @@ class Analyzer:
 
         # now find the local minima again
         real_min = min_max[column][
-            (min_max[column].shift(1) >= min_max[column])
-            & (min_max[column].shift(-1) > min_max[column])
+            (min_max[column].shift(1) >= min_max[column]) & (min_max[column].shift(-1) > min_max[column])
         ]
         return df.loc[real_min.index]
 

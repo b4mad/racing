@@ -21,7 +21,7 @@ def process_dataframe(df):
 
 def get_session_df(session_id, measurement="fast_laps", bucket="fast_laps"):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_path = f"{dir_path}/data/{session_id}_df.csv.gz"
+    file_path = f"{dir_path}/data/session_{session_id}_df.csv.gz"
 
     if os.path.exists(file_path):
         session_df = read_dataframe(file_path)
@@ -35,7 +35,7 @@ def get_session_df(session_id, measurement="fast_laps", bucket="fast_laps"):
 
 def get_lap_df(lap_id, measurement="fast_laps", bucket="fast_laps"):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    file_path = f"{dir_path}/data/{lap_id}_df.csv.gz"
+    file_path = f"{dir_path}/data/lap_{lap_id}_df.csv.gz"
 
     if os.path.exists(file_path):
         lap_df = read_dataframe(file_path)
