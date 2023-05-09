@@ -35,18 +35,19 @@ spec:
       #       cpu: 200m
       repos:
         - name: repo1
-          # schedules:
-          #   # Every sunday at 01:00 full backup
-          #   full: "0 1 * * 0"
-          #   # Monday through saturday at 01:00 differential backup
-          #   differential: "0 1 * * 1-6"
+          schedules:
+            # Every sunday at 01:00 full backup
+            # full: "0 1 * * 0"
+            # Monday through saturday at 01:00 differential backup
+            # differential: "0 1 * * 1-6"
+            full: "0 */4 * * *"
           volume:
             volumeClaimSpec:
               accessModes:
                 - "ReadWriteOnce"
               resources:
                 requests:
-                  storage: 2Gi
+                  storage: 4Gi
   # proxy:
   #   pgBouncer:
   #     image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1
