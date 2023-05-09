@@ -11,6 +11,262 @@ class Analyzer:
     def __init__(self):
         pass
 
+    def meters_section(self, df):
+        first = df.iloc[0]["DistanceRoundTrack"]
+        last = df.iloc[-1]["DistanceRoundTrack"]
+        return last - first
+
+    def split_sectors(self, df, threshold=None, min_length=10):
+        if threshold is None:
+            threshold = df["Throttle"].max() * 0.98
+        # Step 1: Find all rows where Throttle starts to drop below the threshold
+        start = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(1) >= threshold)].index
+
+        # Step 3: Split the dataframe into sections
+        sectors = []
+        for i in range(len(start)):
+            if i < len(start) - 1:
+                sector = df.iloc[start[i] : start[i + 1]]
+            else:
+                sector = df.iloc[start[i] :]
+
+            below_threshold = sector[sector["Throttle"] < threshold]
+            if i and self.meters_section(below_threshold) < min_length:
+                # append to previous sector
+                sectors[-1] = pd.concat([sectors[-1], sector])
+            else:
+                sectors.append(sector)
+
+        # check the length of the first sector
+        # if its too short, then append it to the append the second sector and remove the second sector
+        below_threshold = sectors[0][sectors[0]["Throttle"] < threshold]
+        if self.meters_section(below_threshold) < min_length:
+            sectors[0] = pd.concat([sectors[0], sectors[1]])
+            sectors.pop(1)
+
+        # Step 4: Return a list of dataframes, one for each section
+        return sectors
+
+    def extract_sector_start_end(self, sectors, threshold=0.98, track_length=0, min_length=10):
+        sector_start_end = []
+
+        # Calculate the maximum DistanceRoundTrack value of all sectors
+        if track_length == 0:
+            track_length = max([sector["DistanceRoundTrack"].max() for sector in sectors])
+
+        for i, sector in enumerate(sectors):
+            # Rule 1: A sector N starts 10 meters earlier than the first row of a DataFrame
+            start = int((sector["DistanceRoundTrack"].iloc[0] - 10) % track_length)
+
+            # Rule 1a: Unless the previous DataFrame for sector N-1 has Throttle input below threshold
+            # at the calculated start of N
+            if i > 0:
+                prev_sector = sectors[i - 1]
+                prev_sector_last_row = prev_sector.iloc[-1]
+                if prev_sector_last_row["Throttle"] < threshold and prev_sector_last_row["DistanceRoundTrack"] >= start:
+                    start = int(prev_sector_last_row["DistanceRoundTrack"])
+
+            # Rule 2: The last sector ends where the first sector starts
+            if i == len(sectors) - 1:
+                end = int((sectors[0]["DistanceRoundTrack"].iloc[0] - 11) % track_length)
+            else:
+                end = int(
+                    (sectors[i + 1]["DistanceRoundTrack"].iloc[0] - 11) % track_length
+                )  # Subtract 11 to make the boundaries exactly one meter apart
+
+            length = int((end - start) % track_length)
+
+            # Merge sectors shorter than the threshold with the previous sector
+            if i > 0 and length < min_length:
+                sector_start_end[-1]["end"] = end
+                sector_start_end[-1]["length"] = (
+                    sector_start_end[-1]["end"] - sector_start_end[-1]["start"]
+                ) % track_length
+            else:
+                sector_start_end.append({"start": start, "end": end, "length": length})
+        return sector_start_end
+
+    def section_df(self, track_df, start, end):
+        # Calculate the maximum DistanceRoundTrack value
+        max_distance = track_df["DistanceRoundTrack"].max()
+
+        if end < start:
+            # Wrap around the max_distance
+            first_part = track_df[
+                (track_df["DistanceRoundTrack"] >= start) & (track_df["DistanceRoundTrack"] <= max_distance)
+            ]
+            second_part = track_df[(track_df["DistanceRoundTrack"] >= 0) & (track_df["DistanceRoundTrack"] <= end)]
+            sector_df = pd.concat([first_part, second_part], axis=0).reset_index(drop=True)
+        else:
+            sector_df = track_df[
+                (track_df["DistanceRoundTrack"] >= start) & (track_df["DistanceRoundTrack"] <= end)
+            ].reset_index(drop=True)
+
+        return sector_df
+
+    def sector_type(self, sector_df, brake_threshold=0.1):
+        # Rule 1: If the brake column is always below a threshold then throttle
+        if sector_df["Brake"].max() < brake_threshold:
+            return "throttle"
+        # Rule 2: Otherwise brake
+        else:
+            return "brake"
+
+    def brake_window(self, sector_df, threshold=0.1):
+        above_threshold = sector_df[sector_df["Brake"] > threshold]
+        below_threshold = sector_df[sector_df["Brake"] <= threshold]
+
+        if not above_threshold.empty:
+            start = above_threshold.iloc[0]["DistanceRoundTrack"]
+        else:
+            start = None
+
+        if start is not None and not below_threshold.empty:
+            end_section = below_threshold[below_threshold["DistanceRoundTrack"] > start]
+            if not end_section.empty:
+                end = end_section.iloc[0]["DistanceRoundTrack"]
+            else:
+                end = sector_df.iloc[-1]["DistanceRoundTrack"]
+            # end = below_threshold[below_threshold["DistanceRoundTrack"] > start].iloc[0][
+            #     "DistanceRoundTrack"
+            # ]
+        else:
+            end = None
+
+        return start, end
+
+    def throttle_window(self, sector_df, threshold=0.9):
+        below_threshold = sector_df[sector_df["Throttle"] <= threshold]
+        above_threshold = sector_df[sector_df["Throttle"] > threshold]
+
+        if not below_threshold.empty:
+            start = below_threshold.iloc[0]["DistanceRoundTrack"]
+        else:
+            start = None
+
+        if start is not None and not above_threshold.empty:
+            end_section = above_threshold[above_threshold["DistanceRoundTrack"] > start]
+            if not end_section.empty:
+                end = end_section.iloc[0]["DistanceRoundTrack"]
+            else:
+                end = sector_df.iloc[-1]["DistanceRoundTrack"]
+        else:
+            end = None
+
+        return start, end
+
+    def extract_window_start_end(self, sector_df, threshold, comparison_operator):
+        if comparison_operator == "greater_than":
+            above_threshold = sector_df[sector_df["Brake"] > threshold]
+            below_threshold = sector_df[sector_df["Brake"] <= threshold]
+        elif comparison_operator == "less_than":
+            above_threshold = sector_df[sector_df["Throttle"] >= threshold]
+            below_threshold = sector_df[sector_df["Throttle"] < threshold]
+        else:
+            raise ValueError("Invalid comparison_operator")
+
+        if not above_threshold.empty:
+            window_start = above_threshold.iloc[0]["DistanceRoundTrack"]
+        else:
+            window_start = None
+
+        if window_start is not None and not below_threshold.empty:
+            window_end = below_threshold[below_threshold["DistanceRoundTrack"] > window_start].iloc[0][
+                "DistanceRoundTrack"
+            ]
+        else:
+            window_end = None
+
+        return window_start, window_end
+
+    def get_average(self, search_df, column="Brake", max=True):
+        if max:
+            high = abs(round(search_df[column].max(), 2))
+            low = high * 0.9
+            start = search_df[search_df[column] > low].index.min()
+            end = search_df[search_df[column] > low].index.max()
+        else:
+            low = abs(round(search_df[column].min(), 2))
+            high = low * 1.1
+            if low <= 0.1:
+                high = 0.1
+            start = search_df[search_df[column] < high].index.min()
+            end = search_df[search_df[column] < high].index.max()
+
+        return start, end
+
+    def top_bin(self, df, column="Brake"):
+        bins = pd.cut(df[column], bins=[x / 10 for x in range(11)], include_lowest=True)
+        if column == "Brake":
+            bin_counts = bins.value_counts().drop(bins.cat.categories[:1])
+        else:
+            bin_counts = bins.value_counts().drop(bins.cat.categories[-1:])
+        ascending = column == "Throttle"
+        largest_two_bins = bin_counts.nlargest(2).sort_index(ascending=ascending)
+
+        first_bin, second_bin = largest_two_bins.index
+        first_count, second_count = largest_two_bins.values
+        if first_count and second_count:
+            if first_bin.left == second_bin.right:
+                # both top bins are adjacent
+                return second_bin.left, first_bin.right
+            else:
+                # top bins are not adjacent
+                return first_bin.left, first_bin.right
+        elif first_count:
+            return first_bin.left, first_bin.right
+        elif second_count:
+            return second_bin.left, second_bin.right
+        else:
+            if column == "Brake":
+                return 0, 0.1
+            return 0.9, 1
+
+    def brake_features(self, sector_df, brake_threshold=0.1):
+        start, end = self.brake_window(sector_df, threshold=brake_threshold)
+
+        features = {}
+
+        if start and end:
+            features["start"] = start
+            features["end"] = end
+
+            brake_df = self.section_df(sector_df, start, end)
+            min_force, max_force = self.top_bin(brake_df)
+            peak_force_df = brake_df[(brake_df["Brake"] >= min_force) & (brake_df["Brake"] <= max_force)]
+
+            features["max_start"] = peak_force_df["DistanceRoundTrack"].min()
+            features["max_end"] = peak_force_df["DistanceRoundTrack"].max()
+            features["max_high"] = round(peak_force_df["Brake"].max(), 2)
+            features["max_low"] = round(peak_force_df["Brake"].min(), 2)
+            features["force"] = round(peak_force_df["Brake"].mean(), 2)
+
+        return features
+
+    def throttle_features(self, sector_df, threshold=None):
+        if threshold is None:
+            threshold = sector_df["Throttle"].max() * 0.98
+        start, end = self.throttle_window(sector_df, threshold=threshold)
+        features = {}
+        if start:
+            features["start"] = start
+            features["end"] = end
+
+            df = self.section_df(sector_df, start, end)
+
+            column = "Throttle"
+            min_force, max_force = self.top_bin(df, column=column)
+
+            peak_force_df = df[(df[column] >= min_force) & (df[column] <= max_force)]
+
+            features["max_start"] = peak_force_df["DistanceRoundTrack"].min()
+            features["max_end"] = peak_force_df["DistanceRoundTrack"].max()
+            features["max_high"] = round(peak_force_df[column].max(), 2)
+            features["max_low"] = abs(round(peak_force_df[column].min(), 2))
+            features["force"] = abs(round(peak_force_df[column].mean(), 2))
+
+        return features
+
     def resample(self, df, columns=["Brake", "SpeedMs"], method="nearest", freq=1):
         df = df.replace({None: np.nan}).dropna(subset=["DistanceRoundTrack"])
 
@@ -36,6 +292,26 @@ class Analyzer:
             resampled_df[column] = interpolated_values
 
         return resampled_df
+
+    def value_at_distance(self, df, meters, column="SpeedMs"):
+        value = df.iloc[(df["DistanceRoundTrack"] - meters).abs().idxmin()][column]
+        return value
+
+    def distance_speed_lookup_table(self, lap):
+        # find the index where the lap starts, thats where CurrentLapTime is minimal
+        # only keep the part of the lap after the start
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
+        lap_start = lap["CurrentLapTime"].idxmin()
+
+        lap.loc[:lap_start, "CurrentLapTime"] = (
+            lap.loc[:lap_start, "DistanceRoundTrack"] / lap.loc[:lap_start, "SpeedMs"]
+        )
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime"]]
+        lap["DistanceRoundTrack"] = lap["DistanceRoundTrack"].round(1)
+        lap["CurrentLapTime"] = lap["CurrentLapTime"].round(3)
+        return lap
+
+    ##### probably not needed anymore
 
     def local_maxima(self, df, column="Gear", points=50):
         return self.local_extrema(df, column, mode="max", points=points)
