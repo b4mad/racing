@@ -32,6 +32,7 @@ influxdb-client = {extras = ["async"], version = "*"}
 jupyter = "*"
 django-extensions = "*"
 django-admin-list-filter-dropdown = "*"
+kaleido = "*"
 
 [dev-packages]
 black = "*"

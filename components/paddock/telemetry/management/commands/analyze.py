@@ -284,10 +284,17 @@ class Command(BaseCommand):
         fast_lap.save()
         fast_lap.fast_lap_segments.all().delete()
         i = 1
-        for brakepoint in track_info:
-            brakepoint["turn"] = i
-            print(brakepoint)
-            fast_lap.fast_lap_segments.create(**brakepoint)
+        for s in track_info:
+            s["turn"] = i
+            fast_lap.fast_lap_segments.create(
+                turn=i,
+                mark=s["mark"],
+                start=s["start"],
+                end=s["end"],
+                force=s["force"],
+                gear=s["gear"],
+                speed=s["speed"],
+            )
             i += 1
         # also delete user segments
         # FIXME only delete user segements if they changed?
