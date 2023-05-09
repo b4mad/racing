@@ -39,7 +39,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
-        value: "4Gi"
+        value: "8Gi"
       - op: replace
         path: /spec/instances/0/resources/limits/cpu
         value: "500m"
