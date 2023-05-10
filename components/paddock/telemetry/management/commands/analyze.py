@@ -142,16 +142,8 @@ class Command(BaseCommand):
 
         if options["lap_ids"]:
             laps = Lap.objects.filter(pk__in=options["lap_ids"])
-            fl = FastLapAnalyzer(laps)
-            track_info = fl.analyze()
-            if track_info:
-                self.save_fastlap(
-                    track_info,
-                    car=laps[0].car,
-                    track=laps[0].track,
-                    game=laps[0].track.game,
-                )
-            exit(0)
+            self.analyze_fast_laps(laps)
+            return
 
         where = []
         filter_game = None
@@ -259,13 +251,7 @@ class Command(BaseCommand):
                     }
                     csv_writer.writerow(row)
             else:
-                fl = FastLapAnalyzer(fast_laps)
-                result = fl.analyze()
-                if result:
-                    track_info = result[0]
-                    data = result[1]
-                    used_laps = result[2]
-                    self.save_fastlap(track_info, data, laps=used_laps, car=car, track=track, game=game)
+                self.analyze_fast_laps(fast_laps)
 
         if options["save_csv"]:
             csv_file.close()
@@ -273,11 +259,27 @@ class Command(BaseCommand):
         if options["copy_influx"]:
             logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
+    def analyze_fast_laps(self, fast_laps):
+        fl = FastLapAnalyzer(fast_laps)
+        result = fl.analyze()
+        if result:
+            track_info = result[0]
+            data = result[1]
+            used_laps = result[2]
+            self.save_fastlap(track_info, data, laps=used_laps)
+
     def create_empty(self, car=None, track=None, game=None):
         fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
         logging.debug(f"created: {created}, fast_lap: {fast_lap}")
 
-    def save_fastlap(self, track_info, data, laps=None, car=None, track=None, game=None):
+    def save_fastlap(self, track_info, data, laps=[]):
+        if not laps:
+            logging.error("no laps")
+            return
+        lap = laps[0]
+        car = lap.car
+        track = lap.track
+        game = lap.session.game
         fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
         fast_lap.data = data
         fast_lap.laps.set(laps)

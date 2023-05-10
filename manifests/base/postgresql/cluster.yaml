@@ -23,10 +23,9 @@ spec:
   backups:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
-      # global:
-      #   # Save backups for 14 days, this means 2 full backups with 6 differential ones in between
-      #   repo1-retention-full: "1"
-      #   repo1-retention-full-type: count
+      global:
+        repo1-retention-full: "2"
+        repo1-retention-full-type: count
       # repoHost:
       #   resources:
       #     limits:

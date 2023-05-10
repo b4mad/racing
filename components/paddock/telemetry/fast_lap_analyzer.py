@@ -91,12 +91,14 @@ class FastLapAnalyzer:
             brake_features = analyzer.brake_features(sector, **brake_feature_args)
             throttle_features = analyzer.throttle_features(sector, **throttle_features_args)
 
-            if throttle_or_brake == "brake":
-                force = brake_features["force"]
+            force = 0
+            speed = 0
+            if throttle_or_brake == "brake" and brake_features:
+                force = brake_features["force"] * 100
                 start = brake_features["start"]
                 speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
-            else:
-                force = throttle_features["force"]
+            elif throttle_or_brake == "throttle" and throttle_features:
+                force = throttle_features["force"] * 100
                 start = throttle_features["start"]
                 speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
 
@@ -108,7 +110,7 @@ class FastLapAnalyzer:
                     "start": sector_start_end[i]["start"],
                     "end": sector_start_end[i]["end"],
                     "gear": gear,
-                    "force": force * 100,
+                    "force": force,
                     "speed": speed,
                     "brake_features": brake_features,
                     "throttle_features": throttle_features,
