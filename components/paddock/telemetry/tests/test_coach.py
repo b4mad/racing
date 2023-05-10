@@ -87,6 +87,8 @@ class TestCoach(TransactionTestCase):
             # loaded 8 segments
 
         expected_responses = [
+            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3353, "priority": 9}'),
+            ("/coach/durandom", '{"message": "brake", "distance": 3497.02, "priority": 9}'),
             ("/coach/durandom", '{"message": "gear 2 80 percent", "distance": 326, "priority": 9}'),
             ("/coach/durandom", '{"message": "brake", "distance": 577.91, "priority": 9}'),
             ("/coach/durandom", '{"message": "gear 4 40 percent", "distance": 1009, "priority": 9}'),

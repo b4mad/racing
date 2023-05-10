@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import threading
 import os
+from django.forms.models import model_to_dict
 
 # import pickle
 import pandas as pd
@@ -29,21 +29,23 @@ class History:
         self.segments = []
         self.segment_idx = 1
         self.previous_segment_idx = 0
+        self.previous_update_meters = 0
         self.ready = False
         self.error = None
         self.do_run = True
         self.driver = None
         self.track_length = 0
-        self.telemetry = pd.DataFrame()
+        self.telemetry = []
         self.analyzer = Analyzer()
+        self.process_segments = []
 
     def disconnect(self):
         self.do_run = False
 
     def run(self):
         while self.do_run:
-            # TODO: rework time consuming stuff to be executed async
-            time.sleep(5)
+            time.sleep(0.1)
+            self.do_work()
             if self.do_init:
                 self.ready = self.init()
                 self.do_init = False
@@ -73,19 +75,75 @@ class History:
         self.init_driver()
 
         self.error = None
-        self.telemetry_fields = [
-            "DistanceRoundTrack",
-            "Gear",
-            "SpeedMs",
-            "Throttle",
-            "Brake",
-            "CurrentLapTime",
-        ]
-        self.telemetry = {"_time": []}
-        for field in self.telemetry_fields:
-            self.telemetry[field] = []
+        # self.telemetry_fields = [
+        #     "DistanceRoundTrack",
+        #     "Gear",
+        #     "SpeedMs",
+        #     "Throttle",
+        #     "Brake",
+        #     "CurrentLapTime",
+        # ]
+        # self.telemetry = {"_time": []}
+        # for field in self.telemetry_fields:
+        #     self.telemetry[field] = []
 
         return True
+
+    def init_segments(self) -> bool:
+        """Load the segments from DB."""
+        fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
+        if not fast_lap:
+            self.error = f"no data found for game {self.filter['GameName']}"
+            self.error += f"on track {self.filter['TrackCode']}"
+            self.error += f"in car {self.filter['CarModel']}"
+            logging.error(self.error)
+            return False
+
+        logging.debug("loading segments for %s %s - %s", self.game, self.track, self.car)
+        logging.debug(f"  based on laps {fast_lap.laps}")
+        self.track_info = fast_lap.data.get("track_info", [])
+        logging.debug(f"  track_info\n{self.track_info}")
+
+        self.segments = []
+        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
+            s = model_to_dict(segment)
+            s["brake_features"] = self.features(s, mark="brake")
+            s["throttle_features"] = self.features(s, mark="throttle")
+            s["telemetry"] = []
+            s["telemetry_frames"] = []
+            self.segments.append(s)
+            logging.debug("segment %s", s)
+
+        self.segments = self.sort_segments()
+
+        self.fast_lap = fast_lap
+
+        logging.debug("loaded %s segments", len(self.segments))
+
+        self.error = f"start coaching for game {self.filter['GameName']}"
+        self.error += f"on track {self.filter['TrackCode']}"
+        self.error += f"in car {self.filter['CarModel']}"
+        return True
+
+    def features(self, segment, mark="brake"):
+        # search through segements
+        for item in self.track_info:
+            if item["mark"] == mark:
+                if item["start"] == segment["start"]:
+                    return item[f"{mark}_features"]
+        return {}
+
+    def sort_segments(self, distance=0):
+        segments = sorted(self.segments, key=lambda k: k["start"])
+        index_of_first_item = 0
+
+        # loop through messages and find index of first item larger than distance
+        for i, segment in enumerate(segments):
+            index_of_first_item = i
+            if segment["start"] >= distance > segment["end"]:
+                break
+
+        return segments[index_of_first_item:] + segments[:index_of_first_item]
 
     def init_driver(self):
         self.driver_segments = {}
@@ -98,7 +156,7 @@ class History:
             logging.debug(f"driver {self.driver} has no history for {fast_lap}")
             # initialize with segments from fast_lap
             for segment in self.segments:
-                FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment.turn)
+                FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment["turn"])
 
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
             self.driver_segments[segment.turn] = segment
@@ -107,41 +165,61 @@ class History:
                 "brake": [],
             }
 
-    # def write_cache_to_file(self):
-    #     with open("cache.pickle", "wb") as outfile:
-    #         pickle.dump(self.cache, outfile)
-
-    # def read_cache_from_file(self):
-    #     logging.debug("reading historic data from file")
-    #     with open("cache.pickle", "rb") as infile:
-    #         self.cache = pickle.load(infile)
-
-    def in_range(self, meters, target, delta=10):
-        start = target - delta
-        end = target + delta
-
-        if start < 0:
-            start = self.track_length + start
-            return meters <= end or meters >= start
-
-        if end > self.track_length:
-            end = end - self.track_length
-            return meters <= end or meters >= start
-
-        return start <= meters <= end
-
     def update(self, time, telemetry):
-        self.telemetry["_time"].append(time)
-        for field in self.telemetry_fields:
-            self.telemetry[field].append(telemetry[field])
+        meters = int(telemetry["DistanceRoundTrack"])
+        if meters != self.previous_update_meters:
+            data = telemetry
+            data["_time"] = time
+            self.update_telemetry(meters, data)
 
-    def features(self, segment, mark="brake"):
-        # search through segements
-        for item in self.track_info:
-            if item["mark"] == mark:
-                if item["start"] == segment.start:
-                    return item[f"{mark}_features"]
-        return {}
+    def update_telemetry(self, meters, data, depth=0):
+        if depth > len(self.segments):
+            logging.error(f"update_telemetry: meters: {meters} no segment found")
+            return
+
+        segment = self.segments[0]
+        start = segment["start"]
+        end = segment["end"]
+
+        if start < end:
+            in_segment = start <= meters <= end
+        else:
+            in_segment = meters >= start or meters <= end
+
+        if in_segment:
+            self.telemetry.append(data)
+            self.previous_update_meters = meters
+        else:
+            if len(self.telemetry) > 0:
+                segment["telemetry"].append(self.telemetry)
+                self.process_segments.append(segment)
+                self.telemetry = []
+
+            self.segments.append(self.segments.pop(0))
+            self.update_telemetry(meters, data, depth + 1)
+
+    def do_work(self):
+        # logging.debug(f"do work")
+        while len(self.process_segments) > 0:
+            segment = self.process_segments.pop(0)
+            log_prefix = f"processing segment {segment['turn']} "
+            if len(segment["telemetry"]) == 0:
+                logging.error(f"{log_prefix} no telemetry for segment")
+                continue
+
+            telemetry = segment["telemetry"].pop(0)
+            if len(telemetry) == 0:
+                logging.error(f"{log_prefix} no data in telemetry")
+                continue
+
+            # lap_number = telemetry[0].get("CurrentLap")
+            # logging.debug(f"   lap: {lap_number}")
+
+            df = pd.DataFrame.from_records(telemetry)
+            segment["telemetry_frames"].append(df)
+
+            # logging.debug(df.info())
+            # logging.debug(df.head())
 
     def offset_distance(self, distance, seconds=0.0):
         if self.fast_lap.data:
@@ -164,124 +242,82 @@ class History:
                         lap_time = distance_time.loc[distance]["CurrentLapTime"]
         return distance
 
-    def t_segment(self, start, end):
-        # FIXME: mod track length
-        distance_round_track = self.telemetry["DistanceRoundTrack"]
-        # go back until we have the first index where DistanceRoundTrack is between start and end
-        idx = len(distance_round_track) - 1
+    # def in_range(self, meters, target, delta=10):
+    #     start = target - delta
+    #     end = target + delta
 
-        distance = distance_round_track[idx]
+    #     if start < 0:
+    #         start = self.track_length + start
+    #         return meters <= end or meters >= start
 
-        # find the end index where DistanceRoundTrack is smaller than end
-        while distance >= end and idx > 0:
-            idx -= 1
-            distance = distance_round_track[idx]
-        end_idx = idx
+    #     if end > self.track_length:
+    #         end = end - self.track_length
+    #         return meters <= end or meters >= start
 
-        # find the start index where DistanceRoundTrack is smaller than start
-        while distance >= start and idx > 0:
-            idx -= 1
-            distance = distance_round_track[idx]
-        start_idx = idx
+    #     return start <= meters <= end
+    # def t_segment(self, start, end):
+    #     # FIXME: mod track length
+    #     distance_round_track = self.telemetry["DistanceRoundTrack"]
+    #     # go back until we have the first index where DistanceRoundTrack is between start and end
+    #     idx = len(distance_round_track) - 1
 
-        if start_idx == end_idx:
-            if start_idx > 0:
-                start_idx -= 1
-            else:
-                end_idx += 1
+    #     distance = distance_round_track[idx]
 
-        return start_idx, end_idx
+    #     # find the end index where DistanceRoundTrack is smaller than end
+    #     while distance >= end and idx > 0:
+    #         idx -= 1
+    #         distance = distance_round_track[idx]
+    #     end_idx = idx
 
-    def t_start_idx(self, start, end, column="Brake"):
-        start_idx, end_idx = self.t_segment(start, end)
+    #     # find the start index where DistanceRoundTrack is smaller than start
+    #     while distance >= start and idx > 0:
+    #         idx -= 1
+    #         distance = distance_round_track[idx]
+    #     start_idx = idx
 
-        idx = start_idx
-        while idx < end_idx:
-            if self.telemetry[column][idx] > 0.001:
-                return idx
-            idx += 1
-        return start_idx
+    #     if start_idx == end_idx:
+    #         if start_idx > 0:
+    #             start_idx -= 1
+    #         else:
+    #             end_idx += 1
 
-    def t_start_distance(self, start, end, column="Brake"):
-        idx = self.t_start_idx(start, end, column)
-        return self.telemetry["DistanceRoundTrack"][idx]
+    #     return start_idx, end_idx
 
-    def t_at_distance(self, meters, column="SpeedMs"):
-        start = meters - 1
-        end = meters + 1
-        start_idx, end_idx = self.t_segment(start, end)
+    # def t_start_idx(self, start, end, column="Brake"):
+    #     start_idx, end_idx = self.t_segment(start, end)
 
-        idx = end_idx
-        distance = self.telemetry["DistanceRoundTrack"][idx]
-        while distance > meters and idx > start_idx:
-            idx -= 1
-            distance = self.telemetry["DistanceRoundTrack"][idx]
+    #     idx = start_idx
+    #     while idx < end_idx:
+    #         if self.telemetry[column][idx] > 0.001:
+    #             return idx
+    #         idx += 1
+    #     return start_idx
 
-        value = self.telemetry[column][idx]
-        return value
+    # def t_start_distance(self, start, end, column="Brake"):
+    #     idx = self.t_start_idx(start, end, column)
+    #     return self.telemetry["DistanceRoundTrack"][idx]
 
-    def driver_brake(self, segment):
-        pass
-        # driver_segment = self.driver_segments[segment.turn]
-        # brake = self.driver_brake_start(segment.start - 50, segment.end)
-        # if brake:
-        #     self.driver_data[segment.turn]["brake"].append(brake)
-        #     brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
-        #     driver_segment.brake = round(brake)
-        #     driver_segment.save()
-        # return driver_segment.brake
+    # def t_at_distance(self, meters, column="SpeedMs"):
+    #     start = meters - 1
+    #     end = meters + 1
+    #     start_idx, end_idx = self.t_segment(start, end)
 
-    def init_segments(self) -> bool:
-        """Load the segments from DB."""
-        fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
-        if not fast_lap:
-            self.error = f"no data found for game {self.filter['GameName']}"
-            self.error += f"on track {self.filter['TrackCode']}"
-            self.error += f"in car {self.filter['CarModel']}"
-            logging.error(self.error)
-            return False
+    #     idx = end_idx
+    #     distance = self.telemetry["DistanceRoundTrack"][idx]
+    #     while distance > meters and idx > start_idx:
+    #         idx -= 1
+    #         distance = self.telemetry["DistanceRoundTrack"][idx]
 
-        logging.debug("loading segments for %s %s - %s", self.game, self.track, self.car)
-        logging.debug(f"  based on laps {fast_lap.laps}")
-        self.track_info = fast_lap.data.get("track_info", [])
-        logging.debug(f"  track_info\n{self.track_info}")
+    #     value = self.telemetry[column][idx]
+    #     return value
 
-        self.segments = []
-        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
-            self.segments.append(segment)
-            logging.debug("segment %s", segment)
-
-        self.fast_lap = fast_lap
-
-        logging.debug("loaded %s segments", len(self.segments))
-
-        self.error = f"start coaching for game {self.filter['GameName']}"
-        self.error += f"on track {self.filter['TrackCode']}"
-        self.error += f"in car {self.filter['CarModel']}"
-        return True
-
-
-if __name__ == "__main__":
-    filter = {
-        "user": "durandom",
-        "GameName": "iRacing",
-        "TrackCode": "summit summit raceway",
-        "CarModel": "Ferrari 488 GT3 Evo 2020",
-    }
-    history = History()
-    history.set_filter(filter)
-
-    threaded = True
-    threaded = False
-
-    if threaded:
-
-        def history_thread():
-            logging.info("History thread starting")
-            history.run()
-
-        x = threading.Thread(target=history_thread)
-        x.start()
-    else:
-        history.init()
-        logging.info(history.gear_q(100, 250))
+    # def driver_brake(self, segment):
+    #     pass
+    #     # driver_segment = self.driver_segments[segment.turn]
+    #     # brake = self.driver_brake_start(segment.start - 50, segment.end)
+    #     # if brake:
+    #     #     self.driver_data[segment.turn]["brake"].append(brake)
+    #     #     brake = statistics.median(self.driver_data[segment.turn]["brake"][-5:])
+    #     #     driver_segment.brake = round(brake)
+    #     #     driver_segment.save()
+    #     # return driver_segment.brake

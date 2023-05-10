@@ -153,10 +153,13 @@ class Coach:
             self.messages = self.sort_messages(distance_round_track)
 
         next_message = self.messages[0]
+        # FIXME: if distance is at the end of the track. -> modulo track_length
         distance = abs(next_message["at"] - distance_round_track)
+        # print(distance)
 
         if distance < 10:
             self.messages.append(self.messages.pop(0))
+            # logging.debug(self.history.telemetry)
             return next_message.response()
             # msg = next_message["msg"]
             # if callable(msg):
@@ -174,16 +177,16 @@ class Coach:
     def init_messages(self):
         self.track_length = self.history.track.length
         for segment in self.history.segments:
-            if segment.mark == "brake":
+            if segment["mark"] == "brake":
                 gear = ""
-                if segment.gear:
-                    gear = f"gear {segment.gear} "
-                text = gear + "%s percent" % (round(segment.force / 10) * 10)
+                if segment["gear"]:
+                    gear = f"gear {segment['gear']} "
+                text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
 
                 msg = self.new_msg()
                 # msg.segment = segment
                 msg.msg = text
-                at = segment.start
+                at = segment["start"]
                 msg.finish_at(at)
 
                 msg = self.new_msg()
@@ -195,12 +198,12 @@ class Coach:
                 # at = segment.end + 20
                 # self.new_fn(at, self.eval_brake, segment, brake_msg_at=msg["at"])
 
-            if segment.mark == "throttle":
+            if segment["mark"] == "throttle":
                 msg = self.new_msg()
                 # msg.segment = segment
-                to = round(segment.force / 10) * 10
+                to = round(segment["force"] / 10) * 10
                 msg.msg = "throttle to %s" % to
-                msg.finish_at(segment.start)
+                msg.finish_at(segment["start"])
 
                 msg = self.new_msg()
                 msg.segment = segment
