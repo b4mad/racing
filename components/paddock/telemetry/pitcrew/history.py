@@ -14,9 +14,7 @@ from influxdb_client import InfluxDBClient
 
 B4MAD_RACING_INFLUX_ORG = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
 B4MAD_RACING_INFLUX_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN", "")
-B4MAD_RACING_INFLUX_URL = os.environ.get(
-    "B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/"
-)
+B4MAD_RACING_INFLUX_URL = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
 
 
 class History:
@@ -227,9 +225,7 @@ class History:
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
-        fast_lap = FastLap.objects.filter(
-            track=self.track, car=self.car, game=self.game
-        ).first()
+        fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
         if not fast_lap:
             self.error = f"no data found for game {self.filter['GameName']}"
             self.error += f"on track {self.filter['TrackCode']}"
@@ -237,14 +233,13 @@ class History:
             logging.error(self.error)
             return False
 
-        logging.debug(
-            "loading segments for %s %s - %s", self.game, self.track, self.car
-        )
+        logging.debug("loading segments for %s %s - %s", self.game, self.track, self.car)
+        logging.debug(f"  based on laps {fast_lap.laps}")
+        track_info = fast_lap.data.get("track_info")
+        logging.debug(f"  track_info\n{track_info}")
 
         self.segments = []
-        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by(
-            "turn"
-        ):
+        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
             self.segments.append(segment)
             logging.debug("segment %s", segment)
 

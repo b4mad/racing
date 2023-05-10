@@ -11,7 +11,8 @@
       "valid": true,
       "session": 24222,
       "track": 409,
-      "car": 9
+      "car": 9,
+      "fast_lap": 157
     }
   },
   {
@@ -26,7 +27,8 @@
       "valid": true,
       "session": 26684,
       "track": 83,
-      "car": 351
+      "car": 351,
+      "fast_lap": 703
     }
   }
 ]
