@@ -18,6 +18,43 @@ B4MAD_RACING_INFLUX_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN", "")
 B4MAD_RACING_INFLUX_URL = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
 
 
+class Segment:
+    def __init__(self, history, **kwargs):
+        for key, value in kwargs.items():
+            self[key] = value
+        self.history = history
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+    def get(self, key, default):
+        return getattr(self, key, default)
+
+    def features(self, key, mark="brake"):
+        return self[f"{mark}_features"].get(key, 0)
+
+    def last_features(self, key, mark="brake"):
+        if self.telemetry_features:
+            f = self.telemetry_features[-1].get(f"{mark}_features", {})
+            return f.get(key, 0)
+        return 0
+
+    def brake_features(self, key):
+        return self.features(key, mark="brake")
+
+    def last_brake_features(self, key):
+        return self.last_features(key, mark="brake")
+
+    def throttle_features(self, key):
+        return self.features(key, mark="throttle")
+
+    def last_throttle_features(self, key):
+        return self.last_features(key, mark="throttle")
+
+
 class History:
     def __init__(self):
         self.client = InfluxDBClient(
@@ -112,20 +149,20 @@ class History:
 
         self.segments = []
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
-            s = model_to_dict(segment)
+            s = Segment(self, **model_to_dict(segment))
             s["brake_features"] = self.features(s, mark="brake")
             s["throttle_features"] = self.features(s, mark="throttle")
             s["telemetry"] = []
             s["telemetry_frames"] = []
             s["telemetry_features"] = []
             self.segments.append(s)
-            logging.debug("segment %s", s)
+            logging.debug("segment %s", segment)
 
         self.segments = self.sort_segments()
 
         self.fast_lap = fast_lap
 
-        logging.debug("loaded %s segments", len(self.segments))
+        # logging.debug("loaded %s segments", len(self.segments))
 
         self.error = f"start coaching for game {self.filter['GameName']}"
         self.error += f"on track {self.filter['TrackCode']}"
@@ -234,12 +271,9 @@ class History:
                 "throttle_features": throttle_features,
             }
             segment["telemetry_features"].append(features)
-            logging.debug(f"{log_prefix} features: {features}")
+            # logging.debug(f"{log_prefix} features: {features}")
 
             segment["telemetry_frames"].append(df)
-
-            # logging.debug(df.info())
-            # logging.debug(df.head())
 
     def offset_distance(self, distance, seconds=0.0):
         if self.fast_lap.data:
