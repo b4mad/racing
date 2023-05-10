@@ -48,7 +48,10 @@ class TestCoach(TransactionTestCase):
         coach = driver.coach
 
         history = History()
-        threading.Thread(target=history.run).start()
+
+        use_threads = False
+        if use_threads:
+            threading.Thread(target=history.run).start()
 
         coach = PitCrewCoach(history, coach)
 
@@ -57,9 +60,12 @@ class TestCoach(TransactionTestCase):
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")
         coach.notify(topic, row)
-        print("waiting for history to be ready")
-        while not history.ready:
-            time.sleep(0.1)
+        if use_threads:
+            print("waiting for history to be ready")
+            while not history.ready:
+                time.sleep(0.1)
+        else:
+            history.init()
 
         captured_responses = []
         try:

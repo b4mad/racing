@@ -9,6 +9,7 @@ import time
 import logging
 from telemetry.models import Game, FastLap, FastLapSegment, Driver
 from telemetry.analyzer import Analyzer
+from telemetry.fast_lap_analyzer import FastLapAnalyzer
 
 from influxdb_client import InfluxDBClient
 
@@ -37,24 +38,28 @@ class History:
         self.track_length = 0
         self.telemetry = []
         self.analyzer = Analyzer()
+        self.fast_lap_analyzer = FastLapAnalyzer()
         self.process_segments = []
+        self.threaded = False
 
     def disconnect(self):
         self.do_run = False
 
     def run(self):
+        self.threaded = True
         while self.do_run:
             time.sleep(0.1)
             self.do_work()
             if self.do_init:
-                self.ready = self.init()
-                self.do_init = False
+                if self.init():
+                    self.do_init = False
 
     def set_filter(self, filter):
         self.filter = filter
         self.do_init = True
 
     def init(self):
+        self.ready = False
         try:
             self.driver = Driver.objects.get(name=self.filter["Driver"])
             self.game = Game.objects.get(name=self.filter["GameName"])
@@ -87,6 +92,7 @@ class History:
         # for field in self.telemetry_fields:
         #     self.telemetry[field] = []
 
+        self.ready = True
         return True
 
     def init_segments(self) -> bool:
@@ -111,6 +117,7 @@ class History:
             s["throttle_features"] = self.features(s, mark="throttle")
             s["telemetry"] = []
             s["telemetry_frames"] = []
+            s["telemetry_features"] = []
             self.segments.append(s)
             logging.debug("segment %s", s)
 
@@ -148,29 +155,29 @@ class History:
     def init_driver(self):
         self.driver_segments = {}
         self.driver_data = {}
-        fast_lap, created = FastLap.objects.get_or_create(
-            car=self.car, track=self.track, game=self.game, driver=self.driver
-        )
-        # check if fast_lap has any fast_lap_segments
-        if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
-            logging.debug(f"driver {self.driver} has no history for {fast_lap}")
-            # initialize with segments from fast_lap
-            for segment in self.segments:
-                FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment["turn"])
+        # fast_lap, created = FastLap.objects.get_or_create(
+        #     car=self.car, track=self.track, game=self.game, driver=self.driver
+        # )
+        # # check if fast_lap has any fast_lap_segments
+        # if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
+        #     logging.debug(f"driver {self.driver} has no history for {fast_lap}")
+        #     # initialize with segments from fast_lap
+        #     for segment in self.segments:
+        #         FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment["turn"])
 
-        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
-            self.driver_segments[segment.turn] = segment
-            self.driver_data[segment.turn] = {
-                "gear": [],
-                "brake": [],
-            }
+        # for segment in FastLapSegment.objects.filter(fast_lap=fast_lap):
+        #     self.driver_segments[segment.turn] = segment
+        #     self.driver_data[segment.turn] = {
+        #         "gear": [],
+        #         "brake": [],
+        #     }
 
     def update(self, time, telemetry):
         meters = int(telemetry["DistanceRoundTrack"])
         if meters != self.previous_update_meters:
             data = telemetry
             data["_time"] = time
-            self.update_telemetry(meters, data)
+            return self.update_telemetry(meters, data)
 
     def update_telemetry(self, meters, data, depth=0):
         if depth > len(self.segments):
@@ -190,13 +197,16 @@ class History:
             self.telemetry.append(data)
             self.previous_update_meters = meters
         else:
+            work_to_do = False
             if len(self.telemetry) > 0:
                 segment["telemetry"].append(self.telemetry)
                 self.process_segments.append(segment)
                 self.telemetry = []
+                work_to_do = True
 
             self.segments.append(self.segments.pop(0))
             self.update_telemetry(meters, data, depth + 1)
+            return work_to_do
 
     def do_work(self):
         # logging.debug(f"do work")
@@ -216,6 +226,16 @@ class History:
             # logging.debug(f"   lap: {lap_number}")
 
             df = pd.DataFrame.from_records(telemetry)
+
+            brake_features = self.fast_lap_analyzer.brake_features(df)
+            throttle_features = self.fast_lap_analyzer.throttle_features(df)
+            features = {
+                "brake_features": brake_features,
+                "throttle_features": throttle_features,
+            }
+            segment["telemetry_features"].append(features)
+            logging.debug(f"{log_prefix} features: {features}")
+
             segment["telemetry_frames"].append(df)
 
             # logging.debug(df.info())

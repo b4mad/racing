@@ -143,7 +143,9 @@ class Coach:
             else:
                 return None
 
-        self.history.update(now, telemetry)
+        work_to_do = self.history.update(now, telemetry)
+        if work_to_do and not self.history.threaded:
+            self.history.do_work()
 
         if not self.messages:
             self.init_messages()
