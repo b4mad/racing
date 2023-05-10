@@ -252,7 +252,7 @@ class Analyzer:
             threshold = sector_df["Throttle"].max() * 0.98
         start, end = self.throttle_window(sector_df, threshold=threshold)
         features = {}
-        if start:
+        if start and end:
             features["start"] = start
             features["end"] = end
 
