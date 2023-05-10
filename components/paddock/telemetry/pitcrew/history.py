@@ -135,6 +135,14 @@ class History:
         for field in self.telemetry_fields:
             self.telemetry[field].append(telemetry[field])
 
+    def features(self, segment, mark="brake"):
+        # search through segements
+        for item in self.track_info:
+            if item["mark"] == mark:
+                if item["start"] == segment.start:
+                    return item[f"{mark}_features"]
+        return {}
+
     def offset_distance(self, distance, seconds=0.0):
         if self.fast_lap.data:
             distance_time = self.fast_lap.data.get("distance_time", {})
@@ -235,8 +243,8 @@ class History:
 
         logging.debug("loading segments for %s %s - %s", self.game, self.track, self.car)
         logging.debug(f"  based on laps {fast_lap.laps}")
-        track_info = fast_lap.data.get("track_info")
-        logging.debug(f"  track_info\n{track_info}")
+        self.track_info = fast_lap.data.get("track_info", [])
+        logging.debug(f"  track_info\n{self.track_info}")
 
         self.segments = []
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
