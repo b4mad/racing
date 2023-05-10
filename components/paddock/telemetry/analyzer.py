@@ -22,6 +22,10 @@ class Analyzer:
         # Step 1: Find all rows where Throttle starts to drop below the threshold
         start = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(1) >= threshold)].index
 
+        if len(start) == 0:
+            logging.debug(f"No sectors found threshold: {threshold} min_length: {min_length}")
+            return [df]
+
         # Step 3: Split the dataframe into sections
         sectors = []
         for i in range(len(start)):
