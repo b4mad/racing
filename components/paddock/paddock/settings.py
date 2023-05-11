@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     "explorer",
     "django_plotly_dash.apps.DjangoPlotlyDashConfig",
     "bootstrap4",
+    "crispy_forms",
+    "crispy_bootstrap4",
     "dpd_static_support",
     "django_extensions",
     "django_admin_listfilter_dropdown",
@@ -104,6 +106,8 @@ TEMPLATES = [
         },
     },
 ]
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 WSGI_APPLICATION = "paddock.wsgi.application"
 

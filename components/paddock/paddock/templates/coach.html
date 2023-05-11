@@ -1,0 +1,31 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+
+{%block title%}Pit Crew{%endblock%}
+
+{%block content%}
+<h1>#B4mad Racing Pit Crew</h1>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>{{ coach }}</h3>
+          <form method="post">{% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Update">
+          </form>
+          <H5>last status message</H5>
+          <div class="info alert alert-info" role="alert">
+              {{ coach_status }}
+          </div>
+          <H5>last error</H5>
+          <div class="alert alert-danger" role="alert">
+              {{ coach_error }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}
