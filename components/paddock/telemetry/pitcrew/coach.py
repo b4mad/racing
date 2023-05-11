@@ -82,6 +82,10 @@ class Coach:
         }
         return filter
 
+    def set_filter(self, filter):
+        self.history.set_filter(filter)
+        self.messages = []
+
     def notify(self, topic, payload, now=None):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
@@ -98,11 +102,17 @@ class Coach:
             return None
 
         if self.history.ready and self.history.startup_message:
+            self.track_length = self.history.track.length
             if self.startup_message != self.history.startup_message:
                 self.startup_message = self.history.startup_message
                 self.db_coach.status = self.startup_message
                 self.db_coach.save()
                 return (self.response_topic, self.startup_message)
+
+        if not self.messages:
+            self.init_messages()
+            self.link_messages()
+            self.prioritize_messages()
 
         response = self.get_response(payload, now)
         # logging.debug(f"payload: {payload}")
@@ -110,27 +120,23 @@ class Coach:
         if response:
             return (self.response_topic, response)
 
-    def set_filter(self, filter):
-        self.history.set_filter(filter)
-        self.messages = []
-
     def get_response(self, telemetry, now):
         work_to_do = self.history.update(now, telemetry)
         if work_to_do and not self.history.threaded:
             self.history.do_work()
 
         distance_round_track = telemetry["DistanceRoundTrack"]
-
-        if not self.messages:
-            self.init_messages()
-            self.link_messages()
-            self.prioritize_messages()
-
         # logging.debug(f"distance_round_track: {distance_round_track:.1f}")
         if (distance_round_track - self.previous_distance) < -50:
             # we jumped at least 50 meters back
-            self.current_message = self.get_closest_message(distance_round_track)
-            logging.debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
+            # unless we crossed the start finish line
+            # we might have gone off the track or reset the car to the pits
+            # hence we reset the messages
+            if abs(self.track_length - distance_round_track - self.previous_distance) > 5:
+                self.current_message = self.get_closest_message(distance_round_track)
+                logging.debug(f"distance_round_track: {distance_round_track:.1f}")
+                logging.debug(f"previous_distance: {self.previous_distance:.1f}")
+                logging.debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
         self.previous_distance = distance_round_track
 
         message = self.current_message
@@ -153,7 +159,6 @@ class Coach:
             return text_to_read
 
     def init_messages(self):
-        self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment["mark"] == "brake":
                 # gear = ""
