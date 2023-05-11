@@ -153,7 +153,8 @@ class Coach(models.Model):
         primary_key=True,
     )
 
-    error = models.CharField(max_length=200, default="")
+    error = models.TextField(default="")
+    status = models.TextField(default="")
     enabled = models.BooleanField(default=False)
 
     def __str__(self):

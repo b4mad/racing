@@ -177,9 +177,23 @@ class History:
 
         # logging.debug("loaded %s segments", len(self.segments))
 
-        self.startup_message = f"start coaching for game {self.filter['GameName']}"
-        self.startup_message += f"on track {self.filter['TrackCode']}"
-        self.startup_message += f"in car {self.filter['CarModel']}"
+        self.startup_message = "start coaching "
+        try:
+            coach_lap_time = self.fast_lap.laps.first().time
+            minutes = int(coach_lap_time // 60)
+            seconds = round(coach_lap_time % 60, 2)
+            # milliseconds = int((coach_lap_time % 1) * 1000)
+            time_string = ""
+            if minutes > 1:
+                time_string += f"{minutes} minutes "
+            elif minutes == 1:
+                time_string += f"{minutes} minute "
+
+            time_string += f"{seconds:.2f} seconds "
+
+            self.startup_message += f"for a lap time of {time_string}"
+        except Exception:
+            pass
         return True
 
     def features(self, segment, mark="brake"):
