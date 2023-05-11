@@ -38,9 +38,15 @@ class Coach:
         return messages[index_of_first_item:] + messages[:index_of_first_item]
 
     def get_closest_message(self, meter):
-        # Find the object with the closest 'at' attribute to 'meter'
-        closest = min(self.messages, key=lambda obj: obj.at - meter)
-        return closest
+        messages = sorted(self.messages, key=lambda k: k["at"])
+
+        closest_message = messages[0]
+        for i in range(len(messages) - 1, 0, -1):
+            msg = messages[i]
+            if msg["at"] < meter:
+                break
+            closest_message = msg
+        return closest_message
 
     def link_messages(self):
         messages = sorted(self.messages, key=lambda k: k["at"])
@@ -118,10 +124,12 @@ class Coach:
             self.link_messages()
             self.prioritize_messages()
 
-        if (self.previous_distance - distance_round_track) > 100:
+        # logging.debug(f"distance_round_track: {distance_round_track:.1f}")
+        if (distance_round_track - self.previous_distance) < -50:
+            # we jumped at least 50 meters back
             self.current_message = self.get_closest_message(distance_round_track)
-            logging.debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
-            self.previous_distance = distance_round_track
+            logging.debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
+        self.previous_distance = distance_round_track
 
         message = self.current_message
         # FIXME: if distance is at the end of the track. -> modulo track_length
