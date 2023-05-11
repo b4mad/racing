@@ -137,10 +137,11 @@ class Coach:
         self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment["mark"] == "brake":
-                gear = ""
-                if segment["gear"]:
-                    gear = f"gear {segment['gear']} "
-                text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
+                # gear = ""
+                # if segment["gear"]:
+                #     gear = f"gear {segment['gear']} "
+                # text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
+                text = self.brake_message(segment)
 
                 brake_msg = self.new_msg(segment["start"])
                 brake_msg.msg = text
@@ -172,12 +173,75 @@ class Coach:
                 msg_now.read_after(msg)
 
     def eval_brake(self, message):
-        last_brake_start = message.segment.last_brake_features("start")
-        coach_brake_start = message.segment.brake_features.get("start")
-        brake_diff = last_brake_start - coach_brake_start
-        logging.debug(f"eval_brake: brake_diff: {brake_diff:.1f} for turn {message.segment.turn}")
-
-        if abs(brake_diff) < 10:
-            message.related_next.silence()
+        log_prefix = f"eval_brake: {message.segment.turn}:"
+        new_message = self.brake_message(message.segment)
+        old_message = message.related_next.msg
+        if new_message:
+            if new_message != old_message:
+                message.related_next.msg = new_message
+                logging.debug(f"{log_prefix} change: {old_message} -> {new_message}")
+                message.related_next.louden()
+            else:
+                logging.debug(f"{log_prefix} keep: {old_message}")
+                message.related_next.louden()
         else:
-            message.related_next.louden()
+            logging.debug(f"{log_prefix} silencing: {old_message}")
+            message.related_next.silence()
+
+    def brake_message(self, segment):
+        log_prefix = f"eval_brake: {segment.turn}:"
+
+        gear_fragment = ""
+        if segment["gear"]:
+            gear_fragment = f"gear {segment['gear']}"
+        force_fragment = "%s percent" % (round(segment["force"] / 10) * 10)
+        default_message = gear_fragment + " " + force_fragment
+
+        if not segment.has_last_features("brake"):
+            logging.debug(f"{log_prefix} no last features: {default_message}")
+            return default_message
+
+        new_fragments = []
+
+        # check gear
+        last_gear = segment.last_gear_features("gear")
+        gear_diff = last_gear - segment["gear"]
+        if gear_diff != 0:
+            new_fragments.append(gear_fragment)
+        logging.debug(f"{log_prefix} gear_diff: {gear_diff}")
+
+        # check brake force
+        last_brake_force = segment.last_brake_features("force")
+        coach_brake_force = segment.brake_features.get("force")
+        force_diff = last_brake_force - coach_brake_force
+        force_diff_abs = abs(force_diff)
+        logging.debug(f"{log_prefix} force_diff: {force_diff:.2f}")
+        if force_diff_abs > 0.3:
+            # too much or too little
+            new_fragments.append(force_fragment)
+        elif force_diff > 0.1:
+            new_fragments.append("a bit less")
+        elif force_diff < -0.1:
+            new_fragments.append("a bit harder")
+
+        # check brake start
+        last_brake_start = segment.last_brake_features("start")
+        coach_brake_start = segment.brake_features.get("start")
+        brake_diff = last_brake_start - coach_brake_start
+        brake_diff_abs = abs(brake_diff)
+        logging.debug(f"{log_prefix} brake_diff: {brake_diff:.1f}")
+
+        if abs(brake_diff_abs) > 50:
+            # too early or too late
+            new_fragments = [default_message]
+        elif brake_diff > 20:
+            # too late
+            new_fragments.append("a bit earlier")
+        elif brake_diff < -20:
+            # too early
+            new_fragments.append("a bit later")
+
+        if new_fragments:
+            return " ".join(new_fragments)
+        else:
+            return ""

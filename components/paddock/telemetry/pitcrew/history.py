@@ -36,6 +36,12 @@ class Segment:
     def features(self, key, mark="brake"):
         return self[f"{mark}_features"].get(key, 0)
 
+    def has_last_features(self, mark="brake"):
+        if self.telemetry_features:
+            if self.telemetry_features[-1].get(f"{mark}_features", False):
+                return True
+        return False
+
     def last_features(self, key, mark="brake"):
         if self.telemetry_features:
             f = self.telemetry_features[-1].get(f"{mark}_features", {})
@@ -53,6 +59,12 @@ class Segment:
 
     def last_throttle_features(self, key):
         return self.last_features(key, mark="throttle")
+
+    def gear_features(self, key):
+        return self.features(key, mark="gear")
+
+    def last_gear_features(self, key):
+        return self.last_features(key, mark="gear")
 
 
 class History:
@@ -266,9 +278,11 @@ class History:
 
             brake_features = self.fast_lap_analyzer.brake_features(df)
             throttle_features = self.fast_lap_analyzer.throttle_features(df)
+            gear_features = self.fast_lap_analyzer.gear_features(df)
             features = {
                 "brake_features": brake_features,
                 "throttle_features": throttle_features,
+                "gear_features": gear_features,
             }
             segment["telemetry_features"].append(features)
             # logging.debug(f"{log_prefix} features: {features}")
