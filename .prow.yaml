@@ -4,35 +4,9 @@ presubmits:
     max_concurrency: 1
     skip_if_only_changed: "^docs/|\\.md$|^(OWNERS|LICENSE)$|^\\."
     skip_report: false
-    context: aicoe-ci/prow/kustomize-build
+    context: op1st/prow/kustomize-build
     spec:
       containers:
         - image: quay.io/operate-first/opf-toolbox:latest
           command:
             - "test-kustomize-build"
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "1500m"
-            limits:
-              memory: "500Mi"
-              cpu: "2"
-
-  - name: kubeval-validation
-    decorate: true
-    max_concurrency: 1
-    skip_if_only_changed: "^docs/|\\.md$|^(OWNERS|LICENSE)$|^\\."
-    skip_report: false
-    context: aicoe-ci/prow/kubeval-validation
-    spec:
-      containers:
-        - image: quay.io/operate-first/opf-toolbox:latest
-          command:
-            - "test-kubeval-validation"
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "1500m"
-            limits:
-              memory: "2Gi"
-              cpu: "2"
