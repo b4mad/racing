@@ -90,6 +90,7 @@ class History:
         self.fast_lap_analyzer = FastLapAnalyzer()
         self.process_segments = []
         self.threaded = False
+        self.startup_message = ""
 
     def disconnect(self):
         self.do_run = False
@@ -109,6 +110,7 @@ class History:
 
     def init(self):
         self.ready = False
+        self.error = None
         try:
             self.driver = Driver.objects.get(name=self.filter["Driver"])
             self.game = Game.objects.get(name=self.filter["GameName"])
@@ -128,7 +130,6 @@ class History:
 
         self.init_driver()
 
-        self.error = None
         # self.telemetry_fields = [
         #     "DistanceRoundTrack",
         #     "Gear",
@@ -176,9 +177,9 @@ class History:
 
         # logging.debug("loaded %s segments", len(self.segments))
 
-        self.error = f"start coaching for game {self.filter['GameName']}"
-        self.error += f"on track {self.filter['TrackCode']}"
-        self.error += f"in car {self.filter['CarModel']}"
+        self.startup_message = f"start coaching for game {self.filter['GameName']}"
+        self.startup_message += f"on track {self.filter['TrackCode']}"
+        self.startup_message += f"in car {self.filter['CarModel']}"
         return True
 
     def features(self, segment, mark="brake"):

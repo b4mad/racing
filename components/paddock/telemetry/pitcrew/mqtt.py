@@ -10,16 +10,14 @@ import paho.mqtt.client as mqtt
 _LOGGER = logging.getLogger(__name__)
 
 
-B4MAD_RACING_MQTT_HOST = os.environ.get(
-    "B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing"
-)
+B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing")
 B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
 B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
 B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
 
 
 class Mqtt:
-    def __init__(self, observer, topic, replay: bool = False):
+    def __init__(self, observer, topic, replay: bool = False, debug=False):
         mqttc = mqtt.Client()
         mqttc.on_message = self.on_message
         mqttc.on_connect = self.on_connect
@@ -33,6 +31,7 @@ class Mqtt:
         self.observer = observer
         self._stop_event = threading.Event()
         self.ready = False
+        self.debug = debug
 
     # def __del__(self):
     #     # disconnect from broker
@@ -79,7 +78,9 @@ class Mqtt:
         response = self.observer.notify(topic, payload)
         if response:
             (r_topic, r_payload) = response
-            # _LOGGER.debug("r-->: %i: %s", telemetry["DistanceRoundTrack"], response)
+            if self.debug:
+                meters = payload.get("DistanceRoundTrack", 0)
+                logging.debug("r-->: %s: %s : %s", meters, r_topic, r_payload)
             mqttc.publish(r_topic, r_payload)
 
     def on_connect(self, mqttc, obj, flags, rc):
@@ -92,9 +93,7 @@ class Mqtt:
         pass
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
-        _LOGGER.debug(
-            "subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos)
-        )
+        _LOGGER.debug("subscribed: mid='%s', granted_qos='%s'", str(mid), str(granted_qos))
 
     def on_log(self, mqttc, obj, level, string):
         # print(string)
