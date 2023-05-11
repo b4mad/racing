@@ -11,17 +11,17 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Message:
-    def __init__(self, history, **kwargs):
+    def __init__(self, at, history, **kwargs):
         self.history = history
         self.track_length = self.history.track.length
+        self.at = at
+
         self._finished_reading_chain_at = None
 
-        self.at = kwargs.get("at", 0)
         self.msg = kwargs.get("msg", "")
         self.segment = kwargs.get("segment", Segment(self.history))
         self.enabled = kwargs.get("enabled", True)
         self.json_respone = kwargs.get("json_respone", True)
-        self.related = kwargs.get("related", None)
         self.silent = kwargs.get("silent", False)
         self.args = kwargs.get("args", [])
         self.kwargs = kwargs.get("kwargs", {})
@@ -67,6 +67,10 @@ class Message:
 
     def callable(self):
         return callable(self.msg)
+
+    def read_after(self, message):
+        self.related_previous = message
+        message.related_next = self
 
     def silence(self):
         if not self.silent and not self.callable():
@@ -151,8 +155,8 @@ class Coach:
         self.response_topic = f"/coach/{db_coach.driver.name}"
         self.topic = ""
 
-    def new_msg(self, **kwargs):
-        message = Message(history=self.history)
+    def new_msg(self, at, **kwargs):
+        message = Message(at, self.history)
         for key, value in kwargs.items():
             message[key] = value
         self.messages.append(message)
@@ -276,42 +280,35 @@ class Coach:
                     gear = f"gear {segment['gear']} "
                 text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
 
-                brake_msg = self.new_msg()
+                brake_msg = self.new_msg(segment["start"])
                 # msg.segment = segment
                 brake_msg.msg = text
-                at = segment["start"]
-                brake_msg.finish_at(at)
+                brake_msg.finish_at()
 
-                brake_msg_start = self.new_msg()
-                # msg.segment = segment
                 features = segment.get("brake_features", {})
-                brake_msg_start.at = features.get("start")
+                brake_msg_start = self.new_msg(features.get("start"))
                 brake_msg_start.msg = "brake"
 
-                msg_eval = self.new_msg()
-                msg_eval.at = brake_msg.at - 100
+                msg_eval = self.new_msg(brake_msg.at - 100)
                 msg_eval.segment = segment
                 msg_eval.msg = self.eval_brake
 
-                brake_msg.related_next = brake_msg_start
-                brake_msg_start.related_previous = brake_msg_start
+                brake_msg_start.read_after(brake_msg)
                 msg_eval.related_next = brake_msg
 
             if segment["mark"] == "throttle":
-                msg = self.new_msg()
+                msg = self.new_msg(segment["start"])
                 msg.segment = segment
                 to = round(segment["force"] / 10) * 10
                 msg.msg = "throttle to %s" % to
-                msg.finish_at(segment["start"])
+                msg.finish_at()
 
-                msg_now = self.new_msg()
-                msg_now.segment = segment
                 features = segment.get("throttle_features", {})
-                msg_now.at = features.get("start")
+                msg_now = self.new_msg(features.get("start"))
+                msg_now.segment = segment
                 msg_now.msg = "now"
 
-                msg.related_next = msg_now
-                msg_now.related_previous = msg
+                msg_now.read_after(msg)
 
     def eval_brake(self, message):
         last_brake_start = message.segment.last_brake_features("start")
