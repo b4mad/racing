@@ -271,6 +271,7 @@ PLOTLY_COMPONENTS = [
 ]
 
 # https://testdriven.io/blog/django-social-auth/
+# https://dev.to/tylerlwsmith/styling-django-allauth-by-overriding-its-templates-3c31
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
