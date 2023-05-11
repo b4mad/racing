@@ -33,6 +33,7 @@ urlpatterns = [
     path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
     path("explorer/", include("explorer.urls")),
     path("django_plotly_dash/", include("django_plotly_dash.urls")),
 ]

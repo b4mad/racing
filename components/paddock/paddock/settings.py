@@ -57,6 +57,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    # social providers
+    "allauth.socialaccount.providers.github",
+    # "allauth.socialaccount.providers.twitter",
     "explorer",
     "django_plotly_dash.apps.DjangoPlotlyDashConfig",
     "bootstrap4",
@@ -262,3 +269,10 @@ PLOTLY_COMPONENTS = [
     # Other components, as needed
     "dash_bootstrap_components",
 ]
+
+# https://testdriven.io/blog/django-social-auth/
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+SITE_ID = 1
+ACCOUNT_EMAIL_VERIFICATION = "none"
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_ON_GET = True
