@@ -39,7 +39,7 @@ class Coach:
 
     def get_closest_message(self, meter):
         # Find the object with the closest 'at' attribute to 'meter'
-        closest = min(self.messages, key=lambda obj: abs(obj.at - meter))
+        closest = min(self.messages, key=lambda obj: obj.at - meter)
         return closest
 
     def link_messages(self):
@@ -82,8 +82,23 @@ class Coach:
             self.topic = topic
             logging.debug("new session %s", topic)
             self.set_filter(self.filter_from_topic(topic))
+            self.startup_message = ""
+
+        if not self.history.ready:
+            if self.history.error:
+                self.db_coach.error = self.history.error
+                self.db_coach.save()
+                return (self.response_topic, self.history.error)
+            return None
+
+        if self.history.ready and self.history.startup_message:
+            if self.startup_message != self.history.startup_message:
+                self.startup_message = self.history.startup_message
+                return (self.response_topic, self.startup_message)
 
         response = self.get_response(payload, now)
+        # logging.debug(f"payload: {payload}")
+        # logging.debug(f"response: {response}")
         if response:
             return (self.response_topic, response)
 
@@ -92,15 +107,6 @@ class Coach:
         self.messages = []
 
     def get_response(self, telemetry, now):
-        if not self.history.ready:
-            if self.history.error != self.previous_history_error:
-                self.previous_history_error = self.history.error
-                self.db_coach.error = self.history.error
-                self.db_coach.save()
-                return self.history.error
-            else:
-                return None
-
         work_to_do = self.history.update(now, telemetry)
         if work_to_do and not self.history.threaded:
             self.history.do_work()
@@ -112,17 +118,20 @@ class Coach:
             self.link_messages()
             self.prioritize_messages()
 
-        if distance_round_track < self.previous_distance:
+        if (self.previous_distance - distance_round_track) > 100:
             self.current_message = self.get_closest_message(distance_round_track)
+            logging.debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
             self.previous_distance = distance_round_track
 
         message = self.current_message
         # FIXME: if distance is at the end of the track. -> modulo track_length
         distance = abs(message["at"] - distance_round_track)
+        # logging.debug(f"message at: {message['at']} - on_track: {distance_round_track} - distance: {distance:.1f}")
 
         if distance < 10:
             # self.messages.append(self.messages.pop(0))
             self.current_message = message.next
+            logging.debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
 
             if message.callable():
                 logging.debug(f"{distance_round_track:.1f}: {message.msg}")

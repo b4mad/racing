@@ -65,7 +65,7 @@ class CoachWatcher:
         coach = PitCrewCoach(history, coach, debug=debug)
 
         topic = f"crewchief/{driver_name}/#"
-        mqtt = Mqtt(coach, topic, replay=self.replay)
+        mqtt = Mqtt(coach, topic, replay=self.replay, debug=debug)
 
         def history_thread():
             logging.info(f"History thread starting for {driver_name}")
