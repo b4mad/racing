@@ -33,6 +33,7 @@ jupyter = "*"
 django-extensions = "*"
 django-admin-list-filter-dropdown = "*"
 kaleido = "*"
+django-allauth = "*"
 
 [dev-packages]
 black = "*"

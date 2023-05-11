@@ -1,4 +1,4 @@
-{%extends "base.html"%}
+{%extends "base.html"%} {% load socialaccount %}
 
 {%block title%}Paddock{%endblock%}
 
@@ -9,6 +9,19 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-12">
+          {% if user.is_authenticated %}
+          <h3>Welcome {{ user.username }} !!!</h3>
+          <br /><br />
+          <a href="{% url 'account_logout' %}" class="btn btn-danger">Logout</a>
+          {% else %}
+          <!-- GitHub button starts here -->
+          <a href="{% provider_login_url 'github' %}" class="btn btn-secondary">
+            <i class="fa fa-github fa-fw"></i>
+            <span>Login with GitHub</span>
+          </a>
+          <!-- GitHub button ends here -->
+          {% endif %}
+          <hr />
           <h3>Resources</h3>
           <ul>
             <li>Read the <a href="https://github.com/b4mad/racing#installation">installation instructions</a></li>
@@ -16,6 +29,7 @@
             <li>Check the <a href="{%url "fastlap_index"%}">game / track / car </a> combinations</li>
             <li>Start contributing at <a href="https://github.com/b4mad/racing">GitHub.com/b4mad/racing</a></li>
           </ul>
+
         </div>
       </div>
     </div>
