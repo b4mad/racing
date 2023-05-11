@@ -35,4 +35,4 @@ def power_state(power, session_state=None, **kwargs):
     coach.enabled = power
     coach.save()
 
-    return f"Driver: {driver.name} - Enabled: {coach.enabled} - Error: '{coach.error}'"
+    return f"Driver: {driver.name} - Enabled: {coach.enabled} - Status: '{coach.status}' - Error: '{coach.error}'"

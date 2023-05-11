@@ -100,6 +100,8 @@ class Coach:
         if self.history.ready and self.history.startup_message:
             if self.startup_message != self.history.startup_message:
                 self.startup_message = self.history.startup_message
+                self.db_coach.status = self.startup_message
+                self.db_coach.save()
                 return (self.response_topic, self.startup_message)
 
         response = self.get_response(payload, now)
