@@ -13,6 +13,9 @@ class TestCoach(TransactionTestCase):
         "game.json",
         "track.json",
         "car.json",
+        "session.json",
+        "sessiontype.json",
+        "lap.json",
         "fastlap.json",
         "fastlapsegment.json",
         "driver.json",
@@ -81,6 +84,7 @@ class TestCoach(TransactionTestCase):
             history.disconnect()
 
         expected_responses = [
+            ("/coach/durandom", "start coaching for a lap time of 1 minute 37.01 seconds "),
             ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
             ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
             ("/coach/durandom", '{"distance": 1009, "message": "gear 4 40 percent a bit later", "priority": 9}'),
