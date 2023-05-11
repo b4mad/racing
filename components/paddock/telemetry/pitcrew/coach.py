@@ -14,16 +14,23 @@ class Message:
     def __init__(self, history, **kwargs):
         self.history = history
         self.track_length = self.history.track.length
+        self._finished_reading_chain_at = None
 
         self.at = kwargs.get("at", 0)
         self.msg = kwargs.get("msg", "")
         self.segment = kwargs.get("segment", Segment(self.history))
         self.enabled = kwargs.get("enabled", True)
         self.json_respone = kwargs.get("json_respone", True)
-        self.related = kwargs.get("related", [])
+        self.related = kwargs.get("related", None)
         self.silent = kwargs.get("silent", False)
         self.args = kwargs.get("args", [])
         self.kwargs = kwargs.get("kwargs", {})
+
+        self.next = None
+        self.previous = None
+
+        self.related_next = None
+        self.related_previous = None
 
     def __getitem__(self, key):
         return getattr(self, key)
@@ -34,11 +41,14 @@ class Message:
     def __setattr__(self, __name: str, __value: Any) -> None:
         if __name == "at" and self.track_length:
             __value = __value % self.track_length
+            self._finished_reading_chain_at = None
+        if __name == "msg":
+            self._finished_reading_chain_at = None
         super().__setattr__(__name, __value)
 
     def response(self):
         text_to_read = self.msg
-        if callable(self.msg):
+        if self.callable():
             kwargs = self.kwargs.copy()
             # kwargs["message"] = self
             text_to_read = self.msg(self, *self.args, **kwargs)
@@ -55,15 +65,55 @@ class Message:
         if not self.silent and text_to_read:
             return text_to_read
 
+    def callable(self):
+        return callable(self.msg)
+
     def silence(self):
-        if not self.silent:
+        if not self.silent and not self.callable():
             logging.debug(f"silencing '{self.msg}'")
             self.silent = True
+            if self.related_next:
+                self.related_next.silence()
 
     def louden(self):
         if self.silent:
             logging.debug(f"loudening '{self.msg}'")
             self.silent = False
+            if self.related_next:
+                self.related_next.louden()
+
+            if self.primary():
+                next_msg = self.next
+                while next_msg != self:
+                    if next_msg.msg == "throttle to 80":
+                        True
+                    if next_msg.primary():
+                        if self.in_read_range(next_msg):
+                            next_msg.silence()
+                    next_msg = next_msg.next
+
+    def primary(self):
+        return not self.callable() and not self.related_previous
+
+    def in_range(self, meters, start, finish):
+        if start < finish:
+            if meters >= start and meters < finish:
+                return True
+        else:
+            if meters >= start or meters < finish:
+                return True
+
+    def in_read_range(self, message):
+        start = message.at
+        finish = message.finished_reading_chain_at()
+        self_start = self.at
+        self_finish = self.finished_reading_chain_at()
+
+        if self.in_range(start, self_start, self_finish):
+            return True
+        if self.in_range(finish, self_start, self_finish):
+            return True
+        return False
 
     def read_time(self):
         if not self.msg:
@@ -71,12 +121,24 @@ class Message:
         words = len(self.msg.split(" "))
         return words * 0.8  # avg ms per word
 
+    def finished_at(self):
+        return (self.at + self.read_time()) % self.track_length
+
     def finish_at(self, at=None):
         if not at:
             at = self.at
         read_time = self.read_time()
         respond_at = self.history.offset_distance(at, seconds=read_time)
         self.at = respond_at
+
+    def finished_reading_chain_at(self):
+        if not self.related_next:
+            if not self._finished_reading_chain_at:
+                self._finished_reading_chain_at = (self.at + self.read_time()) % self.track_length
+            return self._finished_reading_chain_at
+
+        self._finished_reading_chain_at = self.related_next.finished_reading_chain_at()
+        return self._finished_reading_chain_at
 
 
 class Coach:
@@ -96,19 +158,42 @@ class Coach:
         self.messages.append(message)
         return message
 
-    # def disable_msg(self, segment):
-    #     self.enable_msg(segment, False)
+    def sort_messages(self, distance):
+        # sort messages by distance, keyword argument 'at'
+        messages = sorted(self.messages, key=lambda k: k["at"])
+        index_of_first_item = 0
 
-    # def enable_msg(self, segment, enabled=True):
-    #     # iterate over messages and enable the one for this segment
-    #     for at in self.messages:
-    #         msg = self.messages[at]
-    #         if "segment" in msg and "enabled" in msg:
-    #             if msg["segment"] == segment:
-    #                 if isinstance(msg["msg"], str):
-    #                     if msg["enabled"] != enabled:
-    #                         msg["enabled"] = enabled
-    #                         logging.debug(f"at {at}: {msg['msg']} enabled: {enabled}")
+        # loop through messages and find index of first item larger than distance
+        for i, msg in enumerate(messages):
+            index_of_first_item = i
+            if msg["at"] > distance:
+                break
+
+        return messages[index_of_first_item:] + messages[:index_of_first_item]
+
+    def get_closest_message(self, meter):
+        # Find the object with the closest 'at' attribute to 'meter'
+        closest = min(self.messages, key=lambda obj: abs(obj.at - meter))
+        return closest
+
+    def link_messages(self):
+        messages = sorted(self.messages, key=lambda k: k["at"])
+        for i in range(len(messages)):
+            msg = messages[i]
+            msg.silence()
+            if i == 0:
+                msg.previous = messages[-1]
+            else:
+                msg.previous = messages[i - 1]
+            if i == len(messages) - 1:
+                msg.next = messages[0]
+            else:
+                msg.next = messages[i + 1]
+
+    def prioritize_messages(self):
+        for message in self.messages:
+            if message.primary():
+                message.louden()
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -154,23 +239,32 @@ class Coach:
         if work_to_do and not self.history.threaded:
             self.history.do_work()
 
+        distance_round_track = telemetry["DistanceRoundTrack"]
+
         if not self.messages:
             self.init_messages()
+            self.link_messages()
+            self.prioritize_messages()
 
-        distance_round_track = telemetry["DistanceRoundTrack"]
         if distance_round_track < self.previous_distance:
-            self.messages = self.sort_messages(distance_round_track)
+            self.current_message = self.get_closest_message(distance_round_track)
             self.previous_distance = distance_round_track
 
-        next_message = self.messages[0]
+        message = self.current_message
         # FIXME: if distance is at the end of the track. -> modulo track_length
-        distance = abs(next_message["at"] - distance_round_track)
-        # print(distance)
+        distance = abs(message["at"] - distance_round_track)
 
         if distance < 10:
-            self.messages.append(self.messages.pop(0))
-            text_to_read = next_message.response()
-            logging.debug(f"{distance_round_track:.1f}: {text_to_read}")
+            # self.messages.append(self.messages.pop(0))
+            self.current_message = message.next
+
+            if message.callable():
+                logging.debug(f"{distance_round_track:.1f}: {message.msg}")
+
+            text_to_read = message.response()
+
+            if text_to_read:
+                logging.debug(f"{distance_round_track:.1f}: {text_to_read}")
             return text_to_read
 
     def init_messages(self):
@@ -188,20 +282,20 @@ class Coach:
                 at = segment["start"]
                 brake_msg.finish_at(at)
 
-                brake_start_msg = self.new_msg()
+                brake_msg_start = self.new_msg()
                 # msg.segment = segment
                 features = segment.get("brake_features", {})
-                brake_start_msg.at = features.get("start")
-                brake_start_msg.msg = "brake"
+                brake_msg_start.at = features.get("start")
+                brake_msg_start.msg = "brake"
 
-                msg = self.new_msg()
-                msg.at = brake_msg.at - 100
-                msg.segment = segment
-                msg.msg = self.eval_brake
-                msg.related = [
-                    brake_msg,
-                    brake_start_msg,
-                ]
+                msg_eval = self.new_msg()
+                msg_eval.at = brake_msg.at - 100
+                msg_eval.segment = segment
+                msg_eval.msg = self.eval_brake
+
+                brake_msg.related_next = brake_msg_start
+                brake_msg_start.related_previous = brake_msg_start
+                msg_eval.related_next = brake_msg
 
             if segment["mark"] == "throttle":
                 msg = self.new_msg()
@@ -210,31 +304,14 @@ class Coach:
                 msg.msg = "throttle to %s" % to
                 msg.finish_at(segment["start"])
 
-                msg = self.new_msg()
-                msg.segment = segment
+                msg_now = self.new_msg()
+                msg_now.segment = segment
                 features = segment.get("throttle_features", {})
-                msg.at = features.get("start")
-                msg.msg = "now"
+                msg_now.at = features.get("start")
+                msg_now.msg = "now"
 
-    def sort_messages(self, distance):
-        # sort messages by distance, keyword argument 'at'
-        messages = sorted(self.messages, key=lambda k: k["at"])
-        index_of_first_item = 0
-
-        # loop through messages and find index of first item larger than distance
-        for i, msg in enumerate(messages):
-            index_of_first_item = i
-            if msg["at"] > distance:
-                break
-
-        return messages[index_of_first_item:] + messages[:index_of_first_item]
-
-    # def eval_gear(self, segment, **kwargs):
-    #     gear = segment.gear
-    #     if segment.gear != gear:
-    #         self.enable_msg(segment)
-    #     else:
-    #         self.disable_msg(segment)
+                msg.related_next = msg_now
+                msg_now.related_previous = msg
 
     def eval_brake(self, message):
         last_brake_start = message.segment.last_brake_features("start")
@@ -243,8 +320,6 @@ class Coach:
         logging.debug(f"eval_brake: brake_diff: {brake_diff:.1f} for turn {message.segment.turn}")
 
         if abs(brake_diff) < 10:
-            for m in message.related:
-                m.silence()
+            message.related_next.silence()
         else:
-            for m in message.related:
-                m.louden()
+            message.related_next.louden()
