@@ -48,7 +48,10 @@ class TestCoach(TransactionTestCase):
         coach = driver.coach
 
         history = History()
-        threading.Thread(target=history.run).start()
+
+        use_threads = False
+        if use_threads:
+            threading.Thread(target=history.run).start()
 
         coach = PitCrewCoach(history, coach)
 
@@ -57,9 +60,12 @@ class TestCoach(TransactionTestCase):
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")
         coach.notify(topic, row)
-        print("waiting for history to be ready")
-        while not history.ready:
-            time.sleep(0.1)
+        if use_threads:
+            print("waiting for history to be ready")
+            while not history.ready:
+                time.sleep(0.1)
+        else:
+            history.init()
 
         captured_responses = []
         try:
@@ -74,81 +80,69 @@ class TestCoach(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-            # new session crewchief/durandom/1681897871/iRacing/fuji nochicane/Ferrari 488 GT3 Evo 2020/Practice
-            # loading segments for iRacing fuji nochicane - Ferrari 488 GT3 Evo 2020
-            # segment 1: 573 - 775 brake: 0 turn_in: 0 force: 79 gear: 2 stop: 0 acc: 0 speed: 17 mark: brake
-            # segment 2: 1204 - 1360 brake: 0 turn_in: 0 force: 41 gear: 4 stop: 0 acc: 0 speed: 43 mark: brake
-            # segment 3: 1462 - 1807 brake: 0 turn_in: 0 force: 0 gear: 4 stop: 0 acc: 0 speed: 44 mark: throttle
-            # segment 4: 1877 - 2027 brake: 0 turn_in: 0 force: 59 gear: 2 stop: 0 acc: 0 speed: 28 mark: brake
-            # segment 5: 2676 - 2823 brake: 0 turn_in: 0 force: 73 gear: 4 stop: 0 acc: 0 speed: 37 mark: brake
-            # segment 6: 2974 - 3109 brake: 0 turn_in: 0 force: 38 gear: 2 stop: 0 acc: 0 speed: 27 mark: brake
-            # segment 7: 3198 - 3374 brake: 0 turn_in: 0 force: 0 gear: 2 stop: 0 acc: 0 speed: 24 mark: throttle
-            # segment 8: 3462 - 3638 brake: 0 turn_in: 0 force: 0 gear: 2 stop: 0 acc: 0 speed: 24 mark: throttle
-            # loaded 8 segments
-
         expected_responses = [
-            ("/coach/durandom", '{"message": "gear 2 80 percent", "distance": 326, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 577.91, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 40 percent", "distance": 1009, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1208.94, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 0", "distance": 1340, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1461.95, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 80", "distance": 1664, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1783.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 60 percent", "distance": 1715, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1881.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 70 percent", "distance": 2457, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2680.99, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 30 percent", "distance": 2823, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2979.0, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3085, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3238.01, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3353, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3497.02, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 80 percent", "distance": 326, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 577.91, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 40 percent", "distance": 1009, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1208.94, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 0", "distance": 1340, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1461.95, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 80", "distance": 1664, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1783.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 60 percent", "distance": 1715, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1881.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 70 percent", "distance": 2457, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2680.99, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 30 percent", "distance": 2823, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2979.0, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3085, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3238.01, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3353, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3497.02, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 80 percent", "distance": 326, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 577.91, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 40 percent", "distance": 1009, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1208.94, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 0", "distance": 1340, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1461.95, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 80", "distance": 1664, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1783.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 60 percent", "distance": 1715, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1881.96, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 70 percent", "distance": 2457, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2680.99, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 30 percent", "distance": 2823, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 2979.0, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3085, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3238.01, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 20 percent", "distance": 3353, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 3497.02, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 2 80 percent", "distance": 326, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 577.91, "priority": 9}'),
-            ("/coach/durandom", '{"message": "gear 4 40 percent", "distance": 1009, "priority": 9}'),
-            ("/coach/durandom", '{"message": "brake", "distance": 1208.94, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 0", "distance": 1340, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1461.95, "priority": 9}'),
-            ("/coach/durandom", '{"message": "throttle to 80", "distance": 1664, "priority": 9}'),
-            ("/coach/durandom", '{"message": "now", "distance": 1783.96, "priority": 9}'),
+            ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1009, "message": "gear 4 40 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1208.94, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1715, "message": "gear 2 60 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1881.96, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2457, "message": "gear 4 70 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2680.99, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3085, "message": "gear 2 20 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3238.01, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1009, "message": "gear 4 40 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1208.94, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1715, "message": "gear 2 60 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1881.96, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2823, "message": "gear 2 30 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2979.0, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3085, "message": "gear 2 20 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3238.01, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1715, "message": "gear 2 60 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1881.96, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2823, "message": "gear 2 30 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2979.0, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3085, "message": "gear 2 20 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3238.01, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1715, "message": "gear 2 60 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1881.96, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2823, "message": "gear 2 30 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2979.0, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3353, "message": "gear 2 20 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3497.02, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1715, "message": "gear 2 60 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1881.96, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2457, "message": "gear 4 70 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2680.99, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 326, "message": "gear 2 80 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 577.91, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1340, "message": "throttle to 0", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 1461.95, "message": "now", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2457, "message": "gear 4 70 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2680.99, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2823, "message": "gear 2 30 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 2979.0, "message": "brake", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3353, "message": "gear 2 20 percent", "priority": 9}'),
+            ("/coach/durandom", '{"distance": 3497.02, "message": "brake", "priority": 9}'),
         ]
 
         pprint(captured_responses, width=200)

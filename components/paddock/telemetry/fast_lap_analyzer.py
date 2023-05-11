@@ -70,16 +70,22 @@ class FastLapAnalyzer:
         }
         return [track_info, data]
 
+    def brake_features(self, df):
+        brake_feature_args = {
+            "brake_threshold": 0.1,
+        }
+        return self.analyzer.brake_features(df, **brake_feature_args)
+
+    def throttle_features(self, df):
+        throttle_features_args = {
+            # "throttle_threshold": 0.98,
+        }
+        return self.analyzer.throttle_features(df, **throttle_features_args)
+
     def get_segments(self, track_df):
         analyzer = self.analyzer
         sectors = analyzer.split_sectors(track_df, min_length=10)
         sector_start_end = analyzer.extract_sector_start_end(sectors, min_length=10)
-        brake_feature_args = {
-            "brake_threshold": 0.1,
-        }
-        throttle_features_args = {
-            # "throttle_threshold": 0.98,
-        }
         sector_dfs = []
         track_info = []
         for i in range(len(sector_start_end)):
@@ -88,8 +94,8 @@ class FastLapAnalyzer:
 
             throttle_or_brake = analyzer.sector_type(sector)
 
-            brake_features = analyzer.brake_features(sector, **brake_feature_args)
-            throttle_features = analyzer.throttle_features(sector, **throttle_features_args)
+            brake_features = self.brake_features(sector)
+            throttle_features = self.throttle_features(sector)
 
             force = 0
             speed = 0
