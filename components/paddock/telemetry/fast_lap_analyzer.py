@@ -82,6 +82,12 @@ class FastLapAnalyzer:
         }
         return self.analyzer.throttle_features(df, **throttle_features_args)
 
+    def gear_features(self, df):
+        gear = df["Gear"].min()
+        return {
+            "gear": gear,
+        }
+
     def get_segments(self, track_df):
         analyzer = self.analyzer
         sectors = analyzer.split_sectors(track_df, min_length=10)
@@ -96,6 +102,7 @@ class FastLapAnalyzer:
 
             brake_features = self.brake_features(sector)
             throttle_features = self.throttle_features(sector)
+            gear_features = self.gear_features(sector)
 
             force = 0
             speed = 0
@@ -108,18 +115,17 @@ class FastLapAnalyzer:
                 start = throttle_features["start"]
                 speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
 
-            gear = sector["Gear"].min()
-
             track_info.append(
                 {
                     "mark": throttle_or_brake,
                     "start": sector_start_end[i]["start"],
                     "end": sector_start_end[i]["end"],
-                    "gear": gear,
+                    "gear": gear_features["gear"],
                     "force": force,
                     "speed": speed,
                     "brake_features": brake_features,
                     "throttle_features": throttle_features,
+                    "gear_features": gear_features,
                 }
             )
         return track_info

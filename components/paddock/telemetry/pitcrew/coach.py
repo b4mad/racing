@@ -1,144 +1,10 @@
-#!/usr/bin/env python3
-
-import json
 import logging
-from typing import Any
 import django.utils.timezone
-from .history import History, Segment
+from .history import History
+from .message import Message
 from telemetry.models import Coach as DbCoach
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class Message:
-    def __init__(self, history, **kwargs):
-        self.history = history
-        self.track_length = self.history.track.length
-        self._finished_reading_chain_at = None
-
-        self.at = kwargs.get("at", 0)
-        self.msg = kwargs.get("msg", "")
-        self.segment = kwargs.get("segment", Segment(self.history))
-        self.enabled = kwargs.get("enabled", True)
-        self.json_respone = kwargs.get("json_respone", True)
-        self.related = kwargs.get("related", None)
-        self.silent = kwargs.get("silent", False)
-        self.args = kwargs.get("args", [])
-        self.kwargs = kwargs.get("kwargs", {})
-
-        self.next = None
-        self.previous = None
-
-        self.related_next = None
-        self.related_previous = None
-
-    def __getitem__(self, key):
-        return getattr(self, key)
-
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
-
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if __name == "at" and self.track_length:
-            __value = __value % self.track_length
-            self._finished_reading_chain_at = None
-        if __name == "msg":
-            self._finished_reading_chain_at = None
-        super().__setattr__(__name, __value)
-
-    def response(self):
-        text_to_read = self.msg
-        if self.callable():
-            kwargs = self.kwargs.copy()
-            # kwargs["message"] = self
-            text_to_read = self.msg(self, *self.args, **kwargs)
-
-        if not self.silent and self.json_respone and text_to_read:
-            return json.dumps(
-                {
-                    "distance": self.at,
-                    "message": text_to_read,
-                    "priority": 9,
-                }
-            )
-
-        if not self.silent and text_to_read:
-            return text_to_read
-
-    def callable(self):
-        return callable(self.msg)
-
-    def silence(self):
-        if not self.silent and not self.callable():
-            logging.debug(f"silencing '{self.msg}'")
-            self.silent = True
-            if self.related_next:
-                self.related_next.silence()
-
-    def louden(self):
-        if self.silent:
-            logging.debug(f"loudening '{self.msg}'")
-            self.silent = False
-            if self.related_next:
-                self.related_next.louden()
-
-            if self.primary():
-                next_msg = self.next
-                while next_msg != self:
-                    if next_msg.msg == "throttle to 80":
-                        True
-                    if next_msg.primary():
-                        if self.in_read_range(next_msg):
-                            next_msg.silence()
-                    next_msg = next_msg.next
-
-    def primary(self):
-        return not self.callable() and not self.related_previous
-
-    def in_range(self, meters, start, finish):
-        if start < finish:
-            if meters >= start and meters < finish:
-                return True
-        else:
-            if meters >= start or meters < finish:
-                return True
-
-    def in_read_range(self, message):
-        start = message.at
-        finish = message.finished_reading_chain_at()
-        self_start = self.at
-        self_finish = self.finished_reading_chain_at()
-
-        if self.in_range(start, self_start, self_finish):
-            return True
-        if self.in_range(finish, self_start, self_finish):
-            return True
-        return False
-
-    def read_time(self):
-        if not self.msg:
-            raise Exception("no message - can't calculate read time")
-        words = len(self.msg.split(" "))
-        return words * 0.8  # avg ms per word
-
-    def finished_at(self):
-        return (self.at + self.read_time()) % self.track_length
-
-    def finish_at(self, at=None):
-        if not at:
-            at = self.at
-        read_time = self.read_time()
-        respond_at = self.history.offset_distance(at, seconds=read_time)
-        self.at = respond_at
-
-    def finished_reading_chain_at(self):
-        if not self.related_next:
-            if not self._finished_reading_chain_at:
-                self._finished_reading_chain_at = (self.at + self.read_time()) % self.track_length
-            return self._finished_reading_chain_at
-
-        self._finished_reading_chain_at = self.related_next.finished_reading_chain_at()
-        return self._finished_reading_chain_at
 
 
 class Coach:
@@ -151,8 +17,8 @@ class Coach:
         self.response_topic = f"/coach/{db_coach.driver.name}"
         self.topic = ""
 
-    def new_msg(self, **kwargs):
-        message = Message(history=self.history)
+    def new_msg(self, at, **kwargs):
+        message = Message(at, self.history)
         for key, value in kwargs.items():
             message[key] = value
         self.messages.append(message)
@@ -271,55 +137,111 @@ class Coach:
         self.track_length = self.history.track.length
         for segment in self.history.segments:
             if segment["mark"] == "brake":
-                gear = ""
-                if segment["gear"]:
-                    gear = f"gear {segment['gear']} "
-                text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
+                # gear = ""
+                # if segment["gear"]:
+                #     gear = f"gear {segment['gear']} "
+                # text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
+                text = self.brake_message(segment)
 
-                brake_msg = self.new_msg()
-                # msg.segment = segment
+                brake_msg = self.new_msg(segment["start"])
                 brake_msg.msg = text
-                at = segment["start"]
-                brake_msg.finish_at(at)
+                brake_msg.finish_at()
 
-                brake_msg_start = self.new_msg()
-                # msg.segment = segment
                 features = segment.get("brake_features", {})
-                brake_msg_start.at = features.get("start")
+                brake_msg_start = self.new_msg(features.get("start"))
                 brake_msg_start.msg = "brake"
 
-                msg_eval = self.new_msg()
-                msg_eval.at = brake_msg.at - 100
+                msg_eval = self.new_msg(brake_msg.at - 100)
                 msg_eval.segment = segment
                 msg_eval.msg = self.eval_brake
 
-                brake_msg.related_next = brake_msg_start
-                brake_msg_start.related_previous = brake_msg_start
+                brake_msg_start.read_after(brake_msg)
                 msg_eval.related_next = brake_msg
 
             if segment["mark"] == "throttle":
-                msg = self.new_msg()
+                msg = self.new_msg(segment["start"])
                 msg.segment = segment
                 to = round(segment["force"] / 10) * 10
                 msg.msg = "throttle to %s" % to
-                msg.finish_at(segment["start"])
+                msg.finish_at()
 
-                msg_now = self.new_msg()
-                msg_now.segment = segment
                 features = segment.get("throttle_features", {})
-                msg_now.at = features.get("start")
+                msg_now = self.new_msg(features.get("start"))
+                msg_now.segment = segment
                 msg_now.msg = "now"
 
-                msg.related_next = msg_now
-                msg_now.related_previous = msg
+                msg_now.read_after(msg)
 
     def eval_brake(self, message):
-        last_brake_start = message.segment.last_brake_features("start")
-        coach_brake_start = message.segment.brake_features.get("start")
-        brake_diff = last_brake_start - coach_brake_start
-        logging.debug(f"eval_brake: brake_diff: {brake_diff:.1f} for turn {message.segment.turn}")
-
-        if abs(brake_diff) < 10:
-            message.related_next.silence()
+        log_prefix = f"eval_brake: {message.segment.turn}:"
+        new_message = self.brake_message(message.segment)
+        old_message = message.related_next.msg
+        if new_message:
+            if new_message != old_message:
+                message.related_next.msg = new_message
+                logging.debug(f"{log_prefix} change: {old_message} -> {new_message}")
+                message.related_next.louden()
+            else:
+                logging.debug(f"{log_prefix} keep: {old_message}")
+                message.related_next.louden()
         else:
-            message.related_next.louden()
+            logging.debug(f"{log_prefix} silencing: {old_message}")
+            message.related_next.silence()
+
+    def brake_message(self, segment):
+        log_prefix = f"eval_brake: {segment.turn}:"
+
+        gear_fragment = ""
+        if segment["gear"]:
+            gear_fragment = f"gear {segment['gear']}"
+        force_fragment = "%s percent" % (round(segment["force"] / 10) * 10)
+        default_message = gear_fragment + " " + force_fragment
+
+        if not segment.has_last_features("brake"):
+            logging.debug(f"{log_prefix} no last features: {default_message}")
+            return default_message
+
+        new_fragments = []
+
+        # check gear
+        last_gear = segment.last_gear_features("gear")
+        gear_diff = last_gear - segment["gear"]
+        if gear_diff != 0:
+            new_fragments.append(gear_fragment)
+        logging.debug(f"{log_prefix} gear_diff: {gear_diff}")
+
+        # check brake force
+        last_brake_force = segment.last_brake_features("force")
+        coach_brake_force = segment.brake_features.get("force")
+        force_diff = last_brake_force - coach_brake_force
+        force_diff_abs = abs(force_diff)
+        logging.debug(f"{log_prefix} force_diff: {force_diff:.2f}")
+        if force_diff_abs > 0.3:
+            # too much or too little
+            new_fragments.append(force_fragment)
+        elif force_diff > 0.1:
+            new_fragments.append("a bit less")
+        elif force_diff < -0.1:
+            new_fragments.append("a bit harder")
+
+        # check brake start
+        last_brake_start = segment.last_brake_features("start")
+        coach_brake_start = segment.brake_features.get("start")
+        brake_diff = last_brake_start - coach_brake_start
+        brake_diff_abs = abs(brake_diff)
+        logging.debug(f"{log_prefix} brake_diff: {brake_diff:.1f}")
+
+        if abs(brake_diff_abs) > 50:
+            # too early or too late
+            new_fragments = [default_message]
+        elif brake_diff > 20:
+            # too late
+            new_fragments.append("a bit earlier")
+        elif brake_diff < -20:
+            # too early
+            new_fragments.append("a bit later")
+
+        if new_fragments:
+            return " ".join(new_fragments)
+        else:
+            return ""
