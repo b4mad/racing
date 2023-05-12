@@ -1,21 +1,10 @@
-#!/usr/bin/env python3
-
-import os
-from django.forms.models import model_to_dict
-
-# import pickle
 import pandas as pd
 import time
-import logging
+from django.forms.models import model_to_dict
+from telemetry.pitcrew.logging import LoggingMixin
 from telemetry.models import Game, FastLap, FastLapSegment, Driver
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
-
-from influxdb_client import InfluxDBClient
-
-B4MAD_RACING_INFLUX_ORG = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
-B4MAD_RACING_INFLUX_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN", "")
-B4MAD_RACING_INFLUX_URL = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
 
 
 class Segment:
@@ -67,13 +56,8 @@ class Segment:
         return self.last_features(key, mark="gear")
 
 
-class History:
+class History(LoggingMixin):
     def __init__(self):
-        self.client = InfluxDBClient(
-            url=B4MAD_RACING_INFLUX_URL,
-            token=B4MAD_RACING_INFLUX_TOKEN,
-            org=B4MAD_RACING_INFLUX_ORG,
-        )
         self.pickle = False
         self.do_init = False
         self.segments = []
@@ -91,6 +75,7 @@ class History:
         self.process_segments = []
         self.threaded = False
         self.startup_message = ""
+        self.session_id = "NO_SESSION"
 
     def disconnect(self):
         self.do_run = False
@@ -106,6 +91,7 @@ class History:
 
     def set_filter(self, filter):
         self.filter = filter
+        self.session_id = filter.get("SessionId", "NO_SESSION")
         self.do_init = True
 
     def init(self):
@@ -121,7 +107,7 @@ class History:
             error = f"Error init {self.filter['Driver']} / {self.filter['GameName']}"
             error += f" / {self.filter['CarModel']}/  {self.filter['TrackCode']} - {e}"
             self.error = error
-            logging.error(error)
+            self.log_error(error)
             return False
 
         success = self.init_segments()
@@ -152,13 +138,13 @@ class History:
             self.error = f"no data found for game {self.filter['GameName']}"
             self.error += f"on track {self.filter['TrackCode']}"
             self.error += f"in car {self.filter['CarModel']}"
-            logging.error(self.error)
+            self.log_error(self.error)
             return False
 
-        logging.debug("loading segments for %s %s - %s", self.game, self.track, self.car)
-        logging.debug(f"  based on laps {fast_lap.laps}")
+        self.log_debug("loading segments for %s %s - %s", self.game, self.track, self.car)
+        self.log_debug(f"  based on laps {fast_lap.laps}")
         self.track_info = fast_lap.data.get("track_info", [])
-        logging.debug(f"  track_info\n{self.track_info}")
+        self.log_debug(f"  track_info\n{self.track_info}")
 
         self.segments = []
         for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
@@ -169,13 +155,13 @@ class History:
             s["telemetry_frames"] = []
             s["telemetry_features"] = []
             self.segments.append(s)
-            logging.debug("segment %s", segment)
+            self.log_debug("segment %s", segment)
 
         self.segments = self.sort_segments()
 
         self.fast_lap = fast_lap
 
-        # logging.debug("loaded %s segments", len(self.segments))
+        # self.log_debug("loaded %s segments", len(self.segments))
 
         self.startup_message = "start coaching "
         try:
@@ -224,7 +210,7 @@ class History:
         # )
         # # check if fast_lap has any fast_lap_segments
         # if not FastLapSegment.objects.filter(fast_lap=fast_lap).exists():
-        #     logging.debug(f"driver {self.driver} has no history for {fast_lap}")
+        #     self.log_debug(f"driver {self.driver} has no history for {fast_lap}")
         #     # initialize with segments from fast_lap
         #     for segment in self.segments:
         #         FastLapSegment.objects.create(fast_lap=fast_lap, turn=segment["turn"])
@@ -245,7 +231,7 @@ class History:
 
     def update_telemetry(self, meters, data, depth=0):
         if depth > len(self.segments):
-            logging.error(f"update_telemetry: meters: {meters} no segment found")
+            self.log_error(f"update_telemetry: meters: {meters} no segment found")
             return
 
         segment = self.segments[0]
@@ -273,21 +259,21 @@ class History:
             return work_to_do
 
     def do_work(self):
-        # logging.debug(f"do work")
+        # self.log_debug(f"do work")
         while len(self.process_segments) > 0:
             segment = self.process_segments.pop(0)
             log_prefix = f"processing segment {segment['turn']} "
             if len(segment["telemetry"]) == 0:
-                logging.error(f"{log_prefix} no telemetry for segment")
+                self.log_error(f"{log_prefix} no telemetry for segment")
                 continue
 
             telemetry = segment["telemetry"].pop(0)
             if len(telemetry) == 0:
-                logging.error(f"{log_prefix} no data in telemetry")
+                self.log_error(f"{log_prefix} no data in telemetry")
                 continue
 
             # lap_number = telemetry[0].get("CurrentLap")
-            # logging.debug(f"   lap: {lap_number}")
+            # self.log_debug(f"   lap: {lap_number}")
 
             df = pd.DataFrame.from_records(telemetry)
 
@@ -300,7 +286,7 @@ class History:
                 "gear_features": gear_features,
             }
             segment["telemetry_features"].append(features)
-            # logging.debug(f"{log_prefix} features: {features}")
+            # self.log_debug(f"{log_prefix} features: {features}")
 
             segment["telemetry_frames"].append(df)
 
