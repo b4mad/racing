@@ -22,6 +22,7 @@ or do some [data science](ai/)
 6. Join our [Discord](https://discord.com/invite/MaUQuSGSbJ) and say hello :wave:
 
 Drive some laps to send some initial data. Now any time you run your simulator you will be sending data.
+If anything doesnt work, check out the [FAQ](docs/faq.md).
 
 ## Coaches
 
