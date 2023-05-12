@@ -1,9 +1,9 @@
-from telemetry.pitcrew.logging import LoggingMixin
+import logging
 from .session import Session
 import django.utils.timezone
 
 
-class Firehose(LoggingMixin):
+class Firehose:
     def __init__(self, debug=False):
         self.debug = debug
         self.sessions = {}
@@ -28,7 +28,7 @@ class Firehose(LoggingMixin):
             session = Session(topic, start=now)
             session.driver = driver
             session.session_id = session_id
-            self.log_debug(f"New session: {topic}")
+            logging.debug(f"New session: {topic}")
             session.game_name = game
             session.track = track
             session.car = car
@@ -51,10 +51,10 @@ class Firehose(LoggingMixin):
             for i in range(len(session["laps"]) - 1, -1, -1):
                 lap = session["laps"][i]
                 if lap.get("delete", False):
-                    self.log_debug(f"{topic}\n\t deleting lap {lap['number']}")
+                    logging.debug(f"{topic}\n\t deleting lap {lap['number']}")
                     del session["laps"][i]
 
         # delete all sessions by iterating over delete_sessions
         for topic in delete_sessions:
             del self.sessions[topic]
-            self.log_debug(f"{topic}\n\t deleting inactive session")
+            logging.debug(f"{topic}\n\t deleting inactive session")
