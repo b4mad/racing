@@ -16,7 +16,9 @@ from django import forms
 
 
 class CoachForm(forms.Form):
-    driver_name = forms.CharField()
+    driver_name = forms.CharField(
+        help_text="The MQTT drivername in CrewChief",
+    )
     coach_enabled = forms.BooleanField(required=False)
 
     # message = forms.CharField(widget=forms.Textarea)

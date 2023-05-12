@@ -38,8 +38,10 @@ class Message:
         if __name == "at" and self.track_length:
             __value = __value % self.track_length
             self._finished_reading_chain_at = None
+            self._send_at = None
         if __name == "msg":
             self._finished_reading_chain_at = None
+            self._send_at = None
         super().__setattr__(__name, __value)
 
     def response(self):
@@ -60,6 +62,11 @@ class Message:
 
         if not self.silent and text_to_read:
             return text_to_read
+
+    def send_at(self):
+        if not self._send_at:
+            self._send_at = (self.at - 100) % self.track_length
+        return self._send_at
 
     def callable(self):
         return callable(self.msg)
