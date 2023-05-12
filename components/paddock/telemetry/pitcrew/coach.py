@@ -141,7 +141,8 @@ class Coach:
 
         message = self.current_message
         # FIXME: if distance is at the end of the track. -> modulo track_length
-        distance = abs(message["at"] - distance_round_track)
+        # FIXME: maybe make this dependent on the speed of the car
+        distance = abs(message.send_at() - distance_round_track)
         # logging.debug(f"message at: {message['at']} - on_track: {distance_round_track} - distance: {distance:.1f}")
 
         if distance < 10:
