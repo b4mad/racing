@@ -1,14 +1,13 @@
-import logging
+from telemetry.pitcrew.logging import LoggingMixin
 from .history import History, Segment
 from typing import Any
 import json
 
-_LOGGER = logging.getLogger(__name__)
 
-
-class Message:
+class Message(LoggingMixin):
     def __init__(self, at, history: History, **kwargs):
         self.history = history
+        self.session_id = self.history.session_id
         self.track_length = self.history.track.length
         self.at = at
 
@@ -77,14 +76,14 @@ class Message:
 
     def silence(self):
         if not self.silent and not self.callable():
-            logging.debug(f"silencing '{self.msg}'")
+            self.log_debug(f"silencing '{self.msg}'")
             self.silent = True
             if self.related_next:
                 self.related_next.silence()
 
     def louden(self):
         if self.silent:
-            logging.debug(f"loudening '{self.msg}'")
+            self.log_debug(f"loudening '{self.msg}'")
             self.silent = False
             if self.related_next:
                 self.related_next.louden()

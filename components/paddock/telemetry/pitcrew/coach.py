@@ -1,13 +1,11 @@
-import logging
 import django.utils.timezone
+from telemetry.pitcrew.logging import LoggingMixin
 from .history import History
 from .message import Message
 from telemetry.models import Coach as DbCoach
 
-_LOGGER = logging.getLogger(__name__)
 
-
-class Coach:
+class Coach(LoggingMixin):
     def __init__(self, history: History, db_coach: DbCoach, debug=False):
         self.history = history
         self.previous_history_error = None
@@ -16,6 +14,7 @@ class Coach:
         self.previous_distance = 10_000_000
         self.response_topic = f"/coach/{db_coach.driver.name}"
         self.topic = ""
+        self.session_id = "NO_SESSION"
 
     def new_msg(self, at, **kwargs):
         message = Message(at, self.history)
@@ -79,18 +78,20 @@ class Coach:
             "GameName": game,
             "TrackCode": track,
             "CarModel": car,
+            "SessionId": session,
         }
         return filter
 
     def set_filter(self, filter):
         self.history.set_filter(filter)
+        self.session_id = filter.get("SessionId", "NO_SESSION")
         self.messages = []
 
     def notify(self, topic, payload, now=None):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
             self.topic = topic
-            logging.debug("new session %s", topic)
+            self.log_debug("new session %s", topic)
             self.set_filter(self.filter_from_topic(topic))
             self.startup_message = ""
 
@@ -115,18 +116,22 @@ class Coach:
             self.prioritize_messages()
 
         response = self.get_response(payload, now)
-        # logging.debug(f"payload: {payload}")
-        # logging.debug(f"response: {response}")
+        # self.log_debug(f"payload: {payload}")
+        # self.log_debug(f"response: {response}")
         if response:
             return (self.response_topic, response)
 
     def get_response(self, telemetry, now):
         work_to_do = self.history.update(now, telemetry)
+        distance_round_track = int(telemetry["DistanceRoundTrack"])
+        if distance_round_track == self.previous_distance:
+            return None
+
         if work_to_do and not self.history.threaded:
             self.history.do_work()
 
-        distance_round_track = telemetry["DistanceRoundTrack"]
-        # logging.debug(f"distance_round_track: {distance_round_track:.1f}")
+        if distance_round_track % 100 == 0:
+            self.log_debug(f"distance_round_track: {distance_round_track}")
         if (distance_round_track - self.previous_distance) < -50:
             # we jumped at least 50 meters back
             # unless we crossed the start finish line
@@ -134,29 +139,30 @@ class Coach:
             # hence we reset the messages
             if abs(self.track_length - distance_round_track - self.previous_distance) > 5:
                 self.current_message = self.get_closest_message(distance_round_track)
-                logging.debug(f"distance_round_track: {distance_round_track:.1f}")
-                logging.debug(f"previous_distance: {self.previous_distance:.1f}")
-                logging.debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
+                self.log_debug(f"distance_round_track: {distance_round_track}")
+                self.log_debug(f"previous_distance: {self.previous_distance}")
+                self.log_debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
+
         self.previous_distance = distance_round_track
 
         message = self.current_message
         # FIXME: if distance is at the end of the track. -> modulo track_length
         # FIXME: maybe make this dependent on the speed of the car
         distance = abs(message.send_at() - distance_round_track)
-        # logging.debug(f"message at: {message['at']} - on_track: {distance_round_track} - distance: {distance:.1f}")
+        # self.log_debug(f"message at: {message['at']} - on_track: {distance_round_track} - distance: {distance:.1f}")
 
         if distance < 10:
             # self.messages.append(self.messages.pop(0))
             self.current_message = message.next
-            logging.debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
+            self.log_debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
 
             if message.callable():
-                logging.debug(f"{distance_round_track:.1f}: {message.msg}")
+                self.log_debug(f"{distance_round_track}: {message.msg}")
 
             text_to_read = message.response()
 
             if text_to_read:
-                logging.debug(f"{distance_round_track:.1f}: {text_to_read}")
+                self.log_debug(f"{distance_round_track}: {text_to_read}")
             return text_to_read
 
     def init_messages(self):
@@ -204,13 +210,13 @@ class Coach:
         if new_message:
             if new_message != old_message:
                 message.related_next.msg = new_message
-                logging.debug(f"{log_prefix} change: {old_message} -> {new_message}")
+                self.log_debug(f"{log_prefix} change: {old_message} -> {new_message}")
                 message.related_next.louden()
             else:
-                logging.debug(f"{log_prefix} keep: {old_message}")
+                self.log_debug(f"{log_prefix} keep: {old_message}")
                 message.related_next.louden()
         else:
-            logging.debug(f"{log_prefix} silencing: {old_message}")
+            self.log_debug(f"{log_prefix} silencing: {old_message}")
             message.related_next.silence()
 
     def brake_message(self, segment):
@@ -223,7 +229,7 @@ class Coach:
         default_message = gear_fragment + " " + force_fragment
 
         if not segment.has_last_features("brake"):
-            logging.debug(f"{log_prefix} no last features: {default_message}")
+            self.log_debug(f"{log_prefix} no last features: {default_message}")
             return default_message
 
         new_fragments = []
@@ -233,14 +239,14 @@ class Coach:
         gear_diff = last_gear - segment["gear"]
         if gear_diff != 0:
             new_fragments.append(gear_fragment)
-        logging.debug(f"{log_prefix} gear_diff: {gear_diff}")
+        self.log_debug(f"{log_prefix} gear_diff: {gear_diff}")
 
         # check brake force
         last_brake_force = segment.last_brake_features("force")
         coach_brake_force = segment.brake_features.get("force")
         force_diff = last_brake_force - coach_brake_force
         force_diff_abs = abs(force_diff)
-        logging.debug(f"{log_prefix} force_diff: {force_diff:.2f}")
+        self.log_debug(f"{log_prefix} force_diff: {force_diff:.2f}")
         if force_diff_abs > 0.3:
             # too much or too little
             new_fragments.append(force_fragment)
@@ -254,7 +260,7 @@ class Coach:
         coach_brake_start = segment.brake_features.get("start")
         brake_diff = last_brake_start - coach_brake_start
         brake_diff_abs = abs(brake_diff)
-        logging.debug(f"{log_prefix} brake_diff: {brake_diff:.1f}")
+        self.log_debug(f"{log_prefix} brake_diff: {brake_diff:.1f}")
 
         if abs(brake_diff_abs) > 50:
             # too early or too late
