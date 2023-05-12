@@ -18,7 +18,10 @@ from django import forms
 class CoachForm(forms.Form):
     driver_name = forms.CharField(
         help_text="The MQTT drivername in CrewChief",
+        widget=forms.TextInput(attrs={"placeholder": "-- CrewChief MQTT drivername --"}),
     )
+    # PrependedText('field_name', '@', placeholder="username")
+
     coach_enabled = forms.BooleanField(required=False)
 
     # message = forms.CharField(widget=forms.Textarea)
@@ -26,6 +29,30 @@ class CoachForm(forms.Form):
     # def send_email(self):
     #     # send email using the self.cleaned_data dictionary
     #     pass
+
+    def __init__(self, *args, **kwargs):
+        """Grants access to the request object so that only members of the current user
+        are given as options"""
+
+        self.request = kwargs.pop("request")
+        super(CoachForm, self).__init__(*args, **kwargs)
+        # self.fields['members'].queryset = Member.objects.filter(
+        #     user=self.request.user)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        driver_name = cleaned_data.get("driver_name")
+
+        # try to get the driver
+        driver = Driver.objects.filter(name__iexact=driver_name).first()
+        if not driver:
+            self.add_error("driver_name", "Driver name does not exist. Drive some laps first.")
+        else:
+            # find a user with this name, case insensitive
+            user = User.objects.filter(first_name__iexact=driver_name).first()
+            # user = User.objects.filter(first_name=driver_name).first()
+            if user and user != self.request.user:
+                self.add_error("driver_name", "This name is already taken.")
 
 
 class CoachView(LoginRequiredMixin, FormView):
@@ -35,6 +62,15 @@ class CoachView(LoginRequiredMixin, FormView):
 
     # def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
     #     super().setup(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        """Passes the request object to the form class.
+        This is necessary to only display members that belong to a given user"""
+
+        kwargs = super(CoachView, self).get_form_kwargs()
+        # https://medium.com/analytics-vidhya/django-how-to-pass-the-user-object-into-form-classes-ee322f02948c
+        kwargs["request"] = self.request
+        return kwargs
 
     def get_context_data(self, **kwargs):
         """Use this to add extra context."""
@@ -51,7 +87,7 @@ class CoachView(LoginRequiredMixin, FormView):
 
         self.coach = None
         coach_enabled = False
-        driver_name = "-- CrewChief MQTT drivername --"
+        driver_name = None
 
         driver = Driver.objects.filter(name=user_name).first()
         if driver:
@@ -69,10 +105,12 @@ class CoachView(LoginRequiredMixin, FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         # form.send_email()
+        # form.logged_in_user = self.request.user
 
         # does another user exist with this name?
         driver_name = form.cleaned_data["driver_name"]
         user = User.objects.filter(first_name=driver_name).first()
+
         if not user or user == self.request.user:
             # driver = Driver.objects.filter(name=form.cleaned_data["driver_name"]).first()
             self.request.user.first_name = form.cleaned_data["driver_name"]
