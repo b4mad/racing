@@ -136,8 +136,8 @@ class History(LoggingMixin):
         fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
         if not fast_lap:
             self.error = f"no data found for game {self.filter['GameName']}"
-            self.error += f"on track {self.filter['TrackCode']}"
-            self.error += f"in car {self.filter['CarModel']}"
+            self.error += f" on track {self.filter['TrackCode']}"
+            self.error += f" in car {self.filter['CarModel']}"
             self.log_error(self.error)
             return False
 

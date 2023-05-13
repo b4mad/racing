@@ -60,6 +60,14 @@ pipenv run ./manage.py test telemetry.tests.TestSession.test_iracing
 pipenv run ./manage.py replay --session-id 1677132130
 ```
 
+#### replaying a session with a coach
+
+```
+pipenv run ./manage.py pitcrew -c durandom --replay
+pipenv run ./manage.py replay --session-id 1683915879 --change-driver durandom --wait 0.01
+```
+
+
 ### profiling
 
 ```
