@@ -11,5 +11,6 @@ spec:
   # host: paddock.b4mad.racing
   tls:
     termination: edge
+    insecureEdgeTerminationPolicy: Redirect
   to:
     name: paddock
