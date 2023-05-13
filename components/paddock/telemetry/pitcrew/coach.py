@@ -60,6 +60,7 @@ class Coach(LoggingMixin):
                 msg.next = messages[0]
             else:
                 msg.next = messages[i + 1]
+            # self.log_debug(f"link {msg.at}: next-> {msg.next.at} prev-> {msg.previous.at}")
 
     def prioritize_messages(self):
         for message in self.messages:
@@ -113,6 +114,7 @@ class Coach(LoggingMixin):
         if not self.messages:
             self.init_messages()
             self.link_messages()
+            self.current_message = self.get_closest_message(0)
             self.prioritize_messages()
 
         response = self.get_response(payload, now)
@@ -138,10 +140,13 @@ class Coach(LoggingMixin):
             # we might have gone off the track or reset the car to the pits
             # hence we reset the messages
             if abs(self.track_length - distance_round_track - self.previous_distance) > 5:
-                self.current_message = self.get_closest_message(distance_round_track)
                 self.log_debug(f"distance_round_track: {distance_round_track}")
                 self.log_debug(f"previous_distance: {self.previous_distance}")
-                self.log_debug(f"searching next_message: {self.current_message.at} {self.current_message.msg}")
+                self.log_debug(
+                    f"searching next msg after current: {self.current_message.at} '{self.current_message.msg}'"
+                )
+                self.current_message = self.get_closest_message(distance_round_track)
+                self.log_debug(f"set next msg at: {self.current_message.at} '{self.current_message.msg}'")
 
         self.previous_distance = distance_round_track
 
@@ -153,8 +158,9 @@ class Coach(LoggingMixin):
 
         if distance < 10:
             # self.messages.append(self.messages.pop(0))
+            self.log_debug(f"eval message at: {message.at} ({distance_round_track}): {message.msg}")
             self.current_message = message.next
-            self.log_debug(f"next_message: {self.current_message.at} {self.current_message.msg}")
+            self.log_debug(f"set next message to: {self.current_message.at} {self.current_message.msg}")
 
             if message.callable():
                 self.log_debug(f"{distance_round_track}: {message.msg}")
