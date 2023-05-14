@@ -7,7 +7,7 @@ spec:
   postgresVersion: 14
   service:
     type: NodePort
-    nodePort: 31884
+    nodePort: 31184
   instances:
     - name: instance
       dataVolumeClaimSpec:

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    openshift.io/display-name: B4mad Racing Dev
+    openshift.io/display-name: B4mad Racing Test
   labels:
     openshift.io/cluster-monitoring: 'true'
-  name: b4mad-racing-dev
+  name: b4mad-racing-test
