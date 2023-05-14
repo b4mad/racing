@@ -1,14 +1,13 @@
-import logging
+from telemetry.pitcrew.logging import LoggingMixin
 from .history import History, Segment
 from typing import Any
 import json
 
-_LOGGER = logging.getLogger(__name__)
 
-
-class Message:
+class Message(LoggingMixin):
     def __init__(self, at, history: History, **kwargs):
         self.history = history
+        self.session_id = self.history.session_id
         self.track_length = self.history.track.length
         self.at = at
 
@@ -38,8 +37,10 @@ class Message:
         if __name == "at" and self.track_length:
             __value = __value % self.track_length
             self._finished_reading_chain_at = None
+            self._send_at = None
         if __name == "msg":
             self._finished_reading_chain_at = None
+            self._send_at = None
         super().__setattr__(__name, __value)
 
     def response(self):
@@ -61,6 +62,11 @@ class Message:
         if not self.silent and text_to_read:
             return text_to_read
 
+    def send_at(self):
+        if not self._send_at:
+            self._send_at = (self.at - 100) % self.track_length
+        return self._send_at
+
     def callable(self):
         return callable(self.msg)
 
@@ -70,14 +76,14 @@ class Message:
 
     def silence(self):
         if not self.silent and not self.callable():
-            logging.debug(f"silencing '{self.msg}'")
+            self.log_debug(f"silencing '{self.msg}'")
             self.silent = True
             if self.related_next:
                 self.related_next.silence()
 
     def louden(self):
         if self.silent:
-            logging.debug(f"loudening '{self.msg}'")
+            self.log_debug(f"loudening '{self.msg}'")
             self.silent = False
             if self.related_next:
                 self.related_next.louden()

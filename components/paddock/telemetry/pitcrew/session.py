@@ -1,6 +1,6 @@
 import django.utils.timezone
-import logging
 from telemetry.models import Game
+from telemetry.pitcrew.logging import LoggingMixin
 
 
 class Lap:
@@ -30,7 +30,7 @@ class Lap:
         return self.__str__()
 
 
-class Session:
+class Session(LoggingMixin):
     def __init__(self, id, start=None):
         self.id = id
         self.start = start or django.utils.timezone.now()
@@ -54,18 +54,6 @@ class Session:
         self.previous_lap_time_previous = -1
         self.telemetry_valid = True
 
-    def log(self, message, level=logging.DEBUG):
-        if level == logging.DEBUG:
-            logging.debug(f"{self.session_id}: {message}")
-        elif level == logging.INFO:
-            logging.info(f"{self.session_id}: {message}")
-
-    def log_debug(self, message):
-        self.log(message, level=logging.DEBUG)
-
-    def log_info(self, message):
-        self.log(message, level=logging.INFO)
-
     def signal(self, telemetry, now=None):
         now = now or django.utils.timezone.now()
         self.end = now
@@ -73,7 +61,7 @@ class Session:
 
     def log_laps(self):
         for lap in self.laps:
-            logging.debug(
+            self.log_debug(
                 f"{self.driver} lap {lap['number']:02d}: {lap['time']}"
                 + f" - valid: {lap['valid']} - finished: {lap['finished']}"
             )
@@ -154,7 +142,7 @@ class Session:
             lap = self.new_lap(now)
             lap["number"] = current_lap
             self.current_lap = current_lap
-            logging.debug(f"{self.driver} new lap: {lap['number']}")
+            self.log_debug(f"{self.driver} new lap: {lap['number']}")
 
         lap = self.laps[-1]
         previous_lap = self.laps[-2] if len(self.laps) > 1 else None
@@ -170,7 +158,7 @@ class Session:
 
         if lap_time_previous > 0 and previous_lap:
             if lap_time_previous != previous_lap["time"]:
-                logging.debug(
+                self.log_debug(
                     f"{self.driver} setting previous lap time from" + f"{previous_lap['time']} to {lap_time_previous}"
                 )
                 previous_lap["time"] = lap_time_previous
@@ -185,8 +173,8 @@ class Session:
         current_lap = telemetry.get("CurrentLap", None)
 
         if length is None or speed is None or lap_time is None or current_lap is None:
-            logging.error("Invalid telemetry: %s", telemetry)
-            logging.error(f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}")
+            self.log_error("Invalid telemetry: %s", telemetry)
+            self.log_error(f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}")
             return
 
         threshold = speed * 0.5
@@ -204,7 +192,7 @@ class Session:
             previous_length = lap["length"]
             # start a new lap if cross the finish line
             if length < threshold and length < lap["length"]:
-                logging.info(
+                self.log_info(
                     f"{self.session_id}\n\t finishing lap at length {previous_length}" + f" and time {lap['time']}"
                 )
                 lap["finished"] = True
@@ -224,7 +212,7 @@ class Session:
                 "valid": False,
             }
             self.laps.append(lap)
-            logging.info(
+            self.log_info(
                 f"{self.session_id}\n\t new lap length {length} < threshold {threshold}"
                 + f" and < previous lap length {previous_length}, active: {lap['active']}, time: {lap_time}"
             )
@@ -237,7 +225,7 @@ class Session:
                 # mark not active if we jump back more than 50 meters
                 distance_since_previous_tick = length - lap["length"]
                 if distance_since_previous_tick < -50:
-                    logging.info(
+                    self.log_info(
                         f"{self.session_id}\n\t lap not active, jump {distance_since_previous_tick}m\n"
                         + f"\t\t lap length {lap['length']} jumped to length {length}"
                     )
@@ -248,7 +236,7 @@ class Session:
 
                 previous_lap_time = lap["time"]
                 if lap_time < previous_lap_time:
-                    logging.info(
+                    self.log_info(
                         f"{self.session_id}\n\t stop measuring time at {lap_time}s for {previous_lap_time}s / {length}m"
                     )
                     lap["active"] = False
@@ -259,7 +247,7 @@ class Session:
             elif (lap_time < lap["time"] or lap_time == 0) and lap["start"] == lap["end"]:
                 # start measuring time if we're past the threshold and the time started
                 #  some games have a delay on CurrentLapTime
-                logging.info(f"{self.session_id}\n\t start measuring time at lap.time {lap['time']} / time {lap_time}")
+                self.log_info(f"{self.session_id}\n\t start measuring time at lap.time {lap['time']} / time {lap_time}")
                 lap["active"] = True
                 lap["end"] = now
                 lap["length"] = length
@@ -267,4 +255,4 @@ class Session:
             else:
                 if (now - lap["inactive_log_time"]).seconds > 120:
                     lap["inactive_log_time"] = now
-                    logging.info(f"{self.session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}")
+                    self.log_info(f"{self.session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}")

@@ -28,7 +28,7 @@ class Firehose:
             session = Session(topic, start=now)
             session.driver = driver
             session.session_id = session_id
-            logging.debug(f"{session_id}: New session: {topic}")
+            logging.debug(f"New session: {topic}")
             session.game_name = game
             session.track = track
             session.car = car

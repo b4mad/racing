@@ -13,6 +13,9 @@ spec:
     kind: Service
     name: influxdb2
     weight: 100
+  tls:
+    termination:                   edge      
+    insecureEdgeTerminationPolicy: Redirect
   port:
     targetPort: http
   wildcardPolicy: None
