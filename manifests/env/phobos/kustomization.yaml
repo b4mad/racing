@@ -71,12 +71,15 @@ patches:
         path: /spec/template/spec/containers/0/resources/limits/memory
         value: "16Gi"
   - target:
-      kind: Route
+      kind: Ingress
       name: paddock
     patch: |-
       - op: replace
-        path: /spec/host
+        path: /spec/tls/0/hosts/0
         value: paddock.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-paddock.b4mad.racing
 images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
