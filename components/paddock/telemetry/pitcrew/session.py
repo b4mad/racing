@@ -106,12 +106,7 @@ class Session:
                 self.telemetry_valid = False
             return
 
-        if (
-            distance is None
-            or current_lap is None
-            or lap_time is None
-            or lap_is_valid is None
-        ):
+        if distance is None or current_lap is None or lap_time is None or lap_is_valid is None:
             if self.telemetry_valid:
                 self.log_debug(f"fields are None: {telemetry}")
                 self.telemetry_valid = False
@@ -124,9 +119,7 @@ class Session:
         # self.log_debug(f"distance: {distance}")
 
         crossed_finish_line = distance < self.previous_distance and distance < 10
-        lap_number_increased = (
-            self.current_lap and current_lap > self.current_lap.number
-        )
+        lap_number_increased = self.current_lap and current_lap > self.current_lap.number
 
         if crossed_finish_line and not self.current_lap:
             # first lap
@@ -178,8 +171,7 @@ class Session:
         if lap_time_previous > 0 and previous_lap:
             if lap_time_previous != previous_lap["time"]:
                 logging.debug(
-                    f"{self.driver} setting previous lap time from"
-                    + f"{previous_lap['time']} to {lap_time_previous}"
+                    f"{self.driver} setting previous lap time from" + f"{previous_lap['time']} to {lap_time_previous}"
                 )
                 previous_lap["time"] = lap_time_previous
                 previous_lap["valid"] = telemetry.get("PreviousLapWasValid", False)
@@ -194,9 +186,7 @@ class Session:
 
         if length is None or speed is None or lap_time is None or current_lap is None:
             logging.error("Invalid telemetry: %s", telemetry)
-            logging.error(
-                f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}"
-            )
+            logging.error(f"\tlength: {length}, speed: {speed}, lap_time: {lap_time}, current_lap: {current_lap}")
             return
 
         threshold = speed * 0.5
@@ -215,8 +205,7 @@ class Session:
             # start a new lap if cross the finish line
             if length < threshold and length < lap["length"]:
                 logging.info(
-                    f"{self.session_id}\n\t finishing lap at length {previous_length}"
-                    + f" and time {lap['time']}"
+                    f"{self.session_id}\n\t finishing lap at length {previous_length}" + f" and time {lap['time']}"
                 )
                 lap["finished"] = True
                 new_lap = True
@@ -267,14 +256,10 @@ class Session:
                     lap["end"] = now
                     lap["length"] = length
                     lap["time"] = lap_time
-            elif (lap_time < lap["time"] or lap_time == 0) and lap["start"] == lap[
-                "end"
-            ]:
+            elif (lap_time < lap["time"] or lap_time == 0) and lap["start"] == lap["end"]:
                 # start measuring time if we're past the threshold and the time started
                 #  some games have a delay on CurrentLapTime
-                logging.info(
-                    f"{self.session_id}\n\t start measuring time at lap.time {lap['time']} / time {lap_time}"
-                )
+                logging.info(f"{self.session_id}\n\t start measuring time at lap.time {lap['time']} / time {lap_time}")
                 lap["active"] = True
                 lap["end"] = now
                 lap["length"] = length
@@ -282,6 +267,4 @@ class Session:
             else:
                 if (now - lap["inactive_log_time"]).seconds > 120:
                     lap["inactive_log_time"] = now
-                    logging.info(
-                        f"{self.session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}"
-                    )
+                    logging.info(f"{self.session_id}\n\t lap not active, time {lap_time} > lap.time {lap['time']}")
