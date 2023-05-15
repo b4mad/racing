@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- pairs:
+    app.kubernetes.io/managed-by: humans
+    app.kubernetes.io/name: b4mad-racing
+    app.kubernetes.io/version: v0.1.0-dev
+namespace: b4mad-racing
+resources:
+- ../../../base/paddock/rebuild
+images:
+  - name: paddock
+    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
+    newTag: latest
