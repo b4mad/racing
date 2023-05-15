@@ -18,5 +18,5 @@ spec:
                   name: django-web
   tls:
     - hosts:
-        - paddock.b4mad.racing
-      secretName: https-cert-paddock.b4mad.racing
+        - paddock-dev.b4mad.racing
+      secretName: https-cert-paddock-dev.b4mad.racing
