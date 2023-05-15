@@ -89,6 +89,9 @@ patches:
       name: paddock
     patch: |-
       - op: replace
+        path: /spec/rules/0/host
+        value: paddock.b4mad.racing
+      - op: replace
         path: /spec/tls/0/hosts/0
         value: paddock.b4mad.racing
       - op: replace
