@@ -16,9 +16,7 @@ from rich.console import Console
 from rich.table import Column
 from rich.progress import Progress, TextColumn
 
-B4MAD_RACING_MQTT_HOST = os.environ.get(
-    "B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing"
-)
+B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing")
 B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
 B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
 B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
@@ -101,22 +99,16 @@ class Command(BaseCommand):
             if self.live:
                 self.session_saver = SessionSaver(self.firehose)
                 self.session_saver.sleep_time = 5
-                self.session_save_thread = threading.Thread(
-                    target=self.session_saver.run
-                )
+                self.session_save_thread = threading.Thread(target=self.session_saver.run)
                 self.session_save_thread.name = "session_saver"
                 logging.debug("starting Thread session_saver")
                 self.session_save_thread.start()
         else:
             # FIXME: use mqtt class
             self.mqttc = mqtt.Client()
-            self.mqttc.username_pw_set(
-                B4MAD_RACING_MQTT_USER, B4MAD_RACING_MQTT_PASSWORD
-            )
+            self.mqttc.username_pw_set(B4MAD_RACING_MQTT_USER, B4MAD_RACING_MQTT_PASSWORD)
             self.mqttc.connect(B4MAD_RACING_MQTT_HOST, B4MAD_RACING_MQTT_PORT, 60)
-            logging.debug(
-                f"connected to {B4MAD_RACING_MQTT_HOST}:{B4MAD_RACING_MQTT_PORT}"
-            )
+            logging.debug(f"connected to {B4MAD_RACING_MQTT_HOST}:{B4MAD_RACING_MQTT_PORT}")
             self.observer = self.mqtt_notify
 
         if options["session_ids"]:
@@ -147,9 +139,7 @@ class Command(BaseCommand):
                     new_session_id = options["new_session_id"]
                 else:
                     new_session_id = int(time.time())
-                msg = (
-                    f"[green] Replaying lap_id {lap_id} as new session {new_session_id}"
-                )
+                msg = f"[green] Replaying lap_id {lap_id} as new session {new_session_id}"
                 self.progress.console.print(msg)
         else:
             session = influx.raw_stream(
@@ -172,9 +162,7 @@ class Command(BaseCommand):
             self.session_saver.save_sessions()
 
     def firehose_notify(self, topic, payload):
-        now = timezone.make_aware(
-            datetime.datetime.fromtimestamp(payload["time"] / 1000)
-        )
+        now = timezone.make_aware(datetime.datetime.fromtimestamp(payload["time"] / 1000))
 
         self.firehose.notify(topic, payload["telemetry"], now=now)
 
@@ -260,9 +248,7 @@ class Command(BaseCommand):
 
             distance_round_track = payload["telemetry"].get("DistanceRoundTrack", 0)
             if not self.quiet:
-                self.progress.update(
-                    self.task, advance=1, meters=distance_round_track, topic=topic
-                )
+                self.progress.update(self.task, advance=1, meters=distance_round_track, topic=topic)
 
             for field in monitor_fields:
                 try:
@@ -270,9 +256,7 @@ class Command(BaseCommand):
                     prev_value = prev_payload["telemetry"].get(field)
                     if value != prev_value:
                         if not self.quiet:
-                            self.progress.console.print(
-                                f"{distance_round_track}: {field}: {prev_value} -> {value}"
-                            )
+                            self.progress.console.print(f"{distance_round_track}: {field}: {prev_value} -> {value}")
                 except KeyError:
                     if monitor_fields_in_payload[field]:
                         monitor_fields_in_payload[field] = False

@@ -80,9 +80,7 @@ class Command(BaseCommand):
                 self.progress.console.print(msg)
 
                 with self.progress:
-                    self.replay(
-                        session, wait=options["wait"], new_session_id=new_session_id
-                    )
+                    self.replay(session, wait=options["wait"], new_session_id=new_session_id)
         elif options["lap_ids"]:
             for lap_id in options["lap_ids"]:
                 lap = Lap.objects.get(id=lap_id)
@@ -91,12 +89,8 @@ class Command(BaseCommand):
                     new_session_id = options["new_session_id"]
                 else:
                     new_session_id = int(time.time())
-                logging.info(
-                    f"Replaying lap_id {lap_id} as new session {new_session_id}"
-                )
-                self.replay(
-                    session, wait=options["wait"], new_session_id=new_session_id
-                )
+                logging.info(f"Replaying lap_id {lap_id} as new session {new_session_id}")
+                self.replay(session, wait=options["wait"], new_session_id=new_session_id)
         else:
             self.replay(session, wait=options["wait"], new_session_id=new_session_id)
 
@@ -168,17 +162,13 @@ class Command(BaseCommand):
             # self.progress.console.print_json(payload_string)
 
             distance_round_track = payload["telemetry"].get("DistanceRoundTrack", 0)
-            self.progress.update(
-                self.task, advance=1, meters=distance_round_track, topic=topic
-            )
+            self.progress.update(self.task, advance=1, meters=distance_round_track, topic=topic)
 
             for field in monitor_fields:
                 value = payload["telemetry"].get(field, None)
                 prev_value = prev_payload["telemetry"].get(field, None)
                 if value != prev_value:
-                    self.progress.console.print(
-                        f"{distance_round_track}: {field}: {prev_value} -> {value}"
-                    )
+                    self.progress.console.print(f"{distance_round_track}: {field}: {prev_value} -> {value}")
 
             # mqttc.publish(topic, payload=str(payload_string), qos=0, retain=False)
             prev_payload = payload

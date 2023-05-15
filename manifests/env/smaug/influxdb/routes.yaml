@@ -14,7 +14,7 @@ spec:
     name: influxdb2
     weight: 100
   tls:
-    termination:                   edge      
+    termination:                   edge
     insecureEdgeTerminationPolicy: Redirect
   port:
     targetPort: http

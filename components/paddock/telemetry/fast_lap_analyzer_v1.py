@@ -26,9 +26,7 @@ class FastLapAnalyzerV1:
             logging.info("RaceRoom not supported, because no SteeringAngle")
             return
         if game.name == "Assetto Corsa Competizione":
-            logging.info(
-                "Assetto Corsa Competizione not supported, because no SteeringAngle"
-            )
+            logging.info("Assetto Corsa Competizione not supported, because no SteeringAngle")
             return
         if car.name == "Unknown":
             logging.info(f"Car {car.name} not supported, skipping")
@@ -51,9 +49,7 @@ class FastLapAnalyzerV1:
         # Loop over the SessionIds for the n fastest laps
         # for i,session in enumerate(np.unique(session_list)):
         for lap in self.laps:
-            logging.info(
-                f"Getting data for SessionId: {lap.session.session_id} / {lap.number}"
-            )
+            logging.info(f"Getting data for SessionId: {lap.session.session_id} / {lap.number}")
             # format datetime to flux format
             start = lap.start.strftime("%Y-%m-%dT%H:%M:%SZ")
             end = lap.end.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -77,9 +73,7 @@ class FastLapAnalyzerV1:
                 for feature in features:
                     feature_values[feature].append(df[feature].values)
             except Exception as e:
-                logging.error(
-                    f"Could not get data for SessionId: {lap.session.session_id} / {lap.number} / {e}"
-                )
+                logging.error(f"Could not get data for SessionId: {lap.session.session_id} / {lap.number} / {e}")
                 continue
 
         if len(feature_values["Brake"]) == 0:
@@ -88,9 +82,7 @@ class FastLapAnalyzerV1:
 
         # Define the maximal size of all SteeringAngle arrays
         # print(feature_values["SteeringAngle"])
-        max_number_of_datapoints = max(
-            [s.size for s in feature_values["SteeringAngle"]]
-        )
+        max_number_of_datapoints = max([s.size for s in feature_values["SteeringAngle"]])
 
         # Define a dictionnary that will store the data
         # we need a dictionnary that contains arrays with all the same size,
@@ -105,9 +97,7 @@ class FastLapAnalyzerV1:
         # Fill the dictionnary with data
         for i in range(len(self.laps)):
             for feature in features:
-                data_arrays[feature][i][
-                    : feature_values[feature][i].size
-                ] = feature_values[feature][i]
+                data_arrays[feature][i][: feature_values[feature][i].size] = feature_values[feature][i]
 
         # Do the average of all data in the dictionnary
         # over the n fastest laps
@@ -198,9 +188,7 @@ class FastLapAnalyzerV1:
         # fill the dictionnary
         for i in range(track_segment_count):
             for feature in features:
-                segment_data[feature].append(
-                    av_data_arrays[feature][center_idx[i] : center_idx[i + 1]]
-                )
+                segment_data[feature].append(av_data_arrays[feature][center_idx[i] : center_idx[i + 1]])
 
         track_info = []
         for i in range(track_segment_count):
@@ -240,9 +228,7 @@ class FastLapAnalyzerV1:
 
         # Average DistanceRoundTrack when the throttle is pressed again during the turn
         for i in range(track_segment_count):
-            seg = np.where(
-                segment_data["Throttle"][i] == segment_data["Throttle"][i].min()
-            )
+            seg = np.where(segment_data["Throttle"][i] == segment_data["Throttle"][i].min())
             if seg[0].size > 0:
                 j = seg[0][-1]
                 track_info[i]["accelerate"] = segment_data["DistanceRoundTrack"][i][j]

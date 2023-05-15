@@ -10,7 +10,7 @@ spec:
     kind: Service
     name: grafana-service
   tls:
-    termination:                   edge      
+    termination:                   edge
     insecureEdgeTerminationPolicy: Redirect
   port:
     targetPort: 3000

@@ -54,9 +54,7 @@ def load_session_csv(path: str) -> pd.DataFrame:
     dataset_txts = [start_str + dataset_txt for dataset_txt in txt.split(start_str)[1:]]
 
     # load each as dataframe and combine
-    dfs = [
-        pd.read_csv(StringIO(dataset_txt), comment="#") for dataset_txt in dataset_txts
-    ]
+    dfs = [pd.read_csv(StringIO(dataset_txt), comment="#") for dataset_txt in dataset_txts]
     df = pd.concat(dfs)
 
     # make sure this only 1 session
@@ -86,9 +84,7 @@ def compute_spatial_trajectory(lap_df, interpolation_step_size=0.001, segments=1
 
     x = np.arange(0, 1, interpolation_step_size)
     brake = np.interp(x, lap_df["TrackPositionPercent"], lap_df["Brake"])
-    steering_angle = np.interp(
-        x, lap_df["TrackPositionPercent"], lap_df["SteeringAngle"]
-    )
+    steering_angle = np.interp(x, lap_df["TrackPositionPercent"], lap_df["SteeringAngle"])
     throttle = np.interp(x, lap_df["TrackPositionPercent"], lap_df["Throttle"])
 
     # speed = np.interp(x, lap_df["TrackPositionPercent"], lap_df["SpeedKmh"])
