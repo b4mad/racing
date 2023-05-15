@@ -31,8 +31,8 @@ spec:
               # create this via the influx UI as a writer token for the racing bucket
               valueFrom:
                 secretKeyRef:
-                  name: influx-telegraf
-                  key: token
+                  name: influxdb2-auth
+                  key: write-user-password
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false

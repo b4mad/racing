@@ -14,7 +14,7 @@ spec:
     editable: true
     isDefault: true
     type: influxdb
-    url: "http://influxdb2.b4mad-racing.svc.cluster.local:8086"
+    url: "http://influxdb2.b4mad-racing-test.svc.cluster.local:8086"
     jsonData:
       defaultBucket: "racing"
       httpMode: "POST"

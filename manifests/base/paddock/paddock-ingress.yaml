@@ -6,7 +6,7 @@ metadata:
   name: paddock
 spec:
   rules:
-    - host: paddock.b4mad.racing
+    - host: paddock.dev.b4mad.racing
       http:
         paths:
           - pathType: Prefix
