@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    haproxy.router.openshift.io/timeout: 15m
   name: influx
 spec:
   rules:
