@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  name: grafana
+spec:
+  rules:
+    - host: pitwall.dev.b4mad.racing
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  # name: grafana-http
+                  number: 3000
+  tls:
+    - hosts:
+        - pitwall.dev.b4mad.racing
+      secretName: https-cert-grafana.b4mad.racing

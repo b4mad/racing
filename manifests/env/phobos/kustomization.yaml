@@ -20,13 +20,13 @@ generators:
 generatorOptions:
   disableNameSuffixHash: true
 patches:
-  - target:
-      kind: GrafanaDatasource
-      name: racing
-    patch: |-
-      - op: replace
-        path: /spec/datasource/url
-        value: http://influxdb2.b4mad-racing.svc.cluster.local:8086
+  # - target:
+  #     kind: GrafanaDatasource
+  #     name: racing
+  #   patch: |-
+  #     - op: replace
+  #       path: /spec/datasource/url
+  #       value: http://influxdb2.b4mad-racing.svc.cluster.local:8086
   - target:
       kind: Service
       name: mosquitto-tcp
@@ -110,6 +110,16 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: https-cert-paddock.b4mad.racing
+  - target:
+      kind: Ingress
+      name: grafana
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: pitwall.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: pitwall.b4mad.racing
 images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
