@@ -31,7 +31,7 @@ spec:
               influx config create \
                 --configs-path /tmp/configs \
                 -n b4mad-admin \
-                -u http://influxdb2.b4mad-racing-test.svc.cluster.local:8086 \
+                -u http://influxdb2:8086 \
                 -t "$INFLUXDB_ADMIN_TOKEN" \
                 --active -o b4mad
               influx config ls --configs-path /tmp/configs

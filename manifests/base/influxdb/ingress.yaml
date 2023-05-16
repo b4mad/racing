@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    haproxy.router.openshift.io/timeout: 15m
+  name: influx
+spec:
+  rules:
+    - host: telemetry.dev.b4mad.racing
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: influxdb2
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - telemetry.dev.b4mad.racing
+      secretName: https-cert-telemetry.dev.b4mad.racing
