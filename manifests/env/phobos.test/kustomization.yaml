@@ -65,6 +65,19 @@ patches:
         value: "200Mi"
   - target:
       kind: Ingress
+      name: influx
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: telemetry.test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: telemetry.test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-telemetry.test.b4mad.racing
+  - target:
+      kind: Ingress
       name: paddock
     patch: |-
       - op: replace

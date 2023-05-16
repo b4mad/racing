@@ -3,20 +3,20 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-  name: paddock
+  name: influx
 spec:
   rules:
-    - host: paddock.dev.b4mad.racing
+    - host: telemetry.dev.b4mad.racing
       http:
         paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: paddock
+                name: influxdb2
                 port:
-                  name: django-web
+                  name: http
   tls:
     - hosts:
-        - paddock-dev.b4mad.racing
-      secretName: https-cert-paddock-dev.b4mad.racing
+        - telemetry.dev.b4mad.racing
+      secretName: https-cert-telemetry.dev.b4mad.racing

@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - deployment_config.yaml
   - image_stream.yaml
-  - paddock-ingress.yaml
+  - ingress.yaml
   - service_account.yaml
   - service_monitor.yaml
   - service.yaml

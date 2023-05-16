@@ -7,6 +7,6 @@ resources:
 - influxdb2/influxdb/templates/serviceaccount.yaml
 - influxdb2-auth.yaml
 - influxdb2-backup.yaml
-- routes.yaml
+- ingress.yaml
 patchesStrategicMerge:
   - deployment.yaml
