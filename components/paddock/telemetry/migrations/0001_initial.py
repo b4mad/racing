@@ -56,9 +56,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "car",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="telemetry.car"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="telemetry.car"),
                 ),
             ],
         ),
@@ -156,9 +154,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "game",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="telemetry.game"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="telemetry.game"),
                 ),
                 (
                     "session_type",
@@ -209,16 +205,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="fastlap",
             name="game",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="telemetry.game"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="telemetry.game"),
         ),
         migrations.AddField(
             model_name="fastlap",
             name="track",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="telemetry.track"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="telemetry.track"),
         ),
         migrations.AddField(
             model_name="car",

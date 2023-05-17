@@ -34,22 +34,14 @@ class SessionSaver:
             # TODO: update session details if they change (e.g. end time)
             if not session.record:
                 try:
-                    session.driver, created = Driver.objects.get_or_create(
-                        name=session.driver
-                    )
-                    session.game, created = Game.objects.get_or_create(
-                        name=session.game_name
-                    )
+                    session.driver, created = Driver.objects.get_or_create(name=session.driver)
+                    session.game, created = Game.objects.get_or_create(name=session.game_name)
                     (
                         session.session_type,
                         created,
                     ) = SessionType.objects.get_or_create(type=session.session_type)
-                    session.car, created = session.game.cars.get_or_create(
-                        name=session.car
-                    )
-                    session.track, created = session.game.tracks.get_or_create(
-                        name=session.track
-                    )
+                    session.car, created = session.game.cars.get_or_create(name=session.car)
+                    session.track, created = session.game.tracks.get_or_create(name=session.track)
                     (
                         session.record,
                         created,
@@ -62,9 +54,7 @@ class SessionSaver:
                     logging.debug(f"{session.session_id}: Saving session {session_id}")
                 except Exception as e:
                     # TODO add error to session to expire
-                    logging.error(
-                        f"{session.session_id}: Error saving session {session_id}: {e}"
-                    )
+                    logging.error(f"{session.session_id}: Error saving session {session_id}: {e}")
                     continue
 
             lap_numbers = list(session.laps.keys())
@@ -102,14 +92,10 @@ class SessionSaver:
                         session.record.save_dirty_fields()
                         lap.persisted = True
                     except IntegrityError as e:
-                        logging.error(
-                            f"{session.session_id}: Error saving lap {lap.number}: {e}"
-                        )
+                        logging.error(f"{session.session_id}: Error saving lap {lap.number}: {e}")
                         lap.persisted = True
                     except Exception as e:
-                        logging.error(
-                            f"{session.session_id}: Error saving lap {lap.number}: {e}"
-                        )
+                        logging.error(f"{session.session_id}: Error saving lap {lap.number}: {e}")
 
                     lap_length = int(lap.length)
                     if lap_length > track.length:

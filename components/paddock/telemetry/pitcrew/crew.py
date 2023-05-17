@@ -79,11 +79,7 @@ class Crew:
 
         logging.debug("waiting for threads to be ready...")
         while True:
-            if (
-                self.mqtt.ready
-                and self.coach_watcher.ready
-                and self.session_saver.ready
-            ):
+            if self.mqtt.ready and self.coach_watcher.ready and self.session_saver.ready:
                 break
             time.sleep(1)
 

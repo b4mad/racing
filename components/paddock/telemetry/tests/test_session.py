@@ -38,9 +38,7 @@ class TestSession(TestCase):
             if lap.time != -1:
                 # the difference between lap.end and lap.start should be equal to lap.time
                 time_delta = lap.end - lap.start
-                self.assertAlmostEqual(
-                    time_delta.total_seconds(), expected_lap.time, places=0
-                )
+                self.assertAlmostEqual(time_delta.total_seconds(), expected_lap.time, places=0)
 
     def test_iracing(self):
         # measurement = "fast_laps"
@@ -139,9 +137,7 @@ class TestSession(TestCase):
         car = Car.objects.create(name="test_car", game=game)
         driver = Driver.objects.create(name="test_driver")
         session_type = SessionType.objects.create(type="test_session_type")
-        session = SessionModel.objects.create(
-            session_id=666, driver=driver, game=game, session_type=session_type
-        )
+        session = SessionModel.objects.create(session_id=666, driver=driver, game=game, session_type=session_type)
 
         now = django.utils.timezone.now()
 

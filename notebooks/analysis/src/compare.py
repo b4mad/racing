@@ -55,10 +55,7 @@ def compute_suggestions(expert_df, student_df):
     selected_features = diff_df.abs().values.argmax(1)
 
     # get direction of error
-    signs = [
-        sign[feature]
-        for sign, feature in zip(np.sign(diff_df.values), selected_features)
-    ]
+    signs = [sign[feature] for sign, feature in zip(np.sign(diff_df.values), selected_features)]
 
     feature_names = diff_df.columns
     suggestions = [

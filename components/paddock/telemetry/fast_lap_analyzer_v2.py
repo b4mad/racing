@@ -39,9 +39,7 @@ class FastLapAnalyzerV2:
 
         laps = self.analyzer.remove_uncorrelated_laps(laps, column="SpeedMs")
         # remove laps that are too different from the others
-        laps = self.analyzer.remove_uncorrelated_laps(
-            laps, column="Brake", threshold=0.5
-        )
+        laps = self.analyzer.remove_uncorrelated_laps(laps, column="Brake", threshold=0.5)
 
         if len(laps) == 0:
             return
@@ -55,9 +53,7 @@ class FastLapAnalyzerV2:
             # dataframes with less than 100 points are not reliable
             if len(df) < 100:
                 continue
-            df = self.analyzer.resample(
-                df, columns=["Brake", "SpeedMs", "Gear", "CurrentLapTime"], freq=1
-            )
+            df = self.analyzer.resample(df, columns=["Brake", "SpeedMs", "Gear", "CurrentLapTime"], freq=1)
 
             # smooth the laps
             window_length = 20  # meters
@@ -117,9 +113,7 @@ class FastLapAnalyzerV2:
         # cluster again with number of clusters set to 3, since we've extended the lap to 3 times the length
         # round up to the nearest integer
         n_clusters = int(np.ceil(len(df) / 3))
-        turns, labels = self.analyzer.cluster(
-            [df], field="Brake", n_clusters=n_clusters
-        )
+        turns, labels = self.analyzer.cluster([df], field="Brake", n_clusters=n_clusters)
         turns = turns.sort_values(by=["DistanceRoundTrack"])
         turns = turns.reset_index(drop=True)
 
@@ -215,9 +209,7 @@ class FastLapAnalyzerV2:
         # cluster again with number of clusters set to 3, since we've extended the lap to 3 times the length
         # round up to the nearest integer
         n_clusters = int(np.ceil(len(df) / 3))
-        turns, labels = self.analyzer.cluster(
-            [df], field="SpeedMs", n_clusters=n_clusters
-        )
+        turns, labels = self.analyzer.cluster([df], field="SpeedMs", n_clusters=n_clusters)
         turns = turns.sort_values(by=["DistanceRoundTrack"])
         turns = turns.reset_index(drop=True)
 
@@ -260,9 +252,7 @@ class FastLapAnalyzerV2:
                     tmp = min
                     min = max
                     max = tmp
-                mask = (df["DistanceRoundTrack"] >= min) & (
-                    df["DistanceRoundTrack"] <= max
-                )
+                mask = (df["DistanceRoundTrack"] >= min) & (df["DistanceRoundTrack"] <= max)
                 # select all points in df where DistanceRoundTrack is between min and max
                 gear = df.loc[mask]["Gear"].min()
                 # print(gear)
