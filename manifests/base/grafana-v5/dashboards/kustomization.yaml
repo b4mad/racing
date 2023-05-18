@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - details-crew-chief.yaml
   # - details-simhub.yaml
-  # - user.yaml
+  - driver.yaml
   - landingpage.yaml

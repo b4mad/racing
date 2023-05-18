@@ -14,7 +14,7 @@ resources:
 - ../../base/postgresql
 - ../../base/paddock
 - ../../base/paddock/cronjobs
-- ../../base/grafana-v5
+- grafana
 generators:
   - secret-generator.yaml
 generatorOptions:

@@ -7,6 +7,9 @@ spec:
     matchLabels:
       dashboards: "grafana"
   folder: CrewChief
+  datasources:
+    - inputName: "DS_RACING"
+      datasourceName: "Racing"
   resyncPeriod: 30s
   # Error: ✗ failed to create temporary file: open /tmp/919128373.zip: read-only file system
   # https://github.com/prometheus-operator/kube-prometheus/pull/1624/files
@@ -69,7 +72,6 @@ spec:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 2,
       "iteration": 1664619458885,
       "links": [],
       "liveNow": false,
@@ -138,7 +140,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "fields = [\"_time\", \"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\"]\njfields = [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\"]\n\n\ndata = from(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\n  |> keep(columns: fields)\n\nmin = data\n  |> first(column: \"_time\")\n\nmax = data\n  |> last(column: \"_time\")\n\njoin(tables: {min: min, max: max}, on: jfields, method: \"inner\")\n  |> group()  \n  |> map(fn: (r) => ({r with Duration: float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0}))\n  |> yield()\n",
               "refId": "A"
@@ -252,7 +254,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"Gear\" or r[\"_field\"] == \"Brake\" or r[\"_field\"] == \"SteeringAngle\" or r[\"_field\"] == \"Clutch\" or r[\"_field\"] == \"Throttle\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
               "refId": "A"
@@ -335,7 +337,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"DistanceRoundTrack\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
               "refId": "A"
@@ -418,7 +420,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"SpeedMs\"))\n  |> map(fn: (r) => ({ r with _value: r._value * 3.6 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
               "refId": "A"
@@ -501,7 +503,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"Rpms\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
               "refId": "A"
@@ -596,7 +598,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "${DS_RACING}"
               },
               "query": "brake = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Brake\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\nx = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"DistanceRoundTrack\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n\njoin(tables: {brake: brake, x: x}, on: [\"_time\"] )\n  |> keep(columns: [\"_value_brake\", \"_value_x\"])\n  |> sort(columns: [\"_value_x\"], desc: false)\n\n",
               "refId": "A"
