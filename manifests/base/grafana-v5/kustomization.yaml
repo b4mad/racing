@@ -6,3 +6,4 @@ resources:
 - grafana.yaml
 - datasource-influx.yaml
 - dashboards
+- ingress.yaml

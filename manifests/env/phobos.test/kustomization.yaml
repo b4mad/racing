@@ -13,6 +13,7 @@ resources:
 - ../../base/telegraf
 - ../../base/postgresql
 - ../../base/paddock
+- ../../base/grafana-v5
 generatorOptions:
   disableNameSuffixHash: true
 patches:
@@ -89,6 +90,16 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: https-cert-paddock.test.b4mad.racing
+  - target:
+      kind: Ingress
+      name: grafana
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: pitwall.test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: pitwall.test.b4mad.racing
 images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-test/paddock
