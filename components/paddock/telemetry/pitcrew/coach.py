@@ -1,7 +1,7 @@
 import django.utils.timezone
+import json
 from telemetry.pitcrew.logging import LoggingMixin
 from .history import History
-from .message import Message
 from telemetry.models import Coach as DbCoach
 
 
@@ -15,57 +15,6 @@ class Coach(LoggingMixin):
         self.response_topic = f"/coach/{db_coach.driver.name}"
         self.topic = ""
         self.session_id = "NO_SESSION"
-
-    def new_msg(self, at, **kwargs):
-        message = Message(at, self.history)
-        for key, value in kwargs.items():
-            message[key] = value
-        self.messages.append(message)
-        return message
-
-    def sort_messages(self, distance):
-        # sort messages by distance, keyword argument 'at'
-        messages = sorted(self.messages, key=lambda k: k["at"])
-        index_of_first_item = 0
-
-        # loop through messages and find index of first item larger than distance
-        for i, msg in enumerate(messages):
-            index_of_first_item = i
-            if msg["at"] > distance:
-                break
-
-        return messages[index_of_first_item:] + messages[:index_of_first_item]
-
-    def get_closest_message(self, meter):
-        messages = sorted(self.messages, key=lambda k: k["at"])
-
-        closest_message = messages[0]
-        for i in range(len(messages) - 1, 0, -1):
-            msg = messages[i]
-            if msg["at"] < meter:
-                break
-            closest_message = msg
-        return closest_message
-
-    def link_messages(self):
-        messages = sorted(self.messages, key=lambda k: k["at"])
-        for i in range(len(messages)):
-            msg = messages[i]
-            msg.silence()
-            if i == 0:
-                msg.previous = messages[-1]
-            else:
-                msg.previous = messages[i - 1]
-            if i == len(messages) - 1:
-                msg.next = messages[0]
-            else:
-                msg.next = messages[i + 1]
-            # self.log_debug(f"link {msg.at}: next-> {msg.next.at} prev-> {msg.previous.at}")
-
-    def prioritize_messages(self):
-        for message in self.messages:
-            if message.primary():
-                message.louden()
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -88,7 +37,7 @@ class Coach(LoggingMixin):
         self.session_id = filter.get("SessionId", "NO_SESSION")
         self.messages = []
 
-    def notify(self, topic, payload, now=None):
+    def notify(self, topic, telemetry, now=None):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
             self.topic = topic
@@ -107,178 +56,120 @@ class Coach(LoggingMixin):
             self.track_length = self.history.track.length
             if self.startup_message != self.history.startup_message:
                 self.startup_message = self.history.startup_message
+                self.history.startup_message = ""
                 self.db_coach.status = self.startup_message
                 self.db_coach.save()
                 return (self.response_topic, self.startup_message)
 
         if not self.messages:
             self.init_messages()
-            self.link_messages()
-            self.current_message = self.get_closest_message(0)
-            self.prioritize_messages()
+            self.responses = {}
 
-        response = self.get_response(payload, now)
-        # self.log_debug(f"payload: {payload}")
-        # self.log_debug(f"response: {response}")
-        if response:
-            return (self.response_topic, response)
-
-    def get_response(self, telemetry, now):
-        work_to_do = self.history.update(now, telemetry)
-        distance_round_track = int(telemetry["DistanceRoundTrack"])
-        if distance_round_track == self.previous_distance:
+        self.distance = int(telemetry["DistanceRoundTrack"])
+        if self.distance == self.previous_distance:
             return None
 
-        if work_to_do and not self.history.threaded:
-            self.history.do_work()
+        if self.distance % 100 == 0:
+            self.log_debug(f"distance: {self.distance}")
 
-        if distance_round_track % 100 == 0:
-            self.log_debug(f"distance_round_track: {distance_round_track}")
-        if (distance_round_track - self.previous_distance) < -50:
-            # we jumped at least 50 meters back
+        distance_diff = self.previous_distance - self.distance
+        if self.track_length - 10 > distance_diff > 10:
+            # we jumped at least 10 meters back
             # unless we crossed the start finish line
             # we might have gone off the track or reset the car to the pits
             # hence we reset the messages
-            if abs(self.track_length - distance_round_track - self.previous_distance) > 5:
-                self.log_debug(f"distance_round_track: {distance_round_track}")
-                self.log_debug(f"previous_distance: {self.previous_distance}")
-                self.log_debug(
-                    f"searching next msg after current: {self.current_message.at} '{self.current_message.msg}'"
-                )
-                self.current_message = self.get_closest_message(distance_round_track)
-                self.log_debug(f"set next msg at: {self.current_message.at} '{self.current_message.msg}'")
+            self.log_debug(f"distance: _diff: {distance_diff} -> reset messages")
+            self.responses = {}
+            self.previous_distance = self.distance
+            return
 
-        self.previous_distance = distance_round_track
+        # self.log_debug(f"{telemetry['DistanceRoundTrack']}: {telemetry['SpeedMs']}")
+        # if distance_diff < -1:
+        #     self.log_debug(f"distance: _diff: {distance_diff}")
 
-        message = self.current_message
-        # FIXME: if distance is at the end of the track. -> modulo track_length
-        # FIXME: maybe make this dependent on the speed of the car
-        distance = abs(message.send_at() - distance_round_track)
-        # self.log_debug(f"message at: {message['at']} - on_track: {distance_round_track} - distance: {distance:.1f}")
+        work_to_do = self.history.update(now, telemetry)
+        if work_to_do and not self.history.threaded:
+            self.history.do_work()
 
-        if distance < 10:
-            # self.messages.append(self.messages.pop(0))
-            self.log_debug(f"eval message at: {message.at} ({distance_round_track}): {message.msg}")
-            self.current_message = message.next
-            self.log_debug(f"set next message to: {self.current_message.at} {self.current_message.msg}")
+        start = self.previous_distance + 1
+        stop = self.distance + 1
+        if start > stop:
+            stop += self.track_length
+            self.log_debug(f"distance: wrap around: {start} -> {stop}")
 
-            if message.callable():
-                self.log_debug(f"{distance_round_track}: {message.msg}")
+        return_responses = []
+        for distance in range(start, stop):
+            # FIXME: +100 should be speed dependent
+            future_distance = (distance + 150) % self.track_length
+            responses = self.get_responses(telemetry, future_distance)
+            for response in responses:
+                distance = response["distance"]
+                r_at = self.responses.get(distance)
+                if not r_at:
+                    r_at = []
+                    self.responses[distance] = r_at
+                r_at.append(response)
 
-            text_to_read = message.response()
+            # FIXME: +100 should be speed dependent
+            future_distance = (distance + 100) % self.track_length
+            responses = self.responses.pop(future_distance, None)
+            if responses:
+                if len(responses) > 1:
+                    responses = self.merge_responses(responses)
+                return_responses.extend(responses)
+                self.log_debug(f"{self.distance}: {responses}")
 
-            if text_to_read:
-                self.log_debug(f"{distance_round_track}: {text_to_read}")
-            return text_to_read
+        self.previous_distance = self.distance
+        if return_responses:
+            responses = [json.dumps(resp) for resp in return_responses]
+            return (self.response_topic, responses)
+
+    def get_responses(self, telemetry, future_distance):
+        responses = []
+        for message in self.messages:
+            response = message.response(future_distance, telemetry)
+
+            if response:
+                if not isinstance(response, list):
+                    response = [response]
+                for resp in response:
+                    self.log_debug(f"{self.distance}: get_resp {resp}")
+                    responses.append(resp)
+
+        return responses
+
+    def merge_responses(self, responses):
+        map = {}
+        for response in responses:
+            distance = response["distance"]
+            if distance not in map:
+                map[distance] = []
+            map[distance].append(response)
+
+        new_responses = []
+        for distance, response_arr in map.items():
+            # get highest priority of all responses in response_arr
+            priority = max([resp["priority"] for resp in response_arr])
+            # filter out all responses with lower priority
+            response_arr = [resp for resp in response_arr if resp["priority"] == priority]
+            # merge all message strings into one
+            response = response_arr[0]
+            message = " ".join([resp["message"] for resp in response_arr])
+            response["message"] = message
+            new_responses.append(response)
+
+        return new_responses
 
     def init_messages(self):
+        from .message import MessageGear
+        from .message import MessageBrake, MessageBrakeForce
+        from .message import MessageThrottle, MessageThrottleForce
+
         for segment in self.history.segments:
             if segment["mark"] == "brake":
-                # gear = ""
-                # if segment["gear"]:
-                #     gear = f"gear {segment['gear']} "
-                # text = gear + "%s percent" % (round(segment["force"] / 10) * 10)
-                text = self.brake_message(segment)
-
-                brake_msg = self.new_msg(segment["start"])
-                brake_msg.msg = text
-                brake_msg.finish_at()
-
-                features = segment.get("brake_features", {})
-                brake_msg_start = self.new_msg(features.get("start"))
-                brake_msg_start.msg = "brake"
-
-                msg_eval = self.new_msg(brake_msg.at - 100)
-                msg_eval.segment = segment
-                msg_eval.msg = self.eval_brake
-
-                brake_msg_start.read_after(brake_msg)
-                msg_eval.related_next = brake_msg
-
+                self.messages.append(MessageGear(self, segment=segment))
+                self.messages.append(MessageBrakeForce(self, segment=segment))
+                self.messages.append(MessageBrake(self, segment=segment))
             if segment["mark"] == "throttle":
-                msg = self.new_msg(segment["start"])
-                msg.segment = segment
-                to = round(segment["force"] / 10) * 10
-                msg.msg = "throttle to %s" % to
-                msg.finish_at()
-
-                features = segment.get("throttle_features", {})
-                msg_now = self.new_msg(features.get("start"))
-                msg_now.segment = segment
-                msg_now.msg = "now"
-
-                msg_now.read_after(msg)
-
-    def eval_brake(self, message):
-        log_prefix = f"eval_brake: {message.segment.turn}:"
-        new_message = self.brake_message(message.segment)
-        old_message = message.related_next.msg
-        if new_message:
-            if new_message != old_message:
-                message.related_next.msg = new_message
-                self.log_debug(f"{log_prefix} change: {old_message} -> {new_message}")
-                message.related_next.louden()
-            else:
-                self.log_debug(f"{log_prefix} keep: {old_message}")
-                message.related_next.louden()
-        else:
-            self.log_debug(f"{log_prefix} silencing: {old_message}")
-            message.related_next.silence()
-
-    def brake_message(self, segment):
-        log_prefix = f"eval_brake: {segment.turn}:"
-
-        gear_fragment = ""
-        if segment["gear"]:
-            gear_fragment = f"gear {segment['gear']}"
-        force_fragment = "%s percent" % (round(segment["force"] / 10) * 10)
-        default_message = gear_fragment + " " + force_fragment
-
-        if not segment.has_last_features("brake"):
-            self.log_debug(f"{log_prefix} no last features: {default_message}")
-            return default_message
-
-        new_fragments = []
-
-        # check gear
-        last_gear = segment.last_gear_features("gear")
-        gear_diff = last_gear - segment["gear"]
-        if gear_diff != 0:
-            new_fragments.append(gear_fragment)
-        self.log_debug(f"{log_prefix} gear_diff: {gear_diff}")
-
-        # check brake force
-        last_brake_force = segment.last_brake_features("force")
-        coach_brake_force = segment.brake_features.get("force")
-        force_diff = last_brake_force - coach_brake_force
-        force_diff_abs = abs(force_diff)
-        self.log_debug(f"{log_prefix} force_diff: {force_diff:.2f}")
-        if force_diff_abs > 0.3:
-            # too much or too little
-            new_fragments.append(force_fragment)
-        elif force_diff > 0.1:
-            new_fragments.append("a bit less")
-        elif force_diff < -0.1:
-            new_fragments.append("a bit harder")
-
-        # check brake start
-        last_brake_start = segment.last_brake_features("start")
-        coach_brake_start = segment.brake_features.get("start")
-        brake_diff = last_brake_start - coach_brake_start
-        brake_diff_abs = abs(brake_diff)
-        self.log_debug(f"{log_prefix} brake_diff: {brake_diff:.1f}")
-
-        if abs(brake_diff_abs) > 50:
-            # too early or too late
-            new_fragments = [default_message]
-        elif brake_diff > 20:
-            # too late
-            new_fragments.append("a bit earlier")
-        elif brake_diff < -20:
-            # too early
-            new_fragments.append("a bit later")
-
-        if new_fragments:
-            return " ".join(new_fragments)
-        else:
-            return ""
+                self.messages.append(MessageThrottleForce(self, segment=segment))
+                self.messages.append(MessageThrottle(self, segment=segment))

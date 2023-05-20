@@ -78,10 +78,15 @@ class Mqtt:
         response = self.observer.notify(topic, payload)
         if response:
             (r_topic, r_payload) = response
-            if self.debug:
-                meters = payload.get("DistanceRoundTrack", 0)
-                logging.debug("r-->: %s: %s : %s", meters, r_topic, r_payload)
-            mqttc.publish(r_topic, r_payload)
+            payloads = r_payload
+            if not isinstance(response, list):
+                payloads = [r_payload]
+
+            for r_payload in payloads:
+                if self.debug:
+                    meters = payload.get("DistanceRoundTrack", 0)
+                    logging.debug("r-->: %s: %s : %s", meters, r_topic, r_payload)
+                mqttc.publish(r_topic, r_payload)
 
     def on_connect(self, mqttc, obj, flags, rc):
         _LOGGER.debug("on_connect rc: %s", str(rc))
