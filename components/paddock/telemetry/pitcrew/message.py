@@ -12,6 +12,8 @@ class Message(LoggingMixin):
         self.coach = coach
         self.segment = kwargs.get("segment")
         self.five_words = "one two three four five"
+        self.at = None
+        self.at_track_walk = None
         self.init()
 
     def __getattr__(self, key):
@@ -47,20 +49,51 @@ class Message(LoggingMixin):
     def needs_coaching(self):
         return True
 
-    def response(self, distance, telemetry):
+    def response_hot_lap(self, distance, telemetry):
         if distance == self.at:
             if self.needs_coaching():
                 return self.json_response(self.at, self.msg)
 
+    def response_track_walk(self, distance, telemetry):
+        if distance == self.at_track_walk:
+            return self.json_response(self.at_track_walk, self.msg)
+
+    def response(self, distance, telemetry):
+        if self.coach.track_walk:
+            return self.response_track_walk(distance, telemetry)
+        else:
+            return self.response_hot_lap(distance, telemetry)
+
 
 class MessageBrake(Message):
     def init(self):
-        self.at = int(self.segment.brake_features.get("start"))
         self.msg = "brake"
-        self.brake_diff_message = ""
+        self.msg_in_100 = "brake in 100"
+        self.msg_in_50 = "brake in 50"
         self.message_earlier = "brake a bit earlier"
-        # self.brake_diff_message_at = self.finish_at(self.at, self.message_earlier)
-        self.brake_diff_message_at = self.finish_at_segment_start()
+        self.common_init("brake")
+
+    def common_init(self, mark):
+        self.at = int(self.segment.features("start", mark=mark))
+        self.diff_message = ""
+        self.diff_message_at = self.finish_at_segment_start()
+        self.at_track_walk = self.at - 100
+
+    def response_track_walk(self, distance, telemetry):
+        if distance == self.at_track_walk:
+            return [
+                self.json_response(self.at_track_walk, self.msg_in_100, 9),
+                self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
+                self.json_response(self.at, self.msg, 9),
+            ]
+
+    def response_hot_lap(self, distance, telemetry):
+        if distance == self.diff_message_at:
+            if self.needs_coaching():
+                return [
+                    self.json_response(self.diff_message_at, self.diff_message, 8),
+                    self.json_response(self.at, self.msg, 8),
+                ]
 
     def needs_coaching(self):
         # check brake start
@@ -71,75 +104,24 @@ class MessageBrake(Message):
         # brake_diff_abs = abs(brake_diff)
         self.log_debug(f"brake_diff: {brake_diff:.1f}")
 
-        self.brake_diff_message = ""
+        self.diff_message = ""
         if brake_diff > 20:
             # too late
-            self.brake_diff_message = self.message_earlier
+            self.diff_message = self.message_earlier
         elif brake_diff < -20:
             # too early
-            self.brake_diff_message = "brake a bit later"
+            self.diff_message = "brake a bit later"
 
-        return bool(self.brake_diff_message)
-
-    def response(self, distance, telemetry):
-        if distance == self.brake_diff_message_at:
-            if self.needs_coaching():
-                return [
-                    self.json_response(self.brake_diff_message_at, self.brake_diff_message, 8),
-                    self.json_response(self.at, self.msg, 8),
-                ]
+        return bool(self.diff_message)
 
 
-class MessageGear(Message):
+class MessageThrottle(MessageBrake):
     def init(self):
-        self.gear = self.segment.get("gear")
-        self.msg = f"Gear {self.gear}"
-        # self.at = int(self.finish_at(self.segment.get("start")))
-        self.at = self.finish_at_segment_start()
-
-    def needs_coaching(self):
-        last_gear = self.segment.last_gear_features("gear")
-        if last_gear is None:
-            return True
-        gear_diff = last_gear - self.gear
-        self.log_debug(f"gear_diff: {gear_diff}")
-        if gear_diff != 0:
-            return True
-
-
-class MessageBrakeForce(Message):
-    def init(self):
-        self.force = self.segment.get("force")
-        self.msg = "%s percent" % (round(self.force / 10) * 10)
-        # self.at = int(self.finish_at(self.segment.get("start")))
-        self.at = self.finish_at_segment_start()
-
-    def needs_coaching(self):
-        # check brake force
-        last_brake_force = self.segment.last_brake_features("force")
-        if last_brake_force is None:
-            return True
-        force_diff = last_brake_force - self.force
-        force_diff_abs = abs(force_diff)
-        self.log_debug(f"force_diff: {force_diff:.2f}")
-        if force_diff_abs > 0.3:
-            # too much or too little
-            return True
-        #     new_fragments.append(force_fragment)
-        # elif force_diff > 0.1:
-        #     new_fragments.append("a bit less")
-        # elif force_diff < -0.1:
-        #     new_fragments.append("a bit harder")
-
-
-class MessageThrottle(Message):
-    def init(self):
-        self.at = int(self.segment.throttle_features.get("start"))
         self.msg = "lift"
-        self.diff_message = ""
+        self.msg_in_100 = "lift throttle in 100 meters"
+        self.msg_in_50 = "in 50"
         self.message_earlier = "lift a bit earlier"
-        # self.brake_diff_message_at = self.finish_at(self.at, self.message_earlier)
-        self.diff_message_at = self.finish_at_segment_start()
+        self.common_init("throttle")
 
     def needs_coaching(self):
         # check brake start
@@ -162,13 +144,52 @@ class MessageThrottle(Message):
 
         return bool(self.diff_message)
 
-    def response(self, distance, telemetry):
-        if distance == self.diff_message_at:
-            if self.needs_coaching():
-                return [
-                    self.json_response(self.diff_message_at, self.diff_message, 8),
-                    self.json_response(self.at, self.msg, 8),
-                ]
+
+class MessageGear(Message):
+    def init(self):
+        self.gear = self.segment.get("gear")
+        self.msg = f"Gear {self.gear}"
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.finish_at_segment_start()
+        if self.segment["mark"] == "throttle":
+            self.at_track_walk = int(self.segment.throttle_features.get("end") - 30)
+        elif self.segment["mark"] == "brake":
+            self.at_track_walk = int(self.segment.brake_features.get("end") - 30)
+
+    def needs_coaching(self):
+        last_gear = self.segment.last_gear_features("gear")
+        if last_gear is None:
+            return True
+        gear_diff = last_gear - self.gear
+        self.log_debug(f"gear_diff: {gear_diff}")
+        if gear_diff != 0:
+            return True
+
+
+class MessageBrakeForce(Message):
+    def init(self):
+        self.force = self.segment.get("force")
+        self.msg = "%s percent" % (round(self.force / 10) * 10)
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.finish_at_segment_start()
+        self.at_track_walk = int(self.segment.brake_features.get("max_start"))
+
+    def needs_coaching(self):
+        # check brake force
+        last_brake_force = self.segment.last_brake_features("force")
+        if last_brake_force is None:
+            return True
+        force_diff = last_brake_force - self.force
+        force_diff_abs = abs(force_diff)
+        self.log_debug(f"force_diff: {force_diff:.2f}")
+        if force_diff_abs > 0.3:
+            # too much or too little
+            return True
+        #     new_fragments.append(force_fragment)
+        # elif force_diff > 0.1:
+        #     new_fragments.append("a bit less")
+        # elif force_diff < -0.1:
+        #     new_fragments.append("a bit harder")
 
 
 class MessageThrottleForce(Message):
@@ -177,6 +198,7 @@ class MessageThrottleForce(Message):
         self.msg = "lift throttle to %s percent" % (round(self.force / 10) * 10)
         # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
+        self.at_track_walk = int(self.segment.throttle_features.get("max_start"))
 
     def needs_coaching(self):
         # check brake force

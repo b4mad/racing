@@ -23,7 +23,7 @@ class Segment:
         return getattr(self, key, default)
 
     def features(self, key, mark="brake"):
-        return self[f"{mark}_features"].get(key, 0)
+        return self[f"{mark}_features"].get(key, None)
 
     def has_last_features(self, mark="brake"):
         if self.telemetry_features:

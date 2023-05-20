@@ -15,6 +15,7 @@ class Coach(LoggingMixin):
         self.response_topic = f"/coach/{db_coach.driver.name}"
         self.topic = ""
         self.session_id = "NO_SESSION"
+        self.track_walk = False
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -63,6 +64,8 @@ class Coach(LoggingMixin):
 
         if not self.messages:
             self.init_messages()
+            self.db_coach.refresh_from_db()
+            self.track_walk = self.db_coach.track_walk
             self.responses = {}
 
         self.distance = int(telemetry["DistanceRoundTrack"])

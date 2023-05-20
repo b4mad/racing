@@ -156,6 +156,9 @@ class Coach(models.Model):
     error = models.TextField(default="")
     status = models.TextField(default="")
     enabled = models.BooleanField(default=False)
+    track_walk = models.BooleanField(default=False)
+
+    fast_lap = models.ForeignKey(FastLap, on_delete=models.SET_NULL, related_name="coaches", null=True)
 
     def __str__(self):
         return self.driver.name
