@@ -93,6 +93,9 @@ class FastLap(models.Model):
     # add binary field to hold arbitrary data
     data = PickledObjectField(null=True)
 
+    class Meta:
+        ordering = ["game", "car", "track"]
+
     def __str__(self):
         return f"{self.game} {self.car} {self.track}"
 

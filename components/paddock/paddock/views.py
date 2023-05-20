@@ -2,6 +2,8 @@ from typing import Any, Dict
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from telemetry.models import Driver, Coach, FastLap
+from telemetry.pitcrew.coach import Coach as PitcrewCoach
+from telemetry.pitcrew.history import History
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
@@ -77,14 +79,39 @@ class CoachView(LoginRequiredMixin, FormView):
         kwargs["request"] = self.request
         return kwargs
 
+    def get_messages(self, coach: Coach):
+        if not coach.fast_lap:
+            return []
+
+        history = History()
+        pitcrew_coach = PitcrewCoach(history, coach)
+        pitcrew_coach.track_walk = coach.track_walk
+        filter = {
+            "Driver": coach.driver.name,
+            "GameName": coach.fast_lap.game.name,
+            "TrackCode": coach.fast_lap.track.name,
+            "CarModel": coach.fast_lap.car.name,
+            "SessionId": 666,
+        }
+        history.set_filter(filter)
+        history.init()
+        pitcrew_coach.init_messages()
+        messages = []
+        telemetry = {}
+        for distance in range(0, history.track_length):
+            responses = pitcrew_coach.collect_responses(distance, telemetry)
+            messages.extend(responses)
+
+        return messages
+
     def get_context_data(self, **kwargs):
         """Use this to add extra context."""
         context = super(CoachView, self).get_context_data(**kwargs)
         # context['coach'] = self.request.session['message']
         context["coach"] = "Coach"
         if self.coach:
-            context["coach_status"] = self.coach.status
-            context["coach_error"] = self.coach.error
+            context["coach"] = self.coach
+            context["messages"] = self.get_messages(self.coach)
         return context
 
     def get_initial(self) -> Dict[str, Any]:

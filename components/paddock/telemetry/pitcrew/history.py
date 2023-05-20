@@ -72,6 +72,7 @@ class History(LoggingMixin):
         self.telemetry = []
         self.analyzer = Analyzer()
         self.fast_lap_analyzer = FastLapAnalyzer()
+        self.fast_lap = None
         self.process_segments = []
         self.threaded = False
         self.startup_message = ""

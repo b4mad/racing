@@ -13,9 +13,11 @@ class Coach(LoggingMixin):
         self.messages = []
         self.previous_distance = 10_000_000
         self.response_topic = f"/coach/{db_coach.driver.name}"
+        self.responses = {}
         self.topic = ""
         self.session_id = "NO_SESSION"
         self.track_walk = False
+        self.distance = 0
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -59,6 +61,8 @@ class Coach(LoggingMixin):
                 self.startup_message = self.history.startup_message
                 self.history.startup_message = ""
                 self.db_coach.status = self.startup_message
+                self.db_coach.fast_lap = self.history.fast_lap
+                self.db_coach.error = ""
                 self.db_coach.save()
                 return (self.response_topic, self.startup_message)
 
@@ -100,32 +104,39 @@ class Coach(LoggingMixin):
             stop += self.track_length
             self.log_debug(f"distance: wrap around: {start} -> {stop}")
 
-        return_responses = []
+        responses = []
         for distance in range(start, stop):
-            # FIXME: +100 should be speed dependent
-            future_distance = (distance + 150) % self.track_length
-            responses = self.get_responses(telemetry, future_distance)
-            for response in responses:
-                distance = response["distance"]
-                r_at = self.responses.get(distance)
-                if not r_at:
-                    r_at = []
-                    self.responses[distance] = r_at
-                r_at.append(response)
-
-            # FIXME: +100 should be speed dependent
-            future_distance = (distance + 100) % self.track_length
-            responses = self.responses.pop(future_distance, None)
-            if responses:
-                if len(responses) > 1:
-                    responses = self.merge_responses(responses)
-                return_responses.extend(responses)
-                self.log_debug(f"{self.distance}: {responses}")
+            responses.extend(self.collect_responses(distance, telemetry))
 
         self.previous_distance = self.distance
-        if return_responses:
-            responses = [json.dumps(resp) for resp in return_responses]
+        if responses:
+            responses = [json.dumps(resp) for resp in responses]
             return (self.response_topic, responses)
+
+    def collect_responses(self, distance, telemetry):
+        return_responses = []
+
+        # FIXME: +100 should be speed dependent
+        future_distance = (distance + 150) % self.history.track_length
+        responses = self.get_responses(telemetry, future_distance)
+        for response in responses:
+            distance = response["distance"]
+            r_at = self.responses.get(distance)
+            if not r_at:
+                r_at = []
+                self.responses[distance] = r_at
+            r_at.append(response)
+
+        # FIXME: +100 should be speed dependent
+        future_distance = (distance + 100) % self.history.track_length
+        responses = self.responses.pop(future_distance, None)
+        if responses:
+            if len(responses) > 1:
+                responses = self.merge_responses(responses)
+            return_responses.extend(responses)
+            self.log_debug(f"{self.distance}: {responses}")
+
+        return return_responses
 
     def get_responses(self, telemetry, future_distance):
         responses = []
