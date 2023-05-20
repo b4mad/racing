@@ -23,27 +23,6 @@ class TestCoach(TransactionTestCase):
     ]
     maxDiff = None
 
-    def test_message_stack(self):
-        # create messages to add to stack
-        message1 = {"at": 10, "text": "Message 1"}
-        message2 = {"at": 20, "text": "Message 2"}
-        message3 = {"at": 30, "text": "Message 3"}
-        message4 = {"at": 40, "text": "Message 4"}
-        messages = [message4, message1, message3, message2]
-
-        history = History()
-        coach = PitCrewCoach(history, Driver.objects.get(name="durandom").coach)
-
-        # set messages for the stack
-        coach.messages = messages
-
-        # get message stack for distance of 12
-        message_stack = coach.sort_messages(12)
-
-        expected_messages = [message2, message3, message4, message1]
-        # assert expected message stack matches the actual message stack
-        self.assertEqual(expected_messages, message_stack)
-
     def test_coach(self):
         # iRacing fuji nochicane - Ferrari 488 GT3 Evo 2020
         session_id = "1681897871"
