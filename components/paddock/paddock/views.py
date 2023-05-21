@@ -2,6 +2,8 @@ from typing import Any, Dict
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from telemetry.models import Driver, Coach, FastLap
+from telemetry.pitcrew.coach import Coach as PitcrewCoach
+from telemetry.pitcrew.history import History
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
@@ -23,6 +25,11 @@ class CoachForm(forms.Form):
     # PrependedText('field_name', '@', placeholder="username")
 
     coach_enabled = forms.BooleanField(required=False)
+    coach_track_walk = forms.BooleanField(
+        required=False,
+        help_text="Drive slow and get precise track info, disable when driving fast. Only checked when session starts.",
+        label="Track Walk",
+    )
 
     # message = forms.CharField(widget=forms.Textarea)
 
@@ -72,14 +79,39 @@ class CoachView(LoginRequiredMixin, FormView):
         kwargs["request"] = self.request
         return kwargs
 
+    def get_messages(self, coach: Coach):
+        if not coach.fast_lap:
+            return []
+
+        history = History()
+        pitcrew_coach = PitcrewCoach(history, coach)
+        pitcrew_coach.track_walk = coach.track_walk
+        filter = {
+            "Driver": coach.driver.name,
+            "GameName": coach.fast_lap.game.name,
+            "TrackCode": coach.fast_lap.track.name,
+            "CarModel": coach.fast_lap.car.name,
+            "SessionId": 666,
+        }
+        history.set_filter(filter)
+        history.init()
+        pitcrew_coach.init_messages()
+        messages = []
+        telemetry = {}
+        for distance in range(0, history.track_length):
+            responses = pitcrew_coach.collect_responses(distance, telemetry)
+            messages.extend(responses)
+
+        return messages
+
     def get_context_data(self, **kwargs):
         """Use this to add extra context."""
         context = super(CoachView, self).get_context_data(**kwargs)
         # context['coach'] = self.request.session['message']
         context["coach"] = "Coach"
         if self.coach:
-            context["coach_status"] = self.coach.status
-            context["coach_error"] = self.coach.error
+            context["coach"] = self.coach
+            context["messages"] = self.get_messages(self.coach)
         return context
 
     def get_initial(self) -> Dict[str, Any]:
@@ -87,6 +119,7 @@ class CoachView(LoginRequiredMixin, FormView):
 
         self.coach = None
         coach_enabled = False
+        coach_track_walk = False
         driver_name = None
 
         driver = Driver.objects.filter(name=user_name).first()
@@ -94,10 +127,12 @@ class CoachView(LoginRequiredMixin, FormView):
             driver_name = driver.name
             self.coach = Coach.objects.get_or_create(driver=driver)[0]
             coach_enabled = self.coach.enabled
+            coach_track_walk = self.coach.track_walk
 
         data = {
             "driver_name": driver_name,
             "coach_enabled": coach_enabled,
+            "coach_track_walk": coach_track_walk,
         }
         return data
 
@@ -118,6 +153,7 @@ class CoachView(LoginRequiredMixin, FormView):
             if driver:
                 coach = Coach.objects.get_or_create(driver=driver)[0]
                 coach.enabled = form.cleaned_data["coach_enabled"]
+                coach.track_walk = form.cleaned_data["coach_track_walk"]
                 coach.save()
 
             self.request.user.save()

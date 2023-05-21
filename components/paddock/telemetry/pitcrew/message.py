@@ -1,147 +1,218 @@
 from telemetry.pitcrew.logging import LoggingMixin
-from .history import History, Segment
-from typing import Any
-import json
+from .history import Segment
+from .coach import Coach
+from typing import Optional
 
 
 class Message(LoggingMixin):
-    def __init__(self, at, history: History, **kwargs):
-        self.history = history
-        self.session_id = self.history.session_id
-        self.track_length = self.history.track.length
-        self.at = at
+    coach: Coach
+    segment: Optional[Segment]
 
-        self._finished_reading_chain_at = None
+    def __init__(self, coach: Coach, **kwargs):
+        self.coach = coach
+        self.segment = kwargs.get("segment")
+        self.five_words = "one two three four five"
+        self.at = None
+        self.at_track_walk = None
+        self.init()
 
-        self.msg = kwargs.get("msg", "")
-        self.segment = kwargs.get("segment", Segment(self.history))
-        self.enabled = kwargs.get("enabled", True)
-        self.json_respone = kwargs.get("json_respone", True)
-        self.silent = kwargs.get("silent", False)
-        self.args = kwargs.get("args", [])
-        self.kwargs = kwargs.get("kwargs", {})
-
-        self.next = None
-        self.previous = None
-
-        self.related_next = None
-        self.related_previous = None
-
-    def __getitem__(self, key):
+    def __getattr__(self, key):
+        if key == "session_id":
+            return self.coach.session_id
         return getattr(self, key)
 
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
+    def init(self):
+        pass
 
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if __name == "at" and self.track_length:
-            __value = __value % self.track_length
-            self._finished_reading_chain_at = None
-            self._send_at = None
-        if __name == "msg":
-            self._finished_reading_chain_at = None
-            self._send_at = None
-        super().__setattr__(__name, __value)
+    def json_response(self, distance, message, priority=9):
+        return {
+            "distance": distance,
+            "message": message,
+            "priority": priority,
+        }
 
-    def response(self):
-        text_to_read = self.msg
-        if self.callable():
-            kwargs = self.kwargs.copy()
-            # kwargs["message"] = self
-            text_to_read = self.msg(self, *self.args, **kwargs)
-
-        if not self.silent and self.json_respone and text_to_read:
-            return json.dumps(
-                {
-                    "distance": self.at,
-                    "message": text_to_read,
-                    "priority": 9,
-                }
-            )
-
-        if not self.silent and text_to_read:
-            return text_to_read
-
-    def send_at(self):
-        if not self._send_at:
-            self._send_at = (self.at - 100) % self.track_length
-        return self._send_at
-
-    def callable(self):
-        return callable(self.msg)
-
-    def read_after(self, message):
-        self.related_previous = message
-        message.related_next = self
-
-    def silence(self):
-        if not self.silent and not self.callable():
-            self.log_debug(f"silencing '{self.msg}'")
-            self.silent = True
-            if self.related_next:
-                self.related_next.silence()
-
-    def louden(self):
-        if self.silent:
-            self.log_debug(f"loudening '{self.msg}'")
-            self.silent = False
-            if self.related_next:
-                self.related_next.louden()
-
-            if self.primary():
-                next_msg = self.next
-                while next_msg != self:
-                    if next_msg.msg == "throttle to 80":
-                        True
-                    if next_msg.primary():
-                        if self.in_read_range(next_msg):
-                            next_msg.silence()
-                    next_msg = next_msg.next
-
-    def primary(self):
-        return not self.callable() and not self.related_previous
-
-    def in_range(self, meters, start, finish):
-        if start < finish:
-            if meters >= start and meters < finish:
-                return True
-        else:
-            if meters >= start or meters < finish:
-                return True
-
-    def in_read_range(self, message):
-        start = message.at
-        finish = message.finished_reading_chain_at()
-        self_start = self.at
-        self_finish = self.finished_reading_chain_at()
-
-        if self.in_range(start, self_start, self_finish):
-            return True
-        if self.in_range(finish, self_start, self_finish):
-            return True
-        return False
-
-    def read_time(self):
-        if not self.msg:
-            raise Exception("no message - can't calculate read time")
-        words = len(self.msg.split(" "))
+    def read_time(self, msg=""):
+        words = len(msg.split(" "))
         return words * 0.8  # avg ms per word
 
-    def finished_at(self):
-        return (self.at + self.read_time()) % self.track_length
+    def finish_at(self, at=None, msg=""):
+        msg = msg or self.msg
+        at = at or self.at
+        read_time = self.read_time(msg)
+        respond_at = self.coach.history.offset_distance(at, seconds=read_time)
+        return int(respond_at)
 
-    def finish_at(self, at=None):
-        if not at:
-            at = self.at
-        read_time = self.read_time()
-        respond_at = self.history.offset_distance(at, seconds=read_time)
-        self.at = respond_at
+    def finish_at_segment_start(self):
+        at = self.segment.get("start")
+        return self.finish_at(at, self.five_words)
 
-    def finished_reading_chain_at(self):
-        if not self.related_next:
-            if not self._finished_reading_chain_at:
-                self._finished_reading_chain_at = (self.at + self.read_time()) % self.track_length
-            return self._finished_reading_chain_at
+    def needs_coaching(self):
+        return True
 
-        self._finished_reading_chain_at = self.related_next.finished_reading_chain_at()
-        return self._finished_reading_chain_at
+    def response_hot_lap(self, distance, telemetry):
+        if distance == self.at:
+            if self.needs_coaching():
+                return self.json_response(self.at, self.msg)
+
+    def response_track_walk(self, distance, telemetry):
+        if distance == self.at_track_walk:
+            return self.json_response(self.at_track_walk, self.msg)
+
+    def response(self, distance, telemetry):
+        if self.coach.track_walk:
+            return self.response_track_walk(distance, telemetry)
+        else:
+            return self.response_hot_lap(distance, telemetry)
+
+
+class MessageBrake(Message):
+    def init(self):
+        self.msg = "brake"
+        self.msg_in_100 = "brake in 100"
+        self.msg_in_50 = "brake in 50"
+        self.message_earlier = "brake a bit earlier"
+        self.common_init("brake")
+
+    def common_init(self, mark):
+        self.at = int(self.segment.features("start", mark=mark))
+        self.diff_message = ""
+        self.diff_message_at = self.finish_at_segment_start()
+        self.at_track_walk = self.at - 100
+
+    def response_track_walk(self, distance, telemetry):
+        if distance == self.at_track_walk:
+            return [
+                self.json_response(self.at_track_walk, self.msg_in_100, 9),
+                self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
+                self.json_response(self.at, self.msg, 9),
+            ]
+
+    def response_hot_lap(self, distance, telemetry):
+        if distance == self.diff_message_at:
+            if self.needs_coaching():
+                return [
+                    self.json_response(self.diff_message_at, self.diff_message, 8),
+                    self.json_response(self.at, self.msg, 8),
+                ]
+
+    def needs_coaching(self):
+        # check brake start
+        last_brake_start = self.segment.last_brake_features("start")
+        if last_brake_start is None:
+            return True
+        brake_diff = last_brake_start - self.at
+        # brake_diff_abs = abs(brake_diff)
+        self.log_debug(f"brake_diff: {brake_diff:.1f}")
+
+        self.diff_message = ""
+        if brake_diff > 20:
+            # too late
+            self.diff_message = self.message_earlier
+        elif brake_diff < -20:
+            # too early
+            self.diff_message = "brake a bit later"
+
+        return bool(self.diff_message)
+
+
+class MessageThrottle(MessageBrake):
+    def init(self):
+        self.msg = "lift"
+        self.msg_in_100 = "lift throttle in 100 meters"
+        self.msg_in_50 = "in 50"
+        self.message_earlier = "lift a bit earlier"
+        self.common_init("throttle")
+
+    def needs_coaching(self):
+        # check brake start
+        last_start = self.segment.last_throttle_features("start")
+        if last_start is None:
+            last_start = 100_000_000
+        throttle_diff = last_start - self.at
+        diff_abs = abs(throttle_diff)
+        self.log_debug(f"throttle_diff: {throttle_diff:.1f}")
+
+        self.diff_message = ""
+        if diff_abs > 50:
+            self.diff_message = "lift throttle"
+        elif throttle_diff > 20:
+            # too late
+            self.diff_message = self.message_earlier
+        elif throttle_diff < -20:
+            # too early
+            self.diff_message = "lift a bit later"
+
+        return bool(self.diff_message)
+
+
+class MessageGear(Message):
+    def init(self):
+        self.gear = self.segment.get("gear")
+        self.msg = f"Gear {self.gear}"
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.finish_at_segment_start()
+        if self.segment["mark"] == "throttle":
+            self.at_track_walk = int(self.segment.throttle_features.get("end") - 30)
+        elif self.segment["mark"] == "brake":
+            self.at_track_walk = int(self.segment.brake_features.get("end") - 30)
+
+    def needs_coaching(self):
+        last_gear = self.segment.last_gear_features("gear")
+        if last_gear is None:
+            return True
+        gear_diff = last_gear - self.gear
+        self.log_debug(f"gear_diff: {gear_diff}")
+        if gear_diff != 0:
+            return True
+
+
+class MessageBrakeForce(Message):
+    def init(self):
+        self.force = self.segment.get("force")
+        self.msg = "%s percent" % (round(self.force / 10) * 10)
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.finish_at_segment_start()
+        self.at_track_walk = int(self.segment.brake_features.get("max_start"))
+
+    def needs_coaching(self):
+        # check brake force
+        last_brake_force = self.segment.last_brake_features("force")
+        if last_brake_force is None:
+            return True
+        force_diff = last_brake_force - self.force
+        force_diff_abs = abs(force_diff)
+        self.log_debug(f"force_diff: {force_diff:.2f}")
+        if force_diff_abs > 0.3:
+            # too much or too little
+            return True
+        #     new_fragments.append(force_fragment)
+        # elif force_diff > 0.1:
+        #     new_fragments.append("a bit less")
+        # elif force_diff < -0.1:
+        #     new_fragments.append("a bit harder")
+
+
+class MessageThrottleForce(Message):
+    def init(self):
+        self.force = self.segment.get("force")
+        self.msg = "lift throttle to %s percent" % (round(self.force / 10) * 10)
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.finish_at_segment_start()
+        self.at_track_walk = int(self.segment.throttle_features.get("max_start"))
+
+    def needs_coaching(self):
+        # check brake force
+        last_force = self.segment.last_throttle_features("force")
+        if last_force is None:
+            return True
+        force_diff = last_force - self.force
+        force_diff_abs = abs(force_diff)
+        self.log_debug(f"force_diff: {force_diff:.2f}")
+        if force_diff_abs > 0.3:
+            # too much or too little
+            return True
+        #     new_fragments.append(force_fragment)
+        # elif force_diff > 0.1:
+        #     new_fragments.append("a bit less")
+        # elif force_diff < -0.1:
+        #     new_fragments.append("a bit harder")

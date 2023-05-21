@@ -93,6 +93,9 @@ class FastLap(models.Model):
     # add binary field to hold arbitrary data
     data = PickledObjectField(null=True)
 
+    class Meta:
+        ordering = ["game", "car", "track"]
+
     def __str__(self):
         return f"{self.game} {self.car} {self.track}"
 
@@ -156,6 +159,9 @@ class Coach(models.Model):
     error = models.TextField(default="")
     status = models.TextField(default="")
     enabled = models.BooleanField(default=False)
+    track_walk = models.BooleanField(default=False)
+
+    fast_lap = models.ForeignKey(FastLap, on_delete=models.SET_NULL, related_name="coaches", null=True)
 
     def __str__(self):
         return self.driver.name

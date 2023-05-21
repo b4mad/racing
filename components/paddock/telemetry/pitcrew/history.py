@@ -19,11 +19,11 @@ class Segment:
     def __setitem__(self, key, value):
         setattr(self, key, value)
 
-    def get(self, key, default):
+    def get(self, key, default=None):
         return getattr(self, key, default)
 
     def features(self, key, mark="brake"):
-        return self[f"{mark}_features"].get(key, 0)
+        return self[f"{mark}_features"].get(key, None)
 
     def has_last_features(self, mark="brake"):
         if self.telemetry_features:
@@ -34,8 +34,8 @@ class Segment:
     def last_features(self, key, mark="brake"):
         if self.telemetry_features:
             f = self.telemetry_features[-1].get(f"{mark}_features", {})
-            return f.get(key, 0)
-        return 0
+            return f.get(key, None)
+        return None
 
     def brake_features(self, key):
         return self.features(key, mark="brake")
@@ -72,6 +72,7 @@ class History(LoggingMixin):
         self.telemetry = []
         self.analyzer = Analyzer()
         self.fast_lap_analyzer = FastLapAnalyzer()
+        self.fast_lap = None
         self.process_segments = []
         self.threaded = False
         self.startup_message = ""
