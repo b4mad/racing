@@ -152,9 +152,11 @@ class MessageGear(Message):
         # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
         if self.segment["mark"] == "throttle":
-            self.at_track_walk = int(self.segment.throttle_features.get("end") - 30)
+            self.at_track_walk = self.segment.throttle_features.get("end")
         elif self.segment["mark"] == "brake":
-            self.at_track_walk = int(self.segment.brake_features.get("end") - 30)
+            self.at_track_walk = self.segment.brake_features.get("end")
+        if self.at_track_walk is not None:
+            self.at_track_walk = int(self.at_track_walk - 30)
 
     def needs_coaching(self):
         last_gear = self.segment.last_gear_features("gear")

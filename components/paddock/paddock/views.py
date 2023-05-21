@@ -48,7 +48,7 @@ class CoachForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        driver_name = cleaned_data.get("driver_name")
+        driver_name = cleaned_data.get("driver_name").strip()
 
         # try to get the driver
         driver = Driver.objects.filter(name__iexact=driver_name).first()
@@ -60,6 +60,8 @@ class CoachForm(forms.Form):
             # user = User.objects.filter(first_name=driver_name).first()
             if user and user != self.request.user:
                 self.add_error("driver_name", "This name is already taken.")
+            if driver_name.lower() == "jim":
+                self.add_error("driver_name", "No Jim allowed.")
 
 
 class CoachView(LoginRequiredMixin, FormView):
@@ -143,7 +145,7 @@ class CoachView(LoginRequiredMixin, FormView):
         # form.logged_in_user = self.request.user
 
         # does another user exist with this name?
-        driver_name = form.cleaned_data["driver_name"]
+        driver_name = form.cleaned_data["driver_name"].strip()
         user = User.objects.filter(first_name=driver_name).first()
 
         if not user or user == self.request.user:
