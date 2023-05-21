@@ -79,7 +79,7 @@ class Mqtt:
         if response:
             (r_topic, r_payload) = response
             payloads = r_payload
-            if not isinstance(response, list):
+            if not isinstance(r_payload, list):
                 payloads = [r_payload]
 
             for r_payload in payloads:

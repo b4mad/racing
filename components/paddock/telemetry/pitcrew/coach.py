@@ -60,6 +60,10 @@ class Coach(LoggingMixin):
             if self.startup_message != self.history.startup_message:
                 self.startup_message = self.history.startup_message
                 self.history.startup_message = ""
+                self.db_coach.refresh_from_db()
+                self.track_walk = self.db_coach.track_walk
+                if self.track_walk:
+                    self.startup_message += " doing a track walk"
                 self.db_coach.status = self.startup_message
                 self.db_coach.fast_lap = self.history.fast_lap
                 self.db_coach.error = ""
@@ -68,8 +72,6 @@ class Coach(LoggingMixin):
 
         if not self.messages:
             self.init_messages()
-            self.db_coach.refresh_from_db()
-            self.track_walk = self.db_coach.track_walk
             self.responses = {}
 
         self.distance = int(telemetry["DistanceRoundTrack"])
@@ -90,7 +92,7 @@ class Coach(LoggingMixin):
             self.previous_distance = self.distance
             return
 
-        # self.log_debug(f"{telemetry['DistanceRoundTrack']}: {telemetry['SpeedMs']}")
+        # self.log_debug(f"distance: {self.distance}: {telemetry['DistanceRoundTrack']}: {telemetry['SpeedMs']}")
         # if distance_diff < -1:
         #     self.log_debug(f"distance: _diff: {distance_diff}")
 

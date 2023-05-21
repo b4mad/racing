@@ -83,7 +83,7 @@ class MessageBrake(Message):
         if distance == self.at_track_walk:
             return [
                 self.json_response(self.at_track_walk, self.msg_in_100, 9),
-                self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
+                # self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
                 self.json_response(self.at, self.msg, 9),
             ]
 
