@@ -11,7 +11,7 @@ class Message(LoggingMixin):
     def __init__(self, coach: Coach, **kwargs):
         self.coach = coach
         self.segment = kwargs.get("segment")
-        self.five_words = "one two three four five"
+        self.finish_at_words = "one two"
         self.at = None
         self.at_track_walk = None
         self.init()
@@ -44,7 +44,7 @@ class Message(LoggingMixin):
 
     def finish_at_segment_start(self):
         at = self.segment.get("start")
-        return self.finish_at(at, self.five_words)
+        return self.finish_at(at, self.finish_at_words)
 
     def needs_coaching(self):
         return True
