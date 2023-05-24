@@ -11,7 +11,7 @@ resources:
 - ../../base/mosquitto
 - ../../base/influxdb
 - ../../base/telegraf
-- ../../base/postgresql
+- postgresql
 - ../../base/paddock
 - ../../base/grafana-v5
 generatorOptions:
@@ -24,22 +24,6 @@ patches:
       - op: replace
         path: /spec/ports/0/nodePort
         value: 31183
-  - target:
-      kind: PostgresCluster
-      name: db
-    patch: |-
-      - op: replace
-        path: /spec/service/nodePort
-        value: 31184
-      - op: replace
-        path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
-        value: "1Gi"
-      - op: replace
-        path: /spec/instances/0/resources/limits/cpu
-        value: "50m"
-      - op: replace
-        path: /spec/instances/0/resources/limits/memory
-        value: "50M"
   - target:
       kind: Route
       name: telemetry
