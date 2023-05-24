@@ -82,12 +82,12 @@ class Coach(LoggingMixin):
             self.log_debug(f"distance: {self.distance}")
 
         distance_diff = self.previous_distance - self.distance
-        if self.track_length - 10 > distance_diff > 10:
-            # we jumped at least 10 meters back
+        if self.track_length - 10 > distance_diff >= 1:
+            # we jumped at least 1 meters back
             # unless we crossed the start finish line
             # we might have gone off the track or reset the car to the pits
             # hence we reset the messages
-            self.log_debug(f"distance: _diff: {distance_diff} -> reset messages")
+            self.log_debug(f"distance: _diff: {distance_diff} -> reset responses")
             self.responses = {}
             self.previous_distance = self.distance
             return
@@ -186,6 +186,7 @@ class Coach(LoggingMixin):
         from .message import MessageBrake, MessageBrakeForce
         from .message import MessageThrottle, MessageThrottleForce
 
+        self.messages = []
         for segment in self.history.segments:
             if segment["mark"] == "brake":
                 self.messages.append(MessageGear(self, segment=segment))

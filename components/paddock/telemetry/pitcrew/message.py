@@ -24,16 +24,24 @@ class Message(LoggingMixin):
     def init(self):
         pass
 
-    def json_response(self, distance, message, priority=9):
+    def resp(self, distance, message, priority=9):
         return {
             "distance": distance,
             "message": message,
             "priority": priority,
         }
 
+    # One commonly used average reading speed for English is around 150 words per minute
+    # when spoken. This translates to 2.5 words per second. So you can estimate the time
+    # it takes to read a phrase out loud by counting the words and dividing by 2.5.
+    # or check https://github.com/alanhamlett/readtime
     def read_time(self, msg=""):
         words = len(msg.split(" "))
-        return words * 0.8  # avg ms per word
+        r_time = words / 1.8
+        self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds")
+        # return words * 0.8  # avg ms per word
+        return r_time
+        return words / 2.5  # avg ms per word
 
     def finish_at(self, at=None, msg=""):
         msg = msg or self.msg
@@ -42,9 +50,10 @@ class Message(LoggingMixin):
         respond_at = self.coach.history.offset_distance(at, seconds=read_time)
         return int(respond_at)
 
-    def finish_at_segment_start(self):
+    def finish_at_segment_start(self, msg=""):
+        msg = msg or self.msg
         at = self.segment.get("start")
-        return self.finish_at(at, self.finish_at_words)
+        return self.finish_at(at)
 
     def needs_coaching(self):
         return True
@@ -52,11 +61,11 @@ class Message(LoggingMixin):
     def response_hot_lap(self, distance, telemetry):
         if distance == self.at:
             if self.needs_coaching():
-                return self.json_response(self.at, self.msg)
+                return self.resp(self.at, self.msg)
 
     def response_track_walk(self, distance, telemetry):
         if distance == self.at_track_walk:
-            return self.json_response(self.at_track_walk, self.msg)
+            return self.resp(self.at_track_walk, self.msg)
 
     def response(self, distance, telemetry):
         if self.coach.track_walk:
@@ -76,24 +85,24 @@ class MessageBrake(Message):
     def common_init(self, mark):
         self.at = int(self.segment.features("start", mark=mark))
         self.diff_message = ""
-        self.diff_message_at = self.finish_at_segment_start()
+        self.diff_message_at = self.finish_at(self.at, self.message_earlier)
         self.at_track_walk = self.at - 100
 
     def response_track_walk(self, distance, telemetry):
         if distance == self.at_track_walk:
             return [
-                self.json_response(self.at_track_walk, self.msg_in_100, 9),
+                self.resp(self.at_track_walk, self.msg_in_100, 9),
                 # self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
-                self.json_response(self.at, self.msg, 9),
+                self.resp(self.at, self.msg, 9),
             ]
 
     def response_hot_lap(self, distance, telemetry):
         if distance == self.diff_message_at:
             if self.needs_coaching():
-                return [
-                    self.json_response(self.diff_message_at, self.diff_message, 8),
-                    self.json_response(self.at, self.msg, 8),
-                ]
+                messages = [self.resp(self.at, self.msg, 8)]
+                if self.diff_message:
+                    messages.append(self.resp(self.diff_message_at, self.diff_message, 8))
+                return messages
 
     def needs_coaching(self):
         # check brake start
