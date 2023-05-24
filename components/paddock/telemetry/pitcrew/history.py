@@ -61,8 +61,6 @@ class History(LoggingMixin):
         self.pickle = False
         self.do_init = False
         self.segments = []
-        self.segment_idx = 1
-        self.previous_segment_idx = 0
         self.previous_update_meters = 0
         self.ready = False
         self.error = None
@@ -98,6 +96,9 @@ class History(LoggingMixin):
     def init(self):
         self.ready = False
         self.error = None
+        self.process_segments = []
+        self.telemetry = []
+
         try:
             self.driver = Driver.objects.get(name=self.filter["Driver"])
             self.game = Game.objects.get(name=self.filter["GameName"])
@@ -292,6 +293,7 @@ class History(LoggingMixin):
             segment["telemetry_frames"].append(df)
 
     def offset_distance(self, distance, seconds=0.0):
+        self.log_debug(f"offset_distance from {distance} {seconds}")
         if self.fast_lap.data:
             distance_time = self.fast_lap.data.get("distance_time", {})
             # check if distance_time is a pandas dataframe
@@ -310,6 +312,7 @@ class History(LoggingMixin):
                     while lap_time > lap_time_at_offset and distance > 0:
                         distance -= 1
                         lap_time = distance_time.loc[distance]["CurrentLapTime"]
+        self.log_debug(f"offset_distance   to {distance} {seconds}")
         return distance
 
     # def in_range(self, meters, target, delta=10):
