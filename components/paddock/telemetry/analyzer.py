@@ -310,7 +310,7 @@ class Analyzer:
         lap.loc[:lap_start, "CurrentLapTime"] = (
             lap.loc[:lap_start, "DistanceRoundTrack"] / lap.loc[:lap_start, "SpeedMs"]
         )
-        lap = lap[["DistanceRoundTrack", "CurrentLapTime"]]
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
         lap["DistanceRoundTrack"] = lap["DistanceRoundTrack"].round(1)
         lap["CurrentLapTime"] = lap["CurrentLapTime"].round(3)
         return lap

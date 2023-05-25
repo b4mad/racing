@@ -91,6 +91,9 @@ class History(LoggingMixin):
     def set_filter(self, filter):
         self.filter = filter
         self.session_id = filter.get("SessionId", "NO_SESSION")
+        # set to false to avoid race condition
+        # this method is called from the coach thread
+        self.ready = False
         self.do_init = True
 
     def init(self):
@@ -278,6 +281,7 @@ class History(LoggingMixin):
             # self.log_debug(f"   lap: {lap_number}")
 
             df = pd.DataFrame.from_records(telemetry)
+            df = self.fast_lap_analyzer.preprocess(df)
 
             brake_features = self.fast_lap_analyzer.brake_features(df)
             throttle_features = self.fast_lap_analyzer.throttle_features(df)
@@ -288,7 +292,7 @@ class History(LoggingMixin):
                 "gear_features": gear_features,
             }
             segment["telemetry_features"].append(features)
-            # self.log_debug(f"{log_prefix} features: {features}")
+            self.log_debug(f"{log_prefix} features: {features}")
 
             segment["telemetry_frames"].append(df)
 
