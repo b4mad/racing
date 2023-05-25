@@ -90,8 +90,8 @@ class FastLapAnalyzer:
 
     def get_segments(self, track_df):
         analyzer = self.analyzer
-        sectors = analyzer.split_sectors(track_df, min_length=10)
-        sector_start_end = analyzer.extract_sector_start_end(sectors, min_length=10)
+        sectors = analyzer.split_sectors(track_df, min_length=50)
+        sector_start_end = analyzer.extract_sector_start_end(sectors, min_length=50)
         sector_dfs = []
         track_info = []
         for i in range(len(sector_start_end)):
