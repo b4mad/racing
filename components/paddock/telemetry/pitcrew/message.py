@@ -1,10 +1,9 @@
-from telemetry.pitcrew.logging import LoggingMixin
 from .history import Segment
 from .coach import Coach
 from typing import Optional
 
 
-class Message(LoggingMixin):
+class Message:
     coach: Coach
     segment: Optional[Segment]
 
@@ -16,15 +15,17 @@ class Message(LoggingMixin):
         self.at_track_walk = None
         self.init()
 
-    def __getattr__(self, key):
-        if key == "session_id":
-            return self.coach.session_id
-        return getattr(self, key)
+    def log_debug(self, msg):
+        self.coach.log_debug(msg)
 
     def init(self):
         pass
 
     def resp(self, distance, message, priority=9):
+        # from CrewChiefV4.audio.SoundMetaData
+        # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
+        # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
+
         return {
             "distance": distance,
             "message": message,
@@ -37,11 +38,12 @@ class Message(LoggingMixin):
     # or check https://github.com/alanhamlett/readtime
     def read_time(self, msg=""):
         words = len(msg.split(" "))
-        r_time = words / 1.8
+        # r_time = words / 1.5
+        r_time = words / 1.4
         self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds")
         # return words * 0.8  # avg ms per word
+        # return words / 2.5  # avg ms per word
         return r_time
-        return words / 2.5  # avg ms per word
 
     def finish_at(self, at=None, msg=""):
         msg = msg or self.msg
@@ -87,6 +89,7 @@ class MessageBrake(Message):
         self.diff_message = ""
         self.diff_message_at = self.finish_at(self.at, self.message_earlier)
         self.at_track_walk = self.at - 100
+        self.always_announce_brakepoint = True
 
     def response_track_walk(self, distance, telemetry):
         if distance == self.at_track_walk:
@@ -98,7 +101,7 @@ class MessageBrake(Message):
 
     def response_hot_lap(self, distance, telemetry):
         if distance == self.diff_message_at:
-            if self.needs_coaching():
+            if self.needs_coaching() or self.always_announce_brakepoint:
                 messages = [self.resp(self.at, self.msg, 8)]
                 if self.diff_message:
                     messages.append(self.resp(self.diff_message_at, self.diff_message, 8))
@@ -179,8 +182,9 @@ class MessageGear(Message):
 
 class MessageBrakeForce(Message):
     def init(self):
-        self.force = self.segment.get("force")
-        self.msg = "%s percent" % (round(self.force / 10) * 10)
+        # self.force = self.segment.get("force")
+        self.force = self.segment.brake_features.get("force")
+        self.msg = "%s percent" % (round(int(self.force * 100) / 10) * 10)  # 0.73 -> 70
         # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
         self.at_track_walk = int(self.segment.brake_features.get("max_start"))
@@ -189,10 +193,11 @@ class MessageBrakeForce(Message):
         # check brake force
         last_brake_force = self.segment.last_brake_features("force")
         if last_brake_force is None:
+            self.log_debug("no last brake force")
             return True
         force_diff = last_brake_force - self.force
         force_diff_abs = abs(force_diff)
-        self.log_debug(f"force_diff: {force_diff:.2f}")
+        self.log_debug(f"force_diff: {force_diff:.2f} last: {last_brake_force:.2f} coach: {self.force:.2f}")
         if force_diff_abs > 0.3:
             # too much or too little
             return True
