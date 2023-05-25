@@ -91,6 +91,9 @@ class History(LoggingMixin):
     def set_filter(self, filter):
         self.filter = filter
         self.session_id = filter.get("SessionId", "NO_SESSION")
+        # set to false to avoid race condition
+        # this method is called from the coach thread
+        self.ready = False
         self.do_init = True
 
     def init(self):
