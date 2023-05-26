@@ -302,9 +302,30 @@ class Analyzer:
         return value
 
     def distance_speed_lookup_table(self, lap):
+        monotonic = lap["CurrentLapTime"].is_monotonic_increasing
+        if monotonic:
+            logging.debug("distance_speed_lookup_table monotonic")
+            return self.distance_speed_lookup_table(lap)
+        else:
+            logging.debug("distance_speed_lookup_table NOT monotonic")
+            return self.distance_speed_lookup_table_lin(lap)
+
+    def distance_speed_lookup_table_lin(self, lap):
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]].copy()
+
+        # Use numpy linspace to generate evenly spaced float values from 0 to the max of CurrentLapTime
+        max_lap_time = lap["CurrentLapTime"].max()
+        lap["CurrentLapTime"] = np.linspace(0, max_lap_time, len(lap))
+
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
+        lap["DistanceRoundTrack"] = lap["DistanceRoundTrack"].round(1)
+        lap["CurrentLapTime"] = lap["CurrentLapTime"].round(3)
+        return lap
+
+    def distance_speed_lookup_table_non_lin(self, lap):
         # find the index where the lap starts, thats where CurrentLapTime is minimal
         # only keep the part of the lap after the start
-        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]]
+        lap = lap[["DistanceRoundTrack", "CurrentLapTime", "SpeedMs"]].copy()
         lap_start = lap["CurrentLapTime"].idxmin()
 
         lap.loc[:lap_start, "CurrentLapTime"] = (
