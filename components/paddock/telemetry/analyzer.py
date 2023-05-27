@@ -305,7 +305,7 @@ class Analyzer:
         monotonic = lap["CurrentLapTime"].is_monotonic_increasing
         if monotonic:
             logging.debug("distance_speed_lookup_table monotonic")
-            return self.distance_speed_lookup_table(lap)
+            return self.distance_speed_lookup_table_non_lin(lap)
         else:
             logging.debug("distance_speed_lookup_table NOT monotonic")
             return self.distance_speed_lookup_table_lin(lap)
