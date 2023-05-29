@@ -44,7 +44,7 @@ class Analyzer:
         # check the length of the first sector
         # if its too short, then append it to the append the second sector and remove the second sector
         below_threshold = sectors[0][sectors[0]["Throttle"] < threshold]
-        if self.meters_section(below_threshold) < min_length:
+        if self.meters_section(below_threshold) < min_length and len(sectors) > 1:
             sectors[0] = pd.concat([sectors[0], sectors[1]])
             sectors.pop(1)
 
