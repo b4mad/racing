@@ -271,8 +271,10 @@ class Analyzer:
 
         return features
 
-    def resample(self, df, columns=["Brake", "SpeedMs"], method="nearest", freq=1):
-        df = df.replace({None: np.nan}).dropna(subset=["DistanceRoundTrack"])
+    def resample(self, input_df, columns=["Brake", "SpeedMs"], method="nearest", freq=1):
+        df = input_df.replace({None: np.nan}).dropna(subset=["DistanceRoundTrack"])
+        if len(df) == 0:
+            return input_df
 
         target_rows = int(df["DistanceRoundTrack"].max() / freq)
         min_distance = df["DistanceRoundTrack"].min()
