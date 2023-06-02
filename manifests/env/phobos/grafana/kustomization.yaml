@@ -8,8 +8,7 @@ labels:
 namespace: b4mad-racing
 resources:
 - ../../../base/grafana-v5
-generators:
-  - secret-generator.yaml
+- grafana-credentials.sealed.yaml
 generatorOptions:
   disableNameSuffixHash: true
 patches:

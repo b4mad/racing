@@ -9,14 +9,13 @@ namespace: b4mad-racing
 resources:
 - namespace.yaml
 - ../../base/mosquitto
-- ../../base/influxdb
+- influxdb
 - ../../base/telegraf
 - ../../base/postgresql
 - ../../base/paddock
 - ../../base/paddock/cronjobs
+- paddock-settings.sealed.yaml
 - grafana
-generators:
-  - secret-generator.yaml
 generatorOptions:
   disableNameSuffixHash: true
 patches:
@@ -44,12 +43,6 @@ patches:
       - op: replace
         path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
         value: "8Gi"
-      - op: replace
-        path: /spec/instances/0/resources/limits/cpu
-        value: "500m"
-      - op: replace
-        path: /spec/instances/0/resources/limits/memory
-        value: "500M"
   - target:
       kind: Route
       name: telemetry
