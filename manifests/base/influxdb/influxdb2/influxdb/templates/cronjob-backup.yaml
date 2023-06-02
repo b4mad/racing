@@ -1,0 +1,92 @@
+---
+# Source: influxdb/templates/cronjob-backup.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "influxdb2-backup"
+  namespace: "b4mad-racing-test"
+  labels:
+    app.kubernetes.io/name: influxdb
+    helm.sh/chart: influxdb-5.5.2
+    app.kubernetes.io/instance: influxdb2
+    app.kubernetes.io/managed-by: Helm
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: influxdb
+            app.kubernetes.io/instance: influxdb2
+          annotations:
+            {}
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-scripts
+              configMap:
+                name: influxdb2-backup
+                defaultMode: 0755
+            - name: influxdb2-backups
+              persistentVolumeClaim:
+                claimName: influxdb2-backups
+          affinity:
+            podAffinity:
+
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - podAffinityTerm:
+                    labelSelector:
+                      matchLabels:
+                        app.kubernetes.io/name: influxdb
+                        app.kubernetes.io/instance: influxdb2
+                        app.kubernetes.io/component: influxdb
+                    topologyKey: kubernetes.io/hostname
+                  weight: 1
+            nodeAffinity:
+
+          initContainers:
+            - name: influxdb-backup
+              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r3"
+              # securityContext:
+              #   runAsUser: 0
+              #   runAsGroup: 0
+              #   runAsNonRoot: true
+              #   fsGroup: 2000
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                runAsGroup: 1000890099
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
+              env:
+                - name: INFLUXDB_ADMIN_USER_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: influxdb2-auth
+                      key: admin-user-password
+                - name: INFLUXDB_ADMIN_USER_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: influxdb2-auth
+                      key: admin-user-token
+              command:
+                - "/tmp/backup.sh"
+              volumeMounts:
+                - name: influxdb2-backups
+                  mountPath: "/backups"
+                - name: backup-scripts
+                  mountPath: /tmp/backup.sh
+                  subPath: backup.sh
+          containers:
+            - name: influxdb-backup-dummy-container
+              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r3"
+              command:
+                - "/bin/true"

@@ -6,12 +6,11 @@ resources:
   - deployment.yaml
   - services.yaml
   - service_account.yaml
+  - secret.sealed.yaml
 configMapGenerator:
   - name: mosquitto-config
     files:
       - dynamic-security.json
       - mosquitto.conf
-generators:
-  - secret-generator.yaml
 generatorOptions:
   disableNameSuffixHash: true
