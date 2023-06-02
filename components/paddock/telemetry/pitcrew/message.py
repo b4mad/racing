@@ -39,11 +39,12 @@ class Message:
     def read_time(self, msg=""):
         words = len(msg.split(" "))
         # r_time = words / 1.5
-        r_time = words / 1.4
-        self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds")
+        r_time = words / 2.2
+        delta_add = 1.5
+        self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds + {delta_add:.1f} seconds")
         # return words * 0.8  # avg ms per word
         # return words / 2.5  # avg ms per word
-        return r_time
+        return r_time + delta_add
 
     def finish_at(self, at=None, msg=""):
         msg = msg or self.msg
@@ -197,7 +198,7 @@ class MessageBrakeForce(Message):
             return True
         force_diff = last_brake_force - self.force
         force_diff_abs = abs(force_diff)
-        self.log_debug(f"force_diff: {force_diff:.2f} last: {last_brake_force:.2f} coach: {self.force:.2f}")
+        self.log_debug(f"brake_force_diff: {force_diff:.2f} last: {last_brake_force:.2f} coach: {self.force:.2f}")
         if force_diff_abs > 0.3:
             # too much or too little
             return True
@@ -223,7 +224,7 @@ class MessageThrottleForce(Message):
             return True
         force_diff = last_force - self.force
         force_diff_abs = abs(force_diff)
-        self.log_debug(f"force_diff: {force_diff:.2f}")
+        self.log_debug(f"throttle_force_diff: {force_diff:.2f} last: {last_force:.2f} coach: {self.force:.2f}")
         if force_diff_abs > 0.3:
             # too much or too little
             return True
