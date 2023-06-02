@@ -16,6 +16,9 @@
 #   debug: false
 
 architecture: standalone
+# clusterDomain: "asd"
+# nameOverride: "xyz"
+# fullnameOverride: horst
 
 auth:
   enabled: true
@@ -79,17 +82,17 @@ metrics:
     enabled: true
 
 backup:
-  enabled: false
+  enabled: true
   directory: "/backups"
-  retentionDays: 10
+  retentionDays: 4
   cronjob:
     schedule: "0 2 * * *"
     historyLimit: 1
     podAnnotations: {}
     securityContext:
       enabled: false
-  uploadProviders:
-    aws:
-      enabled: true
-      existingSecret: "influxdb2-backup"
-      bucketName: "s3://b4mad-racing-smaug/influxdb"
+  # uploadProviders:
+  #   aws:
+  #     enabled: false
+  #     existingSecret: "influxdb2-backup"
+  #     bucketName: s3://b4mad-racing-test-influx

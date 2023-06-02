@@ -1,9 +1,9 @@
 ---
-# Source: influxdb/templates/serviceaccount.yaml
+# Source: influxdb/templates/pvc-backup.yaml
+kind: PersistentVolumeClaim
 apiVersion: v1
-kind: ServiceAccount
 metadata:
-  name: influxdb2
+  name: influxdb2-backups
   namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
@@ -11,5 +11,10 @@ metadata:
     app.kubernetes.io/instance: influxdb2
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
-  annotations:
-automountServiceAccountToken: true
+spec:
+  storageClassName: "synostorage-smb"
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "2Gi"

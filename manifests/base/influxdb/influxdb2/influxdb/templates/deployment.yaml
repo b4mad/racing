@@ -4,10 +4,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: influxdb2
-  namespace: "b4mad-racing"
+  namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
-    helm.sh/chart: influxdb-5.4.23
+    helm.sh/chart: influxdb-5.5.2
     app.kubernetes.io/instance: influxdb2
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
@@ -24,7 +24,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: influxdb
-        helm.sh/chart: influxdb-5.4.23
+        helm.sh/chart: influxdb-5.5.2
         app.kubernetes.io/instance: influxdb2
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
@@ -50,7 +50,7 @@ spec:
       initContainers:
       containers:
         - name: influxdb
-          image: docker.io/bitnami/influxdb:2.7.0-debian-11-r1
+          image: docker.io/bitnami/influxdb:2.7.1-debian-11-r3
           imagePullPolicy: "IfNotPresent"
           env:
             - name: BITNAMI_DEBUG

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: influxdb2
-  namespace: "b4mad-racing"
+  namespace: "b4mad-racing-test"
 spec:
   template:
     spec:
