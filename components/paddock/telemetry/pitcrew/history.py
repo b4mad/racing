@@ -5,55 +5,7 @@ from telemetry.pitcrew.logging import LoggingMixin
 from telemetry.models import Game, FastLap, FastLapSegment, Driver
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
-
-
-class Segment:
-    def __init__(self, history, **kwargs):
-        for key, value in kwargs.items():
-            self[key] = value
-        self.history = history
-
-    def __getitem__(self, key):
-        return getattr(self, key)
-
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
-
-    def get(self, key, default=None):
-        return getattr(self, key, default)
-
-    def features(self, key, mark="brake"):
-        return self[f"{mark}_features"].get(key, None)
-
-    def has_last_features(self, mark="brake"):
-        if self.telemetry_features:
-            if self.telemetry_features[-1].get(f"{mark}_features", False):
-                return True
-        return False
-
-    def last_features(self, key, mark="brake"):
-        if self.telemetry_features:
-            f = self.telemetry_features[-1].get(f"{mark}_features", {})
-            return f.get(key, None)
-        return None
-
-    def brake_features(self, key):
-        return self.features(key, mark="brake")
-
-    def last_brake_features(self, key):
-        return self.last_features(key, mark="brake")
-
-    def throttle_features(self, key):
-        return self.features(key, mark="throttle")
-
-    def last_throttle_features(self, key):
-        return self.last_features(key, mark="throttle")
-
-    def gear_features(self, key):
-        return self.features(key, mark="gear")
-
-    def last_gear_features(self, key):
-        return self.last_features(key, mark="gear")
+from .segment import Segment
 
 
 class History(LoggingMixin):
@@ -158,7 +110,6 @@ class History(LoggingMixin):
             s["throttle_features"] = self.features(s, mark="throttle")
             s["telemetry"] = []
             s["telemetry_frames"] = []
-            s["telemetry_features"] = []
             self.segments.append(s)
             self.log_debug("segment %s", segment)
 
@@ -291,7 +242,7 @@ class History(LoggingMixin):
                 "throttle_features": throttle_features,
                 "gear_features": gear_features,
             }
-            segment["telemetry_features"].append(features)
+            segment.add_features(features)
             self.log_debug(f"{log_prefix} features: {features}")
 
             segment["telemetry_frames"].append(df)

@@ -110,7 +110,8 @@ class MessageBrake(Message):
 
     def needs_coaching(self):
         # check brake start
-        last_brake_start = self.segment.last_brake_features("start")
+        # last_brake_start = self.segment.last_brake_features("start")
+        last_brake_start = self.segment.avg_brake_start()
         if last_brake_start is None:
             return True
         brake_diff = last_brake_start - self.at
@@ -138,7 +139,8 @@ class MessageThrottle(MessageBrake):
 
     def needs_coaching(self):
         # check brake start
-        last_start = self.segment.last_throttle_features("start")
+        # last_start = self.segment.last_throttle_features("start")
+        last_start = self.segment.avg_throttle_start()
         if last_start is None:
             last_start = 100_000_000
         throttle_diff = last_start - self.at
@@ -172,12 +174,13 @@ class MessageGear(Message):
             self.at_track_walk = int(self.at_track_walk - 30)
 
     def needs_coaching(self):
-        last_gear = self.segment.last_gear_features("gear")
+        # last_gear = self.segment.last_gear_features("gear")
+        last_gear = self.segment.avg_gear()
         if last_gear is None:
             return True
         gear_diff = last_gear - self.gear
         self.log_debug(f"gear_diff: {gear_diff}")
-        if gear_diff != 0:
+        if abs(gear_diff) > 0.25:
             return True
 
 
@@ -192,7 +195,8 @@ class MessageBrakeForce(Message):
 
     def needs_coaching(self):
         # check brake force
-        last_brake_force = self.segment.last_brake_features("force")
+        # last_brake_force = self.segment.last_brake_features("force")
+        last_brake_force = self.segment.avg_brake_force()
         if last_brake_force is None:
             self.log_debug("no last brake force")
             return True
@@ -211,15 +215,17 @@ class MessageBrakeForce(Message):
 
 class MessageThrottleForce(Message):
     def init(self):
-        self.force = self.segment.get("force")
-        self.msg = "lift throttle to %s percent" % (round(self.force / 10) * 10)
+        self.force = self.segment.throttle_features.get("force")
+        self.force_pct = round(int(self.force * 100) / 10) * 10  # 0.73 -> 70
+        self.msg = f"lift throttle to {self.force_pct} percent"
         # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
         self.at_track_walk = int(self.segment.throttle_features.get("max_start"))
 
     def needs_coaching(self):
         # check brake force
-        last_force = self.segment.last_throttle_features("force")
+        # last_force = self.segment.last_throttle_features("force")
+        last_force = self.segment.avg_throttle_force()
         if last_force is None:
             return True
         force_diff = last_force - self.force
