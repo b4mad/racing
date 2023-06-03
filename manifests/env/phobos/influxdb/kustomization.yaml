@@ -10,6 +10,8 @@ resources:
 - ../../../base/influxdb
 - influxdb2-auth.sealed.yml
 - influxdb2-backup.sealed.yaml
+patchesStrategicMerge:
+- configmap-backup.yaml
 generatorOptions:
   disableNameSuffixHash: true
 patches:
