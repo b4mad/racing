@@ -297,7 +297,7 @@ class History(LoggingMixin):
             segment["telemetry_frames"].append(df)
 
     def offset_distance(self, distance, seconds=0.0):
-        self.log_debug(f"offset_distance from {distance} {seconds}")
+        self.log_debug(f"offset_distance from {distance} {seconds:.2f}")
         if self.fast_lap.data:
             distance_time = self.fast_lap.data.get("distance_time", {})
             # check if distance_time is a pandas dataframe
@@ -316,7 +316,7 @@ class History(LoggingMixin):
                     while lap_time > lap_time_at_offset and distance > 0:
                         distance -= 1
                         lap_time = distance_time.loc[distance]["CurrentLapTime"]
-        self.log_debug(f"offset_distance   to {distance} {seconds}")
+        self.log_debug(f"offset_distance   to {distance} {seconds:.2f}")
         return distance
 
     # def in_range(self, meters, target, delta=10):
