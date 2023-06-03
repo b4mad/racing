@@ -8,8 +8,8 @@ resources:
 - influxdb2/influxdb/templates/pvc.yaml
 - influxdb2/influxdb/templates/service.yaml
 - influxdb2/influxdb/templates/serviceaccount.yaml
-- influxdb2-auth.yaml
-- influxdb2-backup.yaml
+# - influxdb2-auth.yaml
+# - influxdb2-backup.yaml
 - ingress.yaml
 patchesStrategicMerge:
   - deployment.yaml

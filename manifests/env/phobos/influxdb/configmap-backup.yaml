@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: influxdb2-backup
-  namespace: "b4mad-racing"
+  namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
     helm.sh/chart: influxdb-5.5.2
