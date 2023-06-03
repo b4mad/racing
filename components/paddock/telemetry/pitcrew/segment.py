@@ -53,22 +53,34 @@ class Segment:
     def last_gear_features(self, key):
         return self.last_features(key, mark="gear")
 
-    def avg_gear(self, n=3):
+    def trail_brake(self):
+        return self.brake_features.get("max_end")
+
+    def apex(self):
+        return self.throttle_features.get("max_end")
+
+    def avg_apex(self, n=0):
+        return self.avg_feature(n=n, feature="max_end", mark="throttle_features")
+
+    def avg_trail_brake(self, n=0):
+        return self.avg_feature(n=n, feature="max_end", mark="brake_features")
+
+    def avg_gear(self, n=0):
         return self.avg_feature(n=n, feature="gear", mark="gear_features")
 
-    def avg_brake_force(self, n=3):
+    def avg_brake_force(self, n=0):
         return self.avg_feature(n=n, feature="force", mark="brake_features")
 
-    def avg_throttle_force(self, n=3):
+    def avg_throttle_force(self, n=0):
         return self.avg_feature(n=n, feature="force", mark="throttle_features")
 
-    def avg_throttle_start(self, n=3):
+    def avg_throttle_start(self, n=0):
         return self.avg_feature(n=n, feature="start", mark="throttle_features")
 
-    def avg_brake_start(self, n=3):
+    def avg_brake_start(self, n=0):
         return self.avg_feature(n=n, feature="start", mark="brake_features")
 
-    def avg_feature(self, n=3, feature="gear", mark="gear_features"):
+    def avg_feature(self, n=0, feature="gear", mark="gear_features"):
         if len(self.telemetry_features) <= n:
             return None
         # collect the last n entries from telemetry_features, where the 'gear' key is not None
@@ -80,6 +92,8 @@ class Segment:
             if len(features_collection) == n:
                 break
 
+        if len(features_collection) <= n:
+            return None
         # calculate the average gear
         feature_values = [f.get(feature) for f in features_collection]
         self.history.log_debug(f"{mark} {feature} values: {feature_values}")

@@ -174,9 +174,13 @@ class Coach(LoggingMixin):
             # filter out all responses with lower priority
             response_arr = [resp for resp in response_arr if resp["priority"] == priority]
             # merge all message strings into one
+            # response = response_arr[0]
+            # FIXME: if we merge, we should re-calculate the 'at', since we might have
+            #        calculated it for a distance based on the length of the message
+            #        lets just take the first one for now
+            # message = " ".join([resp["message"] for resp in response_arr])
+            # response["message"] = message
             response = response_arr[0]
-            message = " ".join([resp["message"] for resp in response_arr])
-            response["message"] = message
             new_responses.append(response)
 
         return new_responses
@@ -185,13 +189,17 @@ class Coach(LoggingMixin):
         from .message import MessageGear
         from .message import MessageBrake, MessageBrakeForce
         from .message import MessageThrottle, MessageThrottleForce
+        from .message import MessageApex, MessageTrailBrake
 
         self.messages = []
         for segment in self.history.segments:
+            self.messages.append(MessageApex(self, segment=segment))
+
             if segment["mark"] == "brake":
                 self.messages.append(MessageGear(self, segment=segment))
                 self.messages.append(MessageBrakeForce(self, segment=segment))
                 self.messages.append(MessageBrake(self, segment=segment))
+                self.messages.append(MessageTrailBrake(self, segment=segment))
             if segment["mark"] == "throttle":
                 self.messages.append(MessageThrottleForce(self, segment=segment))
                 self.messages.append(MessageThrottle(self, segment=segment))

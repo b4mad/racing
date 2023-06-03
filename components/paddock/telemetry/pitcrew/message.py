@@ -13,6 +13,7 @@ class Message:
         self.finish_at_words = "one two"
         self.at = None
         self.at_track_walk = None
+        self.priority = 9
         self.init()
 
     def log_debug(self, msg):
@@ -21,11 +22,12 @@ class Message:
     def init(self):
         pass
 
-    def resp(self, distance, message, priority=9):
+    def resp(self, distance, message, priority=None):
         # from CrewChiefV4.audio.SoundMetaData
         # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
         # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
 
+        priority = priority or self.priority
         return {
             "distance": distance,
             "message": message,
@@ -166,6 +168,7 @@ class MessageGear(Message):
         self.msg = f"Gear {self.gear}"
         # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
+        self.priority = 7
         if self.segment["mark"] == "throttle":
             self.at_track_walk = self.segment.throttle_features.get("end")
         elif self.segment["mark"] == "brake":
@@ -186,6 +189,7 @@ class MessageGear(Message):
 
 class MessageBrakeForce(Message):
     def init(self):
+        self.priority = 8
         # self.force = self.segment.get("force")
         self.force = self.segment.brake_features.get("force")
         self.msg = "%s percent" % (round(int(self.force * 100) / 10) * 10)  # 0.73 -> 70
@@ -215,6 +219,7 @@ class MessageBrakeForce(Message):
 
 class MessageThrottleForce(Message):
     def init(self):
+        self.priority = 7
         self.force = self.segment.throttle_features.get("force")
         self.force_pct = round(int(self.force * 100) / 10) * 10  # 0.73 -> 70
         self.msg = f"lift throttle to {self.force_pct} percent"
@@ -239,3 +244,54 @@ class MessageThrottleForce(Message):
         #     new_fragments.append("a bit less")
         # elif force_diff < -0.1:
         #     new_fragments.append("a bit harder")
+
+
+class MessageApex(Message):
+    def init(self):
+        self.at = self.segment.apex()
+        if self.at is not None:
+            #     self.at = -1
+            # else:
+            self.at = int(self.at)
+
+        self.msg = "Apex"
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.at
+        self.at_track_walk = self.at
+
+    def needs_coaching(self):
+        return False
+        # last_gear = self.segment.last_gear_features("gear")
+        last = self.segment.avg_apex()
+        if last is None:
+            return True
+        diff = last - self.at
+        self.log_debug(f"apex_diff: {diff:.2f} last: {last:.2f} coach: {self.at:.2f}")
+
+        if abs(diff) > 10:
+            return True
+
+
+class MessageTrailBrake(Message):
+    def init(self):
+        self.at = self.segment.trail_brake()
+        if self.at is not None:
+            #     self.at = -1
+            # else:
+            self.at = int(self.at)
+
+        self.msg = "trailbrake"
+        # self.at = int(self.finish_at(self.segment.get("start")))
+        self.at = self.at
+        self.at_track_walk = self.at
+
+    def needs_coaching(self):
+        return False
+        # last_gear = self.segment.last_gear_features("gear")
+        last = self.segment.avg_trail_brake()
+        if last is None:
+            return True
+        diff = last - self.at
+        self.log_debug(f"apex_diff: {diff:.2f} last: {last:.2f} coach: {self.at:.2f}")
+        if abs(diff) > 10:
+            return True
