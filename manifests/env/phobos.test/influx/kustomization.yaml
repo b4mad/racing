@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- pairs:
+    app.kubernetes.io/managed-by: humans
+    app.kubernetes.io/name: b4mad-racing-test
+    app.kubernetes.io/version: v0.1.0-dev
+namespace: b4mad-racing-test
+resources:
+- ../../../base/influxdb
+generatorOptions:
+  disableNameSuffixHash: true
+patches:
+  - target:
+      kind: PersistentVolumeClaim
+      name: influxdb2
+    patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: "2Gi"
+  - target:
+      kind: Deployment
+      name: influxdb2
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "50m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "200Mi"
+  - target:
+      kind: Ingress
+      name: influx
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: telemetry.test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: telemetry.test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-telemetry.test.b4mad.racing
