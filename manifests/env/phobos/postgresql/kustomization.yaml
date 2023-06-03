@@ -8,6 +8,7 @@ labels:
 namespace: b4mad-racing
 resources:
 - ../../../base/postgresql
+- pgo-s3-creds.sealed.yaml
 patches:
   - target:
       kind: PostgresCluster
