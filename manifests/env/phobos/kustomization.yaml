@@ -74,6 +74,16 @@ patches:
         path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/key
         value: token
   - target:
+      kind: DeploymentConfig
+      name: paddock
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 2Gi
+      - op: replace
+        path: /spec/template/spec/containers/1/resources/limits/memory
+        value: 2Gi
+  - target:
       kind: Ingress
       name: paddock
     patch: |-
