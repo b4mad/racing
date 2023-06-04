@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import logging
 import os
 import csv
+import sys
 import influxdb_client
 from influxdb_client.client.warnings import MissingPivotFunction
 import warnings
@@ -31,7 +32,7 @@ class Influx:
             logging.debug(f"Influx: Connected to {self.url}")
         else:
             logging.error(f"Influx: Connection to {self.url} failed")
-            exit(1)
+            sys.exit(1)
 
         self.query_api = self.influx.query_api()
 

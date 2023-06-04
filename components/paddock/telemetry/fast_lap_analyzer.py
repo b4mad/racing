@@ -126,6 +126,7 @@ class FastLapAnalyzer:
                     "brake_features": brake_features,
                     "throttle_features": throttle_features,
                     "gear_features": gear_features,
+                    "df": sector,
                 }
             )
         return track_info
