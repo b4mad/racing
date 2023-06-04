@@ -20,8 +20,6 @@ from django.views.generic import TemplateView
 from . import views
 from .views import CoachView
 
-import paddock.pitcrew_app  # noqa: F401
-
 urlpatterns = [
     # path("", views.index, name="home"),
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
@@ -29,7 +27,9 @@ urlpatterns = [
     # path("fastlap/<str:game>/<str:track>/<str:car>", views.fastlap_index, name="fastlap_index"),
     # path("fastlap/<str:game>/<str:track>>", views.fastlap_index, name="fastlap_index"),
     # path("fastlap/<str:game>/", views.fastlap_index, name="fastlap_index"),
-    path("fastlap/<int:fastlap_id>", views.fastlap_view, name="fastlap"),
+    # path("fastlap/<int:fastlap_id>", views.fastlap_view, name="fastlap"),
+    path("fastlap/<int:fastlap_id>", views.fastlap_dash, name="fastlap"),
+    path("fastlap_data/<int:fastlap_id>", views.fastlap_data, name="fastlap_data"),
     path("fastlap/", views.fastlap_index, name="fastlap_index"),
     # path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     # path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),

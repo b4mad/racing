@@ -59,8 +59,24 @@ class Analyzer:
             track_length = max([sector["DistanceRoundTrack"].max() for sector in sectors])
 
         for i, sector in enumerate(sectors):
-            # Rule 1: A sector N starts 10 meters earlier than the first row of a DataFrame
-            start = int((sector["DistanceRoundTrack"].iloc[0] - 10) % track_length)
+            # if i == 0:
+            #     prev_sector = sectors[-1]
+            # else:
+            #     prev_sector = sectors[i - 1]
+            # start, end = self.throttle_window(prev_sector, threshold=0.95)
+            # last_meter_of_prev_sector = prev_sector.iloc[-1]["DistanceRoundTrack"]
+            # logging.debug(f"start: {start} end: {end}, last_meter_of_prev_sector: {last_meter_of_prev_sector}")
+            # if start:
+            #     delta = int((last_meter_of_prev_sector - end) / 2)
+            # else:
+            #     delta = 10
+            # logging.debug(f"delta: {delta}")
+            # first_meter_of_sector = sector.iloc[0]["DistanceRoundTrack"]
+            # logging.debug(f"first_meter_of_sector: {first_meter_of_sector}")
+            delta = 10
+
+            # Rule 1: A sector N starts delta meters earlier than the first row of a DataFrame
+            start = int((sector["DistanceRoundTrack"].iloc[0] - delta) % track_length)
 
             # Rule 1a: Unless the previous DataFrame for sector N-1 has Throttle input below threshold
             # at the calculated start of N
@@ -72,10 +88,10 @@ class Analyzer:
 
             # Rule 2: The last sector ends where the first sector starts
             if i == len(sectors) - 1:
-                end = int((sectors[0]["DistanceRoundTrack"].iloc[0] - 11) % track_length)
+                end = int((sectors[0]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length)
             else:
                 end = int(
-                    (sectors[i + 1]["DistanceRoundTrack"].iloc[0] - 11) % track_length
+                    (sectors[i + 1]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length
                 )  # Subtract 11 to make the boundaries exactly one meter apart
 
             length = int((end - start) % track_length)
