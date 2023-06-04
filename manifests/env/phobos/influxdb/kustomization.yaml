@@ -15,13 +15,20 @@ patchesStrategicMerge:
 generatorOptions:
   disableNameSuffixHash: true
 patches:
-- patch: |-
+- target:
+    kind: PersistentVolumeClaim
+    name: influxdb2
+  patch: |-
     - op: replace
       path: /spec/resources/requests/storage
       value: "2Gi"
-  target:
+- target:
     kind: PersistentVolumeClaim
-    name: influxdb2
+    name: influxdb2-backup
+  patch: |-
+    - op: replace
+      path: /spec/resources/requests/storage
+      value: "500Gi"
 - patch: |-
     - op: replace
       path: /spec/template/spec/containers/0/resources/limits/cpu
