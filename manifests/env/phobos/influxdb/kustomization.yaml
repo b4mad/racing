@@ -24,7 +24,7 @@ patches:
       value: "2Gi"
 - target:
     kind: PersistentVolumeClaim
-    name: influxdb2-backup
+    name: influxdb2-backups
   patch: |-
     - op: replace
       path: /spec/resources/requests/storage
