@@ -79,7 +79,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 2Gi
+        value: 6Gi
       - op: replace
         path: /spec/template/spec/containers/1/resources/limits/memory
         value: 2Gi
