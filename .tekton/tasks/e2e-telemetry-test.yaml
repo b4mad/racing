@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: e2e-telemetry-test
+  labels:
+    app.kubernetes.io/version: "0.1.0"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/displayName: "#B4mad Racing Telemetry e2e test"
+spec:
+  workspaces:
+    - name: source
+      mountPath: /workspace/src/$(params.package)
+      description: >-
+        The workspace containing the Go source code
+        which needs to be released.

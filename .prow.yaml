@@ -22,3 +22,16 @@ presubmits:
             - "pre-commit"
             - "run"
             - "--all-files"
+  - name: e2e-telemetry
+    decorate: true
+    skip_report: false
+    always_run: true
+    context: b4mad-racing/e2e/telemetry
+    spec:
+      containers:
+        - image: quay.io/sclorg/python-311-c9s:20230531
+          command:
+            - components/paddock/e2e-test.sh
+          env:
+            - name: SECRET_KEY
+              value: abcd1ac34873c54e158d38e7f1283977f202abcd

@@ -12,7 +12,7 @@ metadata:
 
     # Fetch the git-clone task from hub, we are able to reference later on it
     # with taskRef and it will automatically be embedded into our pipeline.
-    pipelinesascode.tekton.dev/task: "git-clone"
+    pipelinesascode.tekton.dev/task: "[git-clone, .tekton/tasks/e2e-telemetry-test.yaml]"
 
     # You can add more tasks in here to reuse, browse the one you like from here
     # https://hub.tekton.dev/
@@ -51,23 +51,30 @@ spec:
           - name: revision
             value: $(params.revision)
 
-      # Customize this task if you like, or just do a taskRef
-      # to one of the hub task.
-      - name: noop-task
+      - name: e2e-tests
         runAfter:
           - fetch-repository
-        workspaces:
-          - name: source
-            workspace: source
         taskSpec:
           workspaces:
             - name: source
           steps:
-            - name: noop-task
-              image: registry.access.redhat.com/ubi9/ubi-micro
+            - image: quay.io/fedora/python-310@sha256:6875e96d2b8f6897e26d578c75e5a0c8efcdbe6a492f22448ff48a98a6d7d2ae
+              name: run-e2e-test-in-venv
               workingDir: $(workspaces.source.path)
               script: |
-                exit 0
+                #!/usr/bin/env bash
+
+                p=$(mktemp -d)
+
+                python3.10 -m venv $p/venv
+                source $p/venv/bin/activate
+                micropipenv install --dev
+
+                python manage.py migrate
+                # python manage.py load_devel_data
+
+                python manage.py test telemetry
+
   workspaces:
     - name: source
       volumeClaimTemplate:
