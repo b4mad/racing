@@ -6,7 +6,6 @@ metadata:
   # image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"paddock:latest"},"fieldPath":"spec.jobTemplate.spec.template.spec.containers[?(@.name==\"analyze\")].image"}]'
 spec:
   schedule: "0 */6 * * *"
-  selector: {}
   jobTemplate:
     spec:
       template:

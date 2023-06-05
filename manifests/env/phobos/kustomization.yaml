@@ -1,21 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 labels:
-- pairs:
-    app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing
-    app.kubernetes.io/version: v0.1.0-dev
-namespace: b4mad-racing
+  - pairs:
+      app.kubernetes.io/name: b4mad-racing
+      app.kubernetes.io/version: v0.4.8-dev
+
 resources:
-- namespace.yaml
-- ../../base/mosquitto
-- influxdb
-- ../../base/telegraf
-- postgresql
-- ../../base/paddock
-- ../../base/paddock/cronjobs
-- paddock-settings.sealed.yaml
-- grafana
+  - namespace.yaml
+  - ../../base/mosquitto
+  - influxdb
+  - ../../base/telegraf
+  - postgresql
+  - ../../base/paddock
+  - ../../base/paddock/cronjobs
+  - paddock-settings.sealed.yaml
+  - grafana
 generatorOptions:
   disableNameSuffixHash: true
 patches:
@@ -46,7 +45,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/cpu
-        value: "2000m"
+        value: "2"
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
         value: "16Gi"
