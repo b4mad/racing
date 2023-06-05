@@ -117,19 +117,23 @@ WSGI_APPLICATION = "paddock.wsgi.application"
 
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db
-DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises
-    # ImproperlyConfigured exception if not found
-    #
-    "default": env.db_url("DATABASE_URL"),
-    "readonly": env.db_url("READONLY_DATABASE_URL"),
-}
 if "test" in sys.argv or "test_coverage" in sys.argv:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         },
+        "readonly": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        },
+    }
+else:
+    DATABASES = {
+        # read os.environ['DATABASE_URL'] and raises
+        # ImproperlyConfigured exception if not found
+        #
+        "default": env.db_url("DATABASE_URL"),
         "readonly": env.db_url("READONLY_DATABASE_URL"),
     }
 
