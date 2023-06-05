@@ -32,3 +32,6 @@ presubmits:
         - image: quay.io/fedora/python-310@sha256:6875e96d2b8f6897e26d578c75e5a0c8efcdbe6a492f22448ff48a98a6d7d2ae
           command:
             - components/paddock/e2e-test.sh
+          env:
+            - name: SECRET_KEY
+              value: abcd1ac34873c54e158d38e7f1283977f202abcd
