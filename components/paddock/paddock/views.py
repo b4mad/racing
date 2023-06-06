@@ -1,9 +1,7 @@
-import base64
-import pickle
 from typing import Any, Dict
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from telemetry.models import Driver, Coach, FastLap
+from telemetry.models import Driver, Coach
 from telemetry.pitcrew.coach import Coach as PitcrewCoach
 from telemetry.pitcrew.history import History
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -184,43 +182,10 @@ def index(request):
     return HttpResponse("Paddock is up and running!")
 
 
-def fastlap_view(request, template_name="fastlap.html", fastlap_id="", **kwargs):
-    fastlap = get_object_or_404(FastLap, pk=fastlap_id)
-    context = {"fastlap": fastlap, "segments": fastlap.fast_lap_segments.all()}  # type: ignore
-    return render(request, template_name=template_name, context=context)
-
-
-def fastlap_data(request, fastlap_id="", **kwargs):
-    fastlap = get_object_or_404(FastLap, pk=fastlap_id)
-    track_info = fastlap.data.get("track_info")
-    pickled = pickle.dumps(track_info)
-    pickled_base64 = base64.b64encode(pickled)
-
-    # Create a response with the base64-encoded data
-    response = HttpResponse(pickled_base64, content_type="application/octet-stream")
-    return response
-
-
-def fastlap_dash(request, template_name="fastlap_dash.html", fastlap_id="", **kwargs):
-    fastlap = get_object_or_404(FastLap, pk=fastlap_id)
-    context = {"fastlap": fastlap, "segments": fastlap.fast_lap_segments.all()}  # type: ignore
+def fastlap(request, template_name="fastlap.html", fastlap_id="", **kwargs):
+    context = {}
     dash_context = request.session.get("django_plotly_dash", dict())
-    dash_context["fastlap_url"] = request.build_absolute_uri(f"/fastlap_data/{fastlap_id}")
-
     request.session["django_plotly_dash"] = dash_context
-
-    return render(request, template_name=template_name, context=context)
-
-
-def fastlap_index(request, template_name="fastlap_index.html"):
-    # fast_laps = FastLap.objects.filter(driver=None).all()
-    fast_laps = FastLap.objects.select_related("game", "car", "track").filter(driver=None).all()
-    # sort by str representation of fastlap
-    fast_laps = sorted(fast_laps, key=lambda x: str(x))
-    context = {
-        "fast_laps": fast_laps,
-    }
-
     return render(request, template_name=template_name, context=context)
 
 

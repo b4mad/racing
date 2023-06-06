@@ -1,4 +1,6 @@
 {%extends "base.html"%}
+{%load plotly_dash%}
+
 
 {%block title%}Pit Crew{%endblock%}
 
@@ -9,40 +11,9 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-12">
-          <h3>{{ fastlap }}</h3>
-          <div>
-            Based on lap time {{ fastlap.laps.first.time }} seconds by {{ fastlap.laps.first.session.driver }}
+          <div class="{%plotly_class name="Fastlap"%}">
+            {%plotly_direct name="Fastlap" %}
           </div>
-            <table class="table">
-              <tr>
-              <th>turn</th>
-              <th>start</th>
-              <th>end</th>
-              <th>brake</th>
-              <th>turn in</th>
-              <th>force</th>
-              <th>gear</th>
-              <th>stop</th>
-              <th>accelerate</th>
-              <th>speed</th>
-            <th>mark</th>
-            </tr>
-            {% for s in segments %}
-              <tr>
-                <td>{{s.turn}}</td>
-                <td>{{s.start}}</td>
-                <td>{{s.end}}</td>
-                <td>{{s.brake}}</td>
-                <td>{{s.turn_in}}</td>
-                <td>{{s.force}}</td>
-                <td>{{s.gear}}</td>
-                <td>{{s.stop}}</td>
-                <td>{{s.accelerate}}</td>
-                <td>{{s.speed}}</td>
-                <td>{{s.mark}}</td>
-              </tr>
-            {% endfor %}
-            </table>
         </div>
       </div>
     </div>
