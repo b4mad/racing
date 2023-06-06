@@ -4,12 +4,13 @@ the structure of this folder is inspired by <https://github.com/kostis-codefresh
 
 ## creating secrets
 
-This `env/phobos-test` we are introducing [sealed secrets](https://sealed-secrets.netlify.app/). Assuming that you have
-an `.env` file containing the current set of secrets you want to use, and assuming you are logged in the `phobos`
-cluster, the following command will generate the resource file:
+We are using [sealed secrets](https://sealed-secrets.netlify.app/) being deployed via ArgoCD, a sops-encrypted version
+is kept to generate the sealed secrets and keep them human-readable.
+
+Creating sealed secrets from an env-file...
 
 ```shell
-kubectl --namespace b4mad-racing-test --dry-run=client \
+kubectl --namespace b4mad-racing --dry-run=client \
     create secret generic paddock-settings \
     --from-env-file .env \
     --output yaml \
@@ -18,10 +19,21 @@ kubectl --namespace b4mad-racing-test --dry-run=client \
 > manifests/env/phobos-test/paddock-settings.yaml
 ```
 
+or via the sops-encrypted source:
+
+```shell
+sops --decrypt manifests/env/phobos/paddock-settings.enc.yaml \
+| kubeseal --controller-namespace=sealed-secrets \
+    --format yaml \
+> manifests/env/phobos-test/paddock-settings.yaml
+```
+
+Make sure, that the input to `kubeseal` is using the correct namespace!
+
 ## Deploying to a new OpenShift cluster
 
 ```shell
-kustomize build --enable-alpha-plugins manifests/env/phobos | oc apply -f -
+kustomize build manifests/env/phobos | oc apply -f -
 sleep 60
 scripts/setup_buckets.sh
 scripts/setup_secrets.sh
