@@ -34,7 +34,4 @@ class TestHistory(TransactionTestCase):
         coach.notify(topic, row)
         history.init()
 
-        pprint(history.track_length)
-
-        # pprint(captured_responses, width=200)
-        # self.assertEqual(captured_responses, expected_responses)
+        self.assertEqual(history.track_length, 4460)
