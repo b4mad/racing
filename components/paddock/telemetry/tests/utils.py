@@ -3,6 +3,8 @@ from telemetry.models import Lap
 import os
 import pandas as pd
 import numpy as np
+from pprint import pprint
+import pickle
 
 
 def read_dataframe(file_path):
@@ -47,3 +49,28 @@ def get_lap_df(lap_id, measurement="fast_laps", bucket="fast_laps"):
         save_dataframe(lap_df, file_path)
 
     return process_dataframe(lap_df)
+
+
+def read_responses(file_name, pickled=False):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = f"{dir_path}/data/responses_{file_name}.txt"
+    if pickled:
+        with open(file_path, "rb") as f:
+            responses = pickle.load(f)
+        return responses
+
+    with open(file_path, "r") as f:
+        responses = eval(f.read())
+    return responses
+
+
+def save_responses(responses, file_name, pickled=False):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = f"{dir_path}/data/responses_{file_name}.txt"
+    if pickled:
+        with open(file_path, "wb") as f:
+            pickle.dump(responses, f)
+        return
+
+    with open(file_path, "w") as f:
+        pprint(responses, stream=f, width=200)

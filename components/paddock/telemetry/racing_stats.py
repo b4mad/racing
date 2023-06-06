@@ -7,6 +7,11 @@ class RacingStats:
     def __init__(self):
         pass
 
+    def known_combos_list(self, game=None, track=None, car=None, **kwargs):
+        laps = self.known_combos(game, track, car, **kwargs)
+        for row in laps:
+            yield row["track__game__name"], row["car__name"], row["track__name"], row["count"]
+
     def known_combos(self, game=None, track=None, car=None, **kwargs):
         filter = {}
         if game:
@@ -23,8 +28,6 @@ class RacingStats:
         laps = laps.annotate(count=Count("id"))
         laps = laps.order_by("track__game__name", "car__name", "track__name")
         return laps
-        # for row in laps:
-        #     yield row["track__game__name"], row["car__name"], row["track__name"], row["count"]
 
     def fast_lap_values(self, game=None, track=None, car=None, **kwargs):
         filter = {}
@@ -55,13 +58,18 @@ class RacingStats:
         laps = FastLap.objects.filter(**filter)
         return laps
 
-    def laps(self, game=None, track=None, car=None, **kwargs):
+    def laps(self, game=None, track=None, car=None, valid=None, **kwargs):
         filter = {}
-        filter["track__game__name"] = game
-        filter["track__name"] = track
-        filter["car__name"] = car
+        if game:
+            filter["track__game__name"] = game
+        if track:
+            filter["track__name"] = track
+        if car:
+            filter["car__name"] = car
 
-        filter["valid"] = True
+        if valid is not None:
+            filter["valid"] = valid
+
         laps = Lap.objects.filter(**filter)
         laps = laps.order_by("time")
         # limit to 10
