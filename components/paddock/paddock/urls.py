@@ -23,6 +23,7 @@ from .views import CoachView
 urlpatterns = [
     # path("", views.index, name="home"),
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
+    path("", include("django_prometheus.urls")),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
     # path("fastlap/<str:game>/<str:track>/<str:car>", views.fastlap_index, name="fastlap_index"),
     # path("fastlap/<str:game>/<str:track>>", views.fastlap_index, name="fastlap_index"),

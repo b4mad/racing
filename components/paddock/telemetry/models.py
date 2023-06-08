@@ -1,10 +1,13 @@
-from django.db import models
 from dirtyfields import DirtyFieldsMixin
 from picklefield.fields import PickledObjectField
+
+from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
+
 import datetime
 
 
-class Driver(models.Model):
+class Driver(ExportModelOperationsMixin("driver"), models.Model):
     class Meta:
         ordering = [
             "name",
@@ -64,7 +67,7 @@ class SessionType(models.Model):
         return self.type
 
 
-class Session(DirtyFieldsMixin, models.Model):
+class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, models.Model):
     session_id = models.CharField(max_length=200)
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
@@ -85,7 +88,7 @@ class Session(DirtyFieldsMixin, models.Model):
         return self.session_id
 
 
-class FastLap(models.Model):
+class FastLap(ExportModelOperationsMixin("fastlap"), models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
@@ -100,7 +103,7 @@ class FastLap(models.Model):
         return f"{self.game} {self.car} {self.track}"
 
 
-class Lap(DirtyFieldsMixin, models.Model):
+class Lap(ExportModelOperationsMixin("lap"), DirtyFieldsMixin, models.Model):
     number = models.IntegerField()
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
@@ -163,7 +166,7 @@ class FastLapSegment(models.Model):
         return repr
 
 
-class Coach(models.Model):
+class Coach(ExportModelOperationsMixin("coach"), models.Model):
     driver = models.OneToOneField(
         Driver,
         on_delete=models.CASCADE,
