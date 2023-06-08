@@ -93,12 +93,11 @@ class Command(BaseCommand):
         fl = FastLapAnalyzer(fast_laps)
         result = fl.analyze()
         if result:
-            track_info = result[0]
-            data = result[1]
-            used_laps = result[2]
-            self.save_fastlap(track_info, data, laps=used_laps)
+            data = result[0]
+            used_laps = result[1]
+            self.save_fastlap(data, laps=used_laps)
 
-    def save_fastlap(self, track_info, data, laps=[]):
+    def save_fastlap(self, data, laps=[]):
         if not laps:
             logging.error("no laps")
             return
@@ -110,21 +109,22 @@ class Command(BaseCommand):
         fast_lap.data = data
         fast_lap.laps.set(laps)
         fast_lap.save()
-        fast_lap.fast_lap_segments.all().delete()
-        i = 1
-        for s in track_info:
-            s["turn"] = i
-            fast_lap.fast_lap_segments.create(
-                turn=i,
-                mark=s["mark"],
-                start=s["start"],
-                end=s["end"],
-                force=s["force"],
-                gear=s["gear"],
-                speed=s["speed"],
-            )
-            i += 1
+        # print(data['segments'][0].telemetry)
+        # fast_lap.fast_lap_segments.all().delete()
+        # i = 1
+        # for s in track_info:
+        #     s["turn"] = i
+        #     fast_lap.fast_lap_segments.create(
+        #         turn=i,
+        #         mark=s["mark"],
+        #         start=s["start"],
+        #         end=s["end"],
+        #         force=s["force"],
+        #         gear=s["gear"],
+        #         speed=s["speed"],
+        #     )
+        #     i += 1
         # also delete user segments
         # FIXME only delete user segements if they changed?
-        r = FastLap.objects.filter(car=car, track=track, game=game).exclude(driver=None).delete()
-        logging.debug(f"deleted {r} user segments")
+        # r = FastLap.objects.filter(car=car, track=track, game=game).exclude(driver=None).delete()
+        # logging.debug(f"deleted {r} user segments")

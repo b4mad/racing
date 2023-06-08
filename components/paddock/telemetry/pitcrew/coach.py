@@ -3,6 +3,8 @@ import json
 from telemetry.pitcrew.logging import LoggingMixin
 from .history import History
 from telemetry.models import Coach as DbCoach
+from .message import MessageBrake, MessageBrakeForce, MessageGear, MessageThrottle
+from .message import MessageThrottleForce, MessageTrailBrake, MessageApex
 
 
 class Coach(LoggingMixin):
@@ -52,7 +54,10 @@ class Coach(LoggingMixin):
             if self.history.error:
                 self.db_coach.error = self.history.error
                 self.db_coach.save()
-                return (self.response_topic, self.history.error)
+                # clear history error
+                error_msg = self.history.error
+                self.history.error = None
+                return (self.response_topic, error_msg)
             return None
 
         if self.history.ready and self.history.startup_message:
@@ -148,7 +153,10 @@ class Coach(LoggingMixin):
     def get_responses(self, telemetry, future_distance):
         responses = []
         for message in self.messages:
-            response = message.response(future_distance, telemetry)
+            if self.track_walk:
+                response = message.response_track_walk(future_distance, telemetry)
+            else:
+                response = message.response_hot_lap(future_distance, telemetry)
 
             if response:
                 if not isinstance(response, list):
@@ -186,20 +194,18 @@ class Coach(LoggingMixin):
         return new_responses
 
     def init_messages(self):
-        from .message import MessageGear
-        from .message import MessageBrake, MessageBrakeForce
-        from .message import MessageThrottle, MessageThrottleForce
-        from .message import MessageApex, MessageTrailBrake
-
         self.messages = []
+        message_classes = [
+            MessageBrake,
+            MessageBrakeForce,
+            MessageGear,
+            MessageThrottle,
+            MessageThrottleForce,
+            MessageTrailBrake,
+            MessageApex,
+        ]
         for segment in self.history.segments:
-            self.messages.append(MessageApex(self, segment=segment))
-
-            if segment["mark"] == "brake":
-                self.messages.append(MessageGear(self, segment=segment))
-                self.messages.append(MessageBrakeForce(self, segment=segment))
-                self.messages.append(MessageBrake(self, segment=segment))
-                self.messages.append(MessageTrailBrake(self, segment=segment))
-            if segment["mark"] == "throttle":
-                self.messages.append(MessageThrottleForce(self, segment=segment))
-                self.messages.append(MessageThrottle(self, segment=segment))
+            for message_class in message_classes:
+                message = message_class(segment, logger=self.log_debug)
+                if message.active:
+                    self.messages.append(message)

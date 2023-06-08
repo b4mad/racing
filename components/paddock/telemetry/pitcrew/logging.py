@@ -10,7 +10,7 @@ class LoggingMixin:
         self.log(logging.DEBUG, message, *args, **kwargs)
 
     def log_error(self, message, *args, **kwargs):
-        self.log(logging.DEBUG, message, *args, **kwargs)
+        self.log(logging.ERROR, message, *args, **kwargs)
 
     def log_info(self, message, *args, **kwargs):
-        self.log(logging.DEBUG, message, *args, **kwargs)
+        self.log(logging.INFO, message, *args, **kwargs)

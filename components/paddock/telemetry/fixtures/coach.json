@@ -3,8 +3,11 @@
     "model": "telemetry.coach",
     "pk": 10,
     "fields": {
-      "error": "no data found for game Automobilista 2on track Bathurst:Bathurst_2020in car Roco 001",
-      "enabled": true
+      "error": "",
+      "status": "start coaching for a lap time of 1 minute 25.04 seconds ",
+      "enabled": true,
+      "track_walk": false,
+      "fast_lap": 1237
     }
   }
 ]

@@ -1,11 +1,9 @@
 import pandas as pd
 import time
-from django.forms.models import model_to_dict
 from telemetry.pitcrew.logging import LoggingMixin
-from telemetry.models import Game, FastLap, FastLapSegment, Driver
+from telemetry.models import Game, FastLap, Driver
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
-from .segment import Segment
 
 
 class History(LoggingMixin):
@@ -100,20 +98,23 @@ class History(LoggingMixin):
 
         self.log_debug("loading segments for %s %s - %s", self.game, self.track, self.car)
         self.log_debug(f"  based on laps {fast_lap.laps}")
-        self.track_info = fast_lap.data.get("track_info", [])
-        self.log_debug(f"  track_info\n{self.track_info}")
+        # self.track_info = fast_lap.data.get("track_info", [])
+        # self.log_debug(f"  track_info\n{self.track_info}")
 
-        self.segments = []
-        for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
-            s = Segment(self, **model_to_dict(segment))
-            s["brake_features"] = self.features(s, mark="brake")
-            s["throttle_features"] = self.features(s, mark="throttle")
-            s["telemetry"] = []
-            s["telemetry_frames"] = []
-            self.segments.append(s)
-            self.log_debug("segment %s", segment)
+        self.segments = fast_lap.data.get("segments", [])
+        # for segment in FastLapSegment.objects.filter(fast_lap=fast_lap).order_by("turn"):
+        #     s = Segment(self, **model_to_dict(segment))
+        #     s["brake_features"] = self.features(s, mark="brake")
+        #     s["throttle_features"] = self.features(s, mark="throttle")
+        #     s["telemetry"] = []
+        #     s["telemetry_frames"] = []
+        #     self.segments.append(s)
+        #     self.log_debug("segment %s", segment)
 
-        self.segments = self.sort_segments()
+        # self.segments = self.sort_segments()
+
+        for segment in self.segments:
+            segment.history = self
 
         self.fast_lap = fast_lap
 
@@ -191,8 +192,8 @@ class History(LoggingMixin):
             return
 
         segment = self.segments[0]
-        start = segment["start"]
-        end = segment["end"]
+        start = segment.start
+        end = segment.end
 
         if start < end:
             in_segment = start <= meters <= end
@@ -205,7 +206,7 @@ class History(LoggingMixin):
         else:
             work_to_do = False
             if len(self.telemetry) > 0:
-                segment["telemetry"].append(self.telemetry)
+                segment.live_telemetry.append(self.telemetry)
                 self.process_segments.append(segment)
                 self.telemetry = []
                 work_to_do = True
@@ -218,12 +219,12 @@ class History(LoggingMixin):
         # self.log_debug(f"do work")
         while len(self.process_segments) > 0:
             segment = self.process_segments.pop(0)
-            log_prefix = f"processing segment {segment['turn']} "
-            if len(segment["telemetry"]) == 0:
+            log_prefix = f"processing segment {segment.turn} "
+            if len(segment.live_telemetry) == 0:
                 self.log_error(f"{log_prefix} no telemetry for segment")
                 continue
 
-            telemetry = segment["telemetry"].pop(0)
+            telemetry = segment.live_telemetry.pop(0)
             if len(telemetry) == 0:
                 self.log_error(f"{log_prefix} no data in telemetry")
                 continue
@@ -237,15 +238,12 @@ class History(LoggingMixin):
             brake_features = self.fast_lap_analyzer.brake_features(df)
             throttle_features = self.fast_lap_analyzer.throttle_features(df)
             gear_features = self.fast_lap_analyzer.gear_features(df)
-            features = {
-                "brake_features": brake_features,
-                "throttle_features": throttle_features,
-                "gear_features": gear_features,
-            }
-            segment.add_features(features)
-            self.log_debug(f"{log_prefix} features: {features}")
 
-            segment["telemetry_frames"].append(df)
+            segment.add_live_features(brake_features, type="brake")
+            segment.add_live_features(throttle_features, type="throttle")
+            segment.add_live_features(gear_features, type="gear")
+
+            segment.live_telemetry_frames.append(df)
 
     def offset_distance(self, distance, seconds=0.0):
         self.log_debug(f"offset_distance from {distance} {seconds:.2f}")
