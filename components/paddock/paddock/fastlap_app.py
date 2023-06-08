@@ -162,8 +162,7 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
     lap = fast_lap.laps.first()
     # lap.time is seconds. Format to minutes:seconds
-    lap_time = f"{lap.time // 60:.0f} minute {(lap.time % 60):.2f} seconds"
-    info = f"Based on a lap time of { lap_time } by { lap.session.driver }"
+    info = f"Based on a lap time of { lap.time_human() } by { lap.session.driver }"
     return graphs, info
 
 
