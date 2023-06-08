@@ -141,32 +141,36 @@ def update_graph(n_clicks, game, car, track, session_state=None):
         return dash.no_update
 
     fast_lap = fast_laps[0]
-    track_info = fast_lap.data.get("track_info", [])
+    segments = fast_lap.data.get("segments", [])
 
     graphs = []
-    turn = 0
-    for segment in track_info:
-        turn += 1
-        sector = segment["df"]
-        throttle_or_brake = segment["mark"]
-        brake_features = segment["brake_features"]
-        throttle_features = segment["throttle_features"]
-        if throttle_or_brake == "brake":
-            at = brake_features["start"]
-        else:
-            at = throttle_features["start"]
-        title = f"Turn {turn} - {throttle_or_brake} at {at:.0f}"
-
+    for segment in segments:
+        sector = segment.telemetry
         fig = lap_fig(sector)
+        brake_features = segment.brake_features()
+        throttle_features = segment.throttle_features()
         if brake_features:
             fig_add_features(fig, brake_features)
         if throttle_features:
             fig_add_features(fig, throttle_features, color="green")
 
-        fig.update_layout(title=dict(text=title))
+        # fig.update_layout(title=dict(text=title))
         graph = dcc.Graph(figure=fig)
+        md = get_segment_header(segment, segment.turn)
+        graphs.append(dcc.Markdown(md))
         graphs.append(graph)
 
     lap = fast_lap.laps.first()
-    info = f"Based on a lap time of { lap.time } seconds by { lap.session.driver }"
+    # lap.time is seconds. Format to minutes:seconds
+    lap_time = f"{lap.time // 60:.0f} minute {(lap.time % 60):.2f} seconds"
+    info = f"Based on a lap time of { lap_time } by { lap.session.driver }"
     return graphs, info
+
+
+def get_segment_header(segment, turn):
+    md = f"""
+## Turn {turn}
+{segment.type} at {segment.start}
+"""
+
+    return md
