@@ -30,5 +30,21 @@
       "car": 351,
       "fast_lap": 703
     }
+  },
+  {
+    "model": "telemetry.lap",
+    "pk": 116082,
+    "fields": {
+      "number": 2,
+      "start": "2023-06-04T16:51:46.947Z",
+      "end": "2023-06-04T16:53:11.991Z",
+      "time": 85.0374,
+      "length": 3609,
+      "valid": true,
+      "session": 57153,
+      "track": 1040,
+      "car": 9,
+      "fast_lap": 1237
+    }
   }
 ]

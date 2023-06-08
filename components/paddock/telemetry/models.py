@@ -125,6 +125,20 @@ class Lap(DirtyFieldsMixin, models.Model):
             + f"{self.time}s {self.length}m valid: {self.valid}"
         )
 
+    def time_human(self):
+        minutes = int(self.time // 60)
+        seconds = round(self.time % 60, 2)
+        # milliseconds = int((coach_lap_time % 1) * 1000)
+        time_string = ""
+        if minutes > 1:
+            time_string += f"{minutes} minutes "
+        elif minutes == 1:
+            time_string += f"{minutes} minute "
+
+        time_string += f"{seconds:.2f} seconds "
+
+        return time_string
+
 
 class FastLapSegment(models.Model):
     turn = models.CharField(max_length=200)

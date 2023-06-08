@@ -1,23 +1,20 @@
-from .history import Segment
-from .coach import Coach
-from typing import Optional
+from .segment import Segment
 
 
 class Message:
-    coach: Coach
-    segment: Optional[Segment]
-
-    def __init__(self, coach: Coach, **kwargs):
-        self.coach = coach
-        self.segment = kwargs.get("segment")
+    def __init__(self, segment: Segment, logger=None):
+        self.segment = segment
         self.finish_at_words = "one two"
         self.at = None
         self.at_track_walk = None
         self.priority = 9
+        self.logger = logger
+        self.active = True
         self.init()
 
     def log_debug(self, msg):
-        self.coach.log_debug(msg)
+        if self.logger:
+            self.logger(msg)
 
     def init(self):
         pass
@@ -52,12 +49,12 @@ class Message:
         msg = msg or self.msg
         at = at or self.at
         read_time = self.read_time(msg)
-        respond_at = self.coach.history.offset_distance(at, seconds=read_time)
+        respond_at = self.segment.offset_distance(at, seconds=read_time)
         return int(respond_at)
 
     def finish_at_segment_start(self, msg=""):
         msg = msg or self.msg
-        at = self.segment.get("start")
+        at = self.segment.start
         return self.finish_at(at)
 
     def needs_coaching(self):
@@ -72,12 +69,6 @@ class Message:
         if distance == self.at_track_walk:
             return self.resp(self.at_track_walk, self.msg)
 
-    def response(self, distance, telemetry):
-        if self.coach.track_walk:
-            return self.response_track_walk(distance, telemetry)
-        else:
-            return self.response_hot_lap(distance, telemetry)
-
 
 class MessageBrake(Message):
     def init(self):
@@ -85,10 +76,13 @@ class MessageBrake(Message):
         self.msg_in_100 = "brake in 100"
         self.msg_in_50 = "brake in 50"
         self.message_earlier = "brake a bit earlier"
-        self.common_init("brake")
+        self.at = self.segment.brake_point()
+        if self.at:
+            self.common_init("brake")
+        else:
+            self.active = False
 
     def common_init(self, mark):
-        self.at = int(self.segment.features("start", mark=mark))
         self.diff_message = ""
         self.diff_message_at = self.finish_at(self.at, self.message_earlier)
         self.at_track_walk = self.at - 100
@@ -137,7 +131,11 @@ class MessageThrottle(MessageBrake):
         self.msg_in_100 = "lift throttle in 100 meters"
         self.msg_in_50 = "in 50"
         self.message_earlier = "lift a bit earlier"
-        self.common_init("throttle")
+        self.at = self.segment.throttle_point()
+        if self.at:
+            self.common_init("throttle")
+        else:
+            self.active = False
 
     def needs_coaching(self):
         # check brake start
@@ -164,20 +162,18 @@ class MessageThrottle(MessageBrake):
 
 class MessageGear(Message):
     def init(self):
-        self.gear = self.segment.get("gear")
+        self.gear = self.segment.gear()
         self.msg = f"Gear {self.gear}"
-        # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
         self.priority = 7
-        if self.segment["mark"] == "throttle":
-            self.at_track_walk = self.segment.throttle_features.get("end")
-        elif self.segment["mark"] == "brake":
-            self.at_track_walk = self.segment.brake_features.get("end")
+        if self.segment.type_throttle():
+            self.at_track_walk = self.segment.throttle_feature("end")
+        elif self.segment.type_brake():
+            self.at_track_walk = self.segment.brake_feature("end")
         if self.at_track_walk is not None:
-            self.at_track_walk = int(self.at_track_walk - 30)
+            self.at_track_walk = self.at_track_walk - 30
 
     def needs_coaching(self):
-        # last_gear = self.segment.last_gear_features("gear")
         last_gear = self.segment.avg_gear()
         if last_gear is None:
             return True
@@ -190,16 +186,16 @@ class MessageGear(Message):
 class MessageBrakeForce(Message):
     def init(self):
         self.priority = 8
-        # self.force = self.segment.get("force")
-        self.force = self.segment.brake_features.get("force")
+        self.force = self.segment.brake_force()
+        if self.force is None or not self.segment.type_brake():
+            self.active = False
+            return
         self.msg = "%s percent" % (round(int(self.force * 100) / 10) * 10)  # 0.73 -> 70
-        # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
-        self.at_track_walk = int(self.segment.brake_features.get("max_start"))
+        self.at_track_walk = self.segment.brake_point()
 
     def needs_coaching(self):
         # check brake force
-        # last_brake_force = self.segment.last_brake_features("force")
         last_brake_force = self.segment.avg_brake_force()
         if last_brake_force is None:
             self.log_debug("no last brake force")
@@ -220,16 +216,17 @@ class MessageBrakeForce(Message):
 class MessageThrottleForce(Message):
     def init(self):
         self.priority = 7
-        self.force = self.segment.throttle_features.get("force")
+        self.force = self.segment.throttle_force()
+        if self.force is None or not self.segment.type_throttle():
+            self.active = False
+            return
         self.force_pct = round(int(self.force * 100) / 10) * 10  # 0.73 -> 70
         self.msg = f"lift throttle to {self.force_pct} percent"
-        # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.finish_at_segment_start()
-        self.at_track_walk = int(self.segment.throttle_features.get("max_start"))
+        self.at_track_walk = self.segment.throttle_point()
 
     def needs_coaching(self):
         # check brake force
-        # last_force = self.segment.last_throttle_features("force")
         last_force = self.segment.avg_throttle_force()
         if last_force is None:
             return True
@@ -252,10 +249,9 @@ class MessageApex(Message):
         if self.at is not None:
             #     self.at = -1
             # else:
-            self.at = int(self.at)
+            self.at = self.at
 
         self.msg = "Apex"
-        # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.at
         self.at_track_walk = self.at
 
@@ -275,19 +271,12 @@ class MessageApex(Message):
 class MessageTrailBrake(Message):
     def init(self):
         self.at = self.segment.trail_brake()
-        if self.at is not None:
-            #     self.at = -1
-            # else:
-            self.at = int(self.at)
-
         self.msg = "trailbrake"
-        # self.at = int(self.finish_at(self.segment.get("start")))
         self.at = self.at
         self.at_track_walk = self.at
 
     def needs_coaching(self):
         return False
-        # last_gear = self.segment.last_gear_features("gear")
         last = self.segment.avg_trail_brake()
         if last is None:
             return True

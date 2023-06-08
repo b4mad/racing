@@ -1,7 +1,7 @@
-import pandas as pd
 import logging
 from .influx import Influx
 from .analyzer import Analyzer
+from .pitcrew.segment import Segment
 
 
 class FastLapAnalyzer:
@@ -17,20 +17,7 @@ class FastLapAnalyzer:
         return self.influx_client
 
     def assert_can_analyze(self):
-        # game = self.laps[0].session.game
-        # car = self.laps[0].car
-
-        # if game.name == "RaceRoom":
-        #     logging.info("RaceRoom not supported, because no SteeringAngle")
-        #     return False
-        # if game.name == "Assetto Corsa Competizione":
-        #     logging.info(
-        #         "Assetto Corsa Competizione not supported, because no SteeringAngle"
-        #     )
-        #     return False
-        # if car.name == "Unknown":
-        #     logging.info(f"Car {car.name} not supported, skipping")
-        #     return False
+        # maybe check for game type
         return True
 
     def analyze(self):
@@ -46,10 +33,10 @@ class FastLapAnalyzer:
 
             df = laps[0]
 
-            result = self.analyze_df(df)
-            if result:
-                result.append([lap])
-                return result
+            analysis_dict = self.analyze_df(df)
+            if analysis_dict:
+                # append laps used for analysis
+                return analysis_dict, [lap]
 
     def analyze_df(self, df):
         df = self.preprocess(df)
@@ -57,18 +44,14 @@ class FastLapAnalyzer:
             return
 
         segments = self.get_segments(df)
-        track_info = sorted(segments, key=lambda k: k["start"])
-
-        # convert track_info, which is an array of dict, to a pandas dataframe
-        track_info_df = pd.DataFrame(track_info)
-        logging.info(track_info_df.style.format(precision=1).to_string())
+        # logging.info(track_info_df.style.format(precision=1).to_string())
 
         distance_time = self.analyzer.distance_speed_lookup_table(df)
         data = {
             "distance_time": distance_time,
-            "track_info": track_info,
+            "segments": segments,
         }
-        return [track_info, data]
+        return data
 
     def brake_features(self, df):
         brake_feature_args = {
@@ -92,43 +75,39 @@ class FastLapAnalyzer:
         analyzer = self.analyzer
         sectors = analyzer.split_sectors(track_df, min_length=50)
         sector_start_end = analyzer.extract_sector_start_end(sectors, min_length=50)
-        sector_dfs = []
         track_info = []
         for i in range(len(sector_start_end)):
             sector = analyzer.section_df(track_df, sector_start_end[i]["start"], sector_start_end[i]["end"])
-            sector_dfs.append(sector)
 
             throttle_or_brake = analyzer.sector_type(sector)
-
             brake_features = self.brake_features(sector)
             throttle_features = self.throttle_features(sector)
             gear_features = self.gear_features(sector)
 
-            force = 0
+            segment = Segment()
+            segment.type = throttle_or_brake
+            segment.turn = i + 1
+
             speed = 0
             if throttle_or_brake == "brake" and brake_features:
-                force = brake_features["force"] * 100
                 start = brake_features["start"]
                 speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
+                brake_features["speed"] = speed
             elif throttle_or_brake == "throttle" and throttle_features:
-                force = throttle_features["force"] * 100
                 start = throttle_features["start"]
                 speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
 
-            track_info.append(
-                {
-                    "mark": throttle_or_brake,
-                    "start": sector_start_end[i]["start"],
-                    "end": sector_start_end[i]["end"],
-                    "gear": gear_features["gear"],
-                    "force": force,
-                    "speed": speed,
-                    "brake_features": brake_features,
-                    "throttle_features": throttle_features,
-                    "gear_features": gear_features,
-                    "df": sector,
-                }
-            )
+            if brake_features:
+                segment.add_features(brake_features, type="brake")
+            if throttle_features:
+                segment.add_features(throttle_features, type="throttle")
+            if gear_features:
+                segment.add_features(gear_features, type="gear")
+            segment.telemetry = sector
+            segment.start = sector_start_end[i]["start"]
+            segment.end = sector_start_end[i]["end"]
+
+            track_info.append(segment)
         return track_info
 
     def preprocess(self, df):

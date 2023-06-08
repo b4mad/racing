@@ -55,10 +55,9 @@ class TestFastLapAnalyser(TransactionTestCase):
 
         (track_info, data) = fast_lap_analyzer.analyze_df(lap_df)
 
-        segments = read_responses("fastlap_analyzer_37672")
+        segments = read_responses("fastlap_analyzer_37672", pickled=True)
 
-        [s.pop("df") for s in track_info]
-        # save_responses(track_info, "fastlap_analyzer_37672")
+        # save_responses(track_info, "fastlap_analyzer_37672", pickled=True)
 
         # pprint(track_info, width=200)
         self.assertEqual(track_info, segments)
@@ -73,10 +72,9 @@ class TestFastLapAnalyser(TransactionTestCase):
 
         (track_info, data) = fast_lap_analyzer.analyze_df(lap_df)
 
-        segments = read_responses("fastlap_analyzer_40781")
+        segments = read_responses("fastlap_analyzer_40781", pickled=True)
 
-        [s.pop("df") for s in track_info]
-        # save_responses(track_info, "fastlap_analyzer_40781")
+        # save_responses(track_info, "fastlap_analyzer_40781", pickled=True)
 
         # pprint(track_info, width=200)
         self.assertEqual(track_info, segments)

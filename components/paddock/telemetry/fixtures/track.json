@@ -16,5 +16,14 @@
       "length": 4460,
       "game": 1
     }
+  },
+  {
+    "model": "telemetry.track",
+    "pk": 1040,
+    "fields": {
+      "name": "oschersleben gp",
+      "length": 3610,
+      "game": 1
+    }
   }
 ]

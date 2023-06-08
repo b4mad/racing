@@ -2,104 +2,171 @@ import pandas as pd
 
 
 class Segment:
-    def __init__(self, history, **kwargs):
+    def __init__(self, history=None, **kwargs):
         self.telemetry_features = []
-        for key, value in kwargs.items():
-            self[key] = value
+        # for key, value in kwargs.items():
+        #     self[key] = value
         self.history = history
+        self.type = "brake_or_throttle"
+        self._brake_features = []
+        self._throttle_features = []
+        self._gear_features = []
+        self.telemetry = pd.DataFrame()
+        self._start = 0  # Start distance
+        self._end = 0  # End distance
+        self.turn = 0  # Turn number
 
-    def __getitem__(self, key):
-        return getattr(self, key)
+        # added by history to store live data
+        self.live_telemetry = []
+        self.live_telemetry_frames = []
+        self.live_features = {
+            "brake": [],
+            "throttle": [],
+            "gear": [],
+        }
 
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
+    @property
+    def start(self):
+        return self._start
 
-    def get(self, key, default=None):
-        return getattr(self, key, default)
+    @start.setter
+    def start(self, value):
+        self._start = int(value)
 
-    def features(self, key, mark="brake"):
-        return self[f"{mark}_features"].get(key, None)
+    @property
+    def end(self):
+        return self._end
 
-    def add_features(self, features):
-        self.telemetry_features.append(features)
+    @end.setter
+    def end(self, value):
+        self._end = int(value)
 
-    def has_last_features(self, mark="brake"):
-        if self.telemetry_features:
-            if self.telemetry_features[-1].get(f"{mark}_features", False):
-                return True
-        return False
+    def offset_distance(self, distance, seconds=0.0):
+        return self.history.offset_distance(distance, seconds=seconds)
 
-    def last_features(self, key, mark="brake"):
-        if self.telemetry_features:
-            f = self.telemetry_features[-1].get(f"{mark}_features", {})
-            return f.get(key, None)
+    def add_features(self, features, type):
+        if type == "brake":
+            self._brake_features.append(features)
+        elif type == "throttle":
+            self._throttle_features.append(features)
+        elif type == "gear":
+            self._gear_features.append(features)
+        else:
+            raise ValueError(f"unknown type {type}")
+
+    def add_live_features(self, features, type):
+        self.live_features[type].append(features)
+
+    def type_brake(self):
+        return self.type == "brake"
+
+    def type_throttle(self):
+        return self.type == "throttle"
+
+    def brake_features(self):
+        if len(self._brake_features) > 0:
+            return self._brake_features[-1]
+        return {}
+
+    def throttle_features(self):
+        if len(self._throttle_features) > 0:
+            return self._throttle_features[-1]
+        return {}
+
+    def gear_features(self):
+        if len(self._gear_features) > 0:
+            return self._gear_features[-1]
+        return {}
+
+    def brake_feature(self, key):
+        return self.brake_features().get(key)
+
+    def throttle_feature(self, key):
+        return self.throttle_features().get(key)
+
+    def gear_feature(self, key):
+        return self.gear_features().get(key)
+
+    def brake_point(self):
+        if self.type == "brake":
+            brake_point = self.brake_feature("start")
+            if brake_point:
+                return int(brake_point)
         return None
 
-    def brake_features(self, key):
-        return self.features(key, mark="brake")
+    def throttle_point(self):
+        if self.type == "throttle":
+            brake_point = self.throttle_feature("start")
+            if brake_point:
+                return int(brake_point)
+        return None
 
-    def last_brake_features(self, key):
-        return self.last_features(key, mark="brake")
+    def gear(self):
+        gear = self.gear_feature("gear")
+        if gear:
+            return int(gear)
+        return None
 
-    def throttle_features(self, key):
-        return self.features(key, mark="throttle")
+    def brake_force(self):
+        self.brake_feature("force")
+        force = self.brake_feature("force")
+        if force:
+            return force
+        return 0
 
-    def last_throttle_features(self, key):
-        return self.last_features(key, mark="throttle")
-
-    def gear_features(self, key):
-        return self.features(key, mark="gear")
-
-    def last_gear_features(self, key):
-        return self.last_features(key, mark="gear")
+    def throttle_force(self):
+        force = self.throttle_feature("force")
+        if force:
+            return force
+        return 0
 
     def trail_brake(self):
-        return self.brake_features.get("max_end")
+        return self.brake_feature("max_end")
 
     def apex(self):
-        return self.throttle_features.get("max_end")
+        return self.throttle_feature("max_end")
 
     def avg_apex(self, n=0):
-        return self.avg_feature(n=n, feature="max_end", mark="throttle_features")
+        return self.avg_feature(n=n, feature="max_end", type="throttle")
 
     def avg_trail_brake(self, n=0):
-        return self.avg_feature(n=n, feature="max_end", mark="brake_features")
+        return self.avg_feature(n=n, feature="max_end", type="brake")
 
     def avg_gear(self, n=0):
-        return self.avg_feature(n=n, feature="gear", mark="gear_features")
+        return self.avg_feature(n=n, feature="gear", type="gear")
 
     def avg_brake_force(self, n=0):
-        return self.avg_feature(n=n, feature="force", mark="brake_features")
+        return self.avg_feature(n=n, feature="force", type="brake")
 
     def avg_throttle_force(self, n=0):
-        return self.avg_feature(n=n, feature="force", mark="throttle_features")
+        return self.avg_feature(n=n, feature="force", type="throttle")
 
     def avg_throttle_start(self, n=0):
-        return self.avg_feature(n=n, feature="start", mark="throttle_features")
+        return self.avg_feature(n=n, feature="start", type="throttle")
 
     def avg_brake_start(self, n=0):
-        return self.avg_feature(n=n, feature="start", mark="brake_features")
+        return self.avg_feature(n=n, feature="start", type="brake")
 
-    def avg_feature(self, n=0, feature="gear", mark="gear_features"):
-        if len(self.telemetry_features) <= n:
+    def avg_feature(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
+        features = self.live_features[type]
+        if len(features) <= n:
             return None
-        # collect the last n entries from telemetry_features, where the 'gear' key is not None
-        features_collection = []
-        for i in range(-1, -len(self.telemetry_features), -1):
-            features = self.telemetry_features[i].get(mark)
-            if features and features.get(feature) is not None:
-                features_collection.append(features)
-            if len(features_collection) == n:
+
+        values = []
+        for i in range(-1, -len(features), -1):
+            value = features[i].get(feature)
+            if value and value is not None:
+                values.append(value)
+            if len(values) == n:
                 break
 
-        if len(features_collection) <= n:
+        if len(values) <= n:
             return None
-        # calculate the average gear
-        feature_values = [f.get(feature) for f in features_collection]
-        self.history.log_debug(f"{mark} {feature} values: {feature_values}")
+
+        self.history.log_debug(f"{type} {feature} values: {values}")
 
         # Create pandas series from the data
-        data = pd.Series(feature_values)
+        data = pd.Series(values)
         # Compute EMA
         ema = data.ewm(span=3, adjust=False).mean()
         return ema.iloc[-1]
