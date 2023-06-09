@@ -35,6 +35,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
 
+# True if testing
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
+
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
 SECRET_KEY = env("SECRET_KEY")
@@ -117,11 +120,10 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 WSGI_APPLICATION = "paddock.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if "test" in sys.argv or "test_coverage" in sys.argv:
+if TESTING:
     DATABASES = {
         "default": {
             "ENGINE": "django_prometheus.db.backends.sqlite3",
