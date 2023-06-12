@@ -63,10 +63,10 @@ class Command(BaseCommand):
         #     return
 
         for game, car, track, count in racing_stats.known_combos_list(**options):
-            print(f"{game} / {car} / {track} / {count} laps")
+            logging.debug(f"{game} / {car} / {track} / {count} laps")
             laps = racing_stats.laps(game=game, car=car, track=track, valid=True)
 
-            if laps.count() <= 1:
+            if laps.count() < 1:
                 print("not enough laps")
 
             fast_laps = [laps[0]]
@@ -80,14 +80,15 @@ class Command(BaseCommand):
                     if session.session_id in influx_fast_sessions:
                         influx_fast_sessions.remove(session.session_id)
                         continue
+                    logging.debug(f"copying session {session.session_id} to fast_laps")
                     influx.copy_session(
                         session.session_id, start=session.start, end=session.end, from_bucket=from_bucket
                     )
 
             self.analyze_fast_laps(fast_laps)
 
-            if options["copy_influx"]:
-                logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
+        if options["copy_influx"]:
+            logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
     def analyze_fast_laps(self, fast_laps):
         fl = FastLapAnalyzer(fast_laps)

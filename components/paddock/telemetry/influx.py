@@ -344,7 +344,7 @@ class Influx:
             |> filter(fn: (r) => false)
             |> yield()
         """
-        logging.debug(query)
+        # logging.debug(query)
 
         # asyncio.run(self.run_query_async(query))
         records = self.query_api.query_stream(query)
