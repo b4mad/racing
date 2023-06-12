@@ -22,8 +22,12 @@ app.layout = html.Div(
     ]
 )
 
-racing_stats = RacingStats()
-laps = list(racing_stats.fast_lap_values())
+try:
+    # FIXME: move this into the callbacks
+    racing_stats = RacingStats()
+    laps = list(racing_stats.fast_lap_values())
+except Exception:
+    laps = []
 
 
 @app.callback(Output("game-dropdown", "options"), Output("game-dropdown", "value"), [Input("submit-val", "n_clicks")])
