@@ -43,7 +43,7 @@ class RacingStats:
         laps = FastLap.objects.filter(**filter)
         # group by track and car and game
         laps = laps.values("track__name", "car__name", "game__name")
-        laps = laps.annotate(count=Count("id"))
+        # laps = laps.annotate(count=Count("id"))
         laps = laps.order_by("game__name", "car__name", "track__name")
         return laps
         # for row in laps:

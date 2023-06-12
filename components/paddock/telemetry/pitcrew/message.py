@@ -284,3 +284,30 @@ class MessageTrailBrake(Message):
         self.log_debug(f"apex_diff: {diff:.2f} last: {last:.2f} coach: {self.at:.2f}")
         if abs(diff) > 10:
             return True
+
+
+class MessageTrackGuide(Message):
+    def init(self):
+        self.msg = self.build_msg()
+        self.at = self.segment.start
+        self.at_track_walk = self.segment.start
+
+    def build_msg(self):
+        brake_point = self.segment.brake_point()
+        frags = []
+        if brake_point is None:
+            # No braking in this segment
+            pass
+        else:
+            brake_force = self.segment.brake_force()
+            if brake_force > 0.65:
+                # Heavy braking
+                frags.append("brake hard")
+            elif brake_force > 0.3:
+                frags.append("brake softly")
+                # Medium braking
+            else:
+                frags.append("touch the brake")
+                # Light braking
+        #
+        return " ".join(frags)
