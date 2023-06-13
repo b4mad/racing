@@ -9,17 +9,17 @@ spec:
   selector:
     deploymentConfig: paddock
   triggers:
-  - type: ConfigChange
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - paddock
-      - pitcrew
-      from:
-        kind: ImageStreamTag
-        name: paddock:latest
-        namespace: b4mad-racing
-    type: ImageChange
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - paddock
+          - pitcrew
+        from:
+          kind: ImageStreamTag
+          name: paddock:latest
+          namespace: b4mad-racing
+      type: ImageChange
   template:
     metadata:
       labels:
@@ -58,11 +58,31 @@ spec:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
         - env:
-            - name: DATABASE_URL
+            - name: DB_HOST
               valueFrom:
                 secretKeyRef:
                   name: db-pguser-paddock
-                  key: uri
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
           envFrom:
             - secretRef:
                 name: paddock-settings

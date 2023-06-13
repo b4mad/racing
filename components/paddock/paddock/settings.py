@@ -35,9 +35,15 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
 
+# True if testing
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
+
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
 SECRET_KEY = env("SECRET_KEY")
+
+# https://github.com/korfuri/django-prometheus#monitoring-your-models
+PROMETHEUS_EXPORT_MIGRATIONS = False
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -50,31 +56,33 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    "telemetry.apps.TelemetryConfig",
+    "django_prometheus",
+    "allauth.account",
+    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount",
+    "allauth",
+    "bootstrap4",
+    "crispy_bootstrap4",
+    "crispy_forms",
+    "django_admin_listfilter_dropdown",
+    "django_extensions",
+    "django_plotly_dash.apps.DjangoPlotlyDashConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    "django.contrib.sessions",
     "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    # social providers
-    "allauth.socialaccount.providers.github",
-    # "allauth.socialaccount.providers.twitter",
-    "explorer",
-    "django_plotly_dash.apps.DjangoPlotlyDashConfig",
-    "bootstrap4",
-    "crispy_forms",
-    "crispy_bootstrap4",
+    "django.contrib.staticfiles",
     "dpd_static_support",
-    "django_extensions",
-    "django_admin_listfilter_dropdown",
+    "explorer",
+    "telemetry.apps.TelemetryConfig",
+    # "allauth.socialaccount.providers.twitter",
+    # social providers
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -85,6 +93,7 @@ MIDDLEWARE = [
     "django_plotly_dash.middleware.BaseMiddleware",
     "django_plotly_dash.middleware.ExternalRedirectionMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "paddock.urls"
@@ -111,30 +120,38 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 WSGI_APPLICATION = "paddock.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# Parse database connection url strings
-# like psql://user:pass@127.0.0.1:8458/db
-if "test" in sys.argv or "test_coverage" in sys.argv:
+if TESTING:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "ENGINE": "django_prometheus.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         },
         "readonly": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "ENGINE": "django_prometheus.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         },
     }
 else:
     DATABASES = {
-        # read os.environ['DATABASE_URL'] and raises
-        # ImproperlyConfigured exception if not found
-        #
-        "default": env.db_url("DATABASE_URL"),
-        "readonly": env.db_url("READONLY_DATABASE_URL"),
+        "default": {
+            "ENGINE": "django_prometheus.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "paddock"),
+            "USER": os.getenv("DB_USER", ""),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", ""),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        },
+        "readonly": {
+            "ENGINE": "django_prometheus.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "paddock"),
+            "USER": os.getenv("DB_USER", ""),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", ""),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        },
     }
 
 # DATABASES = {

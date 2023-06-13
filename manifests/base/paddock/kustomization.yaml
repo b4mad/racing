@@ -7,4 +7,3 @@ resources:
   - service_account.yaml
   - service_monitor.yaml
   - service.yaml
-  # - paddock-settings.yaml
