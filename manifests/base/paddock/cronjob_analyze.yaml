@@ -15,11 +15,31 @@ spec:
         spec:
           containers:
             - env:
-                - name: DATABASE_URL
+                - name: DB_NAME
                   valueFrom:
                     secretKeyRef:
                       name: db-pguser-paddock
-                      key: uri
+                      key: dbname
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-pguser-paddock
+                      key: user
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-pguser-paddock
+                      key: password
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-pguser-paddock
+                      key: host
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-pguser-paddock
+                      key: port
               securityContext:
                 runAsNonRoot: true
                 allowPrivilegeEscalation: false
