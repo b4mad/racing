@@ -1,10 +1,12 @@
+import os
+import pickle
+from pprint import pprint
+
+import numpy as np
+import pandas as pd
+
 from telemetry.influx import Influx
 from telemetry.models import Lap
-import os
-import pandas as pd
-import numpy as np
-from pprint import pprint
-import pickle
 
 
 def read_dataframe(file_path):
@@ -56,11 +58,15 @@ def read_responses(file_name, pickled=False):
     file_path = f"{dir_path}/data/responses_{file_name}.txt"
     if pickled:
         with open(file_path, "rb") as f:
-            responses = pickle.load(f)
+            responses = pickle.load(
+                f
+            )  # nosec FIXME #312 https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle
         return responses
 
     with open(file_path, "r") as f:
-        responses = eval(f.read())
+        responses = eval(
+            f.read()
+        )  # nosec FIXME #313 https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b307-eval
     return responses
 
 

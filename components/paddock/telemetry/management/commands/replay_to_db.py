@@ -1,11 +1,13 @@
-import time
-from django.core.management.base import BaseCommand
-from telemetry.models import Lap
-from telemetry.influx import Influx
 import logging
+import time
+
+from django.core.management.base import BaseCommand
 from rich.console import Console
-from rich.table import Column
 from rich.progress import Progress, TextColumn
+from rich.table import Column
+
+from telemetry.influx import Influx
+from telemetry.models import Lap
 
 
 class Command(BaseCommand):

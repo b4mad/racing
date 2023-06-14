@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime
+
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.exceptions import InfluxDBError
 

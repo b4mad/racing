@@ -1,9 +1,12 @@
-from django.test import TransactionTestCase
-from telemetry.pitcrew.history import History
-from telemetry.pitcrew.coach import Coach as PitCrewCoach
-from telemetry.models import Driver
-from .utils import get_session_df
 from pprint import pprint  # noqa
+
+from django.test import TransactionTestCase
+
+from telemetry.models import Driver
+from telemetry.pitcrew.coach import Coach as PitCrewCoach
+from telemetry.pitcrew.history import History
+
+from .utils import get_session_df
 
 
 class TestHistory(TransactionTestCase):

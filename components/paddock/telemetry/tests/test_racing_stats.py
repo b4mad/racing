@@ -1,4 +1,5 @@
 from django.test import TransactionTestCase
+
 from telemetry.racing_stats import RacingStats
 
 

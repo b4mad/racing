@@ -1,15 +1,15 @@
-import os
-import threading
 import logging
-import time
+import os
 import signal
-
-from .firehose import Firehose
-from .mqtt import Mqtt
-from .coach_watcher import CoachWatcher
-from .session_saver import SessionSaver
+import threading
+import time
 
 from flask_healthz import HealthError
+
+from .coach_watcher import CoachWatcher
+from .firehose import Firehose
+from .mqtt import Mqtt
+from .session_saver import SessionSaver
 
 
 class Crew:

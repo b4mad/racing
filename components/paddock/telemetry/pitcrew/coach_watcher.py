@@ -1,7 +1,8 @@
-import threading
 import logging
+import threading
 import time
-from telemetry.models import Driver, Coach
+
+from telemetry.models import Coach, Driver
 
 from .coach import Coach as PitCrewCoach
 from .history import History

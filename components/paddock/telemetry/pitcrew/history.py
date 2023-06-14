@@ -1,9 +1,11 @@
-import pandas as pd
 import time
-from telemetry.pitcrew.logging import LoggingMixin
-from telemetry.models import Game, FastLap, Driver
+
+import pandas as pd
+
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
+from telemetry.models import Driver, FastLap, Game
+from telemetry.pitcrew.logging import LoggingMixin
 
 
 class History(LoggingMixin):

@@ -1,10 +1,20 @@
-import django.utils.timezone
 import json
-from telemetry.pitcrew.logging import LoggingMixin
-from .history import History
+
+import django.utils.timezone
+
 from telemetry.models import Coach as DbCoach
-from .message import MessageBrake, MessageBrakeForce, MessageGear, MessageThrottle
-from .message import MessageThrottleForce, MessageTrailBrake, MessageApex
+from telemetry.pitcrew.logging import LoggingMixin
+
+from .history import History
+from .message import (
+    MessageApex,
+    MessageBrake,
+    MessageBrakeForce,
+    MessageGear,
+    MessageThrottle,
+    MessageThrottleForce,
+    MessageTrailBrake,
+)
 
 
 class Coach(LoggingMixin):

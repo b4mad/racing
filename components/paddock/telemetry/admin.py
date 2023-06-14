@@ -1,13 +1,8 @@
 from django.contrib import admin
+from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter  # ChoiceDropdownFilter,
 from django_admin_relation_links import AdminChangeLinksMixin
-from django_admin_listfilter_dropdown.filters import (
-    DropdownFilter,
-    RelatedDropdownFilter,
-    # ChoiceDropdownFilter,
-)
-from .models import Game, Driver, Car, Track, Session, SessionType, Lap
-from .models import FastLap, FastLapSegment
-from .models import Coach
+
+from .models import Car, Coach, Driver, FastLap, FastLapSegment, Game, Lap, Session, SessionType, Track
 
 
 class FastLapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import json
 import logging
+import os
 import threading
 
 import paho.mqtt.client as mqtt

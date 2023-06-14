@@ -1,20 +1,21 @@
-import json
-import os
-import time
 import datetime
+import json
+import logging
+import os
 import threading
+import time
 
+import paho.mqtt.client as mqtt
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from telemetry.models import Lap
+from rich.console import Console
+from rich.progress import Progress, TextColumn
+from rich.table import Column
+
 from telemetry.influx import Influx
+from telemetry.models import Lap
 from telemetry.pitcrew.firehose import Firehose
 from telemetry.pitcrew.session_saver import SessionSaver
-import logging
-import paho.mqtt.client as mqtt
-from rich.console import Console
-from rich.table import Column
-from rich.progress import Progress, TextColumn
 
 B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing")
 B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))

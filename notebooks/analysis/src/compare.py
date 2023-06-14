@@ -6,9 +6,8 @@
 
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 
 expert_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap11.csv"
 student_path = "../data/preprocessed/89db51de-22a6-4033-8201-2fc37a5fe905-lap13.csv"

@@ -1,10 +1,9 @@
-from dirtyfields import DirtyFieldsMixin
-from picklefield.fields import PickledObjectField
+import datetime
 
+from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django_prometheus.models import ExportModelOperationsMixin
-
-import datetime
+from picklefield.fields import PickledObjectField
 
 
 class Driver(ExportModelOperationsMixin("driver"), models.Model):

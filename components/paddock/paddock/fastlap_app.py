@@ -1,12 +1,11 @@
-from dash import html, dcc
-from django_plotly_dash import DjangoDash
-from dash.dependencies import Input, Output
-import dash_bootstrap_components as dbc
-from dash import dash_table
-from telemetry.visualizer import fig_add_features, lap_fig
-from telemetry.racing_stats import RacingStats
 import dash
+import dash_bootstrap_components as dbc
+from dash import dash_table, dcc, html
+from dash.dependencies import Input, Output
+from django_plotly_dash import DjangoDash
 
+from telemetry.racing_stats import RacingStats
+from telemetry.visualizer import fig_add_features, lap_fig
 
 app = DjangoDash("Fastlap", serve_locally=True, add_bootstrap_links=True)
 
