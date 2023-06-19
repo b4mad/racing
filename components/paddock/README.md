@@ -12,6 +12,8 @@ source venv/bin/activate
 micropipenv install --dev
 ```
 
+If you want to run your own and local PostgreSQL database, you can use the following command to run it in a container: `podman run --rm -ti -p 5432:5432 -e POSTGRESQL_DATABASE=paddock -e POSTGRESQL_USER=paddock -e POSTGRESQL_PASSWORD=paddock quay.io/sclorg/postgresql-15-c9s:c9s`, adjust your `.env` file accordingly.
+
 Followed by the database setup
 
 ```bash
