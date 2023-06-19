@@ -131,6 +131,6 @@ class FastLapAnalyzer:
         df = self.analyzer.resample(
             df,
             freq=1,
-            columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime"],
+            columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime", "SteeringAngle"],
         )
         return df

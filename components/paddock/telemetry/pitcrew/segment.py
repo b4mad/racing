@@ -41,6 +41,16 @@ class Segment:
     def end(self, value):
         self._end = int(value)
 
+    def telemetry_for_fig(self):
+        if self.start > self.end:
+            # add track_length to all distances that are less than start
+            df = self.telemetry.copy()
+            df["DistanceRoundTrack"] = df["DistanceRoundTrack"].apply(
+                lambda x: x + df["DistanceRoundTrack"].max() if x < self.start else x
+            )
+            return df
+        return self.telemetry
+
     def offset_distance(self, distance, seconds=0.0):
         return self.history.offset_distance(distance, seconds=seconds)
 
@@ -121,7 +131,22 @@ class Segment:
         return 0
 
     def trail_brake(self):
-        return self.brake_feature("max_end")
+        max_end = self.brake_feature("max_end")
+        max_high = self.brake_feature("max_high")
+        end = self.brake_feature("end")
+        self._tb_reason = f"max_end: {max_end} max_high: {max_high} end: {end}"
+        if max_end and max_high and end:
+            # y = mx + b
+            b = max_high
+            x = end - max_end
+            m = -1 * (b / x) * 1000
+            self._tb_reason += f" m: {m:.2f} len: {int(end - max_end)}"
+            # return int(m * 1000)
+            if m >= -20:
+                if end - max_end >= 40:  # 50 meters
+                    if max_high > 0.4:
+                        return True
+        return False
 
     def apex(self):
         return self.throttle_feature("max_end")

@@ -270,9 +270,10 @@ class MessageApex(Message):
 
 class MessageTrailBrake(Message):
     def init(self):
-        self.at = self.segment.trail_brake()
+        self.at = self.segment.brake_feature("max_end")
+        if self.at is not None:
+            self.at = int(self.at)
         self.msg = "trailbrake"
-        self.at = self.at
         self.at_track_walk = self.at
 
     def needs_coaching(self):
@@ -309,5 +310,8 @@ class MessageTrackGuide(Message):
             else:
                 frags.append("touch the brake")
                 # Light braking
-        #
+        if self.segment.trail_brake():
+            frags.append("trailbrake")
+
+        frags.append(f"shift to {self.segment.gear()}")
         return " ".join(frags)

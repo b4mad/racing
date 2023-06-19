@@ -1,8 +1,13 @@
 import plotly.graph_objects as go
 
 
-def lap_fig(df, mode=None, columns=["Throttle", "Brake"], fig=None):
+def lap_fig(df, mode=None, columns=["Throttle", "Brake"], fig=None, full_range=False):
     fig = fig or go.Figure()
+    # fig = fig or go.Figure(layout=go.Layout(
+    #     autosize=False,
+    #     width=800,  # specify the width in pixels
+    #     height=600  # specify the height in pixels
+    # ))
 
     for column in columns:
         color = "red"
@@ -17,6 +22,19 @@ def lap_fig(df, mode=None, columns=["Throttle", "Brake"], fig=None):
             line=dict(color=color),
             showlegend=True,
         )
+
+    # Set the range of the x-axis and the distance between tick marks
+    # set start to the nearest 100 meters
+    if not full_range:
+        start = df["DistanceRoundTrack"].min()
+        start = start - (start % 100)
+        # end = df["DistanceRoundTrack"].max()
+        # if end - start < 400:
+        #     end = start + 400
+        end = start + 400
+        x_range = [start, end]
+        fig.update_xaxes(range=x_range, dtick=100)
+
     return fig
 
 
