@@ -1,18 +1,17 @@
 from typing import Any, Dict
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from telemetry.models import Driver, Coach
-from telemetry.pitcrew.coach import Coach as PitcrewCoach
-from telemetry.pitcrew.history import History
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
-
-from django.views.generic.edit import FormView
 
 from django import forms
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.views.generic.edit import FormView
 
-import paddock.pitcrew_app  # noqa: F401
 import paddock.fastlap_app  # noqa: F401
+import paddock.pitcrew_app  # noqa: F401
+from telemetry.models import Coach, Driver
+from telemetry.pitcrew.coach import Coach as PitcrewCoach
+from telemetry.pitcrew.history import History
 
 # https://gist.github.com/maraujop/1838193
 # from crispy_forms.helper import FormHelper

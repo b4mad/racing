@@ -1,6 +1,8 @@
 import logging
-from .session import Session
+
 import django.utils.timezone
+
+from .session import Session
 
 
 class Firehose:

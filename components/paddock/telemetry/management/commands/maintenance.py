@@ -1,8 +1,10 @@
 import datetime
+import logging
+
 from django.core.management.base import BaseCommand
+
 from telemetry.influx import Influx
 from telemetry.models import Session
-import logging
 
 
 class Command(BaseCommand):

@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
 import logging
-from .influx import Influx
+
+import numpy as np
+import pandas as pd
+
 from .analyzer import Analyzer
+from .influx import Influx
 
 
 class FastLapAnalyzerV3:

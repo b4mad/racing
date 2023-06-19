@@ -42,6 +42,7 @@ django-prometheus = "*"
 black = "*"
 mypy = "*"
 factory-boy = "*"
+isort = "*"
 
 [requires]
 python_version = "3.10"

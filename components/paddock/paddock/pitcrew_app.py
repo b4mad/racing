@@ -1,9 +1,9 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
-from telemetry.models import Driver, Coach
-
 from django_plotly_dash import DjangoDash
+
+from telemetry.models import Coach, Driver
 
 app = DjangoDash("Pitcrew", serve_locally=True, add_bootstrap_links=True)
 

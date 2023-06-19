@@ -1,10 +1,14 @@
-from django.test import TestCase
+from pprint import pprint
+
 import django.utils.timezone
 from django.db import IntegrityError
-from telemetry.pitcrew.session import Session, Lap
+from django.test import TestCase
+
+from telemetry.models import Car, Driver, Game
 from telemetry.models import Session as SessionModel
-from telemetry.models import Track, Car, Game, Driver, SessionType
-from pprint import pprint
+from telemetry.models import SessionType, Track
+from telemetry.pitcrew.session import Lap, Session
+
 from .utils import get_session_df
 
 

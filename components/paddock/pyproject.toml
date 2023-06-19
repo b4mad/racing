@@ -1,7 +1,19 @@
-name = "b4mad-racing-paddock"
-version = "0.1.0"
+authors = [
+  "Marcel Hild <durandom@b4mad.net>",
+]
 description = "This is the #B4mad Racing Paddock."
 license = "GPL-3.0-or-later"
-authors = [
-  "Marcel Hild <durandom@b4mad.net>"
-]
+name = "b4mad-racing-paddock"
+version = "0.5.0"
+
+[tool.isort]
+default_section = "THIRDPARTY"
+known_first_party = ["paddock", "telemetry"]
+known_third_party = []
+line_length = 128
+multi_line_output = 3
+profile = "black"
+
+[tool.black]
+include = '\.pyi?$'
+line-length = 128

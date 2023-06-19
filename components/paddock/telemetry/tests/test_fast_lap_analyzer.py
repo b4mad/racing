@@ -1,10 +1,13 @@
-from django.test import TransactionTestCase
-from telemetry.fast_lap_analyzer import FastLapAnalyzer
-from telemetry.analyzer import Analyzer
-from .utils import get_lap_df, read_responses, save_responses  # noqa
 from pprint import pprint  # noqa
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+from django.test import TransactionTestCase
+
+from telemetry.analyzer import Analyzer
+from telemetry.fast_lap_analyzer import FastLapAnalyzer
+
+from .utils import get_lap_df, read_responses, save_responses  # noqa
 
 
 class TestFastLapAnalyser(TransactionTestCase):

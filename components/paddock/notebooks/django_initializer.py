@@ -1,7 +1,8 @@
 # A script that's needed to setup django if it's not already running on a server.
 # Without this, you won't be able to import django modules
-import sys
 import os
+import sys
+
 import django
 
 # Find the project base directory

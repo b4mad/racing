@@ -1,8 +1,10 @@
-import threading
 import logging
+import threading
 import time
-from telemetry.models import Game, Driver, SessionType
+
 from django.db import IntegrityError
+
+from telemetry.models import Driver, Game, SessionType
 
 
 class SessionSaver:

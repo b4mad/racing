@@ -1,16 +1,16 @@
-from datetime import datetime, timedelta
-
+import csv
 import logging
 import os
-import csv
 import sys
-import influxdb_client
-from influxdb_client.client.warnings import MissingPivotFunction
 import warnings
+from datetime import datetime, timedelta
+
+import influxdb_client
 from dateutil import parser
 
 # import asyncio
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
+from influxdb_client.client.warnings import MissingPivotFunction
 
 warnings.simplefilter("ignore", MissingPivotFunction)
 

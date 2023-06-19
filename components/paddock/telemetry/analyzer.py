@@ -1,10 +1,10 @@
 import logging
+
 import numpy as np
 import pandas as pd
-from scipy.signal import savgol_filter
-from sklearn.cluster import KMeans
-from scipy.signal import argrelextrema
 from scipy.interpolate import interp1d
+from scipy.signal import argrelextrema, savgol_filter
+from sklearn.cluster import KMeans
 
 
 class Analyzer:

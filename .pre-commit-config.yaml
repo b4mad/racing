@@ -9,9 +9,9 @@ repos:
     rev: v4.4.0
     hooks:
       - id: check-added-large-files
-        args: ['--maxkb=2048']
+        args: ["--maxkb=2048"]
       - id: check-ast
-      - id: check-byte-order-marker
+      - id: fix-byte-order-marker
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-json
@@ -25,39 +25,17 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  # - repo: https://github.com/pycqa/pydocstyle.git
-  #   rev: "6.1.1"
-  #   hooks:
-  #     - id: pydocstyle
-  #       args:
-  #         ["--ignore", "D100,D101,D102,D103,D107"]
-
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: v0.942
-  #   hooks:
-  #     - id: mypy
-  #       exclude: '^(docs|tasks|tests)|setup\.py'
-  #       args: [--ignore-missing-imports]
-
   - repo: https://github.com/psf/black
     rev: "23.3.0"
     hooks:
       - id: black
-        args:
-          ["--line-length=120"]
+        args: ["--line-length=120"]
 
   - repo: https://github.com/tomcatling/black-nb
     rev: "0.7"
     hooks:
       - id: black-nb
-        args:
-          ["--line-length=120"]
-
-  # Enable this in repositories with python packages.
-  # - repo: https://github.com/mgedmin/check-manifest
-  #   rev: '0.47'
-  #   hooks:
-  #     - id: check-manifest
+        args: ["--line-length=120"]
 
   - repo: https://github.com/PyCQA/flake8
     rev: "6.0.0"
@@ -66,4 +44,22 @@ repos:
         additional_dependencies: ["pep8-naming"]
         # Ignore all format-related checks as Black takes care of those.
         args:
-          ["--ignore", "E2,W5,D100,D101", "--select", "E,W,F,N", "--max-line-length=120"]
+          [
+            "--ignore",
+            "E2,W5,D100,D101",
+            "--select",
+            "E,W,F,N",
+            "--max-line-length=120",
+          ]
+
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: ["-iii", "-ll"]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--resolve-all-configs"]

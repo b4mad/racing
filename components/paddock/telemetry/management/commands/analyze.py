@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand
-from telemetry.models import FastLap
-from telemetry.influx import Influx
-from telemetry.fast_lap_analyzer import FastLapAnalyzer
-from telemetry.racing_stats import RacingStats
 import logging
+
+from django.core.management.base import BaseCommand
+
+from telemetry.fast_lap_analyzer import FastLapAnalyzer
+from telemetry.influx import Influx
+from telemetry.models import FastLap
+from telemetry.racing_stats import RacingStats
 
 
 class Command(BaseCommand):

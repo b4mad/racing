@@ -1,11 +1,14 @@
-from django.test import TransactionTestCase
 import threading
+import time
+from pprint import pprint  # noqa
+
+from django.test import TransactionTestCase
+
+from telemetry.models import Driver
 from telemetry.pitcrew.coach import Coach as PitCrewCoach
 from telemetry.pitcrew.history import History
-from telemetry.models import Driver
-import time
+
 from .utils import get_session_df, read_responses, save_responses  # noqa
-from pprint import pprint  # noqa
 
 
 class TestCoach(TransactionTestCase):

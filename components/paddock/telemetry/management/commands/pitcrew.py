@@ -1,11 +1,11 @@
-from django.core.management.base import BaseCommand
-from telemetry.models import Coach, Driver, FastLap
-from telemetry.pitcrew.crew import Crew
+import threading
 
+from django.core.management.base import BaseCommand
 from flask import Flask
 from flask_healthz import healthz
 
-import threading
+from telemetry.models import Coach, Driver, FastLap
+from telemetry.pitcrew.crew import Crew
 
 
 class Command(BaseCommand):

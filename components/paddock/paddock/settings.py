@@ -15,10 +15,11 @@ https://djangostars.com/blog/configuring-django-settings-best-practices/
 https://www.architect.io/blog/2022-08-04/deploy-python-django-kubernetes/
 """
 
-import environ
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import environ
 
 env = environ.Env(
     # set casting, default value

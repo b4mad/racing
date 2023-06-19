@@ -1,6 +1,7 @@
-from telemetry.models import Game, Track, Lap, FastLap
 from django.db import connection
 from django.db.models import Count
+
+from telemetry.models import FastLap, Game, Lap, Track
 
 
 class RacingStats:

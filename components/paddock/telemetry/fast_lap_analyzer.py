@@ -1,6 +1,7 @@
 import logging
-from .influx import Influx
+
 from .analyzer import Analyzer
+from .influx import Influx
 from .pitcrew.segment import Segment
 
 
