@@ -1,9 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
+import pandas as pd
 from dash import dash_table, dcc, html
 from dash.dependencies import Input, Output
 from django_plotly_dash import DjangoDash
 
+from telemetry.pitcrew.message import MessageTrackGuide
 from telemetry.racing_stats import RacingStats
 from telemetry.visualizer import fig_add_features, lap_fig
 
@@ -103,6 +105,7 @@ def update_table(game, car, track, session_state=None):
             {"name": "Game", "id": "game__name"},
             {"name": "Car", "id": "car__name"},
             {"name": "Track", "id": "track__name"},
+            # {"name": "Laps", "id": "count"},
         ],
         data=data,
         style_cell={"textAlign": "left"},
@@ -140,6 +143,8 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
     racing_stats = RacingStats()
     fast_laps = list(racing_stats.fast_laps(game=game, track=track, car=car))
+    laps_count = racing_stats.laps(game=game, track=track, car=car, valid=True).count()
+
     if len(fast_laps) == 0:
         return dash.no_update
 
@@ -148,8 +153,8 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
     graphs = []
     for segment in segments:
-        sector = segment.telemetry
-        fig = lap_fig(sector)
+        sector = segment.telemetry_for_fig()
+        fig = lap_fig(sector, columns=["Throttle", "Brake"])
         brake_features = segment.brake_features()
         throttle_features = segment.throttle_features()
         if brake_features:
@@ -161,18 +166,41 @@ def update_graph(n_clicks, game, car, track, session_state=None):
         graph = dcc.Graph(figure=fig)
         md = get_segment_header(segment, segment.turn)
         graphs.append(dcc.Markdown(md))
+
+        if False:
+            graphs.append(html.Hr())
+            header = html.H6(f"type: {segment.type}")
+            graphs.append(header)
+            brake_features = segment.brake_features()
+            throttle_features = segment.throttle_features()
+            gear_features = segment.gear_features()
+            data = [brake_features, throttle_features, gear_features]
+            df = pd.DataFrame.from_records(data, index=["brake", "throttle", "gear"])
+            table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True)
+            tb = html.Div(f"tb: {segment.trail_brake()} - {segment._tb_reason}")
+            # sector from {segment.start} to {segment.end}
+            graphs.append(tb)
+            graphs.append(table)
+            graphs.append(html.Hr())
+
         graphs.append(graph)
 
     lap = fast_lap.laps.first()
     # lap.time is seconds. Format to minutes:seconds
-    info = f"Based on a lap time of { lap.time_human() } by { lap.session.driver }"
+    info = f"Based on a lap time of { lap.time_human() } by { lap.session.driver } - "
+    laps_count = racing_stats.laps(game=game, track=track, car=car, valid=True).count()
+    info += f"Valid laps: {laps_count}"
+
     return graphs, info
 
 
 def get_segment_header(segment, turn):
+    message = MessageTrackGuide(segment)
+    msg = message.msg
+
     md = f"""
 ## Turn {turn}
-{segment.type} at {segment.start}
+{msg}
 """
 
     return md

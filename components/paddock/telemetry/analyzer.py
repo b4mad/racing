@@ -320,10 +320,11 @@ class Analyzer:
         return value
 
     def distance_speed_lookup_table(self, lap):
-        monotonic = lap["CurrentLapTime"].is_monotonic_increasing
+        lookup = self.distance_speed_lookup_table_non_lin(lap)
+        monotonic = lookup["CurrentLapTime"].is_monotonic_increasing
         if monotonic:
             logging.debug("distance_speed_lookup_table monotonic")
-            return self.distance_speed_lookup_table_non_lin(lap)
+            return lookup
         else:
             logging.debug("distance_speed_lookup_table NOT monotonic")
             return self.distance_speed_lookup_table_lin(lap)
