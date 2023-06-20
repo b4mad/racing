@@ -20,7 +20,6 @@ from .message import (
 class Coach(LoggingMixin):
     def __init__(self, history: History, db_coach: DbCoach, debug=False):
         self.history = history
-        self.previous_history_error = None
         self.db_coach = db_coach
         self.messages = []
         self.previous_distance = 10_000_000
@@ -30,6 +29,9 @@ class Coach(LoggingMixin):
         self.session_id = "NO_SESSION"
         self.track_walk = False
         self.distance = 0
+        self._new_session_starting = False
+        self._next_messages = []
+        self._error = None
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -47,47 +49,79 @@ class Coach(LoggingMixin):
         }
         return filter
 
-    def set_filter(self, filter):
+    def new_session(self, topic):
+        self._new_session_starting = True
+        self.topic = topic
+        self.log_debug("new session %s", topic)
+        filter = self.filter_from_topic(topic)
         self.history.set_filter(filter)
         self.session_id = filter.get("SessionId", "NO_SESSION")
         self.messages = []
+        self._next_messages = []
+        self.responses = {}
+        self.db_coach.refresh_from_db()
+        self.track_walk = self.db_coach.track_walk
+
+    def ready(self):
+        if self._new_session_starting:
+            if not self.history.is_ready():
+                if self.history.is_initializing():
+                    return False
+                error = self.history.get_and_reset_error()
+                if error:
+                    self.db_coach.error = error
+                    self.db_coach.save()
+                    self._error = error
+                return False
+
+            self.init_messages()
+
+            startup_message = "start coaching "
+            try:
+                lap_time = self.history.fast_lap.laps.first().time_human()
+                startup_message += f"for a lap time of {lap_time}"
+            except Exception:
+                pass
+
+            if self.track_walk:
+                startup_message += " doing a track walk"
+
+            self.say_next(startup_message)
+            self.db_coach.status = startup_message
+            self.db_coach.fast_lap = self.history.fast_lap
+            self.db_coach.error = ""
+            self.db_coach.save()
+
+            self.track_length = self.history.track_length
+
+            self._new_session_starting = False
+
+        return True
+
+    def get_and_reset_error(self):
+        if self._error:
+            error = self._error
+            self._error = None
+            return error
+
+    def say_next(self, msg):
+        self._next_messages.append(msg)
 
     def notify(self, topic, telemetry, now=None):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
-            self.topic = topic
-            self.log_debug("new session %s", topic)
-            self.set_filter(self.filter_from_topic(topic))
-            self.startup_message = ""
+            self.new_session(topic)
 
-        if not self.history.ready:
-            if self.history.error:
-                self.db_coach.error = self.history.error
-                self.db_coach.save()
-                # clear history error
-                error_msg = self.history.error
-                self.history.error = None
-                return (self.response_topic, error_msg)
+        if not self.ready():
+            error = self.get_and_reset_error()
+            if error:
+                return (self.response_topic, error)
             return None
 
-        if self.history.ready and self.history.startup_message:
-            self.track_length = self.history.track.length
-            if self.startup_message != self.history.startup_message:
-                self.startup_message = self.history.startup_message
-                self.history.startup_message = ""
-                self.db_coach.refresh_from_db()
-                self.track_walk = self.db_coach.track_walk
-                if self.track_walk:
-                    self.startup_message += " doing a track walk"
-                self.db_coach.status = self.startup_message
-                self.db_coach.fast_lap = self.history.fast_lap
-                self.db_coach.error = ""
-                self.db_coach.save()
-                return (self.response_topic, self.startup_message)
-
-        if not self.messages:
-            self.init_messages()
-            self.responses = {}
+        if self._next_messages:
+            messages = self._next_messages
+            self._next_messages = []
+            return (self.response_topic, messages)
 
         self.distance = int(telemetry["DistanceRoundTrack"])
         if self.distance == self.previous_distance:
@@ -135,7 +169,7 @@ class Coach(LoggingMixin):
 
         # FIXME: +100 should be speed dependent
         #
-        future_distance = (distance + 20) % self.history.track_length
+        future_distance = (distance + 20) % self.track_length
         responses = self.get_responses(telemetry, future_distance)
         for response in responses:
             distance = response["distance"]
@@ -150,7 +184,7 @@ class Coach(LoggingMixin):
         #  so we send the message less than 10 seconds before its due
         #  if we send messages too late, the driver will have passed the distance
         #  find the distance where
-        future_distance = (distance + 10) % self.history.track_length
+        future_distance = (distance + 10) % self.track_length
         responses = self.responses.pop(future_distance, None)
         if responses:
             if len(responses) > 1:

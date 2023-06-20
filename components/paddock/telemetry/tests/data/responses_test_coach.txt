@@ -1,4 +1,4 @@
-[('/coach/durandom', 'start coaching for a lap time of 1 minute 37.01 seconds '),
+[('/coach/durandom', ['start coaching for a lap time of 1 minute 37.01 seconds ']),
  ('/coach/durandom', ['{"distance": 447, "message": "80 percent", "priority": 8}']),
  ('/coach/durandom', ['{"distance": 1077, "message": "40 percent", "priority": 8}']),
  ('/coach/durandom', ['{"distance": 1208, "message": "brake", "priority": 8}']),

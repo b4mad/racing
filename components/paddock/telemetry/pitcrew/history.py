@@ -10,12 +10,11 @@ from telemetry.pitcrew.logging import LoggingMixin
 
 class History(LoggingMixin):
     def __init__(self):
-        self.pickle = False
-        self.do_init = False
+        self._do_init = False
         self.segments = []
         self.previous_update_meters = 0
-        self.ready = False
-        self.error = None
+        self._ready = False
+        self._error = None
         self.do_run = True
         self.driver = None
         self.track_length = 0
@@ -25,7 +24,6 @@ class History(LoggingMixin):
         self.fast_lap = None
         self.process_segments = []
         self.threaded = False
-        self.startup_message = ""
         self.session_id = "NO_SESSION"
 
     def disconnect(self):
@@ -35,22 +33,27 @@ class History(LoggingMixin):
         self.threaded = True
         while self.do_run:
             time.sleep(0.1)
-            self.do_work()
-            if self.do_init:
-                if self.init():
-                    self.do_init = False
+            if self._ready:
+                self.do_work()
+            if self._do_init:
+                self.init()
+                self._do_init = False
 
     def set_filter(self, filter):
+        self._ready = False
         self.filter = filter
         self.session_id = filter.get("SessionId", "NO_SESSION")
-        # set to false to avoid race condition
-        # this method is called from the coach thread
-        self.ready = False
-        self.do_init = True
+        self._do_init = True
+
+    def is_initializing(self):
+        return self._do_init
+
+    def is_ready(self):
+        return self._ready
 
     def init(self):
-        self.ready = False
-        self.error = None
+        self._ready = False
+        self._error = None
         self.process_segments = []
         self.telemetry = []
 
@@ -63,39 +66,24 @@ class History(LoggingMixin):
         except Exception as e:
             error = f"Error init {self.filter['Driver']} / {self.filter['GameName']}"
             error += f" / {self.filter['CarModel']}/  {self.filter['TrackCode']} - {e}"
-            self.error = error
+            self._error = error
             self.log_error(error)
             return False
 
-        success = self.init_segments()
-        if not success:
-            return False
-
-        self.init_driver()
-
-        # self.telemetry_fields = [
-        #     "DistanceRoundTrack",
-        #     "Gear",
-        #     "SpeedMs",
-        #     "Throttle",
-        #     "Brake",
-        #     "CurrentLapTime",
-        # ]
-        # self.telemetry = {"_time": []}
-        # for field in self.telemetry_fields:
-        #     self.telemetry[field] = []
-
-        self.ready = True
-        return True
+        if self.init_segments():
+            if self.init_driver():
+                self._ready = True
+                return True
 
     def init_segments(self) -> bool:
         """Load the segments from DB."""
         fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
         if not fast_lap:
-            self.error = f"no data found for game {self.filter['GameName']}"
-            self.error += f" on track {self.filter['TrackCode']}"
-            self.error += f" in car {self.filter['CarModel']}"
-            self.log_error(self.error)
+            error = f"no data found for game {self.filter['GameName']}"
+            error += f" on track {self.filter['TrackCode']}"
+            error += f" in car {self.filter['CarModel']}"
+            self._error = error
+            self.log_error(error)
             return False
 
         self.log_debug("loading segments for %s %s - %s", self.game, self.track, self.car)
@@ -121,14 +109,13 @@ class History(LoggingMixin):
         self.fast_lap = fast_lap
 
         # self.log_debug("loaded %s segments", len(self.segments))
-
-        self.startup_message = "start coaching "
-        try:
-            lap_time = self.fast_lap.laps.first().time_human()
-            self.startup_message += f"for a lap time of {lap_time}"
-        except Exception:
-            pass
         return True
+
+    def get_and_reset_error(self):
+        if self._error:
+            error = self._error
+            self._error = None
+            return error
 
     def features(self, segment, mark="brake"):
         # search through segements
@@ -153,6 +140,7 @@ class History(LoggingMixin):
     def init_driver(self):
         self.driver_segments = {}
         self.driver_data = {}
+        return True
         # fast_lap, created = FastLap.objects.get_or_create(
         #     car=self.car, track=self.track, game=self.game, driver=self.driver
         # )
