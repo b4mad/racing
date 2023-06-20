@@ -3,7 +3,16 @@ import dash_bootstrap_components as dbc
 from dash import html
 from django_plotly_dash import DjangoDash
 
-from telemetry.models import Coach, Driver
+from telemetry.metrics import driver_total, session_total
+from telemetry.models import Coach, Driver, Session
+
+# count the Model instances
+driver_count = Driver.objects.count()
+session_count = Session.objects.count()
+
+# and assign them to the metrics as an initial value
+driver_total.set(driver_count)
+session_total.set(session_count)
 
 app = DjangoDash("Pitcrew", serve_locally=True, add_bootstrap_links=True)
 
