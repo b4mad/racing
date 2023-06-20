@@ -47,10 +47,11 @@ class TestCoach(TransactionTestCase):
         coach.notify(topic, row)
         if use_threads:
             print("waiting for history to be ready")
-            while not history.ready:
+            while not history._ready:
                 time.sleep(0.1)
         else:
             history.init()
+            history._do_init = False
 
         captured_responses = []
         try:
