@@ -23,16 +23,11 @@ app.layout = html.Div(
     ]
 )
 
-try:
-    # FIXME: move this into the callbacks
-    racing_stats = RacingStats()
-    laps = list(racing_stats.fast_lap_values())
-except Exception:
-    laps = []
-
 
 @app.callback(Output("game-dropdown", "options"), Output("game-dropdown", "value"), [Input("submit-val", "n_clicks")])
 def set_games_options(n_clicks, session_state=None):
+    racing_stats = RacingStats()
+    laps = list(racing_stats.fast_lap_values())
     games = sorted(set(lap["game__name"] for lap in laps))
     game = None
     if session_state is not None:
@@ -48,6 +43,8 @@ def set_games_options(n_clicks, session_state=None):
 )
 def set_cars_options(game, session_state=None):
     if game is not None:
+        racing_stats = RacingStats()
+        laps = list(racing_stats.fast_lap_values())
         cars = sorted(set(lap["car__name"] for lap in laps if lap["game__name"] == game))
         car = None
         if session_state is not None:
@@ -66,6 +63,8 @@ def set_cars_options(game, session_state=None):
 )
 def set_tracks_options(game, car, session_state=None):
     if game is not None and car is not None:
+        racing_stats = RacingStats()
+        laps = list(racing_stats.fast_lap_values())
         tracks = sorted(
             set(lap["track__name"] for lap in laps if lap["game__name"] == game and lap["car__name"] == car)
         )
@@ -91,6 +90,9 @@ def update_table(game, car, track, session_state=None):
         session_state["game__name"] = game
         session_state["car__name"] = car
         session_state["track__name"] = track
+
+    racing_stats = RacingStats()
+    laps = list(racing_stats.fast_lap_values())
 
     data = [
         lap
