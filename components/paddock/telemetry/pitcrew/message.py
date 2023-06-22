@@ -39,7 +39,7 @@ class Message:
         words = len(msg.split(" "))
         # r_time = words / 1.5
         r_time = words / 2.2
-        delta_add = 1.5
+        delta_add = 2.0
         self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds + {delta_add:.1f} seconds")
         # return words * 0.8  # avg ms per word
         # return words / 2.5  # avg ms per word
@@ -70,43 +70,62 @@ class Message:
             return self.resp(self.at_track_walk, self.msg)
 
 
-class MessageBrake(Message):
+class MessageBrakePoint(Message):
     def init(self):
         self.msg = "brake"
+        self.active = self.segment.type_brake()
+        self.at = self.segment.brake_point()
+        self.priority = 9
+
+    def needs_coaching(self):
+        # always announce
+        return True
+
+
+class MessageThrottlePoint(Message):
+    def init(self):
+        self.msg = "lift"
+        self.active = self.segment.type_throttle()
+        self.at = self.segment.throttle_point()
+        self.priority = 9
+
+    def needs_coaching(self):
+        # always announce
+        return True
+
+
+class MessageBrake(Message):
+    def init(self):
+        self.msg = ""
         self.msg_in_100 = "brake in 100"
         self.msg_in_50 = "brake in 50"
         self.message_earlier = "brake a bit earlier"
         self.at = self.segment.brake_point()
-        if self.at:
-            self.common_init("brake")
-        else:
-            self.active = False
+        self.active = self.segment.type_brake()
 
-    def common_init(self, mark):
-        self.diff_message = ""
-        self.diff_message_at = self.finish_at(self.at, self.message_earlier)
-        self.at_track_walk = self.at - 100
-        self.always_announce_brakepoint = True
+    # def common_init(self, mark):
+    #     self.at_track_walk = self.at - 100
 
-    def response_track_walk(self, distance, telemetry):
-        if distance == self.at_track_walk:
-            return [
-                self.resp(self.at_track_walk, self.msg_in_100, 9),
-                # self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
-                self.resp(self.at, self.msg, 9),
-            ]
+    # def response_track_walk(self, distance, telemetry):
+    #     if distance == self.at_track_walk:
+    #         return [
+    #             self.resp(self.at_track_walk, self.msg_in_100, 9),
+    #             # self.json_response(self.at_track_walk + 50, self.msg_in_50, 9),
+    #         ]
 
-    def response_hot_lap(self, distance, telemetry):
-        if distance == self.diff_message_at:
-            if self.needs_coaching() or self.always_announce_brakepoint:
-                messages = [self.resp(self.at, self.msg, 8)]
-                if self.diff_message:
-                    messages.append(self.resp(self.diff_message_at, self.diff_message, 8))
-                return messages
+    # def response_hot_lap(self, distance, telemetry):
+    #     if distance == self.at:
+    #         if self.needs_coaching():
+    #             # messages = [self.resp(self.at, self.msg, 8)]
+    #             messages = []
+    #             if self.diff_message:
+    #                 messages.append(self.resp(self.diff_message_at, self.diff_message, 8))
+    #             return messages
 
     def needs_coaching(self):
-        # check brake start
-        # last_brake_start = self.segment.last_brake_features("start")
+        if self.segment.driver_score() < 0.5:
+            return False
+
         last_brake_start = self.segment.avg_brake_start()
         if last_brake_start is None:
             return True
@@ -114,32 +133,33 @@ class MessageBrake(Message):
         # brake_diff_abs = abs(brake_diff)
         self.log_debug(f"brake_diff: {brake_diff:.1f}")
 
-        self.diff_message = ""
+        diff_message = ""
         if brake_diff > 20:
             # too late
-            self.diff_message = self.message_earlier
+            diff_message = self.message_earlier
         elif brake_diff < -20:
             # too early
-            self.diff_message = "brake a bit later"
+            diff_message = "brake a bit later"
 
-        return bool(self.diff_message)
+        self.msg = diff_message
+        self.at = self.finish_at_segment_start()
+
+        return bool(self.msg)
 
 
-class MessageThrottle(MessageBrake):
+class MessageThrottle(Message):
     def init(self):
-        self.msg = "lift"
+        self.msg = ""
         self.msg_in_100 = "lift throttle in 100 meters"
         self.msg_in_50 = "in 50"
         self.message_earlier = "lift a bit earlier"
         self.at = self.segment.throttle_point()
-        if self.at:
-            self.common_init("throttle")
-        else:
-            self.active = False
+        self.active = self.segment.type_throttle()
 
     def needs_coaching(self):
-        # check brake start
-        # last_start = self.segment.last_throttle_features("start")
+        if self.segment.driver_score() < 0.5:
+            return False
+
         last_start = self.segment.avg_throttle_start()
         if last_start is None:
             last_start = 100_000_000
@@ -147,17 +167,20 @@ class MessageThrottle(MessageBrake):
         diff_abs = abs(throttle_diff)
         self.log_debug(f"throttle_diff: {throttle_diff:.1f}")
 
-        self.diff_message = ""
+        diff_message = ""
         if diff_abs > 50:
-            self.diff_message = "lift throttle"
+            diff_message = "lift throttle"
         elif throttle_diff > 20:
             # too late
-            self.diff_message = self.message_earlier
+            diff_message = self.message_earlier
         elif throttle_diff < -20:
             # too early
-            self.diff_message = "lift a bit later"
+            diff_message = "lift a bit later"
 
-        return bool(self.diff_message)
+        self.msg = diff_message
+        self.at = self.finish_at_segment_start()
+
+        return bool(self.msg)
 
 
 class MessageGear(Message):
@@ -174,6 +197,9 @@ class MessageGear(Message):
             self.at_track_walk = self.at_track_walk - 30
 
     def needs_coaching(self):
+        if self.segment.driver_score() < 0.5:
+            return False
+
         last_gear = self.segment.avg_gear()
         if last_gear is None:
             return True
@@ -195,7 +221,9 @@ class MessageBrakeForce(Message):
         self.at_track_walk = self.segment.brake_point()
 
     def needs_coaching(self):
-        # check brake force
+        if self.segment.driver_score() < 0.5:
+            return False
+
         last_brake_force = self.segment.avg_brake_force()
         if last_brake_force is None:
             self.log_debug("no last brake force")
@@ -226,7 +254,9 @@ class MessageThrottleForce(Message):
         self.at_track_walk = self.segment.throttle_point()
 
     def needs_coaching(self):
-        # check brake force
+        if self.segment.driver_score() < 0.5:
+            return False
+
         last_force = self.segment.avg_throttle_force()
         if last_force is None:
             return True
@@ -290,22 +320,30 @@ class MessageTrailBrake(Message):
 class MessageTrackGuide(Message):
     def init(self):
         self.msg = self.build_msg()
-        self.at = self.segment.start
-        self.at_track_walk = self.segment.start
+        # self.at = self.segment.previous_segment.full_throttle_point()
+        # if self.at is not None:
+        #     diff = (self.segment.brake_point() - self.at) % self.segment.track_length()
+        self.at = self.finish_at_segment_start()
+        # self.msg = f"{self.msg} {self.segment.start}"
+        self.at_track_walk = self.at
 
     def build_msg(self):
         brake_point = self.segment.brake_point()
+        throttle_point = self.segment.throttle_point()
         frags = []
         if brake_point is None:
-            # No braking in this segment
-            pass
+            if throttle_point is not None:
+                frags.append("lift throttle")
+                if self.segment.throttle_force() > 0.3:
+                    frags.append("a bit")
+
         else:
             brake_force = self.segment.brake_force()
             if brake_force > 0.65:
                 # Heavy braking
                 frags.append("brake hard")
             elif brake_force > 0.3:
-                frags.append("brake softly")
+                frags.append("brake normal")
                 # Medium braking
             else:
                 frags.append("touch the brake")
@@ -313,5 +351,11 @@ class MessageTrackGuide(Message):
         if self.segment.trail_brake():
             frags.append("trailbrake")
 
-        frags.append(f"shift to {self.segment.gear()}")
+        # fixme compare to gear at start of segment
+        # frags.append(f"shift to {self.segment.gear()}")
         return " ".join(frags)
+
+    def needs_coaching(self):
+        if self.segment.driver_score() < 0.5:
+            return True
+        return False

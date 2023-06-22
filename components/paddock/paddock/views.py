@@ -10,8 +10,6 @@ from django.views.generic.edit import FormView
 import paddock.fastlap_app  # noqa: F401
 import paddock.pitcrew_app  # noqa: F401
 from telemetry.models import Coach, Driver
-from telemetry.pitcrew.coach import Coach as PitcrewCoach
-from telemetry.pitcrew.history import History
 
 # https://gist.github.com/maraujop/1838193
 # from crispy_forms.helper import FormHelper
@@ -27,11 +25,12 @@ class CoachForm(forms.Form):
     # PrependedText('field_name', '@', placeholder="username")
 
     coach_enabled = forms.BooleanField(required=False)
-    coach_track_walk = forms.BooleanField(
-        required=False,
-        help_text="Drive slow and get precise track info, disable when driving fast. Only checked when session starts.",
-        label="Track Walk",
-    )
+    # coach_track_walk = forms.BooleanField(
+    #     required=False,
+    #     help_text="Drive slow and get precise track info, disable when driving fast.
+    #                Only checked when session starts.",
+    #     label="Track Walk",
+    # )
 
     # message = forms.CharField(widget=forms.Textarea)
 
@@ -83,30 +82,30 @@ class CoachView(LoginRequiredMixin, FormView):
         kwargs["request"] = self.request
         return kwargs
 
-    def get_messages(self, coach: Coach):
-        if not coach.fast_lap:
-            return []
+    # def get_messages(self, coach: Coach):
+    #     if not coach.fast_lap:
+    #         return []
 
-        history = History()
-        pitcrew_coach = PitcrewCoach(history, coach)
-        pitcrew_coach.track_walk = coach.track_walk
-        filter = {
-            "Driver": coach.driver.name,
-            "GameName": coach.fast_lap.game.name,
-            "TrackCode": coach.fast_lap.track.name,
-            "CarModel": coach.fast_lap.car.name,
-            "SessionId": 666,
-        }
-        history.set_filter(filter)
-        history.init()
-        pitcrew_coach.init_messages()
-        messages = []
-        telemetry = {}
-        for distance in range(0, history.track_length):
-            responses = pitcrew_coach.collect_responses(distance, telemetry)
-            messages.extend(responses)
+    #     history = History()
+    #     pitcrew_coach = PitcrewCoach(history, coach)
+    #     pitcrew_coach.track_walk = coach.track_walk
+    #     filter = {
+    #         "Driver": coach.driver.name,
+    #         "GameName": coach.fast_lap.game.name,
+    #         "TrackCode": coach.fast_lap.track.name,
+    #         "CarModel": coach.fast_lap.car.name,
+    #         "SessionId": 666,
+    #     }
+    #     history.set_filter(filter)
+    #     history.init()
+    #     pitcrew_coach.init_messages()
+    #     messages = []
+    #     telemetry = {}
+    #     for distance in range(0, history.track_length):
+    #         responses = pitcrew_coach.collect_responses(distance, telemetry)
+    #         messages.extend(responses)
 
-        return messages
+    #     return messages
 
     def get_context_data(self, **kwargs):
         """Use this to add extra context."""
@@ -115,7 +114,7 @@ class CoachView(LoginRequiredMixin, FormView):
         context["coach"] = "Coach"
         if self.coach:
             context["coach"] = self.coach
-            context["messages"] = self.get_messages(self.coach)
+            # context["messages"] = self.get_messages(self.coach)
         return context
 
     def get_initial(self) -> Dict[str, Any]:

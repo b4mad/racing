@@ -18,8 +18,7 @@
           <hr />
           <H5>Coaching on track</H5>
           <div class="info alert alert-info" role="alert">
-              {{ coach.fast_lap }} <br/>
-              Based on lap time {{ coach.fast_lap.laps.first.time }} seconds by {{ coach.fast_lap.laps.first.session.driver }}
+              {{ coach.fast_lap }}
           </div>
           <H5>status message</H5>
           <div class="info alert alert-info" role="alert">
@@ -28,28 +27,6 @@
           <H5>error</H5>
           <div class="alert alert-danger" role="alert">
               {{ coach.error }}
-          </div>
-          <hr />
-          <h5>Coaching messages</h5>
-          <div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">meters</th>
-                  <th scope="col">message</th>
-                  <th scope="col">priority</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for msg in messages %}
-                <tr>
-                  <th scope="row">{{ msg.distance }}</th>
-                  <td>{{ msg.message }}</td>
-                  <td>{{ msg.priority }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>

@@ -103,7 +103,11 @@ class History(LoggingMixin):
 
         # self.segments = self.sort_segments()
 
-        for segment in self.segments:
+        for i, segment in enumerate(self.segments):
+            next_index = (i + 1) % len(self.segments)
+            previous_index = (i - 1) % len(self.segments)
+            segment.previous_segment = self.segments[previous_index]
+            segment.next_segment = self.segments[next_index]
             segment.history = self
 
         self.fast_lap = fast_lap

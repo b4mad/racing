@@ -16,7 +16,7 @@ class Analyzer:
         last = df.iloc[-1]["DistanceRoundTrack"]
         return last - first
 
-    def split_sectors(self, df, threshold=None, min_length=10):
+    def split_sectors(self, df, threshold=None, min_length=50):
         if threshold is None:
             threshold = df["Throttle"].max() * 0.98
         # Step 1: Find all rows where Throttle starts to drop below the threshold
@@ -51,7 +51,7 @@ class Analyzer:
         # Step 4: Return a list of dataframes, one for each section
         return sectors
 
-    def extract_sector_start_end(self, sectors, threshold=0.98, track_length=0, min_length=10):
+    def extract_sector_start_end(self, sectors, threshold=0.98, track_length=0, min_length=50):
         sector_start_end = []
 
         # Calculate the maximum DistanceRoundTrack value of all sectors
@@ -354,6 +354,25 @@ class Analyzer:
         lap["DistanceRoundTrack"] = lap["DistanceRoundTrack"].round(1)
         lap["CurrentLapTime"] = lap["CurrentLapTime"].round(3)
         return lap
+
+    def combine_max_throttle(self, laps):
+        df_max = laps[0]
+        # fig = lap_fig(df_max, full_range=True)
+        # fig.show()
+        for df in laps[1:]:
+            # fig = lap_fig(df, full_range=True)
+            # fig.show()
+
+            df_max_throttle = df_max[["Throttle"]].combine(df[["Throttle"]], np.maximum)
+            df_max["Throttle"] = df_max_throttle
+            # fig = lap_fig(df_max, full_range=True)
+            # fig.show()
+
+        return df_max
+
+        # display(df_max)
+        # fig = lap_fig(df_max, full_range=True)
+        # fig.show()
 
     ##### probably not needed anymore
 
