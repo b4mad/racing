@@ -55,6 +55,12 @@ class FastLapAnalyzer:
 
         for i, df in enumerate(data_frames):
             sector = self.analyzer.section_df(df, start, end)
+            # continue if the sector is empty
+            # check why this happens
+            # pipenv run ./manage.py analyze \
+            #   --game 'Automobilista 2' --track 'Snetterton:Snetterton_300' --car 'Ginetta G58'
+            if sector.empty:
+                continue
 
             if start < end:
                 start_idx = -1
