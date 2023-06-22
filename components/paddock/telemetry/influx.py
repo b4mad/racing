@@ -103,7 +103,7 @@ class Influx:
             track = lap.track.name
             lap_number = lap.number
 
-            logging.info(f"Processing {game} - {track} - {lap.car}")
+            logging.info(f"Fetching telemetry for {game} - {track} - {lap.car}")
             logging.info(f"  track.id {lap.track.id} car.id {lap.car.id}")
             logging.info(f"  session {session} lap.id {lap.id} number {lap_number}")
             logging.info(f"  length {lap.length} time {lap.time} valid {lap.valid}")

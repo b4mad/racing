@@ -16,6 +16,9 @@ class Segment:
         self._end = 0  # End distance
         self.turn = 0  # Turn number
 
+        self.previous_segment = None
+        self.next_segment = None
+
         # added by history to store live data
         self.live_telemetry = []
         self.live_telemetry_frames = []
@@ -50,6 +53,9 @@ class Segment:
             )
             return df
         return self.telemetry
+
+    def track_length(self):
+        return self.history.track_length
 
     def offset_distance(self, distance, seconds=0.0):
         return self.history.offset_distance(distance, seconds=seconds)
@@ -109,6 +115,13 @@ class Segment:
             brake_point = self.throttle_feature("start")
             if brake_point:
                 return int(brake_point)
+        return None
+
+    def full_throttle_point(self):
+        max_throttle_point = self.throttle_feature("end")
+        if max_throttle_point:
+            return int(max_throttle_point)
+
         return None
 
     def gear(self):
@@ -171,6 +184,12 @@ class Segment:
 
     def avg_brake_start(self, n=0):
         return self.avg_feature(n=n, feature="start", type="brake")
+
+    def driver_score(self):
+        if len(self.live_telemetry_frames) < 3:
+            return 0
+        # score driver between 0 and 1
+        return 1
 
     def avg_feature(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
         features = self.live_features[type]

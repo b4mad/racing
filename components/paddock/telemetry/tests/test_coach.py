@@ -69,5 +69,5 @@ class TestCoach(TransactionTestCase):
         expected_responses = read_responses("test_coach")
         # save_responses(captured_responses, "test_coach")
 
-        # pprint(captured_responses, width=200)
+        pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)

@@ -3,8 +3,11 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dash_table, dcc, html
 from dash.dependencies import Input, Output
+
+# from django.db.models import Count
 from django_plotly_dash import DjangoDash
 
+from telemetry.pitcrew.history import History
 from telemetry.pitcrew.message import MessageTrackGuide
 from telemetry.racing_stats import RacingStats
 from telemetry.visualizer import fig_add_features, lap_fig
@@ -92,22 +95,25 @@ def update_table(game, car, track, session_state=None):
         session_state["track__name"] = track
 
     racing_stats = RacingStats()
-    laps = list(racing_stats.fast_lap_values())
+    # laps = racing_stats.fast_lap_values()
+    laps = racing_stats.known_combos(valid=True)
+    # laps = laps.annotate(count=Count("id"))
+    laps = list(laps)
 
     data = [
         lap
         for lap in laps
-        if (game is None or lap["game__name"] == game)
+        if (game is None or lap["track__game__name"] == game)
         and (car is None or lap["car__name"] == car)
         and (track is None or lap["track__name"] == track)
     ]
 
     return dash_table.DataTable(
         columns=[
-            {"name": "Game", "id": "game__name"},
+            {"name": "Game", "id": "track__game__name"},
             {"name": "Car", "id": "car__name"},
             {"name": "Track", "id": "track__name"},
-            # {"name": "Laps", "id": "count"},
+            {"name": "Laps", "id": "count"},
         ],
         data=data,
         style_cell={"textAlign": "left"},
@@ -150,8 +156,18 @@ def update_graph(n_clicks, game, car, track, session_state=None):
     if len(fast_laps) == 0:
         return dash.no_update
 
-    fast_lap = fast_laps[0]
-    segments = fast_lap.data.get("segments", [])
+    history = History()
+    history.set_filter({"GameName": game, "TrackCode": track, "CarModel": car, "Driver": "Jim"})
+    history.init()
+    # fast_lap = fast_laps[0]
+    # segments = fast_lap.data.get("segments", [])
+    # for i, segment in enumerate(segments):
+    #     next_index = (i + 1) % len(segments)
+    #     previous_index = (i - 1) % len(segments)
+    #     segment.previous_segment = segments[previous_index]
+    #     segment.next_segment = segments[next_index]
+
+    segments = history.segments
 
     graphs = []
     for segment in segments:
@@ -168,28 +184,27 @@ def update_graph(n_clicks, game, car, track, session_state=None):
         graph = dcc.Graph(figure=fig)
         md = get_segment_header(segment, segment.turn)
         graphs.append(dcc.Markdown(md))
+        graphs.append(graph)
 
-        if False:
-            graphs.append(html.Hr())
-            header = html.H6(f"type: {segment.type}")
-            graphs.append(header)
+        if True:
+            # graphs.append(html.Hr())
+            # header = html.H6(f"type: {segment.type}")
+            # graphs.append(header)
             brake_features = segment.brake_features()
             throttle_features = segment.throttle_features()
             gear_features = segment.gear_features()
             data = [brake_features, throttle_features, gear_features]
             df = pd.DataFrame.from_records(data, index=["brake", "throttle", "gear"])
-            table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True)
-            tb = html.Div(f"tb: {segment.trail_brake()} - {segment._tb_reason}")
+            table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True, size="sm")
+            # tb = html.Div(f"tb: {segment.trail_brake()} - {segment._tb_reason}")
             # sector from {segment.start} to {segment.end}
-            graphs.append(tb)
+            # graphs.append(tb)
             graphs.append(table)
             graphs.append(html.Hr())
 
-        graphs.append(graph)
-
-    lap = fast_lap.laps.first()
+    lap = history.fast_lap.laps.first()
     # lap.time is seconds. Format to minutes:seconds
-    info = f"Based on a lap time of { lap.time_human() } by { lap.session.driver } - "
+    info = f"Based on a lap time of { lap.time_human() } extracted from { history.fast_lap.laps.count() } laps - "
     laps_count = racing_stats.laps(game=game, track=track, car=car, valid=True).count()
     info += f"Valid laps: {laps_count}"
 

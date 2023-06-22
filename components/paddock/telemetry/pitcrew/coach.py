@@ -10,9 +10,12 @@ from .message import (
     MessageApex,
     MessageBrake,
     MessageBrakeForce,
+    MessageBrakePoint,
     MessageGear,
     MessageThrottle,
     MessageThrottleForce,
+    MessageThrottlePoint,
+    MessageTrackGuide,
     MessageTrailBrake,
 )
 
@@ -242,10 +245,13 @@ class Coach(LoggingMixin):
         message_classes = [
             MessageBrake,
             MessageBrakeForce,
+            MessageBrakePoint,
             MessageGear,
             MessageThrottle,
             MessageThrottleForce,
+            MessageThrottlePoint,
             MessageTrailBrake,
+            MessageTrackGuide,
             MessageApex,
         ]
         for segment in self.history.segments:

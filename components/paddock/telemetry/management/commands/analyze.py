@@ -52,6 +52,8 @@ class Command(BaseCommand):
         parser.add_argument("--copy-influx", action="store_true")
 
     def handle(self, *args, **options):
+        min_laps = 1
+        max_laps = 10
         influx = Influx()
         racing_stats = RacingStats()
         influx_fast_sessions = set()
@@ -68,37 +70,45 @@ class Command(BaseCommand):
             logging.debug(f"{game} / {car} / {track} / {count} laps")
             laps = racing_stats.laps(game=game, car=car, track=track, valid=True)
 
-            if laps.count() < 1:
-                print("not enough laps")
+            laps_count = laps.count()
+            if laps_count < min_laps:
+                logging.debug("... not enough laps")
+                continue
 
-            fast_laps = [laps[0]]
+            logging.debug(f"... found {laps_count} laps")
 
-            if options["copy_influx"]:
+            valid_laps = list(laps)
+
+            used_laps = self.analyze_fast_laps(valid_laps, min_laps=min_laps, max_laps=max_laps)
+
+            if options["copy_influx"] and used_laps:
                 sessions = set()
-                for lap in fast_laps:
+                for lap in used_laps:
                     sessions.add(lap.session)
 
                 for session in sessions:
                     if session.session_id in influx_fast_sessions:
                         influx_fast_sessions.remove(session.session_id)
                         continue
-                    logging.debug(f"copying session {session.session_id} to fast_laps")
+                    logging.info(f"copying session {session.session_id} to fast_laps")
                     influx.copy_session(
                         session.session_id, start=session.start, end=session.end, from_bucket=from_bucket
                     )
 
-            self.analyze_fast_laps(fast_laps)
+        # if options["copy_influx"]:
+        #     logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
-        if options["copy_influx"]:
-            logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
-
-    def analyze_fast_laps(self, fast_laps):
+    def analyze_fast_laps(self, fast_laps, min_laps=1, max_laps=10):
         fl = FastLapAnalyzer(fast_laps)
-        result = fl.analyze()
+        result = fl.analyze(min_laps=min_laps, max_laps=max_laps)
         if result:
             data = result[0]
             used_laps = result[1]
+            logging.debug(f"found {len(data['segments'])} sectors in {len(used_laps)} laps")
             self.save_fastlap(data, laps=used_laps)
+            return used_laps
+        else:
+            logging.error("no result")
 
     def save_fastlap(self, data, laps=[]):
         if not laps:
