@@ -5,7 +5,8 @@ metadata:
   namespace: b4mad-racing
   # image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"paddock:latest"},"fieldPath":"spec.jobTemplate.spec.template.spec.containers[?(@.name==\"analyze\")].image"}]'
 spec:
-  schedule: "0 */6 * * *"
+  # run the analyze job an hour after the psql backup job
+  schedule: "0 2 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
