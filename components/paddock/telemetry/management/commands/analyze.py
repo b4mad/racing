@@ -119,9 +119,15 @@ class Command(BaseCommand):
         track = lap.track
         game = lap.session.game
         fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
-        fast_lap.data = data
-        fast_lap.laps.set(laps)
-        fast_lap.save()
+        current_laps = set(fast_lap.laps.all())
+        new_laps = set(laps)
+        if current_laps != new_laps:
+            fast_lap.data = data
+            fast_lap.laps.set(laps)
+            fast_lap.save()
+            logging.debug("### SAVED ###")
+        else:
+            logging.debug("!!! NO CHANGE - NOT SAVING !!!")
         # print(data['segments'][0].telemetry)
         # fast_lap.fast_lap_segments.all().delete()
         # i = 1
