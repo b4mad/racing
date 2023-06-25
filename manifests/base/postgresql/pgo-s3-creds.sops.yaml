@@ -8,15 +8,15 @@ metadata:
     name: pgo-s3-creds
 type: Opaque
 stringData:
-    s3.conf: ENC[AES256_GCM,data:aA9RyWg++CIw/paBB4VbhFzTtkZFPKRx6gwA54efFxeM3pLH7Tuf59LZtw2ZxAuN2oUT8O0oBtf/JCco41golH3l7UhFlrLhV5mJ1Oon28hAv4FX6bRvYrJiRbXaSKNI0/6Z/3PalsF0zmAf8o1CjYPzK3Rmtw17xA+tVIf/LVNnnEjdIbamQD7EXPHswMRr41+MEfHUC+uHL/R0oJpeIDiL/vPLToNNwxWAJyhDdvT0CyyNR2zCDlspteIrwqfBukt/U3PfUQ==,iv:dQwi5qiSRGC57Z+t1VvC4Bdjty7xxoPhMhGggmHGuV8=,tag:EJdfiPof4XuXkZFo7P19ng==,type:str]
+    s3.conf: ENC[AES256_GCM,data:k7NXtFJl5v7Yk8bJO0s530x/9ISEyFcOtCi2+swMhmgFpIWNup3Jo3CLKd6gc1jgC6Q6sK/rYUm+Zu1CFWqsn8X+64VU/Kxl1fvUATp4g1r+1PtOg+GmwWSXs8aeffUxwKZLQgL3SA==,iv:upyWC+qlUEE7O3Hrv4ISt6OCao6CjypRp3H2cixF9ek=,tag:WMAxJiTo6/5HKR7gWMc1mQ==,type:str]
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2023-06-03T13:03:49Z"
-    mac: ENC[AES256_GCM,data:byLNoIAFRDBIV+rgLe6ulS6/C9KtsOk3fl/pZHjZ/4AJWHz/k/AWyLjeC4G9MyDBL3P8LF3K9WioEAtkHQ5WrNSdraCpcmx2PPz/PDFtF26bQz5fMS2Llm3e4K9YTF+C5bfWJb1vQyP1UmSXP/XJZaIBq6kqeaSfrj0Ubxrt5bQ=,iv:qRY25fLzoyHm/XSMnn5H1rHQgdax4IZhPceF0/7K9vQ=,tag:sIu0kbv9ky4i/pZeQdGiKA==,type:str]
+    lastmodified: "2023-06-25T06:40:51Z"
+    mac: ENC[AES256_GCM,data:KxgTqcOIBcYbsEqzSYBjDCYEkr8oCxpmuRtxqUMT9QpPel1eMsIVFRLBj4Z31e2gvvF01N4QhQrWS7G9Ltv8E8McG3rUSKyfdD+YJwJONpAPYRExLi/alWG+obV7454Imjh0+eoGtaoeneqZptRkIx1QL06uRDj6tMqHUf2enLs=,iv:ji/bU8KM9ZUjSnk6FrBv5diIiWYu0vWow0wMPL+46H4=,tag:MRlKYuCeKHbcog+jH9zO0g==,type:str]
     pgp:
         - created_at: "2023-06-03T13:00:02Z"
           enc: |-

@@ -24,16 +24,12 @@ spec:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-4
       global:
-        # repo1-retention-full: "2"
-        # repo1-retention-full-type: count
-        repo2-path: /pgbackrest/postgres-operator/db-s3/repo2
-        repo2-s3-uri-style: path
-        repo2-storage-verify-tls: n
-        repo2-retention-full: "7"
-        # repo3-path: /pgbackrest/postgres-operator/db-s3/repo2
-        # repo3-s3-uri-style: path
-        # repo3-storage-verify-tls: n
-        # repo3-retention-full: "12"
+        repo1-retention-full: "2"
+        repo1-retention-full-type: count
+        # repo2-path: /b4mad-racing
+        # repo2-s3-uri-style: path
+        # repo2-storage-verify-tls: n
+        # repo2-retention-full: "7"
       # repoHost:
       #   resources:
       #     limits:
@@ -41,28 +37,28 @@ spec:
       #     requests:
       #       cpu: 200m
       repos:
-        # - name: repo1
-        #   schedules:
-        #     # Every sunday at 01:00 full backup
-        #     # full: "0 1 * * 0"
-        #     # Monday through saturday at 01:00 differential backup
-        #     # differential: "0 1 * * 1-6"
-        #     full: "0 */4 * * *"
-        #   volume:
-        #     volumeClaimSpec:
-        #       accessModes:
-        #         - "ReadWriteOnce"
-        #       resources:
-        #         requests:
-        #           storage: 4Gi
-        - name: repo2
+        - name: repo1
           schedules:
+            # Every sunday at 01:00 full backup
+            # full: "0 1 * * 0"
+            # Monday through saturday at 01:00 differential backup
             full: "0 1 * * 0"
             differential: "0 1 * * 1-6"
-          s3:
-            bucket: "b4mad-racing-dev-psql"
-            endpoint: "https://192.169.178.22:9000/"
-            region: "not-really-used"
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 4Gi
+        # - name: repo2
+        #   schedules:
+        #     full: "0 1 * * 0"
+        #     differential: "0 1 * * 1-6"
+        #   s3:
+        #     bucket: "b4mad-racing-dev-psql"
+        #     endpoint: "https://192.169.178.22:9000/"
+        #     region: "not-really-used"
         # - name: repo3
         #   schedules:
         #     full: "0 0 1 * *"
@@ -74,7 +70,7 @@ spec:
       - secret:
           name: pgo-s3-creds
       manual:
-        repoName: repo2
+        repoName: repo1
         options:
          - --type=full
   #   pgBouncer:

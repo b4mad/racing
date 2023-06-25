@@ -3,10 +3,10 @@ kind: SealedSecret
 metadata:
   creationTimestamp: null
   name: pgo-s3-creds
-  namespace: b4mad-racing-test
+  namespace: b4mad-racing
 spec:
   encryptedData:
-    s3.conf: AgB9jMHkRVhcZCoN64VjkEg9a8b8uPFgEpdDp5F+BuVdxXL8X95C7ZQmnKBmH8MXWnZCQCmaCniUClGmUPQQm08tQYEKnVCteYEKO1hPYkWIoE1sCEcTQ6Vm1MBdN3wOCzAfY8C5xUGruUJrkpKFsQ7ABQVdRRAOo5udhYcV6+dWcpUfahM2Y7mP2U5OYfYGen/M3FNl0UYp5dI614/GhFr/c3VNd9/qIUe7AhUzb8kc4z9Hobrtz/LO8bk1v6cOVDBz9MCLNqIe6CNYsfznMOouZg2wusMGNNL9BFfUfgM4L+/G2g8QGRqIxL4rCR3mYAdR+2Jo9JanGqCOaAW2zDIzuLIXvWpChGdg87732bGXtlMkzQgo8irEdq9Ml0gLcTcH3uGe8aJ/GTbaLbQwexBYp70voXDd/bqNDC152+EOoT+jdPSB1Kz5C3gJgLCGFs3+LVu3EUbDotdL0eRIKs2QhDxhsKAxTBWq5ru+KNpIdJUQ0eHcae1XcGjddJXH7jl4sUhz0ti5DVcMurETS7riDYzE7iSrl2i2ObdWP35tTZRewGSGPkAzVnr++Ebtj3Gg7PQIucXQKkiPAC6xOrzrWr4RfRkVTfaaDJWoBiom2RTMJFcvK9gY5IUCRT15gt+Gc1UydxvELliL2yqtzQ4KNs2QhAT4JNd8wBSIS8oZoboUhREHrVjvi/k25gGnczF1cKOeMY2Y+q26vK0OLmCNW7IkmRjASNZuZRNlzayVxu/ocH9Zw3bf3FDrRlYRb4QlnEQrgOQBYSWoo74IrlXb3he25H4xAjD+3Et7TIZHJvXpIns0Kg0MD3wzT5jtwZBje72u8T6+1VRJZomq86OjG35OeCKEjThr7CwYmLuLAX8APVsIwFrWlcapeCVzFZ18AcryWTjqxq+N6s+KnHcV533xLCOA7gp2wXiPwVfntfbOn/6jkW7CDVN7YsWIlYNBJtX49BC/
+    s3.conf: AgA8573D/4ZKBTEAaucxsJBEGVZ7X9BDUBMZFW1PzHafD0+04JDs+WgSbkkkOeP7LSGIeaHGK7/OnzTKdzqLK2xXPf5BFBF159Pk2gLobOscbvccQtkgp5NoN3SmWDvP1Dbza0IDfobh6R8MD6NPwS0IxfsYblVLFHKdCkzWj50hjk9tzCg5/c0SMtIpQcLe1yOvj40IFLL87DZQ4uE9cDZnR141zCm5ruBwHqbC9Fw5IArTTToz4FaltEL9k6xok8OxkbpMvx46iW+tEICzbW/o2hJ+bbwhTKhOR6tnNsGSbToGkyO7/O+zSyE1oHQE2dq7eh68sN/KfA/1ITZdSdEreVN4u6ozuSQE05Mn0PwrzIkjRjaOoZZTqc9tztjHFv8tLFknVlkvyvPj3/TNAzt/OyrAszoXfnHnlDM5GyeeJb64RI5OAnpTSdCBAubd/NF+oI0Zs3gNbhWeWbLE1W1LCL8VwWvIvpzbJlZwRbQ4sJEK6bZ9eFy7O2T+Tq2XBzFJQDTYtTtZu/9gvEhL4M2nEhmmmfF3J959UVz6gPKM4ypugj2PYDksoAKO0YHWiR83dQhnlflj36kKHBj8Y0WOdleR+6sqAs3Rd+ASpFVVlOhGKz2xlF8WQ01zmrqdTFWMVFv+QBbIAsKwOzxAiGKDY+Xda6ncw6omu0J8Ly53GEvbM17soJ9LVFx+YkVzxpXpV7x7R9jp48zVCSsZS5PqkodpFUItpx82DCIFq8wi+zFQy5PnsXN08p6/FrdPjlf5SoEhe4y4hV81pnyo0rO9jztr3uWW5fQu8zJ6ysi2YS5pakdJUoVWn+6gU3nuvaFk4u3zh56G
   template:
     metadata:
       creationTimestamp: null
@@ -15,5 +15,5 @@ spec:
         app.kubernetes.io/name: b4mad-racing
         app.kubernetes.io/version: v0.1.0-dev
       name: pgo-s3-creds
-      namespace: b4mad-racing-test
+      namespace: b4mad-racing
     type: Opaque
