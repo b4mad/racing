@@ -6,7 +6,7 @@ metadata:
   # image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"paddock:latest"},"fieldPath":"spec.jobTemplate.spec.template.spec.containers[?(@.name==\"analyze\")].image"}]'
 spec:
   # run the analyze job an hour after the psql backup job
-  schedule: "0 2 * * *"
+  schedule: "0 3 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
