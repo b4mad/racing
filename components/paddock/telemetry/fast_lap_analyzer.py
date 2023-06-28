@@ -176,7 +176,7 @@ class FastLapAnalyzer:
         #     return
         df = df[df["Gear"] != 0]
         # convert _time Timestamp column to int64
-        df["Time"] = df["_time"].astype("int64")
+        df.loc[:, "Time"] = df["_time"].astype("int64")
         df = self.analyzer.resample(
             df,
             freq=1,

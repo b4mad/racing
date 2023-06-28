@@ -122,7 +122,7 @@ class CoachView(LoginRequiredMixin, FormView):
 
         self.coach = None
         coach_enabled = False
-        coach_track_walk = False
+        # coach_track_walk = False
         driver_name = None
 
         driver = Driver.objects.filter(name=user_name).first()
@@ -130,12 +130,12 @@ class CoachView(LoginRequiredMixin, FormView):
             driver_name = driver.name
             self.coach = Coach.objects.get_or_create(driver=driver)[0]
             coach_enabled = self.coach.enabled
-            coach_track_walk = self.coach.track_walk
+            # coach_track_walk = self.coach.track_walk
 
         data = {
             "driver_name": driver_name,
             "coach_enabled": coach_enabled,
-            "coach_track_walk": coach_track_walk,
+            # "coach_track_walk": coach_track_walk,
         }
         return data
 
@@ -156,7 +156,7 @@ class CoachView(LoginRequiredMixin, FormView):
             if driver:
                 coach = Coach.objects.get_or_create(driver=driver)[0]
                 coach.enabled = form.cleaned_data["coach_enabled"]
-                coach.track_walk = form.cleaned_data["coach_track_walk"]
+                # coach.track_walk = form.cleaned_data["coach_track_walk"]
                 coach.save()
 
             self.request.user.save()
