@@ -16,95 +16,89 @@ class Analyzer:
         last = df.iloc[-1]["DistanceRoundTrack"]
         return last - first
 
-    def split_sectors(self, df, threshold=None, min_length=50):
+    def split_sectors(
+        self, df, threshold=None, min_length_throttle_below_threshold=50, min_distance_between_sectors=50
+    ):
         if threshold is None:
             threshold = df["Throttle"].max() * 0.98
         # Step 1: Find all rows where Throttle starts to drop below the threshold
         start = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(1) >= threshold)].index
+        end = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(-1) >= threshold)].index
+        max_distance = df["DistanceRoundTrack"].max()
 
         if len(start) == 0:
-            logging.debug(f"No sectors found threshold: {threshold} min_length: {min_length}")
+            logging.error(f"No sectors found threshold: {threshold} min_length: {min_length_throttle_below_threshold}")
             return [df]
 
-        # Step 3: Split the dataframe into sections
+        if len(start) != len(end):
+            logging.error(f"start and end are not the same length: {len(start)} {len(end)}")
+            return [df]
+
+        # combine start and end into sector dicts
+        start_idx = 0
+        end_idx = 0
+        # find the first end that is larger than the first start
+        for i in range(len(end)):
+            if end[i] > start[start_idx]:
+                end_idx = i
+                break
+
         sectors = []
         for i in range(len(start)):
-            if i < len(start) - 1:
-                sector = df.iloc[start[i] : start[i + 1]]
-            else:
-                sector = df.iloc[start[i] :]
+            sector = {}
+            sector["start"] = start[start_idx]
+            sector["end"] = end[end_idx]
+            sector["length_throttle_below_threshold"] = (sector["end"] - sector["start"]) % max_distance
+            sectors.append(sector)
+            start_idx += 1
+            end_idx = (end_idx + 1) % len(end)
 
-            below_threshold = sector[sector["Throttle"] < threshold]
-            if i and self.meters_section(below_threshold) < min_length:
+        # remove all sectors that are too short
+        sectors = [
+            sector
+            for sector in sectors
+            if sector["length_throttle_below_threshold"] > min_length_throttle_below_threshold
+        ]
+
+        # combine sectors that are too short with the previous sector
+        remove_indices = []
+        for i, sector in enumerate(sectors):
+            prev_index = i - 1 % len(sectors)
+            prev_sector = sectors[prev_index]
+            distance_between = (sector["start"] - prev_sector["end"]) % max_distance
+            if distance_between < min_distance_between_sectors:
                 # append to previous sector
-                sectors[-1] = pd.concat([sectors[-1], sector])
-            else:
-                sectors.append(sector)
+                sector["start"] = prev_sector["start"]
+                remove_indices.append(i)
+        sectors = [sector for i, sector in enumerate(sectors) if i not in remove_indices]
 
-        # check the length of the first sector
-        # if its too short, then append it to the append the second sector and remove the second sector
-        below_threshold = sectors[0][sectors[0]["Throttle"] < threshold]
-        if self.meters_section(below_threshold) < min_length and len(sectors) > 1:
-            sectors[0] = pd.concat([sectors[0], sectors[1]])
-            sectors.pop(1)
+        # set the start and end of the sectors to the middle between the start and end
+        for i, sector in enumerate(sectors):
+            prev_index = i - 1 % len(sectors)
+            prev_sector = sectors[prev_index]
+            prev_end = prev_sector["end"]
+            start = sector["start"]
+            distance_between = (start - prev_end) % max_distance
 
-        # Step 4: Return a list of dataframes, one for each section
+            new_sector_start = int(prev_end + (distance_between / 2) % max_distance)
+            sector["start"] = new_sector_start
+            prev_sector["end"] = new_sector_start - 1
+
+        # recalculate the length of the sectors
+        for i, sector in enumerate(sectors):
+            sector["length"] = int((sector["end"] - sector["start"]) % max_distance)
+            del sector["length_throttle_below_threshold"]
+
         return sectors
 
-    def extract_sector_start_end(self, sectors, threshold=0.98, track_length=0, min_length=50):
-        sector_start_end = []
-
-        # Calculate the maximum DistanceRoundTrack value of all sectors
-        if track_length == 0:
-            track_length = max([sector["DistanceRoundTrack"].max() for sector in sectors])
-
-        for i, sector in enumerate(sectors):
-            # if i == 0:
-            #     prev_sector = sectors[-1]
-            # else:
-            #     prev_sector = sectors[i - 1]
-            # start, end = self.throttle_window(prev_sector, threshold=0.95)
-            # last_meter_of_prev_sector = prev_sector.iloc[-1]["DistanceRoundTrack"]
-            # logging.debug(f"start: {start} end: {end}, last_meter_of_prev_sector: {last_meter_of_prev_sector}")
-            # if start:
-            #     delta = int((last_meter_of_prev_sector - end) / 2)
-            # else:
-            #     delta = 10
-            # logging.debug(f"delta: {delta}")
-            # first_meter_of_sector = sector.iloc[0]["DistanceRoundTrack"]
-            # logging.debug(f"first_meter_of_sector: {first_meter_of_sector}")
-            delta = 10
-
-            # Rule 1: A sector N starts delta meters earlier than the first row of a DataFrame
-            start = int((sector["DistanceRoundTrack"].iloc[0] - delta) % track_length)
-
-            # Rule 1a: Unless the previous DataFrame for sector N-1 has Throttle input below threshold
-            # at the calculated start of N
-            if i > 0:
-                prev_sector = sectors[i - 1]
-                prev_sector_last_row = prev_sector.iloc[-1]
-                if prev_sector_last_row["Throttle"] < threshold and prev_sector_last_row["DistanceRoundTrack"] >= start:
-                    start = int(prev_sector_last_row["DistanceRoundTrack"])
-
-            # Rule 2: The last sector ends where the first sector starts
-            if i == len(sectors) - 1:
-                end = int((sectors[0]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length)
-            else:
-                end = int(
-                    (sectors[i + 1]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length
-                )  # Subtract 11 to make the boundaries exactly one meter apart
-
-            length = int((end - start) % track_length)
-
-            # Merge sectors shorter than the threshold with the previous sector
-            if i > 0 and length < min_length:
-                sector_start_end[-1]["end"] = end
-                sector_start_end[-1]["length"] = (
-                    sector_start_end[-1]["end"] - sector_start_end[-1]["start"]
-                ) % track_length
-            else:
-                sector_start_end.append({"start": start, "end": end, "length": length})
-        return sector_start_end
+    def extract_sector_frames(self, df, sectors):
+        sector_df = []
+        for sector in sectors:
+            start = sector["start"]
+            end = sector["end"]
+            sector_df = self.section_df(df, start, end)
+            sector["df"] = sector_df
+        return sector_df
 
     def section_df(self, track_df, start, end):
         # Calculate the maximum DistanceRoundTrack value
@@ -292,9 +286,9 @@ class Analyzer:
         if len(df) == 0:
             return input_df
 
-        target_rows = int(df["DistanceRoundTrack"].max() / freq)
-        min_distance = df["DistanceRoundTrack"].min()
-        max_distance = df["DistanceRoundTrack"].max()
+        min_distance = int(df["DistanceRoundTrack"].min()) + 1
+        max_distance = int(df["DistanceRoundTrack"].max())
+        target_rows = int(max_distance / freq)
 
         new_distance_round_track = np.linspace(min_distance, max_distance, target_rows)
 
@@ -375,6 +369,96 @@ class Analyzer:
         # fig.show()
 
     ##### probably not needed anymore
+
+    def split_sectors_old(self, df, threshold=None, min_length=50):
+        if threshold is None:
+            threshold = df["Throttle"].max() * 0.98
+        # Step 1: Find all rows where Throttle starts to drop below the threshold
+        start = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(1) >= threshold)].index
+
+        if len(start) == 0:
+            logging.debug(f"No sectors found threshold: {threshold} min_length: {min_length}")
+            return [df]
+
+        # Step 3: Split the dataframe into sections
+        sectors = []
+        for i in range(len(start)):
+            if i < len(start) - 1:
+                sector = df.iloc[start[i] : start[i + 1]]
+            else:
+                sector = df.iloc[start[i] :]
+
+            below_threshold = sector[sector["Throttle"] < threshold]
+            if i and self.meters_section(below_threshold) < min_length:
+                # append to previous sector
+                sectors[-1] = pd.concat([sectors[-1], sector])
+            else:
+                sectors.append(sector)
+
+        # check the length of the first sector
+        # if its too short, then append it to the append the second sector and remove the second sector
+        below_threshold = sectors[0][sectors[0]["Throttle"] < threshold]
+        if self.meters_section(below_threshold) < min_length and len(sectors) > 1:
+            sectors[0] = pd.concat([sectors[0], sectors[1]])
+            sectors.pop(1)
+
+        # Step 4: Return a list of dataframes, one for each section
+        return sectors
+
+    def extract_sector_start_end(self, sectors, threshold=0.98, track_length=0, min_length=50):
+        sector_start_end = []
+
+        # Calculate the maximum DistanceRoundTrack value of all sectors
+        if track_length == 0:
+            track_length = max([sector["DistanceRoundTrack"].max() for sector in sectors])
+
+        for i, sector in enumerate(sectors):
+            # if i == 0:
+            #     prev_sector = sectors[-1]
+            # else:
+            #     prev_sector = sectors[i - 1]
+            # start, end = self.throttle_window(prev_sector, threshold=0.95)
+            # last_meter_of_prev_sector = prev_sector.iloc[-1]["DistanceRoundTrack"]
+            # logging.debug(f"start: {start} end: {end}, last_meter_of_prev_sector: {last_meter_of_prev_sector}")
+            # if start:
+            #     delta = int((last_meter_of_prev_sector - end) / 2)
+            # else:
+            #     delta = 10
+            # logging.debug(f"delta: {delta}")
+            # first_meter_of_sector = sector.iloc[0]["DistanceRoundTrack"]
+            # logging.debug(f"first_meter_of_sector: {first_meter_of_sector}")
+            delta = 10
+
+            # Rule 1: A sector N starts delta meters earlier than the first row of a DataFrame
+            start = int((sector["DistanceRoundTrack"].iloc[0] - delta) % track_length)
+
+            # Rule 1a: Unless the previous DataFrame for sector N-1 has Throttle input below threshold
+            # at the calculated start of N
+            if i > 0:
+                prev_sector = sectors[i - 1]
+                prev_sector_last_row = prev_sector.iloc[-1]
+                if prev_sector_last_row["Throttle"] < threshold and prev_sector_last_row["DistanceRoundTrack"] >= start:
+                    start = int(prev_sector_last_row["DistanceRoundTrack"])
+
+            # Rule 2: The last sector ends where the first sector starts
+            if i == len(sectors) - 1:
+                end = int((sectors[0]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length)
+            else:
+                end = int(
+                    (sectors[i + 1]["DistanceRoundTrack"].iloc[0] - delta - 1) % track_length
+                )  # Subtract 11 to make the boundaries exactly one meter apart
+
+            length = int((end - start) % track_length)
+
+            # Merge sectors shorter than the threshold with the previous sector
+            if i > 0 and length < min_length:
+                sector_start_end[-1]["end"] = end
+                sector_start_end[-1]["length"] = (
+                    sector_start_end[-1]["end"] - sector_start_end[-1]["start"]
+                ) % track_length
+            else:
+                sector_start_end.append({"start": start, "end": end, "length": length})
+        return sector_start_end
 
     def local_maxima(self, df, column="Gear", points=50):
         return self.local_extrema(df, column, mode="max", points=points)
