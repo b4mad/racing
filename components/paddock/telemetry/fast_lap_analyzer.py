@@ -44,9 +44,10 @@ class FastLapAnalyzer:
 
     def extract_sectors(self, lap_data):
         df_max = self.analyzer.combine_max_throttle(lap_data)
-        sectors = self.analyzer.split_sectors(df_max)
-        sector_start_end = self.analyzer.extract_sector_start_end(sectors)
-        return sector_start_end
+        sector_start_end = self.analyzer.split_sectors(
+            df_max, min_distance_between_sectors=100, min_length_throttle_below_threshold=20
+        )
+        return sector_start_end, df_max
 
     def fastest_sector(self, data_frames, start, end):
         fast_sector = None
@@ -70,6 +71,7 @@ class FastLapAnalyzer:
                 end_idx = -1
 
             section_time = sector.iloc[start_idx]["Time"] - sector.iloc[end_idx]["Time"]
+            # print(f"section_time: {section_time}")
 
             if section_time < fast_sector_time:
                 fast_sector = sector
@@ -90,20 +92,8 @@ class FastLapAnalyzer:
             logging.info(f"Found {len(lap_telemetry)} laps, need {min_laps}")
             return
 
-        sector_start_end = self.extract_sectors(lap_telemetry)
-        segments = []
-        used_laps = set()
-        for i in range(len(sector_start_end)):
-            start = sector_start_end[i]["start"]
-            end = sector_start_end[i]["end"]
-            sector, lap_index = self.fastest_sector(lap_telemetry, start, end)
-            used_laps.add(laps_with_telemetry[lap_index])
-
-            segment = self.extract_segment(sector)
-            segment.start = start
-            segment.end = end
-            segment.turn = i + 1
-            segments.append(segment)
+        sector_start_end, df_max = self.extract_sectors(lap_telemetry)
+        segments, used_laps = self.extract_segments(sector_start_end, lap_telemetry, laps_with_telemetry, df_max)
 
         distance_time = self.analyzer.distance_speed_lookup_table(lap_telemetry[0])
         data = {
@@ -112,6 +102,25 @@ class FastLapAnalyzer:
         }
 
         return data, list(used_laps)
+
+    def extract_segments(self, sector_start_end, lap_telemetry, laps_with_telemetry, df_max):
+        segments = []
+        used_laps = set()
+        for i in range(len(sector_start_end)):
+            start = sector_start_end[i]["start"]
+            end = sector_start_end[i]["end"]
+            sector, lap_index = self.fastest_sector(lap_telemetry, start, end)
+            # merge Throttle input
+            # sector['Throttle'] = df_max['Throttle']
+
+            used_laps.add(laps_with_telemetry[lap_index])
+
+            segment = self.extract_segment(sector)
+            segment.start = start
+            segment.end = end
+            segment.turn = i + 1
+            segments.append(segment)
+        return segments, used_laps
 
     def brake_features(self, df):
         brake_feature_args = {

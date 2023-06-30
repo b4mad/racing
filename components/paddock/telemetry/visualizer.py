@@ -31,7 +31,7 @@ def lap_fig(df, mode=None, columns=["Throttle", "Brake"], fig=None, full_range=F
         # end = df["DistanceRoundTrack"].max()
         # if end - start < 400:
         #     end = start + 400
-        end = start + 400
+        end = start + 1000
         x_range = [start, end]
         fig.update_xaxes(range=x_range, dtick=100)
 
@@ -51,6 +51,7 @@ def fig_add_shape(fig, color="black", **kwargs):
     )
     args = {**default, **kwargs}
     fig.add_shape(**args)
+    return fig
 
 
 def fig_add_features(fig, features, color="red"):
