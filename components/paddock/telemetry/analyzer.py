@@ -361,13 +361,28 @@ class Analyzer:
         return lap
 
     def combine_max_throttle(self, laps):
-        df_max = laps[0]
+        # find the smallest start and largest end
+        min_meters = min([lap["DistanceRoundTrack"].min() for lap in laps])
+        max_meters = max([lap["DistanceRoundTrack"].max() for lap in laps])
+        length = max_meters - min_meters
+
+        # remove laps that are too short
+        valid_laps = []
+        for lap in laps:
+            if lap["DistanceRoundTrack"].max() - lap["DistanceRoundTrack"].min() > length * 0.9:
+                valid_laps.append(lap)
+            else:
+                logging.debug("Lap too short, skipping")
+
+        df_max = valid_laps[0]
+
+        # from .visualizer import lap_fig
         # fig = lap_fig(df_max, full_range=True)
         # fig.show()
-        for df in laps[1:]:
+
+        for df in valid_laps[1:]:
             # fig = lap_fig(df, full_range=True)
             # fig.show()
-
             df_max_throttle = df_max[["Throttle"]].combine(df[["Throttle"]], np.maximum)
             df_max["Throttle"] = df_max_throttle
             # fig = lap_fig(df_max, full_range=True)
