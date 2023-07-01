@@ -13,6 +13,8 @@ spec:
   selector: {}
   jobTemplate:
     spec:
+      # only retry once - usually there's some telemetry problem
+      backoffLimit: 1
       template:
         metadata:
           name: analyze
