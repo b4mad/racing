@@ -227,7 +227,7 @@ class FastLapAnalyzer:
         # if len(df) < 100:
         #     logging.error(f"Dataframe has less than 100 points: {len(df)}")
         #     return
-        df = df[df["Gear"] != 0]
+        df = df[df["Gear"] != 0].copy()
         # convert _time Timestamp column to int64
         df.loc[:, "Time"] = df["_time"].astype("int64")
         df = self.analyzer.resample(
