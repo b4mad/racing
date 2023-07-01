@@ -197,7 +197,7 @@ class Segment:
         return self.avg_feature(n=n, feature="start", type="brake")
 
     def driver_score(self):
-        if len(self.live_telemetry_frames) < 3:
+        if len(self.live_features["gear"]) < 3:
             return 0
         # score driver between 0 and 1
         return 1
