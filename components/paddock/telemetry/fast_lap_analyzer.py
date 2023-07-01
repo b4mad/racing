@@ -1,7 +1,9 @@
 import logging
+import statistics
 
 from .analyzer import Analyzer
 from .influx import Influx
+from .models import FastLap
 from .pitcrew.segment import Segment
 
 
@@ -11,6 +13,7 @@ class FastLapAnalyzer:
         self.laps = laps
         self.bucket = bucket
         self.influx_client = None
+        self.same_sectors = False
 
     def influx(self):
         if not self.influx_client:
@@ -42,6 +45,39 @@ class FastLapAnalyzer:
 
         return lap_telemetry, laps_with_telemetry
 
+    def current_fast_lap_sectors(self):
+        lap = self.laps[0]
+        car = lap.car
+        track = lap.track
+        game = lap.session.game
+        fast_lap = FastLap.objects.filter(game=game, car=car, track=track, driver=None).first()
+        sectors = []
+        if fast_lap and fast_lap.data:
+            for segment in fast_lap.data.get("segments", []):
+                sectors.append(
+                    {
+                        "start": segment.start,
+                        "end": segment.end,
+                    }
+                )
+        return sectors
+
+    def similar_sectors(self, sectors_a, sectors_b):
+        if len(sectors_a) != len(sectors_b):
+            return False
+
+        if len(sectors_a) == 0:
+            return False
+
+        start_diffs = []
+        for i in range(len(sectors_a)):
+            start_diffs.append(abs(sectors_a[i]["start"] - sectors_b[i]["start"]))
+
+        if statistics.median(start_diffs) > 50:
+            return False
+
+        return True
+
     def extract_sectors(self, lap_data):
         df_max = self.analyzer.combine_max_throttle(lap_data)
         sector_start_end = self.analyzer.split_sectors(
@@ -61,6 +97,7 @@ class FastLapAnalyzer:
             # pipenv run ./manage.py analyze \
             #   --game 'Automobilista 2' --track 'Snetterton:Snetterton_300' --car 'Ginetta G58'
             if sector.empty:
+                logging.error(f"sector is empty: {i}")
                 continue
 
             if start < end:
@@ -93,6 +130,13 @@ class FastLapAnalyzer:
             return
 
         sector_start_end, df_max = self.extract_sectors(lap_telemetry)
+
+        current_sectors = self.current_fast_lap_sectors()
+        if self.similar_sectors(sector_start_end, current_sectors):
+            logging.info("Sectors are similar to current fast lap, using current fast lap")
+            self.same_sectors = True
+            sector_start_end = current_sectors
+
         segments, used_laps = self.extract_segments(sector_start_end, lap_telemetry, laps_with_telemetry, df_max)
 
         distance_time = self.analyzer.distance_speed_lookup_table(lap_telemetry[0])

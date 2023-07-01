@@ -53,6 +53,11 @@ class TestCoach(TransactionTestCase):
             history.init()
             history._do_init = False
 
+        # get the fast lap for the driver
+        fast_lap = driver.fast_laps.get(game=history.game, track=history.track, car=history.car)
+        driver_segments = fast_lap.data
+        self.assertIsNone(driver_segments)
+
         captured_responses = []
         try:
             for index, row in session_df.iterrows():
@@ -71,3 +76,9 @@ class TestCoach(TransactionTestCase):
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
+
+        # get the fast lap for the driver
+        fast_lap.refresh_from_db()
+        driver_segments = fast_lap.data["segments"]
+        self.assertEqual(len(driver_segments), 8)
+        self.assertEqual(len(driver_segments[1].live_features["brake"]), 9)
