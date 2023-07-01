@@ -26,13 +26,24 @@ class Analyzer:
         end = df[(df["Throttle"] < threshold) & (df["Throttle"].shift(-1) >= threshold)].index
         max_distance = df["DistanceRoundTrack"].max()
 
+        # remove the entries that are in the start and end lists
+        # get all the entries that are in both lists
+        in_start_and_end = [x for x in start if x in end]
+        if len(in_start_and_end) > 0:
+            logging.error(f"start and end are the same: {in_start_and_end}")
+            start = [x for x in start if x not in in_start_and_end]
+            end = [x for x in end if x not in in_start_and_end]
+
+        one_sector = [
+            {"start": 0, "end": max_distance, "length": max_distance},
+        ]
         if len(start) == 0:
             logging.error(f"No sectors found threshold: {threshold} min_length: {min_length_throttle_below_threshold}")
-            return [df]
+            return one_sector
 
         if len(start) != len(end):
             logging.error(f"start and end are not the same length: {len(start)} {len(end)}")
-            return [df]
+            return one_sector
 
         # combine start and end into sector dicts
         start_idx = 0
@@ -80,7 +91,7 @@ class Analyzer:
             start = sector["start"]
             distance_between = (start - prev_end) % max_distance
 
-            new_sector_start = int(prev_end + (distance_between / 2) % max_distance)
+            new_sector_start = int((prev_end + (distance_between / 2)) % max_distance)
             sector["start"] = new_sector_start
             prev_sector["end"] = new_sector_start - 1
 

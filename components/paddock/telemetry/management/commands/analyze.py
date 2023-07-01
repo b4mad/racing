@@ -50,6 +50,7 @@ class Command(BaseCommand):
         parser.add_argument("--from-bucket", nargs="?", type=str, default="racing")
         parser.add_argument("-n", "--new", action="store_true", help="only analyze new coaches")
         parser.add_argument("--copy-influx", action="store_true")
+        parser.add_argument("--force-save", action="store_true")
 
     def handle(self, *args, **options):
         min_laps = 1
@@ -79,7 +80,9 @@ class Command(BaseCommand):
 
             valid_laps = list(laps)
 
-            used_laps = self.analyze_fast_laps(valid_laps, min_laps=min_laps, max_laps=max_laps)
+            used_laps = self.analyze_fast_laps(
+                valid_laps, min_laps=min_laps, max_laps=max_laps, force_save=options["force_save"]
+            )
 
             if options["copy_influx"] and used_laps:
                 sessions = set()
@@ -98,52 +101,70 @@ class Command(BaseCommand):
         # if options["copy_influx"]:
         #     logging.debug(f"fast sessions to be deleted: {influx_fast_sessions}")
 
-    def analyze_fast_laps(self, fast_laps, min_laps=1, max_laps=10):
+    def analyze_fast_laps(self, fast_laps, min_laps=1, max_laps=10, force_save=False):
         fl = FastLapAnalyzer(fast_laps)
-        result = fl.analyze(min_laps=min_laps, max_laps=max_laps)
-        if result:
-            data = result[0]
-            used_laps = result[1]
-            logging.debug(f"found {len(data['segments'])} sectors in {len(used_laps)} laps")
-            self.save_fastlap(data, laps=used_laps)
-            return used_laps
-        else:
-            logging.error("no result")
-
-    def save_fastlap(self, data, laps=[]):
-        if not laps:
-            logging.error("no laps")
-            return
-        lap = laps[0]
+        lap_ids = set([lap.id for lap in fast_laps])
+        lap = fast_laps[0]
         car = lap.car
         track = lap.track
         game = lap.session.game
         fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
+        if fast_lap.data:
+            previous_run_lap_ids = fast_lap.data.get("lap_ids", set())
+            if previous_run_lap_ids == lap_ids and not force_save:
+                logging.debug("same laps as previous run, skipping")
+                return
+        result = fl.analyze(min_laps=min_laps, max_laps=max_laps)
+
+        if result:
+            data = result[0]
+            data["lap_ids"] = lap_ids
+            used_laps = result[1]
+            logging.debug(f"found {len(data['segments'])} sectors in {len(used_laps)} laps")
+
+            delete_user_segments = True
+            if fl.same_sectors:
+                delete_user_segments = False
+
+            self.save_fastlap(
+                data,
+                fast_lap=fast_lap,
+                laps=used_laps,
+                delete_user_segments=delete_user_segments,
+                force_save=force_save,
+            )
+            return used_laps
+        else:
+            logging.error("no result")
+
+    def save_fastlap(self, data, fast_lap=None, laps=[], delete_user_segments=True, force_save=False):
+        if not laps:
+            logging.error("no laps")
+            return
+        car = fast_lap.car
+        track = fast_lap.track
+        game = fast_lap.game
+
+        if delete_user_segments or force_save:
+            r = FastLap.objects.filter(car=car, track=track, game=game).exclude(driver=None).delete()
+            logging.debug(f"Deleted {r} user segments")
+
+        fast_lap, created = FastLap.objects.get_or_create(car=car, track=track, game=game, driver=None)
         current_laps = set(fast_lap.laps.all())
         new_laps = set(laps)
-        if current_laps != new_laps:
+        got_new_laps = new_laps != current_laps
+
+        fast_lap_data = fast_lap.data
+        based_on_new_laps = True
+        if fast_lap_data:
+            current_lap_ids = fast_lap.data["lap_ids"]
+            new_lap_ids = data["lap_ids"]
+            based_on_new_laps = new_lap_ids != current_lap_ids
+
+        if force_save or got_new_laps or based_on_new_laps:
             fast_lap.data = data
             fast_lap.laps.set(laps)
             fast_lap.save()
             logging.debug("### SAVED ###")
         else:
             logging.debug("!!! NO CHANGE - NOT SAVING !!!")
-        # print(data['segments'][0].telemetry)
-        # fast_lap.fast_lap_segments.all().delete()
-        # i = 1
-        # for s in track_info:
-        #     s["turn"] = i
-        #     fast_lap.fast_lap_segments.create(
-        #         turn=i,
-        #         mark=s["mark"],
-        #         start=s["start"],
-        #         end=s["end"],
-        #         force=s["force"],
-        #         gear=s["gear"],
-        #         speed=s["speed"],
-        #     )
-        #     i += 1
-        # also delete user segments
-        # FIXME only delete user segements if they changed?
-        # r = FastLap.objects.filter(car=car, track=track, game=game).exclude(driver=None).delete()
-        # logging.debug(f"deleted {r} user segments")

@@ -44,6 +44,12 @@ class Segment:
     def end(self, value):
         self._end = int(value)
 
+    def copy_from(self, segment):
+        self.start = segment.start
+        self.end = segment.end
+        self.turn = segment.turn
+        self.type = segment.type
+
     def telemetry_for_fig(self):
         if self.start > self.end:
             # add track_length to all distances that are less than start
@@ -69,6 +75,11 @@ class Segment:
             self._gear_features.append(features)
         else:
             raise ValueError(f"unknown type {type}")
+
+    def init_live_features_from_segment(self, segment):
+        for type in ["brake", "throttle", "gear"]:
+            for features in segment.live_features[type]:
+                self.add_live_features(features, type=type)
 
     def add_live_features(self, features, type):
         self.live_features[type].append(features)
