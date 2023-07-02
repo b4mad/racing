@@ -159,6 +159,9 @@ class FastLapAnalyzer:
             start = sector_start_end[i]["start"]
             end = sector_start_end[i]["end"]
             sector, lap_index = self.fastest_sector(lap_telemetry, start, end)
+            if sector is None:
+                logging.error(f"Could not find fastest sector for {start} - {end}")
+                continue
             # merge Throttle input
             # sector['Throttle'] = df_max['Throttle']
 
