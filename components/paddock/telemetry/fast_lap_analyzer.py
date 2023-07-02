@@ -73,7 +73,10 @@ class FastLapAnalyzer:
         for i in range(len(sectors_a)):
             start_diffs.append(abs(sectors_a[i]["start"] - sectors_b[i]["start"]))
 
-        if statistics.median(start_diffs) > 50:
+        # med = statistics.median(start_diffs)
+        med = statistics.mean(start_diffs)
+        logging.debug(f"start_diffs: {start_diffs} med: {med}")
+        if med > 50:
             return False
 
         return True
@@ -90,6 +93,7 @@ class FastLapAnalyzer:
         fast_sector_time = 10_000_000_000_000
         fast_sector_idx = -1
 
+        # print(f"start: {start}, end: {end}")
         for i, df in enumerate(data_frames):
             sector = self.analyzer.section_df(df, start, end)
             # continue if the sector is empty
@@ -97,25 +101,25 @@ class FastLapAnalyzer:
             # pipenv run ./manage.py analyze \
             #   --game 'Automobilista 2' --track 'Snetterton:Snetterton_300' --car 'Ginetta G58'
             if sector.empty:
-                logging.error(f"sector is empty: {i}")
+                logging.error(f"sector {i} is empty")
                 continue
 
-            if start < end:
-                start_idx = -1
-                end_idx = 0
-            else:
-                start_idx = 0
-                end_idx = -1
+            # start_idx = -1
+            # end_idx = 0
+            # if start > end:
+            #     logging.debug(f"sector {i} wrapped start: {start} > end: {end}")
+            #     start_idx = 0
+            #     end_idx = -1
 
-            section_time = sector.iloc[start_idx]["Time"] - sector.iloc[end_idx]["Time"]
-            # print(f"section_time: {section_time}")
+            # sector_time = self.analyzer.sector_lap_time(sector)
+            sector_time = self.analyzer.sector_time(sector)
 
-            if section_time < fast_sector_time:
+            if sector_time < fast_sector_time:
                 fast_sector = sector
-                fast_sector_time = section_time
+                fast_sector_time = sector_time
                 fast_sector_idx = i
 
-        # print(fast_sector_idx)
+        # logging.debug(f"fast_sector_idx: {fast_sector_idx} fast_sector_time: {fast_sector_time}")
         return fast_sector, fast_sector_idx
 
     def analyze(self, min_laps=1, max_laps=10):
@@ -150,10 +154,14 @@ class FastLapAnalyzer:
     def extract_segments(self, sector_start_end, lap_telemetry, laps_with_telemetry, df_max):
         segments = []
         used_laps = set()
+        track_length = df_max["DistanceRoundTrack"].max()
         for i in range(len(sector_start_end)):
             start = sector_start_end[i]["start"]
             end = sector_start_end[i]["end"]
             sector, lap_index = self.fastest_sector(lap_telemetry, start, end)
+            if sector is None:
+                logging.error(f"Could not find fastest sector for {start} - {end}")
+                continue
             # merge Throttle input
             # sector['Throttle'] = df_max['Throttle']
 
@@ -163,6 +171,8 @@ class FastLapAnalyzer:
             segment.start = start
             segment.end = end
             segment.turn = i + 1
+            segment.track_length = track_length
+            segment.time = self.analyzer.sector_lap_time(sector)
             segments.append(segment)
         return segments, used_laps
 

@@ -81,7 +81,7 @@ class Coach(LoggingMixin):
 
             startup_message = "start coaching "
             try:
-                lap_time = self.history.fast_lap.laps.first().time_human()
+                lap_time = self.history.lap_time_human()
                 startup_message += f"for a lap time of {lap_time}"
             except Exception:
                 pass
