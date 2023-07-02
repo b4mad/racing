@@ -233,3 +233,26 @@ class History(LoggingMixin):
                         lap_time = distance_time.loc[distance]["CurrentLapTime"]
         self.log_debug(f"offset_distance   to {distance} {seconds:.2f}")
         return distance
+
+    def lap_time(self):
+        lap_time_seconds = 0.0
+        for segment in self.segments:
+            lap_time_seconds += segment.time
+        return lap_time_seconds
+
+    def lap_time_human(self, time_in_seconds=None):
+        if time_in_seconds is None:
+            time_in_seconds = self.lap_time()
+
+        minutes = int(time_in_seconds // 60)
+        seconds = round(time_in_seconds % 60, 2)
+        # milliseconds = int((coach_lap_time % 1) * 1000)
+        time_string = ""
+        if minutes > 1:
+            time_string += f"{minutes} minutes "
+        elif minutes == 1:
+            time_string += f"{minutes} minute "
+
+        time_string += f"{seconds:.2f} seconds "
+
+        return time_string

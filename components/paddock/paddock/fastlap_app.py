@@ -202,9 +202,9 @@ def update_graph(n_clicks, game, car, track, session_state=None):
             graphs.append(table)
             graphs.append(html.Hr())
 
-    lap = history.fast_lap.laps.first()
-    # lap.time is seconds. Format to minutes:seconds
-    info = f"Based on a lap time of { lap.time_human() } extracted from { history.fast_lap.laps.count() } laps - "
+    info = (
+        f"Based on a lap time of { history.lap_time_human() } extracted from { history.fast_lap.laps.count() } laps - "
+    )
     laps_count = racing_stats.laps(game=game, track=track, car=car, valid=True).count()
     info += f"Valid laps: {laps_count}"
 
