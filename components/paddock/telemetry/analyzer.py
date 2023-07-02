@@ -16,6 +16,26 @@ class Analyzer:
         last = df.iloc[-1]["DistanceRoundTrack"]
         return last - first
 
+    def sector_time(self, sector_df):
+        section_time = sector_df.iloc[-1]["Time"] - sector_df.iloc[0]["Time"]
+        section_time = section_time / 1_000_000_000
+        return section_time
+
+    def sector_lap_time(self, sector_df):
+        end_lap_time = sector_df.iloc[-1]["CurrentLapTime"]
+        start_lap_time = sector_df.iloc[0]["CurrentLapTime"]
+        if end_lap_time < start_lap_time:
+            # sector["CurrentLapTime"] = sector["CurrentLapTime"].apply(
+            #     lambda x: x - start_lap_time if x >= start_lap_time else x
+            # )
+            # end_lap_time = sector.iloc[start_idx]['CurrentLapTime']
+            # start_lap_time = sector.iloc[end_idx]['CurrentLapTime']
+            start_lap_time = 0
+
+        section_lap_time = end_lap_time - start_lap_time
+        # print(f"section_lap_time: {section_lap_time}")
+        return section_lap_time
+
     def split_sectors(
         self, df, threshold=None, min_length_throttle_below_threshold=50, min_distance_between_sectors=50
     ):
@@ -92,8 +112,13 @@ class Analyzer:
             distance_between = (start - prev_end) % max_distance
 
             new_sector_start = int((prev_end + (distance_between / 2)) % max_distance)
+
+            if new_sector_start > sector["end"]:
+                # print(f"{i} sector new_start {new_sector_start} > end: {sector}")
+                new_sector_start = 0
+
             sector["start"] = new_sector_start
-            prev_sector["end"] = new_sector_start - 1
+            prev_sector["end"] = (new_sector_start - 1) % max_distance
 
         # recalculate the length of the sectors
         for i, sector in enumerate(sectors):

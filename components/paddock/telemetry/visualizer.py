@@ -1,6 +1,31 @@
 import plotly.graph_objects as go
 
 
+def telemetry_for_fig(segment, track_length=None):
+    if segment.start > segment.end:
+        # add track_length to all distances that are less than start
+        df = segment.telemetry.copy()
+        if track_length is None:
+            track_length = df["DistanceRoundTrack"].max()
+            print(f"track_length: {track_length}")
+        df["DistanceRoundTrack"] = df["DistanceRoundTrack"].apply(
+            lambda x: x + track_length if x < segment.start else x
+        )
+        return df
+    return segment.telemetry
+
+
+def features_for_fig(segment, track_length, features):
+    if segment.start > segment.end:
+        features = features.copy()
+        for key in ["start", "end", "max_start", "max_end"]:
+            value = features[key]
+            if value < segment.start:
+                # print(f"adding track_length to {key} {value} -> {value + track_length}")
+                features[key] = value + track_length
+    return features
+
+
 def lap_fig(df, mode=None, columns=["Throttle", "Brake"], fig=None, full_range=False):
     fig = fig or go.Figure()
     # fig = fig or go.Figure(layout=go.Layout(

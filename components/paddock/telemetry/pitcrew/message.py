@@ -47,7 +47,8 @@ class Message:
 
     def finish_at(self, at=None, msg=""):
         msg = msg or self.msg
-        at = at or self.at
+        if at is None:
+            at = self.at
         read_time = self.read_time(msg)
         respond_at = self.segment.offset_distance(at, seconds=read_time)
         return int(respond_at)

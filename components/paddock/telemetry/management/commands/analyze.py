@@ -156,8 +156,8 @@ class Command(BaseCommand):
 
         fast_lap_data = fast_lap.data
         based_on_new_laps = True
-        if fast_lap_data:
-            current_lap_ids = fast_lap.data["lap_ids"]
+        if fast_lap_data and "lap_ids" in fast_lap_data:
+            current_lap_ids = fast_lap_data["lap_ids"]
             new_lap_ids = data["lap_ids"]
             based_on_new_laps = new_lap_ids != current_lap_ids
 

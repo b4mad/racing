@@ -15,6 +15,8 @@ class Segment:
         self._start = 0  # Start distance
         self._end = 0  # End distance
         self.turn = 0  # Turn number
+        self.time = 0.0  # Time in seconds
+        self.track_length = 0  # Track length in meters
 
         self.previous_segment = None
         self.next_segment = None
@@ -49,19 +51,6 @@ class Segment:
         self.end = segment.end
         self.turn = segment.turn
         self.type = segment.type
-
-    def telemetry_for_fig(self):
-        if self.start > self.end:
-            # add track_length to all distances that are less than start
-            df = self.telemetry.copy()
-            df["DistanceRoundTrack"] = df["DistanceRoundTrack"].apply(
-                lambda x: x + df["DistanceRoundTrack"].max() if x < self.start else x
-            )
-            return df
-        return self.telemetry
-
-    def track_length(self):
-        return self.history.track_length
 
     def offset_distance(self, distance, seconds=0.0):
         return self.history.offset_distance(distance, seconds=seconds)

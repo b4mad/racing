@@ -171,7 +171,7 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
     graphs = []
     for segment in segments:
-        sector = segment.telemetry_for_fig()
+        sector = segment.telemetry
         fig = lap_fig(sector, columns=["Throttle", "Brake"])
         brake_features = segment.brake_features()
         throttle_features = segment.throttle_features()
