@@ -62,7 +62,7 @@ class TestCoach(TransactionTestCase):
         try:
             for index, row in session_df.iterrows():
                 row = row.to_dict()
-                response = coach.notify(topic, row)
+                response = coach.notify(topic, row, row["_time"])
                 if response:
                     captured_responses.append(response)
         except Exception as e:
@@ -81,4 +81,4 @@ class TestCoach(TransactionTestCase):
         fast_lap.refresh_from_db()
         driver_segments = fast_lap.data["segments"]
         self.assertEqual(len(driver_segments), 8)
-        self.assertEqual(len(driver_segments[1].live_features["brake"]), 9)
+        self.assertEqual(len(driver_segments[1].live_features["brake"]), 8)

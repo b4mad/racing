@@ -28,6 +28,7 @@ class Segment:
             "brake": [],
             "throttle": [],
             "gear": [],
+            "other": [],
         }
 
     @property
@@ -66,11 +67,13 @@ class Segment:
             raise ValueError(f"unknown type {type}")
 
     def init_live_features_from_segment(self, segment):
-        for type in ["brake", "throttle", "gear"]:
+        for type in ["brake", "throttle", "gear", "other"]:
             for features in segment.live_features[type]:
                 self.add_live_features(features, type=type)
 
     def add_live_features(self, features, type):
+        if type not in self.live_features:
+            self.live_features[type] = []
         self.live_features[type].append(features)
 
     def type_brake(self):

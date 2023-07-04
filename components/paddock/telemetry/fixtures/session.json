@@ -1,6 +1,30 @@
 [
   {
     "model": "telemetry.session",
+    "pk": 17096,
+    "fields": {
+      "session_id": "1683288705",
+      "start": "2023-05-05T14:11:45.178Z",
+      "end": "2023-05-05T14:19:11.221Z",
+      "driver": 1,
+      "session_type": 1,
+      "game": 5
+    }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 17360,
+    "fields": {
+      "session_id": "1683289480",
+      "start": "2023-05-05T14:24:39.141Z",
+      "end": "2023-05-05T15:17:56.681Z",
+      "driver": 1,
+      "session_type": 2,
+      "game": 5
+    }
+  },
+  {
+    "model": "telemetry.session",
     "pk": 24222,
     "fields": {
       "session_id": "1682107191",
@@ -25,6 +49,18 @@
   },
   {
     "model": "telemetry.session",
+    "pk": 57010,
+    "fields": {
+      "session_id": "1685883604",
+      "start": "2023-06-04T15:00:03.089Z",
+      "end": "2023-06-04T15:14:35.040Z",
+      "driver": 10,
+      "session_type": 2,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
     "pk": 57153,
     "fields": {
       "session_id": "1685890121",
@@ -32,6 +68,42 @@
       "end": "2023-06-04T16:53:16.985Z",
       "driver": 10,
       "session_type": 4,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 57975,
+    "fields": {
+      "session_id": "1685948380",
+      "start": "2023-06-05T08:59:39.678Z",
+      "end": "2023-06-05T09:14:02.425Z",
+      "driver": 10,
+      "session_type": 2,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 58151,
+    "fields": {
+      "session_id": "1685972914",
+      "start": "2023-06-05T15:48:33.092Z",
+      "end": "2023-06-05T15:53:05.225Z",
+      "driver": 10,
+      "session_type": 4,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 58155,
+    "fields": {
+      "session_id": "1685973676",
+      "start": "2023-06-05T16:01:15.246Z",
+      "end": "2023-06-05T16:15:41.810Z",
+      "driver": 10,
+      "session_type": 2,
       "game": 1
     }
   }

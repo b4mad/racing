@@ -65,7 +65,7 @@ class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 
 class DriverAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "created", "modified"]
     changelist_links = ["sessions"]
 
 
