@@ -17,11 +17,15 @@ class Analyzer:
         return last - first
 
     def sector_time(self, sector_df):
+        if sector_df.empty:
+            return 0
         section_time = sector_df.iloc[-1]["Time"] - sector_df.iloc[0]["Time"]
         section_time = section_time / 1_000_000_000
         return section_time
 
     def sector_lap_time(self, sector_df):
+        if sector_df.empty:
+            return 0
         end_lap_time = sector_df.iloc[-1]["CurrentLapTime"]
         start_lap_time = sector_df.iloc[0]["CurrentLapTime"]
         if end_lap_time < start_lap_time:
