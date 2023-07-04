@@ -26,6 +26,9 @@ patches:
       - op: add
         path: /spec/backups/pgbackrest/repos/0/volume/volumeClaimSpec/storageClassName
         value: synostorage-smb
+      - op: replace
+        path: /spec/backups/pgbackrest/global/repo1-type
+        value: cifs
       # - op: replace
       #   path: /spec/backups/pgbackrest/repos/0/s3/bucket
       #   value: "b4mad-racing-psql"

@@ -26,6 +26,7 @@ spec:
       global:
         repo1-retention-full: "2"
         repo1-retention-full-type: count
+        repo1-type: posix
         # repo2-path: /b4mad-racing
         # repo2-s3-uri-style: path
         # repo2-storage-verify-tls: n
