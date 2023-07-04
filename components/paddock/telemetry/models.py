@@ -3,10 +3,11 @@ import datetime
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django_prometheus.models import ExportModelOperationsMixin
+from model_utils.models import TimeStampedModel
 from picklefield.fields import PickledObjectField
 
 
-class Driver(ExportModelOperationsMixin("driver"), models.Model):
+class Driver(ExportModelOperationsMixin("driver"), TimeStampedModel):
     class Meta:
         ordering = [
             "name",
@@ -18,7 +19,7 @@ class Driver(ExportModelOperationsMixin("driver"), models.Model):
         return self.name
 
 
-class Game(models.Model):
+class Game(TimeStampedModel):
     class Meta:
         ordering = [
             "name",
@@ -30,7 +31,7 @@ class Game(models.Model):
         return self.name
 
 
-class Track(models.Model):
+class Track(TimeStampedModel):
     class Meta:
         ordering = [
             "name",
@@ -45,7 +46,7 @@ class Track(models.Model):
         return self.name
 
 
-class Car(models.Model):
+class Car(TimeStampedModel):
     class Meta:
         ordering = [
             "name",
@@ -59,14 +60,14 @@ class Car(models.Model):
         return self.name
 
 
-class SessionType(models.Model):
+class SessionType(TimeStampedModel):
     type = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.type
 
 
-class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, models.Model):
+class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, TimeStampedModel):
     session_id = models.CharField(max_length=200)
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
@@ -87,7 +88,7 @@ class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, models.Mo
         return self.session_id
 
 
-class FastLap(ExportModelOperationsMixin("fastlap"), models.Model):
+class FastLap(ExportModelOperationsMixin("fastlap"), TimeStampedModel):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
@@ -102,7 +103,7 @@ class FastLap(ExportModelOperationsMixin("fastlap"), models.Model):
         return f"{self.game} {self.car} {self.track}"
 
 
-class Lap(ExportModelOperationsMixin("lap"), DirtyFieldsMixin, models.Model):
+class Lap(ExportModelOperationsMixin("lap"), DirtyFieldsMixin, TimeStampedModel):
     number = models.IntegerField()
     start = models.DateTimeField(default=datetime.datetime.now)
     end = models.DateTimeField(default=datetime.datetime.now)
@@ -142,7 +143,7 @@ class Lap(ExportModelOperationsMixin("lap"), DirtyFieldsMixin, models.Model):
         return time_string
 
 
-class FastLapSegment(models.Model):
+class FastLapSegment(TimeStampedModel):
     turn = models.CharField(max_length=200)
     start = models.IntegerField(default=0)
     end = models.IntegerField(default=0)
@@ -165,7 +166,7 @@ class FastLapSegment(models.Model):
         return repr
 
 
-class Coach(ExportModelOperationsMixin("coach"), models.Model):
+class Coach(ExportModelOperationsMixin("coach"), TimeStampedModel):
     driver = models.OneToOneField(
         Driver,
         on_delete=models.CASCADE,
