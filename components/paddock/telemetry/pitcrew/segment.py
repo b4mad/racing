@@ -67,9 +67,8 @@ class Segment:
             raise ValueError(f"unknown type {type}")
 
     def init_live_features_from_segment(self, segment):
-        for type in ["brake", "throttle", "gear", "other"]:
-            for features in segment.live_features[type]:
-                self.add_live_features(features, type=type)
+        for type, features in segment.live_features.items():
+            self.add_live_features(features, type=type)
 
     def add_live_features(self, features, type):
         if type not in self.live_features:
