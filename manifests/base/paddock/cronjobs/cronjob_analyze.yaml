@@ -2,15 +2,13 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: analyze
-  namespace: b4mad-racing
   # image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"paddock:latest"},"fieldPath":"spec.jobTemplate.spec.template.spec.containers[?(@.name==\"analyze\")].image"}]'
 spec:
   # run the analyze job an hour after the psql backup job
   schedule: "0 3 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  selector: {}
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       # only retry once - usually there's some telemetry problem
