@@ -195,10 +195,17 @@ class History(LoggingMixin):
             brake_features = self.fast_lap_analyzer.brake_features(df)
             throttle_features = self.fast_lap_analyzer.throttle_features(df)
             gear_features = self.fast_lap_analyzer.gear_features(df)
+            sector_time = self.analyzer.sector_time(df)
+            sector_lap_time = self.analyzer.sector_lap_time(df)
+            other_features = {
+                "sector_time": sector_time,
+                "sector_lap_time": sector_lap_time,
+            }
 
             segment.add_live_features(brake_features, type="brake")
             segment.add_live_features(throttle_features, type="throttle")
             segment.add_live_features(gear_features, type="gear")
+            segment.add_live_features(other_features, type="other")
 
             # FIXME: this produces a lot of large updates in the database
             #        * refactor the DB design to store the data in a more efficient way
@@ -207,6 +214,7 @@ class History(LoggingMixin):
             driver_segment.add_live_features(brake_features, type="brake")
             driver_segment.add_live_features(throttle_features, type="throttle")
             driver_segment.add_live_features(gear_features, type="gear")
+            driver_segment.add_live_features(other_features, type="other")
             self.driver_fast_lap.save()
 
             segment.live_telemetry_frames.append(df)
