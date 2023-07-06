@@ -107,7 +107,7 @@ class Analyzer:
                 remove_indices.append(i)
         sectors = [sector for i, sector in enumerate(sectors) if i not in remove_indices]
 
-        # set the start and end of the sectors to the middle between the start and end
+        # set the start of the sector -100 meters or to the middle between the start and end
         for i, sector in enumerate(sectors):
             prev_index = i - 1 % len(sectors)
             prev_sector = sectors[prev_index]
@@ -115,7 +115,9 @@ class Analyzer:
             start = sector["start"]
             distance_between = (start - prev_end) % max_distance
 
-            new_sector_start = int((prev_end + (distance_between / 2)) % max_distance)
+            new_sector_start = (start - 100) % max_distance
+            if new_sector_start < prev_sector["end"]:
+                new_sector_start = int((prev_end + (distance_between / 2)) % max_distance)
 
             if new_sector_start > sector["end"]:
                 # print(f"{i} sector new_start {new_sector_start} > end: {sector}")

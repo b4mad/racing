@@ -76,7 +76,7 @@ class FastLapAnalyzer:
         # med = statistics.median(start_diffs)
         med = statistics.mean(start_diffs)
         logging.debug(f"start_diffs: {start_diffs} med: {med}")
-        if med > 50:
+        if med > 40:
             return False
 
         return True
