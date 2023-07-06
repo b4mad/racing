@@ -329,7 +329,7 @@ class Analyzer:
             return input_df
 
         min_distance = int(df["DistanceRoundTrack"].min()) + 1
-        max_distance = int(df["DistanceRoundTrack"].max())
+        max_distance = int(df["DistanceRoundTrack"].max()) - 1
         target_rows = int(max_distance / freq)
 
         new_distance_round_track = np.linspace(min_distance, max_distance, target_rows)
