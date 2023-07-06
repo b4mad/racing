@@ -194,7 +194,8 @@ def update_graph(n_clicks, game, car, track, session_state=None):
         if throttle_features:
             fig_add_features(fig, throttle_features, color="green")
 
-        # fig.update_layout(title=dict(text=title))
+        title = f"Turn {segment.turn} - {segment.time:.3f} seconds"
+        fig.update_layout(title=dict(text=title))
         graph = dcc.Graph(figure=fig)
         md = get_segment_header(segment, segment.turn)
         graphs.append(dcc.Markdown(md))
@@ -217,7 +218,7 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
             if driver is not None:
                 graphs.append(html.Hr())
-                graphs.append(html.Pre(f"avg_brake_start: {segment.avg_brake_start()}"))
+                graphs.append(html.Pre(f"Driver delta: {segment.driver_delta():.3f}"))
 
             graphs.append(html.Hr())
 
