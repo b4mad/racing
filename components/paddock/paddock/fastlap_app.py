@@ -7,6 +7,7 @@ from dash.dependencies import Input, Output
 # from django.db.models import Count
 from django_plotly_dash import DjangoDash
 
+from telemetry.models import Driver
 from telemetry.pitcrew.history import History
 from telemetry.pitcrew.message import MessageTrackGuide
 from telemetry.racing_stats import RacingStats
@@ -144,10 +145,15 @@ def update_graph(n_clicks, game, car, track, session_state=None):
     if n_clicks is None or not all([game, car, track]):
         return dash.no_update
 
+    driver = None
     if session_state is not None:
         session_state["game__name"] = game
         session_state["car__name"] = car
         session_state["track__name"] = track
+
+        driver_name = session_state.get("driver_name")
+        if driver_name is not None:
+            driver = Driver.objects.filter(name=driver_name).first()
 
     racing_stats = RacingStats()
     fast_laps = list(racing_stats.fast_laps(game=game, track=track, car=car))
@@ -155,9 +161,13 @@ def update_graph(n_clicks, game, car, track, session_state=None):
 
     if len(fast_laps) == 0:
         return dash.no_update
+    if driver is not None:
+        driver_name = driver.name
+    else:
+        driver_name = "Jim"
 
     history = History()
-    history.set_filter({"GameName": game, "TrackCode": track, "CarModel": car, "Driver": "Jim"})
+    history.set_filter({"GameName": game, "TrackCode": track, "CarModel": car, "Driver": driver_name})
     history.init()
     # fast_lap = fast_laps[0]
     # segments = fast_lap.data.get("segments", [])
@@ -170,6 +180,10 @@ def update_graph(n_clicks, game, car, track, session_state=None):
     segments = history.segments
 
     graphs = []
+    if driver is not None:
+        driver_name = driver.name
+        graphs.append(html.H2(f"Showing stats for driver {driver_name}"))
+
     for segment in segments:
         sector = segment.telemetry
         fig = lap_fig(sector, columns=["Throttle", "Brake"])
@@ -200,6 +214,11 @@ def update_graph(n_clicks, game, car, track, session_state=None):
             # sector from {segment.start} to {segment.end}
             # graphs.append(tb)
             graphs.append(table)
+
+            if driver is not None:
+                graphs.append(html.Hr())
+                graphs.append(html.Pre(f"avg_brake_start: {segment.avg_brake_start()}"))
+
             graphs.append(html.Hr())
 
     info = (

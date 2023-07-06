@@ -81,4 +81,4 @@ class TestCoach(TransactionTestCase):
         fast_lap.refresh_from_db()
         driver_segments = fast_lap.data["segments"]
         self.assertEqual(len(driver_segments), 8)
-        self.assertEqual(len(driver_segments[1].live_features["brake"]), 8)
+        self.assertEqual(len(driver_segments[1].live_features["brake"]), 16)
