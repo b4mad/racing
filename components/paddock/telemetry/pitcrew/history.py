@@ -219,6 +219,8 @@ class History(LoggingMixin):
 
             segment.live_telemetry_frames.append(df)
 
+            self.log_debug(f"{log_prefix} driver delta: {segment.driver_delta()}")
+
     def offset_distance(self, distance, seconds=0.0):
         self.log_debug(f"offset_distance from {distance} {seconds:.2f}")
         if self.fast_lap.data:
