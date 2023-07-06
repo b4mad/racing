@@ -181,8 +181,15 @@ def index(request):
 
 
 def fastlap(request, template_name="fastlap.html", fastlap_id="", **kwargs):
-    context = {}
+    driver_name = ""
+    if request.user.is_authenticated:
+        user_name = request.user.first_name
+        driver = Driver.objects.filter(name=user_name).first()
+        if driver:
+            driver_name = driver.name
+    context = dict()
     dash_context = request.session.get("django_plotly_dash", dict())
+    dash_context["driver_name"] = driver_name
     request.session["django_plotly_dash"] = dash_context
     return render(request, template_name=template_name, context=context)
 

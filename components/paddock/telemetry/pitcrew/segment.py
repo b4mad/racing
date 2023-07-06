@@ -68,7 +68,8 @@ class Segment:
 
     def init_live_features_from_segment(self, segment):
         for type, features in segment.live_features.items():
-            self.add_live_features(features, type=type)
+            self.live_features[type] = features
+            # self.add_live_features(features, type=type)
 
     def add_live_features(self, features, type):
         if type not in self.live_features:
