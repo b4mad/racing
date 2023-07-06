@@ -194,10 +194,26 @@ class Segment:
         # score driver between 0 and 1
         return 1
 
-    def avg_feature(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
+    def driver_delta(self):
+        # sector_lap_times = self.feature_values(n=3, feature="sector_lap_time", type="other")
+        # # remove 0.0 values
+        # sector_lap_times = [x for x in sector_lap_times if x > 0.0]
+        avg_sector_lap_time = self.avg_feature(n=3, feature="sector_lap_time", type="other")
+        # avg_sector_time = self.avg_feature(n=3, feature="sector_time", type="other")
+
+        if avg_sector_lap_time is None:
+            return -1
+
+        # return avg_sector_lap_time
+        return avg_sector_lap_time - self.time
+
+    def feature_values(self, n=1000, feature="feature_to_query", type="type_of_feature_set"):
+        if type not in self.live_features:
+            self.history.log_debug(f"no {type} features")
+            return []
         features = self.live_features[type]
         if len(features) <= n:
-            return None
+            return []
 
         values = []
         for i in range(-1, -len(features), -1):
@@ -207,10 +223,16 @@ class Segment:
             if len(values) == n:
                 break
 
-        if len(values) <= n:
-            return None
+        if len(values) < n:
+            return []
+        return values
 
+    def avg_feature(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
+        values = self.feature_values(n=n, feature=feature, type=type)
         self.history.log_debug(f"{type} {feature} values: {values}")
+
+        if len(values) == 0:
+            return None
 
         # Create pandas series from the data
         data = pd.Series(values)
