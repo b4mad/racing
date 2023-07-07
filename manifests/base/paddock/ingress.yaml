@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    haproxy.router.openshift.io/timeout: 30s
+    haproxy.router.openshift.io/timeout: 120s
   name: paddock
 spec:
   rules:

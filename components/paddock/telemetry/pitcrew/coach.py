@@ -80,11 +80,13 @@ class Coach(LoggingMixin):
             self.init_messages()
 
             startup_message = "start coaching "
-            try:
+            driver_delta = self.history.driver_delta()
+            if driver_delta < 0:
                 lap_time = self.history.lap_time_human()
                 startup_message += f"for a lap time of {lap_time}"
-            except Exception:
-                pass
+                startup_message += " lets get some laps in"
+            else:
+                startup_message += f" for a delta of {driver_delta:.2f} seconds"
 
             if self.track_walk:
                 startup_message += " doing a track walk"

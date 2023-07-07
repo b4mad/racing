@@ -7,6 +7,7 @@ from telemetry.fast_lap_analyzer import FastLapAnalyzer
 from telemetry.models import Driver, FastLap, Game
 from telemetry.pitcrew.logging import LoggingMixin
 from telemetry.pitcrew.segment import Segment
+from telemetry.racing_stats import RacingStats
 
 
 class History(LoggingMixin):
@@ -22,6 +23,7 @@ class History(LoggingMixin):
         self.telemetry = []
         self.analyzer = Analyzer()
         self.fast_lap_analyzer = FastLapAnalyzer()
+        self.racing_stats = RacingStats()
         self.fast_lap = None
         self.process_segments = []
         self.threaded = False
@@ -266,3 +268,32 @@ class History(LoggingMixin):
         time_string += f"{seconds:.2f} seconds "
 
         return time_string
+
+    def driver_opt_delta(self):
+        # calculate driver delta for the whole lap
+        delta = 0.0
+        for segment in self.segments:
+            segment_driver_delta = segment.driver_delta()
+            self.log_debug(f"segment {segment.turn} driver delta: {segment_driver_delta}")
+            delta += segment_driver_delta
+
+        return delta
+
+    def driver_delta(self):
+        driver_laps = self.racing_stats.laps(
+            game=self.game,
+            track=self.track,
+            car=self.car,
+            driver=self.driver.name,
+            valid=True,
+        )
+
+        try:
+            lap = driver_laps[0]
+        except IndexError:
+            return -10000
+
+        if lap:
+            delta = lap.time - self.lap_time()
+            return delta
+        return -10000
