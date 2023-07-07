@@ -194,7 +194,7 @@ class Segment:
         # score driver between 0 and 1
         return 1
 
-    def driver_delta(self):
+    def avg_driver_delta(self):
         # sector_lap_times = self.feature_values(n=3, feature="sector_lap_time", type="other")
         # # remove 0.0 values
         # sector_lap_times = [x for x in sector_lap_times if x > 0.0]
@@ -207,12 +207,29 @@ class Segment:
         # return avg_sector_lap_time
         return avg_sector_lap_time - self.time
 
-    def feature_values(self, n=1000, feature="feature_to_query", type="type_of_feature_set"):
+    def driver_delta(self):
+        sector_lap_times = self.feature_values(feature="sector_lap_time", type="other")
+        # remove 0 values
+        sector_lap_times = [x for x in sector_lap_times if x > 0.0]
+
+        # remove outliers
+        low_threshold = self.time * 0.9
+        filtered_sector_lap_times = [x for x in sector_lap_times if x >= low_threshold]
+
+        if len(filtered_sector_lap_times) == 0:
+            return -1
+        min_sector_lap_time = min(filtered_sector_lap_times)
+
+        # return avg_sector_lap_time
+        delta = min_sector_lap_time - self.time
+        return delta
+
+    def feature_values(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
         if type not in self.live_features:
             self.history.log_debug(f"no {type} features")
             return []
         features = self.live_features[type]
-        if len(features) <= n:
+        if n and len(features) <= n:
             return []
 
         values = []
@@ -220,10 +237,10 @@ class Segment:
             value = features[i].get(feature)
             if value and value is not None:
                 values.append(value)
-            if len(values) == n:
+            if n and len(values) == n:
                 break
 
-        if len(values) < n:
+        if n and len(values) < n:
             return []
         return values
 

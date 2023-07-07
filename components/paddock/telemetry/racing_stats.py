@@ -59,7 +59,7 @@ class RacingStats:
         laps = FastLap.objects.filter(**filter)
         return laps
 
-    def laps(self, game=None, track=None, car=None, valid=None, **kwargs):
+    def laps(self, game=None, track=None, car=None, driver=None, valid=None, **kwargs):
         filter = {}
         if game:
             filter["track__game__name"] = game
@@ -70,6 +70,9 @@ class RacingStats:
 
         if valid is not None:
             filter["valid"] = valid
+
+        if driver is not None:
+            filter["session__driver__name"] = driver
 
         laps = Lap.objects.filter(**filter)
         laps = laps.order_by("time")

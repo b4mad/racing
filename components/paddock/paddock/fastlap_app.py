@@ -183,6 +183,11 @@ def update_graph(n_clicks, game, car, track, session_state=None):
     if driver is not None:
         driver_name = driver.name
         graphs.append(html.H2(f"Showing stats for driver {driver_name}"))
+        delta = history.driver_delta()
+        if delta >= -1000:
+            graphs.append(html.H3(f"Delta: {delta:.3f}"))
+        else:
+            graphs.append(html.H3("No laps recorded"))
 
     for segment in segments:
         sector = segment.telemetry
