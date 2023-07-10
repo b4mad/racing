@@ -297,3 +297,18 @@ class History(LoggingMixin):
             delta = lap.time - self.lap_time()
             return delta
         return -10000
+
+    def driver_laps_count(self):
+        driver_laps = self.racing_stats.laps(
+            game=self.game,
+            track=self.track,
+            car=self.car,
+            driver=self.driver.name,
+            valid=True,
+        )
+        return driver_laps.count()
+
+    def ranked_turns(self):
+        ranked_turns = self.segments.copy()
+        ranked_turns.sort(key=lambda x: x.driver_delta(), reverse=True)
+        return ranked_turns

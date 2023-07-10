@@ -11,6 +11,7 @@ from .message import (
     MessageBrake,
     MessageBrakeForce,
     MessageBrakePoint,
+    MessageFocus,
     MessageGear,
     MessageThrottle,
     MessageThrottleForce,
@@ -31,6 +32,7 @@ class Coach(LoggingMixin):
         self.topic = ""
         self.session_id = "NO_SESSION"
         self.track_walk = False
+        self.focus_on_turns = []
         self.distance = 0
         self._new_session_starting = False
         self._next_messages = []
@@ -64,6 +66,7 @@ class Coach(LoggingMixin):
         self.responses = {}
         self.db_coach.refresh_from_db()
         self.track_walk = self.db_coach.track_walk
+        self.focus_on_turns = []
 
     def ready(self):
         if self._new_session_starting:
@@ -77,8 +80,6 @@ class Coach(LoggingMixin):
                     self._error = error
                 return False
 
-            self.init_messages()
-
             startup_message = "start coaching "
             driver_delta = self.history.driver_delta()
             if driver_delta < 0:
@@ -88,8 +89,23 @@ class Coach(LoggingMixin):
             else:
                 startup_message += f" for a delta of {driver_delta:.2f} seconds"
 
+                if self.history.driver_laps_count() > 10:
+                    turns = self.history.ranked_turns()
+                    if len(turns) > 1:
+                        worst_turns = turns[0:2]
+                    else:
+                        worst_turns = turns[0]
+
+                    t_str = " and ".join([str(t.turn) for t in worst_turns])
+                    delta = sum([t.avg_driver_delta() for t in worst_turns])
+                    startup_message += f" lets focus on turn {t_str}"
+                    startup_message += f" for an improvement of {delta:.2f}"
+                    self.focus_on_turns = worst_turns
+
             if self.track_walk:
                 startup_message += " doing a track walk"
+
+            self.init_messages()
 
             self.say_next(startup_message)
             self.db_coach.status = startup_message
@@ -257,6 +273,13 @@ class Coach(LoggingMixin):
             MessageApex,
         ]
         for segment in self.history.segments:
+            if self.focus_on_turns:
+                if segment not in self.focus_on_turns:
+                    continue
+                message = MessageFocus(segment, logger=self.log_debug)
+                if message.active:
+                    self.messages.append(message)
+
             for message_class in message_classes:
                 message = message_class(segment, logger=self.log_debug)
                 if message.active:
