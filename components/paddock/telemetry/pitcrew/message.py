@@ -103,6 +103,7 @@ class MessageBrake(Message):
         self.message_earlier = "brake a bit earlier"
         self.at = self.segment.brake_point()
         self.active = self.segment.type_brake()
+        self.priority = 7
 
     # def common_init(self, mark):
     #     self.at_track_walk = self.at - 100
@@ -359,4 +360,17 @@ class MessageTrackGuide(Message):
     def needs_coaching(self):
         if self.segment.driver_score() < 0.5:
             return True
+        return False
+
+
+class MessageFocus(Message):
+    def init(self):
+        self.msg = self.build_msg()
+        at = self.finish_at_segment_start()
+        self.at = self.segment.offset_distance(at, seconds=4)
+
+    def build_msg(self):
+        return "focus on the next turn"
+
+    def needs_coaching(self):
         return False

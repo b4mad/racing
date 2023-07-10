@@ -189,9 +189,14 @@ class Segment:
         return self.avg_feature(n=n, feature="start", type="brake")
 
     def driver_score(self):
-        if len(self.live_features["gear"]) < 3:
-            return 0
+        # if len(self.live_features["gear"]) < 3:
+        #     return 0
         # score driver between 0 and 1
+        delta = self.avg_driver_delta()
+        if delta < 0:
+            return 1
+        if delta < 1:
+            return 0.5
         return 1
 
     def avg_driver_delta(self):
@@ -202,7 +207,7 @@ class Segment:
         # avg_sector_time = self.avg_feature(n=3, feature="sector_time", type="other")
 
         if avg_sector_lap_time is None:
-            return -1
+            return 10_000
 
         # return avg_sector_lap_time
         return avg_sector_lap_time - self.time
@@ -217,7 +222,7 @@ class Segment:
         filtered_sector_lap_times = [x for x in sector_lap_times if x >= low_threshold]
 
         if len(filtered_sector_lap_times) == 0:
-            return -1
+            return 10_000
         min_sector_lap_time = min(filtered_sector_lap_times)
 
         # return avg_sector_lap_time
