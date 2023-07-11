@@ -89,11 +89,15 @@ class Analyzer:
             end_idx = (end_idx + 1) % len(end)
 
         # remove all sectors that are too short
-        sectors = [
-            sector
-            for sector in sectors
-            if sector["length_throttle_below_threshold"] > min_length_throttle_below_threshold
-        ]
+        new_sectors = []
+        for i, sector in enumerate(sectors):
+            # logging.debug(f"sector {i} length: {sector['length_throttle_below_threshold']}")
+            # logging.debug(f"sector {i} start: {sector['start']} end: {sector['end']}")
+            if sector["length_throttle_below_threshold"] < min_length_throttle_below_threshold:
+                logging.debug(f"sector {i} too short: {sector['length_throttle_below_threshold']}")
+                continue
+            new_sectors.append(sector)
+        sectors = new_sectors
 
         # combine sectors that are too short with the previous sector
         remove_indices = []
@@ -103,9 +107,17 @@ class Analyzer:
             distance_between = (sector["start"] - prev_sector["end"]) % max_distance
             if distance_between < min_distance_between_sectors:
                 # append to previous sector
-                sector["start"] = prev_sector["start"]
+                # sector["start"] = prev_sector["start"]
+                prev_sector["end"] = sector["end"]
                 remove_indices.append(i)
-        sectors = [sector for i, sector in enumerate(sectors) if i not in remove_indices]
+                logging.debug(f"remove sector {i} too close to previous sector: {distance_between}")
+
+        new_sectors = []
+        for i, sector in enumerate(sectors):
+            if i not in remove_indices:
+                new_sectors.append(sector)
+                # logging.debug(f"sector {i} {sector}")
+        sectors = new_sectors
 
         # set the start of the sector -100 meters or to the middle between the start and end
         for i, sector in enumerate(sectors):
@@ -113,18 +125,25 @@ class Analyzer:
             prev_sector = sectors[prev_index]
             prev_end = prev_sector["end"]
             start = sector["start"]
+            end = sector["end"]
             distance_between = (start - prev_end) % max_distance
 
             new_sector_start = (start - 100) % max_distance
-            if new_sector_start < prev_sector["end"]:
+            # logging.debug(f"sector {i} distance_between: {distance_between} new_sector_start: {new_sector_start}")
+            if new_sector_start < prev_end:
+                # logging.debug(f"sector {i} new_sector_start {new_sector_start} < prev_end: {prev_end}")
                 new_sector_start = int((prev_end + (distance_between / 2)) % max_distance)
 
-            if new_sector_start > sector["end"]:
-                # print(f"{i} sector new_start {new_sector_start} > end: {sector}")
-                new_sector_start = 0
+            # if new_sector_start > end:
+            #     logging.debug(f"sector {i} new_sector_start {new_sector_start} > end: {end}")
+            #     new_sector_start = 0
 
             sector["start"] = new_sector_start
             prev_sector["end"] = (new_sector_start - 1) % max_distance
+
+        if len(sectors) >= 2:
+            sectors[0]["start"] = 0
+            sectors[-1]["end"] = max_distance
 
         # recalculate the length of the sectors
         for i, sector in enumerate(sectors):
@@ -403,11 +422,11 @@ class Analyzer:
 
         # remove laps that are too short
         valid_laps = []
-        for lap in laps:
+        for i, lap in enumerate(laps):
             if lap["DistanceRoundTrack"].max() - lap["DistanceRoundTrack"].min() > length * 0.9:
                 valid_laps.append(lap)
             else:
-                logging.debug("Lap too short, skipping")
+                logging.debug(f"Lap {i} too short, skipping")
 
         df_max = valid_laps[0]
 
