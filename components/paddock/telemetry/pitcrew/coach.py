@@ -89,7 +89,7 @@ class Coach(LoggingMixin):
             else:
                 startup_message += f" for a delta of {driver_delta:.2f} seconds"
 
-                if self.history.driver_laps_count() > 10:
+                if self.history.driver_laps_count() > 10 and driver_delta < 0.8:
                     turns = self.history.ranked_turns()
                     if len(turns) > 1:
                         worst_turns = turns[0:2]
