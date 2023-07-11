@@ -87,7 +87,7 @@ class History(LoggingMixin):
     def init_segments(self) -> bool:
         """Load the segments from DB."""
         fast_lap = FastLap.objects.filter(track=self.track, car=self.car, game=self.game).first()
-        if not fast_lap:
+        if not fast_lap or not fast_lap.data or not fast_lap.data.get("segments"):
             error = f"no data found for game {self.filter['GameName']}"
             error += f" on track {self.filter['TrackCode']}"
             error += f" in car {self.filter['CarModel']}"
@@ -98,7 +98,7 @@ class History(LoggingMixin):
         self.log_debug("loading segments for %s %s - %s", self.game, self.track, self.car)
         self.log_debug(f"  based on laps {fast_lap.laps}")
 
-        self.segments = fast_lap.data.get("segments", [])
+        self.segments = fast_lap.data.get("segments")
 
         for i, segment in enumerate(self.segments):
             next_index = (i + 1) % len(self.segments)
