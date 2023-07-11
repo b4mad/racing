@@ -53,6 +53,9 @@ class LapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
         ("car", RelatedDropdownFilter),
         ("track", RelatedDropdownFilter),
     )
+    fields = ["number", "valid", "length", "time", "start", "end"]
+    changelist_links = ["session"]
+    change_links = ["session", "track", "car"]
 
     # https://stackoverflow.com/questions/163823/can-list-display-in-a-django-modeladmin-display-attributes-of-foreignkey-field
     @admin.display(ordering="session__driver", description="Driver")
