@@ -93,9 +93,22 @@ class FastLapAnalyzer:
         fast_sector_time = 10_000_000_000_000
         fast_sector_idx = -1
 
-        # print(f"start: {start}, end: {end}")
+        # logging.debug(f"start: {start}, end: {end}")
         for i, df in enumerate(data_frames):
             sector = self.analyzer.section_df(df, start, end)
+            min_distance = sector["DistanceRoundTrack"].min()
+            max_distance = sector["DistanceRoundTrack"].max()
+            if start > end:
+                tmp = start
+                start = end
+                end = tmp
+            if abs(min_distance - start) > 5:
+                logging.debug(f"sector {i}: min: {min_distance} != start: {start}")
+                continue
+            if abs(max_distance - end) > 5:
+                logging.debug(f"sector {i}: max: {max_distance} != end: {end}")
+                continue
+            # logging.debug(f"min_distance: {min_distance}, max_distance: {max_distance}")
             # continue if the sector is empty
             # check why this happens
             # pipenv run ./manage.py analyze \
