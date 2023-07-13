@@ -23,7 +23,6 @@ spec:
     database: "paddock"
     basicAuth: false
     basicAuthUser: ""
-    withCredentials: false
     jsonData:
       postgresVersion: 1200
       sslmode: "require"
