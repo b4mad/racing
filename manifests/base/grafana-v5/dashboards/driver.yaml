@@ -10,7 +10,7 @@ spec:
     - inputName: "DS_RACING"
       datasourceName: "Racing"
   folder: CrewChief
-  resyncPeriod: 30s
+  # resyncPeriod: 30s
   json: >
     {
       "annotations": {
@@ -38,14 +38,14 @@ spec:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 35,
+      "id": 38,
       "links": [],
       "liveNow": false,
       "panels": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P64B7521F1D8D151A"
+            "uid": "Racing"
           },
           "description": "",
           "fieldConfig": {
@@ -96,7 +96,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "Racing"
               },
               "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> limit(n: 1)\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
               "refId": "A"
@@ -108,7 +108,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P64B7521F1D8D151A"
+            "uid": "Racing"
           },
           "fieldConfig": {
             "defaults": {
@@ -159,7 +159,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "Racing"
               },
               "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"GameName\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
               "refId": "A"
@@ -171,7 +171,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P64B7521F1D8D151A"
+            "uid": "Racing"
           },
           "fieldConfig": {
             "defaults": {
@@ -222,7 +222,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "Racing"
               },
               "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"TrackCode\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
               "refId": "A"
@@ -234,7 +234,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P64B7521F1D8D151A"
+            "uid": "Racing"
           },
           "fieldConfig": {
             "defaults": {
@@ -285,7 +285,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "Racing"
               },
               "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"CarModel\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)\n",
               "refId": "A"
@@ -297,7 +297,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P64B7521F1D8D151A"
+            "uid": "Racing"
           },
           "description": "",
           "fieldConfig": {
@@ -436,6 +436,23 @@ spec:
                     "id": "custom.width"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Extended Data"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "",
+                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-racing-details-crewchief?orgId=1&var-SessionId=${__value.text}&time=${__value.time}&time.window=3600000&var-User=${__data.fields.user}\n\n"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -467,7 +484,7 @@ spec:
             {
               "datasource": {
                 "type": "influxdb",
-                "uid": "P64B7521F1D8D151A"
+                "uid": "Racing"
               },
               "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\nfrom(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> last()\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n",
               "refId": "A"
@@ -476,20 +493,38 @@ spec:
           "title": "Recent Sessions",
           "transformations": [
             {
+              "id": "calculateField",
+              "options": {
+                "alias": "Extended Data",
+                "binary": {
+                  "left": "SessionId",
+                  "reducer": "sum"
+                },
+                "mode": "reduceRow",
+                "reduce": {
+                  "include": [
+                    "SessionId"
+                  ],
+                  "reducer": "last"
+                }
+              }
+            },
+            {
               "id": "organize",
               "options": {
                 "excludeByName": {
                   "_value": true
                 },
                 "indexByName": {
-                  "CarModel": 6,
-                  "GameName": 4,
+                  "CarModel": 7,
+                  "Extended Data": 1,
+                  "GameName": 5,
                   "SessionId": 0,
-                  "SessionTypeName": 3,
-                  "TrackCode": 5,
-                  "_time": 7,
-                  "_value": 2,
-                  "user": 1
+                  "SessionTypeName": 4,
+                  "TrackCode": 6,
+                  "_time": 8,
+                  "_value": 3,
+                  "user": 2
                 },
                 "renameByName": {
                   "CarModel": "",
@@ -516,7 +551,7 @@ spec:
             },
             "datasource": {
               "type": "influxdb",
-              "uid": "P64B7521F1D8D151A"
+              "uid": "Racing"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
             "hide": 0,
@@ -540,7 +575,7 @@ spec:
             },
             "datasource": {
               "type": "influxdb",
-              "uid": "P64B7521F1D8D151A"
+              "uid": "Racing"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
             "hide": 0,
@@ -564,7 +599,7 @@ spec:
             },
             "datasource": {
               "type": "influxdb",
-              "uid": "P64B7521F1D8D151A"
+              "uid": "Racing"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
             "hide": 0,
@@ -590,6 +625,6 @@ spec:
       "timezone": "",
       "title": "Driver",
       "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-      "version": 1,
+      "version": 59,
       "weekStart": ""
     }
