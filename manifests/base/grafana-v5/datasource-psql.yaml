@@ -1,0 +1,35 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: paddock
+spec:
+  valuesFrom:
+    - targetPath: "secureJsonData.password"
+      valueFrom:
+        secretKeyRef:
+          name: "pgo-reader"
+          key: "password"
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  datasource:
+    name: Paddock
+    access: proxy
+    editable: true
+    isDefault: false
+    type: postgres
+    url: "db-primary.b4mad-racing.svc:5432"
+    user: "reader"
+    database: "paddock"
+    basicAuth: false
+    basicAuthUser: ""
+    withCredentials: false
+    jsonData:
+      postgresVersion: 1200
+      sslmode: "require"
+      tlsAuth: true
+      tlsAuthWithCACert: true
+      tlsConfigurationMethod: "file-path"
+      tlsSkipVerify: false
+    secureJsonData:
+      password: "${password}"
