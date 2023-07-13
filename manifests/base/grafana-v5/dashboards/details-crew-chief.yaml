@@ -10,7 +10,7 @@ spec:
   datasources:
     - inputName: "DS_RACING"
       datasourceName: "Racing"
-  resyncPeriod: 30s
+  # resyncPeriod: 30s
   # Error: ✗ failed to create temporary file: open /tmp/919128373.zip: read-only file system
   # https://github.com/prometheus-operator/kube-prometheus/pull/1624/files
   # plugins:

@@ -3,8 +3,12 @@ kind: GrafanaDatasource
 metadata:
   name: racing
 spec:
-  secrets:
-    - influx-grafana-auth
+  valuesFrom:
+    - targetPath: "secureJsonData.token"
+      valueFrom:
+        secretKeyRef:
+          name: "influx-grafana-auth"
+          key: "GRAFANA_READER_TOKEN"
   instanceSelector:
     matchLabels:
       dashboards: "grafana"
