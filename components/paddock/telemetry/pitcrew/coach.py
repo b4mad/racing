@@ -188,9 +188,9 @@ class Coach(LoggingMixin):
     def collect_responses(self, distance, telemetry):
         return_responses = []
 
-        # FIXME: +100 should be speed dependent
-        #
-        future_distance = (distance + 20) % self.track_length
+        get_responses_ahead = 100
+        send_responses_ahead = 90
+        future_distance = (distance + get_responses_ahead) % self.track_length
         responses = self.get_responses(telemetry, future_distance)
         for response in responses:
             distance = response["distance"]
@@ -200,18 +200,17 @@ class Coach(LoggingMixin):
                 self.responses[distance] = r_at
             r_at.append(response)
 
-        # FIXME
         #  messages are queued for up to 10 seconds in CrewChief
         #  so we send the message less than 10 seconds before its due
         #  if we send messages too late, the driver will have passed the distance
         #  find the distance where
-        future_distance = (distance + 10) % self.track_length
+        future_distance = (distance + send_responses_ahead) % self.track_length
         responses = self.responses.pop(future_distance, None)
         if responses:
             if len(responses) > 1:
                 responses = self.merge_responses(responses)
             return_responses.extend(responses)
-            self.log_debug(f"{self.distance}: {responses}")
+            self.log_debug(f"{self.distance}: ret_resp {responses}")
 
         return return_responses
 

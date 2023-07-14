@@ -133,6 +133,7 @@
  ('/coach/durandom', ['{"distance": 3497, "message": "brake", "priority": 9}']),
  ('/coach/durandom', ['{"distance": 0, "message": "brake a bit earlier", "priority": 7}']),
  ('/coach/durandom', ['{"distance": 580, "message": "brake", "priority": 9}']),
+ ('/coach/durandom', ['{"distance": 826, "message": "brake a bit earlier", "priority": 7}']),
  ('/coach/durandom', ['{"distance": 580, "message": "brake", "priority": 9}']),
  ('/coach/durandom', ['{"distance": 826, "message": "brake a bit earlier", "priority": 7}']),
  ('/coach/durandom', ['{"distance": 859, "message": "Gear 4", "priority": 7}']),
