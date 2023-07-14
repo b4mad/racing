@@ -8,7 +8,14 @@ if [ -z "$MQTT_HOST" ]; then
 fi
 CLIENT_ID=$(hostname)-$$
 
+if [ ! -z "$DRIVER" ]; then
+  DRIVER="${DRIVER}/"
+fi
+
+if [ -z "$MQTT_TOPIC" ]; then
+  MQTT_TOPIC="crewchief/${DRIVER}#"
+fi
 
 mosquitto_sub -u crewchief -P crewchief \
-  -t "/crewchief/#" \
+  -t $MQTT_TOPIC \
   -p 31883 -h $MQTT_HOST -i $CLIENT_ID -d

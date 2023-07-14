@@ -6,7 +6,8 @@ set -x
 
 oc project b4mad-racing
 
-INFLUX_URL=$(oc get routes/telemetry --template='{{ .spec.port.targetPort }}://{{ .spec.host }}')
+# INFLUX_URL=$(oc get routes/telemetry --template='{{ .spec.port.targetPort }}://{{ .spec.host }}')
+INFLUX_URL=https://telemetry.b4mad.racing
 INFLUXDB_ADMIN_TOKEN=$(oc get secrets -n b4mad-racing influxdb2-auth -o go-template='{{index .data "admin-user-token"}}' | base64 -d)
 CONFIG=b4mad-racing-$$
 

@@ -3,7 +3,8 @@ set -x
 PG_CLUSTER_USER_SECRET_NAME=db-pguser-free-practice
 PG_CLUSTER_USER_SECRET_NAME=db-pguser-paddock
 PG_CLUSTER_USER_SECRET_NAME=db-pguser-paddock-root
-HOST=$(kubectl get routes/telemetry --template='{{ .spec.host }}')
+# HOST=$(kubectl get ingress/influx --template='{{ .spec.host }}')
+HOST=telemetry.b4mad.racing
 
 oc project b4mad-racing
 

@@ -16,6 +16,7 @@
         "Rpms": 0.0,
         "SpeedMs": 46.2075653,
         "SteeringAngle": -0.232568219,
-        "Throttle": 0.995530248
+        "Throttle": 0.995530248,
+        "CarClass": "F_VEE"
     }
 }
