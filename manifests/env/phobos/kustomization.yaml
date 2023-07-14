@@ -10,7 +10,7 @@ resources:
 - namespace.yaml
 - ../../base/mosquitto
 - influxdb
-- ../../base/telegraf
+- telegraf
 - postgresql
 - ../../base/paddock
 - ../../base/paddock/cronjobs
@@ -63,16 +63,6 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: https-cert-telemetry.b4mad.racing
-  - target:
-      kind: Deployment
-      name: telegraf
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/name
-        value: influx-telegraf
-      - op: replace
-        path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/key
-        value: token
   - target:
       kind: DeploymentConfig
       name: paddock

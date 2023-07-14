@@ -74,7 +74,7 @@ influx query 'from(bucket:"racing") |> range(start:-10y) |> filter(fn: (r) => r[
 
 # delete all points in a measurement
 influx delete --bucket racing --start '2022-11-27T00:00:00Z' --stop $(date +"%Y-%m-%dT%H:%M:%SZ") \
-  --predicate '_measurement="fast_laps"'
+  --predicate '_measurement="fast_laps" AND "SessionId"="1689169765"'
 ```
 
 ### telegraf
