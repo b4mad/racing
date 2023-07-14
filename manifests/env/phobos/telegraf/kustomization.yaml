@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- pairs:
+    app.kubernetes.io/managed-by: humans
+    app.kubernetes.io/name: b4mad-racing
+    app.kubernetes.io/version: v0.1.0-dev
+namespace: b4mad-racing
+resources:
+- ../../../base/telegraf
+generatorOptions:
+  disableNameSuffixHash: true
+patches:
+  - target:
+      kind: Deployment
+      name: telegraf
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/name
+        value: influx-telegraf
+      - op: replace
+        path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/key
+        value: token
