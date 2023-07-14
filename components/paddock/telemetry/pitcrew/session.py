@@ -89,7 +89,7 @@ class Session(LoggingMixin):
             lap_time_previous = telemetry["LapTimePrevious"]
             lap_is_valid = telemetry["CurrentLapIsValid"]
             previous_lap_was_valid = telemetry["PreviousLapWasValid"]
-        except KeyError:
+        except (KeyError, TypeError):
             if self.telemetry_valid:
                 self.log_debug(f"Invalid telemetry: {telemetry}")
                 self.telemetry_valid = False
