@@ -11,7 +11,7 @@ spec:
       datasourceName: "Racing"
   folder: CrewChief
   # resyncPeriod: 30s
-  json: >  
+json: >  
 {
   "annotations": {
     "list": [
@@ -1236,7 +1236,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Left_BrakeTemp\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Brake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -1278,7 +1278,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Left_CenterTemp\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre Core\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()\r\n ",
@@ -1465,7 +1465,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Right_CenterTemp\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre Core\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()\r\n ",
@@ -1508,7 +1508,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Right_BrakeTemp\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Brake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -1610,7 +1610,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Session_Position_Overall\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Position\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -1712,7 +1712,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Session_NumCars_Overall\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: ${SessionLen}s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Opponents\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -1964,7 +1964,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Left_Pressure\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2007,7 +2007,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Left_PercentWear\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Wear\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2295,7 +2295,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Right_Pressure\"  and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2338,7 +2338,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Front_Right_PercentWear\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Wear\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2472,7 +2472,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Penalties_CutTrackWarnings\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: ${SessionLen}s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Cuts\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2572,7 +2572,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Penalties_Incidents\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: ${SessionLen}s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Incidents\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2759,7 +2759,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Left_CenterTemp\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre Core\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()\r\n ",
@@ -2802,7 +2802,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Left_BrakeTemp\" and r._value >=0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Brake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -2989,7 +2989,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Right_CenterTemp\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre Core\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()\r\n ",
@@ -3032,7 +3032,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Right_BrakeTemp\" and r._value >=0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Brake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3275,7 +3275,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Left_Pressure\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3318,7 +3318,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Left_PercentWear\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Wear\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3595,7 +3595,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Right_Pressure\" and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Tyre\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3638,7 +3638,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"TyreData_Rear_Right_PercentWear\"  and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Wear\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3772,7 +3772,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Penalties_Total\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: ${SessionLen}s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Penalties\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3885,7 +3885,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"FuelData_FuelCapacity\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"FuelCapacity\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -3928,7 +3928,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"FuelData_FuelLeft\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"FuelLeft\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4163,7 +4163,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"LapTimePrevious\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Lap Valid Time\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4206,7 +4206,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"CurrentLap\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Lap #\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4304,7 +4304,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"SpeedMs\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1d, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"maxspeedms\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4342,7 +4342,7 @@ spec:
             "mode": "binary",
             "reduce": {
               "include": [
-                "mqtt_consumer.last"
+                "laps_cc.last"
               ],
               "reducer": "sum"
             },
@@ -4478,7 +4478,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Session_Delta_Front\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Delta_Front\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4521,7 +4521,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Session_Delta_Behind\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Delta_Behind\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4594,8 +4594,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4727,7 +4726,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"SpeedMs\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"SpeedMs\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4770,7 +4769,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"PitData_PitSpeedLimit\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"PitLimitMs\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -4817,7 +4816,7 @@ spec:
             "mode": "binary",
             "reduce": {
               "include": [
-                "mqtt_consumer.last"
+                "laps_cc.last"
               ],
               "reducer": "sum"
             },
@@ -4890,8 +4889,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -5057,7 +5055,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "autogen",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Brake\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"Brake\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Brake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5100,7 +5098,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "autogen",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Throttle\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"Throttle\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Throttle\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5143,7 +5141,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"SteeringAngle\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"SteeringAngle\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"SteeringAngle\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5186,7 +5184,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "autogen",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Clutch\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"Clutch\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Clutch\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5229,7 +5227,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "autogen",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Handbrake\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"Handbrake\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Handbrake\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5315,8 +5313,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -5422,7 +5419,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_EngineRpm\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"EngineData_EngineRpm\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_EngineRpm\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5465,7 +5462,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Gear\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: last, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"Gear\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Gear\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5508,7 +5505,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_MaxEngineRpm\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"EngineData_MaxEngineRpm\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_MaxEngineRpm\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5585,8 +5582,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "super-light-yellow",
-                "value": null
+                "color": "super-light-yellow"
               },
               {
                 "color": "light-blue",
@@ -5645,7 +5641,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_EngineRpm\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"EngineData_EngineRpm\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_EngineRpm\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5688,7 +5684,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_MaxEngineRpm\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"SessionId\",\"_value\",\"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n  |> group(columns: [\"SessionId\"])\r\n  |> set(key: \"_field\", value: \"EngineData_MaxEngineRpm\")\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_MaxEngineRpm\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -5780,8 +5776,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
-                "value": null
+                "color": "dark-blue"
               },
               {
                 "color": "dark-yellow",
@@ -5820,8 +5815,7 @@ spec:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "blue",
-                      "value": null
+                      "color": "blue"
                     },
                     {
                       "color": "light-green",
@@ -5910,7 +5904,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_EngineWaterTemp\" and r._value >=0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_EngineWaterTemp\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()\r\n ",
@@ -5953,7 +5947,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_EngineOilTemp\" and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n\r\n\r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"EngineData_EngineOilTemp\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6029,8 +6023,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "green",
@@ -6087,7 +6080,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"FuelData_FuelCapacity\" and r._value >= 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"FuelCapacity\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6130,7 +6123,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"FuelData_FuelLeft\" and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"FuelLeft\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6205,8 +6198,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "green",
@@ -6282,7 +6274,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"EngineData_EngineOilPressure\"and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Oil\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6325,7 +6317,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"FuelData_FuelPressure\" and r._value >= 0)\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n      \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Fuel\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6412,8 +6404,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -6486,7 +6477,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Conditions_Temperature_Ambient\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Ambient\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6529,7 +6520,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Conditions_Temperature_Track\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Track\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6634,8 +6625,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -6718,7 +6708,7 @@ spec:
               "type": "fill"
             }
           ],
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"Session_Flag\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value+1.0, _time:r._time, _field:\"Flag\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6796,8 +6786,7 @@ spec:
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "green",
@@ -6871,7 +6860,7 @@ spec:
             }
           ],
           "hide": false,
-          "measurement": "mqtt_consumer",
+          "measurement": "laps_cc",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "import \"date\"\r\nFinalOutput = [\"_field\", \"_time\", \"_value\"]\r\nStartSession =  time (v: ${SessionStart})\r\nStopSession  = time (v: ${SessionEnd})\r\n\r\nRawSeries = from(bucket: \"racing\")\r\n  |> range(start: StartSession, stop: StopSession)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r._field == \"DistanceRoundTrack\" )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> keep(columns: [\"CarModel\", \"_field\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> group(columns: [\"_field\"])\r\n  |> aggregateWindow(every: 1s, fn: max, createEmpty: false)\r\n     \r\nNamedSeries = RawSeries\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Distance\"}))\r\n  |> keep(columns:FinalOutput)\r\n\r\nNamedSeries |> yield()",
@@ -6939,7 +6928,7 @@ spec:
       "type": "row"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -6982,7 +6971,7 @@ spec:
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+          "uid": "${DS_RACING}"
         },
         "definition": "from(bucket: \"racing\")\r\n  |> range(start: -1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Gear\")\r\n  |> keep(columns: [\"user\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> first()\r\n  |> group(columns: [])\r\n  |> drop(columns: [\"_value\",\"_time\"])",
         "hide": 0,
@@ -7005,7 +6994,7 @@ spec:
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+          "uid": "${DS_RACING}"
         },
         "definition": "from(bucket: \"racing\")\r\n  |> range(start: -1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value > 0 )\r\n  |> filter(fn: (r) => r.user == \"${User}\")\r\n  |> keep(columns: [\"SessionId\", \"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"], desc: false)\r\n  |> first()\r\n  |> group(columns: [])\r\n  |> drop(columns: [\"_value\",\"_time\"])",
         "hide": 0,
@@ -7029,7 +7018,7 @@ spec:
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+          "uid": "${DS_RACING}"
         },
         "definition": "data = from(bucket: \"racing\")\r\n  |> range(start:-1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value >= 0)\r\n\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"Start\"])\r\n  |> yield()",
         "hide": 2,
@@ -7052,7 +7041,7 @@ spec:
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+          "uid": "${DS_RACING}"
         },
         "definition": "data = from(bucket: \"racing\")\r\n  |> range(start:-1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value >= 0)\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"Stop\"])\r\n  |> yield()\r\n",
         "hide": 2,
@@ -7075,7 +7064,7 @@ spec:
         },
         "datasource": {
           "type": "influxdb",
-          "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+          "uid": "${DS_RACING}"
         },
         "definition": "import \"date\"\r\nimport \"math\"\r\ndata = from(bucket: \"racing\")\r\n  |> range(start:-1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value >= 0)\r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0)}))\r\n  |> keep(columns: [\"Duration\"])\r\n  |> yield()  ",
         "hide": 2,
@@ -7092,7 +7081,7 @@ spec:
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Racing",
           "value": "Racing"
         },
@@ -7111,13 +7100,23 @@ spec:
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
   "timezone": "browser",
   "title": "B4mad Session Details",
   "uid": "e12c7ccb-ff51-4525-b5da-0d783a1019ef",
-  "version": 98,
+  "version": 101,
   "weekStart": ""
 }
