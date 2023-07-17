@@ -45,7 +45,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+        "uid": "${DS_RACING}"
       },
       "description": "Sessions with a lap time greater than 0",
       "fieldConfig": {
@@ -96,7 +96,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value > 1 )\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
           "refId": "A"
@@ -108,7 +108,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+        "uid": "${DS_RACING}"
       },
       "description": "Sessions with a lap time lower than 0",
       "fieldConfig": {
@@ -167,7 +167,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value <= 0 )\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
           "refId": "A"
@@ -179,7 +179,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "Racing"
+        "uid": "${DS_RACING}"
       },
       "fieldConfig": {
         "defaults": {
@@ -234,7 +234,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"GameName\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
           "refId": "A"
@@ -246,7 +246,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "Racing"
+        "uid": "${DS_RACING}"
       },
       "fieldConfig": {
         "defaults": {
@@ -301,7 +301,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"TrackCode\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
           "refId": "A"
@@ -313,7 +313,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "Racing"
+        "uid": "${DS_RACING}"
       },
       "fieldConfig": {
         "defaults": {
@@ -368,7 +368,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"CarModel\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)\n",
           "refId": "A"
@@ -380,7 +380,7 @@ spec:
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+        "uid": "${DS_RACING}"
       },
       "description": "To get extended data may need a different  \"mqtt_telemetry.json\", Please contact us in Discord to let you know how.",
       "fieldConfig": {
@@ -645,7 +645,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "Racing"
+            "uid": "${DS_RACING}"
           },
           "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\ndata = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n\nValid = data\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\n    _value: \n      if r._value > 1 then \"Valid\"\n      else \"Invalid\"\n    }))\n\n  |> rename(columns: {_value: \"Check\"})\n  |> group()  \n\n  |> yield()\n\n",
           "refId": "A"
@@ -653,7 +653,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+            "uid": "${DS_RACING}"
           },
           "hide": false,
           "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n  |> yield()",
@@ -662,7 +662,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+            "uid": "${DS_RACING}"
           },
           "hide": false,
           "query": "import \"date\"\r\nimport \"math\"\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0)}))\r\n  |> keep(columns: [\"SessionId\", \"Duration\"])\r\n  |> yield()  ",
@@ -671,7 +671,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+            "uid": "${DS_RACING}"
           },
           "hide": false,
           "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n  |> yield()\r\n",
@@ -680,7 +680,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "b6630981-4c9c-4cb6-972b-ee25f7227619"
+            "uid": "${DS_RACING}"
           },
           "hide": false,
           "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Session_Type\")\r\n\r\nExtend = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._value > 0 then \"Extended\"\r\n      else \"Basic\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Extended Data\"})\r\n  |> group()  \r\n\r\n  |> yield()\r\n",
@@ -827,6 +827,24 @@ spec:
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Racing",
+          "value": "Racing"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_RACING",
+        "options": [],
+        "query": "influxdb",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
@@ -838,6 +856,6 @@ spec:
   "timezone": "",
   "title": "Driver",
   "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-  "version": 13,
+  "version": 16,
   "weekStart": ""
 }
