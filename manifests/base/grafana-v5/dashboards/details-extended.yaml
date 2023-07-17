@@ -11,6 +11,7 @@ spec:
       datasourceName: "Racing"
   folder: CrewChief
   # resyncPeriod: 30s
+  json: >  
 {
   "annotations": {
     "list": [
