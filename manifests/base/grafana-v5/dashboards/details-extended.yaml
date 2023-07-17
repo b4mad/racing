@@ -11,7 +11,7 @@ spec:
       datasourceName: "Racing"
   folder: CrewChief
   # resyncPeriod: 30s
-json: >  
+  json: >
 {
   "annotations": {
     "list": [
@@ -6960,14 +6960,14 @@ json: >
         ],
         "query": "Km/h : 3.6 , MPH : 2.236936292054",
         "queryValue": "",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "custom"
       },
       {
         "current": {
           "selected": false,
-          "text": "e Grant",
-          "value": "e Grant"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "influxdb",
@@ -6989,8 +6989,8 @@ json: >
       {
         "current": {
           "selected": false,
-          "text": "1689452999",
-          "value": "1689452999"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "influxdb",
@@ -7013,8 +7013,8 @@ json: >
       {
         "current": {
           "selected": false,
-          "text": "1689431400549320400",
-          "value": "1689431400549320400"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "influxdb",
@@ -7036,8 +7036,8 @@ json: >
       {
         "current": {
           "selected": false,
-          "text": "1689432000422696200",
-          "value": "1689432000422696200"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "influxdb",
@@ -7059,8 +7059,8 @@ json: >
       {
         "current": {
           "selected": false,
-          "text": "600",
-          "value": "600"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "influxdb",
@@ -7081,9 +7081,9 @@ json: >
       },
       {
         "current": {
-          "selected": false,
-          "text": "Racing",
-          "value": "Racing"
+          "selected": true,
+          "text": "${DS_RACING}",
+          "value": "${DS_RACING}"
         },
         "hide": 2,
         "includeAll": false,
