@@ -4,5 +4,6 @@ resources:
   - details-crew-chief.yaml
   - details-extended.yaml
   # - details-simhub.yaml
+  - driver-extended.yaml
   - driver.yaml
   - landingpage.yaml
