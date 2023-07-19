@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: influx-config
+  namespace: b4mad-racing-test
+data:
+  influxdb.conf: |-
+    # This doesnt seem to work, we use environemt vars from influx-var instead
+    # 6 queries
+    query-concurrency = 6
+    # times 512 mb -> 3 gb
+    query-memory-bytes = 512000000

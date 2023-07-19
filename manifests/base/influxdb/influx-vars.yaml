@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: influx-vars
+  namespace: b4mad-racing
+data:
+  INFLUXD_QUERY_CONCURRENCY: "5"
+  INFLUXD_QUERY_INITIAL_MEMORY_BYTES: "512000000"
+  INFLUXD_QUERY_QUEUE_SIZE: "10"
+  INFLUXD_HTTP_READ_TIMEOUT: "30s"
+  INFLUXD_FLUX_LOG_ENABLED: "true"
+  INFLUXD_LOG_LEVEL: "debug"
