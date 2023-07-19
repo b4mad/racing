@@ -35,10 +35,10 @@ patches:
   patch: |-
     - op: replace
       path: /spec/template/spec/containers/0/resources/limits/cpu
-      value: "4000m"
+      value: "2000m"
     - op: replace
       path: /spec/template/spec/containers/0/resources/limits/memory
-      value: "32Gi"
+      value: "16Gi"
 - target:
     kind: Ingress
     name: influx
