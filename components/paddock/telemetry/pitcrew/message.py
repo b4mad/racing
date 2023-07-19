@@ -13,6 +13,7 @@ class Message:
         self.logger = logger
         self.active = True
         self.mode = mode
+        self.max_distance = None
         self.init()
 
     def log_debug(self, msg):
@@ -22,17 +23,17 @@ class Message:
     def init(self):
         pass
 
-    def resp(self, distance, message, priority=None):
+    def resp(self, distance, message, priority=None, max_distance=None):
         # from CrewChiefV4.audio.SoundMetaData
         # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
         # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
 
         priority = priority or self.priority
-        return {
-            "distance": distance,
-            "message": message,
-            "priority": priority,
-        }
+        response = {"distance": distance, "message": message, "priority": priority}
+        if max_distance or self.max_distance:
+            r_max_distance = max_distance or self.max_distance
+            response["max_distance"] = r_max_distance
+        return response
 
     # One commonly used average reading speed for English is around 150 words per minute
     # when spoken. This translates to 2.5 words per second. So you can estimate the time
@@ -42,7 +43,8 @@ class Message:
         words = len(msg.split(" "))
         # r_time = words / 1.5
         r_time = words / 2.2
-        delta_add = 2.0
+        # delta_add = 2.0
+        delta_add = 0.2
         self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds + {delta_add:.1f} seconds")
         # return words * 0.8  # avg ms per word
         # return words / 2.5  # avg ms per word
@@ -77,8 +79,8 @@ class Message:
 class MessageBrakePoint(Message):
     def init(self):
         self.msg = "brake"
-        if self.mode == Coach.MODE_DEBUG:
-            self.msg = f"brake {self.segment.turn}"
+        # if self.mode == Coach.MODE_DEBUG or self.mode == Coach.MODE_ONLY_BRAKE_DEBUG:
+        #     self.msg = f"brake {self.segment.turn}"
 
         self.active = self.segment.type_brake()
         self.at = self.segment.brake_point()
@@ -92,8 +94,8 @@ class MessageBrakePoint(Message):
 class MessageThrottlePoint(Message):
     def init(self):
         self.msg = "lift"
-        if self.mode == Coach.MODE_DEBUG:
-            self.msg = f"lift {self.segment.turn}"
+        # if self.mode == Coach.MODE_DEBUG or self.mode == Coach.MODE_ONLY_BRAKE_DEBUG:
+        #     self.msg = f"lift {self.segment.turn}"
 
         self.active = self.segment.type_throttle()
         self.at = self.segment.throttle_point()
@@ -112,7 +114,7 @@ class MessageBrake(Message):
         self.message_earlier = "brake a bit earlier"
         self.at = self.segment.brake_point()
         self.active = self.segment.type_brake()
-        self.priority = 7
+        self.priority = 9
 
     # def common_init(self, mark):
     #     self.at_track_walk = self.at - 100
@@ -199,7 +201,7 @@ class MessageGear(Message):
         self.gear = self.segment.gear()
         self.msg = f"Gear {self.gear}"
         self.at = self.finish_at_segment_start()
-        self.priority = 7
+        self.priority = 9
         if self.segment.type_throttle():
             self.at_track_walk = self.segment.throttle_feature("end")
         elif self.segment.type_brake():
@@ -222,7 +224,7 @@ class MessageGear(Message):
 
 class MessageBrakeForce(Message):
     def init(self):
-        self.priority = 8
+        self.priority = 9
         self.force = self.segment.brake_force()
         if self.force is None or not self.segment.type_brake():
             self.active = False
@@ -254,7 +256,7 @@ class MessageBrakeForce(Message):
 
 class MessageThrottleForce(Message):
     def init(self):
-        self.priority = 7
+        self.priority = 9
         self.force = self.segment.throttle_force()
         if self.force is None or not self.segment.type_throttle():
             self.active = False
@@ -334,9 +336,11 @@ class MessageTrackGuide(Message):
         # self.at = self.segment.previous_segment.full_throttle_point()
         # if self.at is not None:
         #     diff = (self.segment.brake_point() - self.at) % self.segment.track_length()
-        self.at = self.finish_at_segment_start()
+        finish_at = self.segment.brake_point() or self.segment.throttle_point()
+        self.at = self.finish_at(finish_at)
         # self.msg = f"{self.msg} {self.segment.start}"
         self.at_track_walk = self.at
+        self.max_distance = self.at + 15
 
     def build_msg(self):
         brake_point = self.segment.brake_point()
@@ -363,10 +367,13 @@ class MessageTrackGuide(Message):
             frags.append("trailbrake")
 
         # fixme compare to gear at start of segment
-        # frags.append(f"shift to {self.segment.gear()}")
+        frags.append(f"gear {self.segment.gear()}")
         return " ".join(frags)
 
     def needs_coaching(self):
+        if self.mode == Coach.MODE_DEBUG:
+            return True
+
         if self.segment.driver_score() < 0.5:
             return True
         return False

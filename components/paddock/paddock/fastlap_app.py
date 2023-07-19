@@ -199,7 +199,7 @@ def update_graph(n_clicks, game, car, track, session_state=None):
         if throttle_features:
             fig_add_features(fig, throttle_features, color="green")
 
-        title = f"Turn {segment.turn} - {segment.time:.3f} seconds - {segment.start}m to {segment.end}m"
+        title = f"{segment.time:.3f} seconds - {segment.start}m to {segment.end}m"
         fig.update_layout(title=dict(text=title))
         graph = dcc.Graph(figure=fig)
         md = get_segment_header(segment, segment.turn)
@@ -242,7 +242,7 @@ def get_segment_header(segment, turn):
 
     md = f"""
 ## Turn {turn}
-{msg}
+{message.at} meters: {msg}
 """
 
     return md

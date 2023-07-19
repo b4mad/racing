@@ -43,6 +43,8 @@ class Analyzer:
     def split_sectors(
         self, df, threshold=None, min_length_throttle_below_threshold=50, min_distance_between_sectors=50
     ):
+        logging.debug(f"split_sectors: min_length_throttle_below_threshold: {min_length_throttle_below_threshold}")
+        logging.debug(f"split_sectors: min_distance_between_sectors: {min_distance_between_sectors}")
         if threshold is None:
             threshold = df["Throttle"].max() * 0.98
         # Step 1: Find all rows where Throttle starts to drop below the threshold
@@ -94,7 +96,7 @@ class Analyzer:
             # logging.debug(f"sector {i} length: {sector['length_throttle_below_threshold']}")
             # logging.debug(f"sector {i} start: {sector['start']} end: {sector['end']}")
             if sector["length_throttle_below_threshold"] < min_length_throttle_below_threshold:
-                logging.debug(f"sector {i} too short: {sector['length_throttle_below_threshold']}")
+                logging.debug(f"sector {i} - {sector['start']}m too short: {sector['length_throttle_below_threshold']}")
                 continue
             new_sectors.append(sector)
         sectors = new_sectors
@@ -110,7 +112,9 @@ class Analyzer:
                 # sector["start"] = prev_sector["start"]
                 prev_sector["end"] = sector["end"]
                 remove_indices.append(i)
-                logging.debug(f"remove sector {i} too close to previous sector: {distance_between}")
+                logging.debug(
+                    f"remove sector {i} - {sector['start']}m " + f"too close to previous sector: {distance_between}"
+                )
 
         new_sectors = []
         for i, sector in enumerate(sectors):
