@@ -181,9 +181,13 @@ class Coach(ExportModelOperationsMixin("coach"), TimeStampedModel):
 
     MODE_DEFAULT = "default"
     MODE_DEBUG = "debug"
+    MODE_ONLY_BRAKE = "only_brake"
+    MODE_ONLY_BRAKE_DEBUG = "only_brake_debug"
     MODE_CHOICES = [
         (MODE_DEFAULT, "Default"),
         (MODE_DEBUG, "Debug"),
+        (MODE_ONLY_BRAKE, "Only Brakepoints"),
+        (MODE_ONLY_BRAKE_DEBUG, "Only Brakepoints (Debug))"),
     ]
     mode = models.CharField(max_length=64, default=MODE_DEFAULT, choices=MODE_CHOICES)
 

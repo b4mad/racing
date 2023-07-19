@@ -448,7 +448,7 @@ spec:
                     "value": [
                       {
                         "title": "",
-                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-racing-details-crewchief?orgId=1&var-SessionId=${__value.text}&time=${__value.time}&time.window=3600000&var-User=${__data.fields.user}\n\n"
+                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-racing-details-crewchief?orgId=1&var-SessionId=${__value.text}&time=${__value.time}&time.window=3600000&var-user=${__data.fields.user}\n\n"
                       }
                     ]
                   }

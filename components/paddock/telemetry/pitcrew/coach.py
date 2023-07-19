@@ -104,6 +104,10 @@ class Coach(LoggingMixin):
 
             if self.mode == DbCoach.MODE_DEBUG:
                 startup_message += " debugging mode"
+            elif self.mode == DbCoach.MODE_ONLY_BRAKE:
+                startup_message += " announcing only brake points"
+            elif self.mode == DbCoach.MODE_ONLY_BRAKE_DEBUG:
+                startup_message += " debugging only brake points"
 
             self.init_messages()
 
@@ -272,7 +276,16 @@ class Coach(LoggingMixin):
             MessageApex,
         ]
         for segment in self.history.segments:
+            if self.mode == DbCoach.MODE_ONLY_BRAKE or self.mode == DbCoach.MODE_ONLY_BRAKE_DEBUG:
+                message = MessageBrakePoint(segment, logger=self.log_debug, mode=self.mode)
+                self.messages.append(message)
+                message = MessageThrottlePoint(segment, logger=self.log_debug, mode=self.mode)
+                self.messages.append(message)
+                continue
+
             if self.mode == DbCoach.MODE_DEBUG:
+                message = MessageTrackGuide(segment, logger=self.log_debug, mode=self.mode)
+                self.messages.append(message)
                 message = MessageBrakePoint(segment, logger=self.log_debug, mode=self.mode)
                 self.messages.append(message)
                 message = MessageThrottlePoint(segment, logger=self.log_debug, mode=self.mode)
