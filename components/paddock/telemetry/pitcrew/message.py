@@ -1,8 +1,10 @@
+from telemetry.models import Coach
+
 from .segment import Segment
 
 
 class Message:
-    def __init__(self, segment: Segment, logger=None):
+    def __init__(self, segment: Segment, logger=None, mode="hotlap"):
         self.segment = segment
         self.finish_at_words = "one two"
         self.at = None
@@ -10,6 +12,7 @@ class Message:
         self.priority = 9
         self.logger = logger
         self.active = True
+        self.mode = mode
         self.init()
 
     def log_debug(self, msg):
@@ -74,6 +77,9 @@ class Message:
 class MessageBrakePoint(Message):
     def init(self):
         self.msg = "brake"
+        if self.mode == Coach.MODE_DEBUG:
+            self.msg = f"brake {self.segment.turn}"
+
         self.active = self.segment.type_brake()
         self.at = self.segment.brake_point()
         self.priority = 9
@@ -86,6 +92,9 @@ class MessageBrakePoint(Message):
 class MessageThrottlePoint(Message):
     def init(self):
         self.msg = "lift"
+        if self.mode == Coach.MODE_DEBUG:
+            self.msg = f"lift {self.segment.turn}"
+
         self.active = self.segment.type_throttle()
         self.at = self.segment.throttle_point()
         self.priority = 9

@@ -176,9 +176,16 @@ class Coach(ExportModelOperationsMixin("coach"), TimeStampedModel):
     error = models.TextField(default="")
     status = models.TextField(default="")
     enabled = models.BooleanField(default=False)
-    track_walk = models.BooleanField(default=False)
 
     fast_lap = models.ForeignKey(FastLap, on_delete=models.SET_NULL, related_name="coaches", null=True)
+
+    MODE_DEFAULT = "default"
+    MODE_DEBUG = "debug"
+    MODE_CHOICES = [
+        (MODE_DEFAULT, "Default"),
+        (MODE_DEBUG, "Debug"),
+    ]
+    mode = models.CharField(max_length=64, default=MODE_DEFAULT, choices=MODE_CHOICES)
 
     def __str__(self):
         return self.driver.name

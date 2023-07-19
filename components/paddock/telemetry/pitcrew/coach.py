@@ -31,7 +31,7 @@ class Coach(LoggingMixin):
         self.responses = {}
         self.topic = ""
         self.session_id = "NO_SESSION"
-        self.track_walk = False
+        self.mode = DbCoach.MODE_DEFAULT
         self.focus_on_turns = []
         self.distance = 0
         self._new_session_starting = False
@@ -65,7 +65,7 @@ class Coach(LoggingMixin):
         self._next_messages = []
         self.responses = {}
         self.db_coach.refresh_from_db()
-        self.track_walk = self.db_coach.track_walk
+        self.mode = self.db_coach.mode
         self.focus_on_turns = []
 
     def ready(self):
@@ -102,8 +102,8 @@ class Coach(LoggingMixin):
                     startup_message += f" for an improvement of {delta:.2f}"
                     self.focus_on_turns = worst_turns
 
-            if self.track_walk:
-                startup_message += " doing a track walk"
+            if self.mode == DbCoach.MODE_DEBUG:
+                startup_message += " debugging mode"
 
             self.init_messages()
 
@@ -217,10 +217,10 @@ class Coach(LoggingMixin):
     def get_responses(self, telemetry, future_distance):
         responses = []
         for message in self.messages:
-            if self.track_walk:
-                response = message.response_track_walk(future_distance, telemetry)
-            else:
-                response = message.response_hot_lap(future_distance, telemetry)
+            # if self.mode == DbCoach.MODE_DEBUG:
+            #     response = message.response_track_walk(future_distance, telemetry)
+            # else:
+            response = message.response_hot_lap(future_distance, telemetry)
 
             if response:
                 if not isinstance(response, list):
@@ -272,14 +272,21 @@ class Coach(LoggingMixin):
             MessageApex,
         ]
         for segment in self.history.segments:
+            if self.mode == DbCoach.MODE_DEBUG:
+                message = MessageBrakePoint(segment, logger=self.log_debug, mode=self.mode)
+                self.messages.append(message)
+                message = MessageThrottlePoint(segment, logger=self.log_debug, mode=self.mode)
+                self.messages.append(message)
+                continue
+
             if self.focus_on_turns:
                 if segment not in self.focus_on_turns:
                     continue
-                message = MessageFocus(segment, logger=self.log_debug)
+                message = MessageFocus(segment, logger=self.log_debug, mode=self.mode)
                 if message.active:
                     self.messages.append(message)
 
             for message_class in message_classes:
-                message = message_class(segment, logger=self.log_debug)
+                message = message_class(segment, logger=self.log_debug, mode=self.mode)
                 if message.active:
                     self.messages.append(message)

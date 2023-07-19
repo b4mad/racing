@@ -95,9 +95,14 @@ class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 # class CoachInline(admin.TabularInline):
 #     model = Coach
 
-# class CoachAdmin(admin.ModelAdmin):
-#     model = Coach
-#     display = ('name')
+
+class CoachAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["driver", "mode", "created", "modified"]
+    fields = ["driver", "error", "status", "mode"]
+
+    # changelist_links = ["se"]
+
+
 # class DriverAdmin(admin.ModelAdmin):
 #     model = Driver
 #     display = ('name')
@@ -113,4 +118,4 @@ admin.site.register(Driver, DriverAdmin)
 admin.site.register(Session, SessionAdmin)
 admin.site.register(FastLap, FastLapAdmin)
 admin.site.register(FastLapSegment, FastLapSegmentAdmin)
-admin.site.register(Coach)
+admin.site.register(Coach, CoachAdmin)

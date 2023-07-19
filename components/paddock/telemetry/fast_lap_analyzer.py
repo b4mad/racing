@@ -102,10 +102,10 @@ class FastLapAnalyzer:
                 tmp = start
                 start = end
                 end = tmp
-            if abs(min_distance - start) > 5:
+            if abs(min_distance - start) > 10:
                 logging.debug(f"sector {i}: min: {min_distance} != start: {start}")
                 continue
-            if abs(max_distance - end) > 5:
+            if abs(max_distance - end) > 10:
                 logging.debug(f"sector {i}: max: {max_distance} != end: {end}")
                 continue
             # logging.debug(f"min_distance: {min_distance}, max_distance: {max_distance}")
