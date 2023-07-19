@@ -44,8 +44,8 @@ spec:
       "panels": [
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_RACING}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
           "description": "Sessions with a lap time greater than 0",
           "fieldConfig": {
@@ -53,17 +53,31 @@ spec:
               "color": {
                 "mode": "thresholds"
               },
+              "decimals": 0,
+              "displayName": "Valid Session",
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "super-light-green",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "light-green",
+                    "value": 10
+                  },
+                  {
+                    "color": "green",
+                    "value": 20
+                  },
+                  {
+                    "color": "semi-dark-green",
+                    "value": 30
+                  },
+                  {
+                    "color": "dark-green",
+                    "value": 40
                   }
                 ]
               }
@@ -95,27 +109,66 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
+                "type": "datasource",
+                "uid": "-- Dashboard --"
               },
-              "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value > 1 )\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
-              "refId": "A"
+              "panelId": 13,
+              "refId": "A",
+              "withTransforms": true
             }
           ],
-          "title": "Valid Sessions",
+          "transformations": [
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "SessionId": {
+                    "aggregations": [
+                      "count"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
           "type": "stat"
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_RACING}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "description": "Sessions with a lap time lower than 0",
+          "description": "Sessions with a lap time greater than 0",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
+              "decimals": 0,
+              "displayName": "Invalid Sessions",
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -125,16 +178,20 @@ spec:
                     "value": null
                   },
                   {
-                    "color": "yellow",
+                    "color": "light-red",
                     "value": 10
                   },
                   {
-                    "color": "orange",
+                    "color": "red",
                     "value": 20
                   },
                   {
-                    "color": "red",
-                    "value": 50
+                    "color": "semi-dark-red",
+                    "value": 30
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 40
                   }
                 ]
               }
@@ -147,7 +204,7 @@ spec:
             "x": 2,
             "y": 0
           },
-          "id": 15,
+          "id": 14,
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -160,26 +217,63 @@ spec:
               "fields": "",
               "values": false
             },
-            "textMode": "auto"
+            "textMode": "value_and_name"
           },
           "pluginVersion": "10.0.2",
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
+                "type": "datasource",
+                "uid": "-- Dashboard --"
               },
-              "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" and r._value <= 0 )\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
-              "refId": "A"
+              "panelId": 13,
+              "refId": "A",
+              "withTransforms": true
             }
           ],
-          "title": "Invalid Sessions",
+          "transformations": [
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Invalid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "SessionId": {
+                    "aggregations": [
+                      "count"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
           "type": "stat"
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_RACING}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
           "fieldConfig": {
             "defaults": {
@@ -191,28 +285,75 @@ spec:
                 "cellOptions": {
                   "type": "auto"
                 },
-                "inspect": false
+                "filterable": true,
+                "inspect": false,
+                "minWidth": 50
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "super-light-purple",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "light-purple",
+                    "value": 5
+                  },
+                  {
+                    "color": "purple",
+                    "value": 10
+                  },
+                  {
+                    "color": "semi-dark-purple",
+                    "value": 20
+                  },
+                  {
+                    "color": "dark-purple",
+                    "value": 30
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "GameName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 215
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SessionId (count)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 30
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "gauge",
+                      "valueDisplayMode": "hidden"
+                    }
                   }
                 ]
               }
-            },
-            "overrides": []
+            ]
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
+            "w": 5,
             "x": 4,
             "y": 0
           },
@@ -227,26 +368,77 @@ spec:
               ],
               "show": false
             },
-            "showHeader": false
+            "showHeader": false,
+            "sortBy": []
           },
           "pluginVersion": "10.0.2",
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
+                "type": "datasource",
+                "uid": "-- Dashboard --"
               },
-              "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"GameName\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
-              "refId": "A"
+              "panelId": 13,
+              "refId": "A",
+              "withTransforms": true
             }
           ],
           "title": "GameName",
+          "transformations": [
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "GameName": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "SessionId": {
+                    "aggregations": [
+                      "count"
+                    ],
+                    "operation": "aggregate"
+                  }
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "SessionId (count)"
+                  }
+                ]
+              }
+            }
+          ],
           "type": "table"
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_RACING}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
           "fieldConfig": {
             "defaults": {
@@ -258,6 +450,7 @@ spec:
                 "cellOptions": {
                   "type": "auto"
                 },
+                "filterable": false,
                 "inspect": false
               },
               "mappings": [],
@@ -265,22 +458,66 @@ spec:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "super-light-orange",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "light-orange",
+                    "value": 5
+                  },
+                  {
+                    "color": "orange",
+                    "value": 10
+                  },
+                  {
+                    "color": "semi-dark-orange",
+                    "value": 20
+                  },
+                  {
+                    "color": "dark-orange",
+                    "value": 30
                   }
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "TrackCode"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 265
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SessionId (count)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 20
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "gauge",
+                      "valueDisplayMode": "hidden"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 4,
-            "w": 7,
-            "x": 8,
+            "w": 6,
+            "x": 9,
             "y": 0
           },
           "id": 5,
@@ -294,26 +531,87 @@ spec:
               ],
               "show": false
             },
-            "showHeader": false
+            "showHeader": false,
+            "sortBy": []
           },
           "pluginVersion": "10.0.2",
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
+                "type": "datasource",
+                "uid": "-- Dashboard --"
               },
-              "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"TrackCode\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
-              "refId": "A"
+              "panelId": 13,
+              "refId": "A",
+              "withTransforms": true
             }
           ],
           "title": "TrackCode",
+          "transformations": [
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "user"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "SessionId": {
+                    "aggregations": [
+                      "count"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "TrackCode": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "TrackName": {
+                    "aggregations": []
+                  }
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "SessionId (count)"
+                  }
+                ]
+              }
+            }
+          ],
           "type": "table"
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_RACING}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
           "fieldConfig": {
             "defaults": {
@@ -325,24 +623,70 @@ spec:
                 "cellOptions": {
                   "type": "auto"
                 },
-                "inspect": false
+                "filterable": false,
+                "inspect": false,
+                "minWidth": 50
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "super-light-blue",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "light-blue",
+                    "value": 5
+                  },
+                  {
+                    "color": "blue",
+                    "value": 10
+                  },
+                  {
+                    "color": "semi-dark-blue",
+                    "value": 20
+                  },
+                  {
+                    "color": "dark-blue",
+                    "value": 30
                   }
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SessionId (count)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 30
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "gauge",
+                      "valueDisplayMode": "hidden"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CarModel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 280
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 4,
@@ -357,24 +701,82 @@ spec:
               "countRows": false,
               "fields": "",
               "reducer": [
-                "sum"
+                "diffperc"
               ],
               "show": false
             },
-            "showHeader": false
+            "showHeader": false,
+            "sortBy": []
           },
           "pluginVersion": "10.0.2",
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
+                "type": "datasource",
+                "uid": "-- Dashboard --"
               },
-              "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"CarModel\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)\n",
-              "refId": "A"
+              "panelId": 13,
+              "refId": "A",
+              "withTransforms": true
             }
           ],
           "title": "CarModel",
+          "transformations": [
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "user"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "CarModel": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "SessionId": {
+                    "aggregations": [
+                      "count"
+                    ],
+                    "operation": "aggregate"
+                  }
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "SessionId (count)"
+                  }
+                ]
+              }
+            }
+          ],
           "type": "table"
         },
         {
@@ -424,7 +826,7 @@ spec:
                       {
                         "targetBlank": true,
                         "title": "",
-                        "url": "https://pitwall.b4mad.racing/d/6d57246de74745198b3385f5e446e81cf7127b47/session?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.Duration}&var-User=${__data.fields.user}&from${__data.fields.Start}&to${__data.fields.Stop}"
+                        "url": "https://pitwall.b4mad.racing/d/6d57246de74745198b3385f5e446e81cf7127b47/session?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.Duration}&var-user=${__data.fields.user}&from${__data.fields.Start}&to${__data.fields.Stop}"
                       }
                     ]
                   },
@@ -477,7 +879,7 @@ spec:
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 138
+                    "value": 81
                   }
                 ]
               },
@@ -489,7 +891,7 @@ spec:
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 158
+                    "value": 94
                   }
                 ]
               },
@@ -500,7 +902,8 @@ spec:
                 },
                 "properties": [
                   {
-                    "id": "custom.width"
+                    "id": "custom.width",
+                    "value": 213
                   }
                 ]
               },
@@ -538,13 +941,13 @@ spec:
                       {
                         "targetBlank": true,
                         "title": "",
-                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/session-details-extended?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.Duration}&var-User=${__data.fields.user}&from${__data.fields.Start}&to${__data.fields.Stop}\n\n"
+                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/session-details-extended?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.Duration}&var-user=${__data.fields.user}&from${__data.fields.Start}&to${__data.fields.Stop}\n\n"
                       }
                     ]
                   },
                   {
                     "id": "custom.width",
-                    "value": 123
+                    "value": 81
                   },
                   {
                     "id": "noValue",
@@ -608,7 +1011,19 @@ spec:
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 74
+                    "value": 58
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "TrackName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
                   }
                 ]
               }
@@ -647,8 +1062,8 @@ spec:
                 "type": "influxdb",
                 "uid": "${DS_RACING}"
               },
-              "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\ndata = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n\nValid = data\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\n    _value: \n      if r._value > 1 then \"Valid\"\n      else \"Invalid\"\n    }))\n\n  |> rename(columns: {_value: \"Check\"})\n  |> group()  \n\n  |> yield()\n\n",
-              "refId": "A"
+              "query": "import \"strings\"\nimport \"regexp\"\nregex = /^([a-zA-Z0-9]+)/\n\ngames = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\ndata = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> map(fn: (r) => ({r with TrackCode: strings.toLower(v: r.TrackCode)}))  \n  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n\nValid = data\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,TrackName: regexp.findString(v: r.TrackCode, r: regex),\n    _value: \n      if r._value > 1 then \"Valid\"\n      else \"Invalid\"\n    }))\n\n  |> rename(columns: {_value: \"Check\"})\n  |> group()  \n\n  |> yield()\n\n",
+              "refId": "Data"
             },
             {
               "datasource": {
@@ -656,8 +1071,8 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n  |> yield()",
-              "refId": "B"
+              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start: int(v: r._time)-60000000000}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n  |> yield()",
+              "refId": "Start"
             },
             {
               "datasource": {
@@ -666,7 +1081,7 @@ spec:
               },
               "hide": false,
               "query": "import \"date\"\r\nimport \"math\"\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0)}))\r\n  |> keep(columns: [\"SessionId\", \"Duration\"])\r\n  |> yield()  ",
-              "refId": "C"
+              "refId": "Duration"
             },
             {
               "datasource": {
@@ -674,8 +1089,8 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop: int(v: r._time)}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n  |> yield()\r\n",
-              "refId": "D"
+              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop: int(v: r._time)+60000000000}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n  |> yield()\r\n",
+              "refId": "Stop"
             },
             {
               "datasource": {
@@ -684,7 +1099,7 @@ spec:
               },
               "hide": false,
               "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Session_Type\")\r\n\r\nExtend = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._value > 0 then \"Extended\"\r\n      else \"Basic\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Extended Data\"})\r\n  |> group()  \r\n\r\n  |> yield()\r\n",
-              "refId": "E"
+              "refId": "Extend"
             }
           ],
           "title": "Recent Sessions",
@@ -697,21 +1112,19 @@ spec:
               }
             },
             {
-              "disabled": true,
-              "id": "calculateField",
+              "id": "filterByValue",
               "options": {
-                "alias": "Extended Data",
-                "binary": {
-                  "left": "SessionId",
-                  "reducer": "sum"
-                },
-                "mode": "reduceRow",
-                "reduce": {
-                  "include": [
-                    "SessionId"
-                  ],
-                  "reducer": "last"
-                }
+                "filters": [
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "Check"
+                  }
+                ],
+                "match": "any",
+                "type": "include"
               }
             },
             {
@@ -783,8 +1196,8 @@ spec:
           {
             "current": {
               "selected": false,
-              "text": "All",
-              "value": "$__all"
+              "text": "durandom",
+              "value": "durandom"
             },
             "datasource": {
               "type": "influxdb",
@@ -827,24 +1240,6 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
-          },
-          {
-            "current": {
-              "selected": false,
-              "text": "Racing",
-              "value": "Racing"
-            },
-            "hide": 2,
-            "includeAll": false,
-            "multi": false,
-            "name": "DS_RACING",
-            "options": [],
-            "query": "influxdb",
-            "queryValue": "",
-            "refresh": 1,
-            "regex": "",
-            "skipUrlSync": false,
-            "type": "datasource"
           }
         ]
       },
@@ -856,6 +1251,6 @@ spec:
       "timezone": "",
       "title": "Driver",
       "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-      "version": 17,
+      "version": 32,
       "weekStart": ""
     }
