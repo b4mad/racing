@@ -1196,8 +1196,8 @@ spec:
           {
             "current": {
               "selected": false,
-              "text": "e Grant",
-              "value": "e Grant"
+              "text": "durandom",
+              "value": "durandom"
             },
             "datasource": {
               "type": "influxdb",
@@ -1240,13 +1240,6 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
-          },
-          {
-            "hide": 2,
-            "name": "DS_RACING",
-            "query": "Racing",
-            "skipUrlSync": false,
-            "type": "constant"
           }
         ]
       },
