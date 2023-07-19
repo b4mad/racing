@@ -84,7 +84,7 @@ class FastLapAnalyzer:
     def extract_sectors(self, lap_data):
         df_max = self.analyzer.combine_max_throttle(lap_data)
         sector_start_end = self.analyzer.split_sectors(
-            df_max, min_distance_between_sectors=100, min_length_throttle_below_threshold=20
+            df_max, min_distance_between_sectors=35, min_length_throttle_below_threshold=20
         )
         return sector_start_end, df_max
 
@@ -102,11 +102,16 @@ class FastLapAnalyzer:
                 tmp = start
                 start = end
                 end = tmp
-            if abs(min_distance - start) > 5:
-                logging.debug(f"sector {i}: min: {min_distance} != start: {start}")
+            min_threshold = 10
+            # be a bit more generous with the min_threshold if its the first sector
+            # since those often dont start at 0
+            if min_distance < 20:
+                min_threshold = 20
+            if abs(min_distance - start) > min_threshold:
+                logging.debug(f"get sector for lap {i}: min: {min_distance} != start: {start}")
                 continue
-            if abs(max_distance - end) > 5:
-                logging.debug(f"sector {i}: max: {max_distance} != end: {end}")
+            if abs(max_distance - end) > 10:
+                logging.debug(f"get sector for lap {i}: max: {max_distance} != end: {end}")
                 continue
             # logging.debug(f"min_distance: {min_distance}, max_distance: {max_distance}")
             # continue if the sector is empty
@@ -171,6 +176,7 @@ class FastLapAnalyzer:
         for i in range(len(sector_start_end)):
             start = sector_start_end[i]["start"]
             end = sector_start_end[i]["end"]
+            logging.debug(f"extract_segments for sector {i} start: {start} end: {end}")
             sector, lap_index = self.fastest_sector(lap_telemetry, start, end)
             if sector is None:
                 logging.error(f"Could not find fastest sector for {start} - {end}")

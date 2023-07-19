@@ -25,12 +25,10 @@ class CoachForm(forms.Form):
     # PrependedText('field_name', '@', placeholder="username")
 
     coach_enabled = forms.BooleanField(required=False)
-    # coach_track_walk = forms.BooleanField(
-    #     required=False,
-    #     help_text="Drive slow and get precise track info, disable when driving fast.
-    #                Only checked when session starts.",
-    #     label="Track Walk",
-    # )
+    coach_mode = forms.ChoiceField(
+        choices=Coach.MODE_CHOICES,
+        label="coaching mode",
+    )
 
     # message = forms.CharField(widget=forms.Textarea)
 
@@ -122,7 +120,7 @@ class CoachView(LoginRequiredMixin, FormView):
 
         self.coach = None
         coach_enabled = False
-        # coach_track_walk = False
+        coach_mode = Coach.MODE_DEFAULT
         driver_name = None
 
         driver = Driver.objects.filter(name=user_name).first()
@@ -130,12 +128,12 @@ class CoachView(LoginRequiredMixin, FormView):
             driver_name = driver.name
             self.coach = Coach.objects.get_or_create(driver=driver)[0]
             coach_enabled = self.coach.enabled
-            # coach_track_walk = self.coach.track_walk
+            coach_mode = self.coach.mode
 
         data = {
             "driver_name": driver_name,
             "coach_enabled": coach_enabled,
-            # "coach_track_walk": coach_track_walk,
+            "coach_mode": coach_mode,
         }
         return data
 
@@ -156,7 +154,7 @@ class CoachView(LoginRequiredMixin, FormView):
             if driver:
                 coach = Coach.objects.get_or_create(driver=driver)[0]
                 coach.enabled = form.cleaned_data["coach_enabled"]
-                # coach.track_walk = form.cleaned_data["coach_track_walk"]
+                coach.mode = form.cleaned_data["coach_mode"]
                 coach.save()
 
             self.request.user.save()

@@ -7,7 +7,7 @@ metadata:
   namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
-    helm.sh/chart: influxdb-5.5.2
+    helm.sh/chart: influxdb-5.7.2
     app.kubernetes.io/instance: influxdb2
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -51,21 +51,7 @@ spec:
 
           initContainers:
             - name: influxdb-backup
-              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r3"
-              # securityContext:
-              #   runAsUser: 0
-              #   runAsGroup: 0
-              #   runAsNonRoot: true
-              #   fsGroup: 2000
-              securityContext:
-                runAsNonRoot: true
-                allowPrivilegeEscalation: false
-                runAsGroup: 1000890099
-                seccompProfile:
-                  type: RuntimeDefault
-                capabilities:
-                  drop:
-                    - ALL
+              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r25"
               env:
                 - name: INFLUXDB_ADMIN_USER_PASSWORD
                   valueFrom:
@@ -87,6 +73,6 @@ spec:
                   subPath: backup.sh
           containers:
             - name: influxdb-backup-dummy-container
-              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r3"
+              image: "docker.io/bitnami/influxdb:2.7.1-debian-11-r25"
               command:
                 - "/bin/true"

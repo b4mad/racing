@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "influxdb2-backup"
+  namespace: "b4mad-racing-test"
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+            - name: influxdb-backup
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                runAsGroup: 1000890099
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
