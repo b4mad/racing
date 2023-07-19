@@ -40,6 +40,8 @@ influxdb:
   # initdbScripts:
   #   creata_db.sh: |
   #     influx -host localhost -port "$INFLUXDB_HTTP_PORT_NUMBER" -username "${INFLUXDB_ADMIN_USER}" -password "${INFLUXDB_ADMIN_USER_PASSWORD}" -execute "create database agentMetrix;"
+  existingConfiguration: influx-config
+  extraEnvVarsCM: influx-vars
   updateStrategy:
     type: Recreate
   podSecurityContext:

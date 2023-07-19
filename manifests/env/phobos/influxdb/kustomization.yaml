@@ -17,11 +17,41 @@ generatorOptions:
 patches:
 - target:
     kind: PersistentVolumeClaim
+    name: influxdb2-backups
+  patch: |-
+    - op: add
+      path: /spec/storageClassName
+      value: "synostorage-smb"
+- target:
+    kind: PersistentVolumeClaim
     name: influxdb2
   patch: |-
     - op: replace
       path: /spec/resources/requests/storage
-      value: "2Gi"
+      value: "80Gi"
+- target:
+    kind: Deployment
+    name: influxdb2
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/cpu
+      value: "4000m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: "32Gi"
+- target:
+    kind: Ingress
+    name: influx
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: telemetry.b4mad.racing
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: telemetry.b4mad.racing
+    - op: replace
+      path: /spec/tls/0/secretName
+      value: https-cert-telemetry.b4mad.racing
 - target:
     kind: PersistentVolumeClaim
     name: influxdb2-backups
@@ -29,26 +59,3 @@ patches:
     - op: replace
       path: /spec/resources/requests/storage
       value: "500Gi"
-- patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/resources/limits/cpu
-      value: "50m"
-    - op: replace
-      path: /spec/template/spec/containers/0/resources/limits/memory
-      value: "200Mi"
-  target:
-    kind: Deployment
-    name: influxdb2
-- patch: |-
-    - op: replace
-      path: /spec/rules/0/host
-      value: telemetry.test.b4mad.racing
-    - op: replace
-      path: /spec/tls/0/hosts/0
-      value: telemetry.test.b4mad.racing
-    - op: replace
-      path: /spec/tls/0/secretName
-      value: https-cert-telemetry.test.b4mad.racing
-  target:
-    kind: Ingress
-    name: influx

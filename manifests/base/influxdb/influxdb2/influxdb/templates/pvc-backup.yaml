@@ -7,12 +7,11 @@ metadata:
   namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
-    helm.sh/chart: influxdb-5.5.2
+    helm.sh/chart: influxdb-5.7.2
     app.kubernetes.io/instance: influxdb2
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: influxdb
 spec:
-  storageClassName: "synostorage-smb"
   accessModes:
     - "ReadWriteOnce"
   resources:
