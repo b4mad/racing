@@ -6,7 +6,7 @@
       "error": "",
       "status": "start coaching for a lap time of 1 minute 45.50 seconds ",
       "enabled": true,
-      "track_walk": false,
+      "mode": "default",
       "fast_lap": 15
     }
   }
