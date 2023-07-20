@@ -319,6 +319,8 @@ class Analyzer:
             features["max_high"] = round(peak_force_df["Brake"].max(), 2)
             features["max_low"] = round(peak_force_df["Brake"].min(), 2)
             features["force"] = round(peak_force_df["Brake"].mean(), 2)
+            features["approach_speed"] = round(self.value_at_distance(sector_df, start, column="SpeedMs"), 2)
+            features["min_speed"] = round(brake_df["SpeedMs"].min(), 2)
 
         return features
 
@@ -331,18 +333,20 @@ class Analyzer:
             features["start"] = start
             features["end"] = end
 
-            df = self.section_df(sector_df, start, end)
+            throttle_df = self.section_df(sector_df, start, end)
 
             column = "Throttle"
-            min_force, max_force = self.top_bin(df, column=column)
+            min_force, max_force = self.top_bin(throttle_df, column=column)
 
-            peak_force_df = df[(df[column] >= min_force) & (df[column] <= max_force)]
+            peak_force_df = throttle_df[(throttle_df[column] >= min_force) & (throttle_df[column] <= max_force)]
 
             features["max_start"] = peak_force_df["DistanceRoundTrack"].min()
             features["max_end"] = peak_force_df["DistanceRoundTrack"].max()
             features["max_high"] = round(peak_force_df[column].max(), 2)
             features["max_low"] = abs(round(peak_force_df[column].min(), 2))
             features["force"] = abs(round(peak_force_df[column].mean(), 2))
+            features["approach_speed"] = round(self.value_at_distance(sector_df, start, column="SpeedMs"), 2)
+            features["min_speed"] = round(throttle_df["SpeedMs"].min(), 2)
 
         return features
 

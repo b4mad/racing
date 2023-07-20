@@ -242,7 +242,7 @@ def get_segment_header(segment, turn):
 
     md = f"""
 ## Turn {turn}
-{message.at} meters: {msg}
+{message.at} meters: {msg} - read_frame: {message.max_distance - message.at} meters
 """
 
     return md

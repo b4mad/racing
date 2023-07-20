@@ -84,6 +84,8 @@ def extract_cc_data(lines):
             drt = m.group(3)
             event = find_event(data, msg, is_none="max_distance")
             event["max_distance"] = max_distance
+            if event.get("distance") is not None:
+                event["max_delta"] = int(max_distance) - int(event["distance"])
             continue
         # 19:29:19.442 : MQTT - AudioPlayer - COMPOUND_mqtt_response_brake hard gear 4_2842 finished drt: 2945.812 time: 1.5190201 # noqa: E501
         m = re.match(r".*COMPOUND_mqtt_response_([\w _]+) finished drt: (\d+\.\d+) time: (\d+\.\d+).*", line)
@@ -97,14 +99,17 @@ def extract_cc_data(lines):
                 event["read_delta"] = round(float(play_time) - event["read_time"], 2)
             event["finished"] = drt
             continue
-        # 19:36:27.757 : MQTT - AudioPlayer - COMPOUND_mqtt_response_brake 9_3809 drt: 3810.264
-        m = re.match(r".*COMPOUND_mqtt_response_([\w _]+) drt: (\d+\.\d+).*", line)
+        # 11:57:02.350 : MQTT - AudioPlayer - COMPOUND_mqtt_response_brake hard gear 2_4636 drt: 4639.859 speed: 24.06989 # noqa: E501
+        m = re.match(r".*COMPOUND_mqtt_response_([\w _]+) drt: (\d+\.\d+) speed: (\d+\.\d+).*", line)
         if m:
             msg = m.group(1)
             drt = m.group(2)
+            speed = m.group(3)
             event = find_event(data, msg, is_none="play")
             if event.get("distance") is not None:
                 event["play_delta"] = round(float(drt) - float(event["distance"]), 2)
+                event["speed"] = speed
+                event["delta_speed_ratio"] = round(float(event["play_delta"]) / float(speed), 2)
             event["play"] = drt
             continue
         # 19:29:48.669 : Clip COMPOUND_mqtt_response_brake 9_3809 has expired after being queued for 10032 milliseconds
@@ -147,7 +152,10 @@ def extract_cc_data(lines):
         "play",
         "play_delta",
         "finished",
+        "max_delta",
         "max_distance",
+        "speed",
+        "delta_speed_ratio",
         "play_time",
         "read_time",
         "read_delta",
