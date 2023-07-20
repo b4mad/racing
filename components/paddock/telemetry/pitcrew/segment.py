@@ -11,6 +11,7 @@ class Segment:
         self._brake_features = []
         self._throttle_features = []
         self._gear_features = []
+        self._other_features = []
         self.telemetry = pd.DataFrame()
         self._start = 0  # Start distance
         self._end = 0  # End distance
@@ -56,6 +57,12 @@ class Segment:
     def offset_distance(self, distance, seconds=0.0):
         return self.history.offset_distance(distance, seconds=seconds)
 
+    def approach_speed(self):
+        if self.type == "brake":
+            return self.brake_feature("approach_speed")
+        if self.type == "throttle":
+            return self.throttle_feature("approach_speed")
+
     def add_features(self, features, type):
         if type == "brake":
             self._brake_features.append(features)
@@ -63,6 +70,8 @@ class Segment:
             self._throttle_features.append(features)
         elif type == "gear":
             self._gear_features.append(features)
+        elif type == "other":
+            self._other_features.append(features)
         else:
             raise ValueError(f"unknown type {type}")
 
@@ -95,6 +104,11 @@ class Segment:
     def gear_features(self):
         if len(self._gear_features) > 0:
             return self._gear_features[-1]
+        return {}
+
+    def other_features(self):
+        if len(self._other_features) > 0:
+            return self._other_features[-1]
         return {}
 
     def brake_feature(self, key):

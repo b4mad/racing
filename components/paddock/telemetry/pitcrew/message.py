@@ -13,8 +13,9 @@ class Message:
         self.logger = logger
         self.active = True
         self.mode = mode
-        self.max_distance = None
         self.init()
+        if self.at is not None:
+            self.max_distance = self.at + self.max_distance_delta()
 
     def log_debug(self, msg):
         if self.logger:
@@ -63,6 +64,27 @@ class Message:
         at = self.segment.start
         return self.finish_at(at)
 
+    def max_distance_delta(self):
+        approach_speed = self.segment.approach_speed()
+        if approach_speed is None:
+            return 10
+
+        # The formula for the slope of a line when you have two points
+        # (x1, y1) and (x2, y2) is m = (y2 - y1) / (x2 - x1).
+        # So the slope m for your points (30,10) and (60,15) is (15-10) / (60-30) = 5 / 30 = 1/6.
+        # Then, once we have the slope, we can find the y-intercept, b,
+        # using the equation b = y - mx, using one of our points.
+        # I will use the point (30,10): b = 10 - (1/6)*30 = 10 - 5 = 5
+        # So the equation of the line that goes through these two points is:
+        # y = (1/6)x + 5
+
+        slope = 1 / 6
+        intercept = 7
+
+        max_distance = slope * approach_speed + intercept
+        self.log_debug(f"max_distance: {max_distance:.1f} approach_speed: {approach_speed:.1f}")
+        return int(max_distance)
+
     def needs_coaching(self):
         return True
 
@@ -84,6 +106,8 @@ class MessageBrakePoint(Message):
 
         self.active = self.segment.type_brake()
         self.at = self.segment.brake_point()
+        # if self.at is not None:
+        #     self.max_distance = self.at + 100
         self.priority = 9
 
     def needs_coaching(self):
@@ -99,6 +123,8 @@ class MessageThrottlePoint(Message):
 
         self.active = self.segment.type_throttle()
         self.at = self.segment.throttle_point()
+        # if self.at is not None:
+        #     self.max_distance = self.at + 100
         self.priority = 9
 
     def needs_coaching(self):
@@ -340,7 +366,7 @@ class MessageTrackGuide(Message):
         self.at = self.finish_at(finish_at)
         # self.msg = f"{self.msg} {self.segment.start}"
         self.at_track_walk = self.at
-        self.max_distance = self.at + 15
+        # self.max_distance = self.at + 15
 
     def build_msg(self):
         brake_point = self.segment.brake_point()

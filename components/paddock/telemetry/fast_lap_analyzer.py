@@ -219,18 +219,10 @@ class FastLapAnalyzer:
         brake_features = self.brake_features(sector)
         throttle_features = self.throttle_features(sector)
         gear_features = self.gear_features(sector)
+        other_features = {}
 
         segment = Segment()
         segment.type = throttle_or_brake
-
-        speed = 0
-        if throttle_or_brake == "brake" and brake_features:
-            start = brake_features["start"]
-            speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
-            brake_features["speed"] = speed
-        elif throttle_or_brake == "throttle" and throttle_features:
-            start = throttle_features["start"]
-            speed = analyzer.value_at_distance(sector, start, column="SpeedMs")
 
         if brake_features:
             segment.add_features(brake_features, type="brake")
@@ -238,6 +230,9 @@ class FastLapAnalyzer:
             segment.add_features(throttle_features, type="throttle")
         if gear_features:
             segment.add_features(gear_features, type="gear")
+        if other_features:
+            segment.add_features(other_features, type="other")
+
         segment.telemetry = sector
         return segment
 
