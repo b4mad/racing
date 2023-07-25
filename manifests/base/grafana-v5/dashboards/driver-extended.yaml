@@ -13,1331 +13,1364 @@ spec:
   # resyncPeriod: 30s
   json: >
     {
-      "annotations": {
+        "annotations": {
         "list": [
-          {
+            {
             "builtIn": 1,
             "datasource": {
-              "type": "datasource",
-              "uid": "grafana"
+                "type": "datasource",
+                "uid": "grafana"
             },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
             "name": "Annotations & Alerts",
             "target": {
-              "limit": 100,
-              "matchAny": false,
-              "tags": [],
-              "type": "dashboard"
+                "limit": 100,
+                "matchAny": false,
+                "tags": [],
+                "type": "dashboard"
             },
             "type": "dashboard"
-          }
+            }
         ]
-      },
-      "editable": true,
-      "fiscalYearStartMonth": 0,
-      "graphTooltip": 0,
-      "id": 2,
-      "links": [
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": 2,
+        "links": [
         {
-          "asDropdown": false,
-          "icon": "external link",
-          "includeVars": false,
-          "keepTime": false,
-          "tags": [
+            "asDropdown": false,
+            "icon": "external link",
+            "includeVars": false,
+            "keepTime": false,
+            "tags": [
             "B4Mad",
             "1st_Level"
-          ],
-          "targetBlank": false,
-          "title": "Home",
-          "tooltip": "",
-          "type": "dashboards",
-          "url": ""
+            ],
+            "targetBlank": false,
+            "title": "Home",
+            "tooltip": "",
+            "type": "dashboards",
+            "url": ""
         },
         {
-          "asDropdown": true,
-          "icon": "external link",
-          "includeVars": true,
-          "keepTime": true,
-          "tags": [
+            "asDropdown": true,
+            "icon": "external link",
+            "includeVars": true,
+            "keepTime": true,
+            "tags": [
             "B4Mad",
             "2nd_Level"
-          ],
-          "targetBlank": false,
-          "title": "Other Pages",
-          "tooltip": "",
-          "type": "dashboards",
-          "url": ""
+            ],
+            "targetBlank": false,
+            "title": "Other Pages",
+            "tooltip": "",
+            "type": "dashboards",
+            "url": ""
         }
-      ],
-      "liveNow": false,
-      "panels": [
+        ],
+        "liveNow": false,
+        "panels": [
         {
-          "datasource": {
+            "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
-          },
-          "description": "Sessions with a lap time greater than 0",
-          "fieldConfig": {
+            },
+            "description": "Sessions with a lap time greater than 0",
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "decimals": 0,
-              "displayName": "Valid Session",
-              "mappings": [],
-              "thresholds": {
+                },
+                "decimals": 0,
+                "displayName": "Valid Session",
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "super-light-green",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "light-green",
                     "value": 10
-                  },
-                  {
+                    },
+                    {
                     "color": "green",
                     "value": 20
-                  },
-                  {
+                    },
+                    {
                     "color": "semi-dark-green",
                     "value": 30
-                  },
-                  {
+                    },
+                    {
                     "color": "dark-green",
                     "value": 40
-                  }
+                    }
                 ]
-              }
+                }
             },
             "overrides": []
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 4,
             "w": 2,
             "x": 0,
             "y": 0
-          },
-          "id": 8,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 8,
+            "interval": "1h",
+            "options": {
             "colorMode": "value",
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
-              "calcs": [
+                "calcs": [
                 "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
+                ],
+                "fields": "",
+                "values": false
             },
             "textMode": "auto"
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "datasource",
                 "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+                },
+                "panelId": 16,
+                "refId": "A",
+                "withTransforms": true
             }
-          ],
-          "transformations": [
+            ],
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "equal",
-                      "options": {
+                        "id": "equal",
+                        "options": {
                         "value": "Valid"
-                      }
+                        }
                     },
                     "fieldName": "Check"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
+                }
             },
             {
-              "id": "groupBy",
-              "options": {
+                "id": "groupBy",
+                "options": {
                 "fields": {
-                  "SessionId": {
+                    "SessionId": {
                     "aggregations": [
-                      "count"
+                        "count"
                     ],
                     "operation": "aggregate"
-                  },
-                  "user": {
+                    },
+                    "user": {
                     "aggregations": [],
                     "operation": "groupby"
-                  }
+                    }
                 }
-              }
+                }
             }
-          ],
-          "type": "stat"
+            ],
+            "type": "stat"
         },
         {
-          "datasource": {
+            "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
-          },
-          "description": "Sessions with a lap time greater than 0",
-          "fieldConfig": {
+            },
+            "description": "Sessions with a lap time greater than 0",
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "decimals": 0,
-              "displayName": "Invalid Sessions",
-              "mappings": [],
-              "thresholds": {
+                },
+                "decimals": 0,
+                "displayName": "Invalid Sessions",
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "green",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "light-red",
                     "value": 10
-                  },
-                  {
+                    },
+                    {
                     "color": "red",
                     "value": 20
-                  },
-                  {
+                    },
+                    {
                     "color": "semi-dark-red",
                     "value": 30
-                  },
-                  {
+                    },
+                    {
                     "color": "dark-red",
                     "value": 40
-                  }
+                    }
                 ]
-              }
+                }
             },
             "overrides": []
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 4,
             "w": 2,
             "x": 2,
             "y": 0
-          },
-          "id": 14,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 14,
+            "interval": "1h",
+            "options": {
             "colorMode": "value",
             "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
-              "calcs": [
+                "calcs": [
                 "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
+                ],
+                "fields": "",
+                "values": false
             },
             "textMode": "value_and_name"
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "datasource",
                 "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+                },
+                "panelId": 16,
+                "refId": "A",
+                "withTransforms": true
             }
-          ],
-          "transformations": [
+            ],
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "equal",
-                      "options": {
+                        "id": "equal",
+                        "options": {
                         "value": "Invalid"
-                      }
+                        }
                     },
                     "fieldName": "Check"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
+                }
             },
             {
-              "id": "groupBy",
-              "options": {
+                "id": "groupBy",
+                "options": {
                 "fields": {
-                  "CarModel": {
+                    "CarModel": {
                     "aggregations": []
-                  },
-                  "Check": {
+                    },
+                    "Check": {
                     "aggregations": []
-                  },
-                  "Data": {
+                    },
+                    "Data": {
                     "aggregations": []
-                  },
-                  "SessionId": {
+                    },
+                    "SessionId": {
                     "aggregations": [
-                      "count"
+                        "count"
                     ],
                     "operation": "aggregate"
-                  },
-                  "SessionTypeName": {
+                    },
+                    "SessionTypeName": {
                     "aggregations": []
-                  },
-                  "TrackCode": {
+                    },
+                    "TrackCode": {
                     "aggregations": []
-                  },
-                  "_time": {
+                    },
+                    "_time": {
                     "aggregations": []
-                  },
-                  "user": {
+                    },
+                    "user": {
                     "aggregations": [],
                     "operation": "groupby"
-                  }
+                    }
                 }
-              }
+                }
             }
-          ],
-          "type": "stat"
+            ],
+            "type": "stat"
         },
         {
-          "datasource": {
+            "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
+            },
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "custom": {
+                },
+                "custom": {
                 "align": "auto",
                 "displayMode": "auto",
                 "filterable": true,
                 "inspect": false,
                 "minWidth": 150
-              },
-              "mappings": [],
-              "thresholds": {
+                },
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "super-light-purple",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "light-purple",
                     "value": 5
-                  },
-                  {
+                    },
+                    {
                     "color": "purple",
                     "value": 10
-                  },
-                  {
+                    },
+                    {
                     "color": "semi-dark-purple",
                     "value": 20
-                  },
-                  {
+                    },
+                    {
                     "color": "dark-purple",
                     "value": 30
-                  }
+                    }
                 ]
-              },
-              "unit": "none"
+                },
+                "unit": "none"
             },
             "overrides": [
-              {
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "SessionId (count)"
+                    "id": "byName",
+                    "options": "SessionId (count)"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 150
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.displayMode",
                     "value": "basic"
-                  }
+                    }
                 ]
-              }
+                }
             ]
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 4,
             "w": 5,
             "x": 4,
             "y": 0
-          },
-          "id": 4,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 4,
+            "interval": "1h",
+            "options": {
             "cellHeight": "sm",
             "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
+                "countRows": false,
+                "fields": "",
+                "reducer": [
                 "sum"
-              ],
-              "show": false
+                ],
+                "show": false
             },
             "showHeader": false,
             "sortBy": []
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "datasource",
                 "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+                },
+                "panelId": 16,
+                "refId": "A",
+                "withTransforms": true
             }
-          ],
-          "title": "GameName",
-          "transformations": [
+            ],
+            "title": "GameName",
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "equal",
-                      "options": {
+                        "id": "equal",
+                        "options": {
                         "value": "Valid"
-                      }
+                        }
                     },
                     "fieldName": "Check"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
+                }
             },
             {
-              "id": "groupBy",
-              "options": {
+                "id": "groupBy",
+                "options": {
                 "fields": {
-                  "GameName": {
+                    "GameName": {
                     "aggregations": [],
                     "operation": "groupby"
-                  },
-                  "SessionId": {
+                    },
+                    "SessionId": {
                     "aggregations": [
-                      "count"
+                        "count"
                     ],
                     "operation": "aggregate"
-                  }
+                    }
                 }
-              }
+                }
             },
             {
-              "id": "sortBy",
-              "options": {
+                "id": "sortBy",
+                "options": {
                 "fields": {},
                 "sort": [
-                  {
+                    {
                     "desc": true,
                     "field": "SessionId (count)"
-                  }
+                    }
                 ]
-              }
+                }
             }
-          ],
-          "type": "table"
+            ],
+            "type": "table"
         },
         {
-          "datasource": {
+            "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
+            },
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "custom": {
+                },
+                "custom": {
                 "align": "auto",
                 "displayMode": "auto",
                 "filterable": false,
                 "inspect": false
-              },
-              "mappings": [],
-              "thresholds": {
+                },
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "super-light-orange",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "light-orange",
                     "value": 5
-                  },
-                  {
+                    },
+                    {
                     "color": "orange",
                     "value": 10
-                  },
-                  {
+                    },
+                    {
                     "color": "semi-dark-orange",
                     "value": 20
-                  },
-                  {
+                    },
+                    {
                     "color": "dark-orange",
                     "value": 30
-                  }
+                    }
                 ]
-              }
+                }
             },
             "overrides": [
-              {
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "SessionId (count)"
+                    "id": "byName",
+                    "options": "SessionId (count)"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 150
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.displayMode",
                     "value": "basic"
-                  }
+                    }
                 ]
-              }
+                }
             ]
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 4,
             "w": 5,
             "x": 9,
             "y": 0
-          },
-          "id": 5,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 5,
+            "interval": "1h",
+            "options": {
             "cellHeight": "sm",
             "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
+                "countRows": false,
+                "fields": "",
+                "reducer": [
                 "sum"
-              ],
-              "show": false
+                ],
+                "show": false
             },
             "showHeader": false,
             "sortBy": []
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "datasource",
                 "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+                },
+                "panelId": 16,
+                "refId": "A",
+                "withTransforms": true
             }
-          ],
-          "title": "TrackCode",
-          "transformations": [
+            ],
+            "title": "TrackCode",
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "equal",
-                      "options": {
+                        "id": "equal",
+                        "options": {
                         "value": "Valid"
-                      }
+                        }
                     },
                     "fieldName": "Check"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
+                }
             },
             {
-              "id": "groupBy",
-              "options": {
+                "id": "groupBy",
+                "options": {
                 "fields": {
-                  "SessionId": {
+                    "SessionId": {
                     "aggregations": [
-                      "count"
+                        "count"
                     ],
                     "operation": "aggregate"
-                  },
-                  "TrackCode": {
+                    },
+                    "TrackCode": {
                     "aggregations": [],
                     "operation": "groupby"
-                  },
-                  "TrackName": {
+                    },
+                    "TrackName": {
                     "aggregations": []
-                  }
+                    }
                 }
-              }
+                }
             },
             {
-              "id": "sortBy",
-              "options": {
+                "id": "sortBy",
+                "options": {
                 "fields": {},
                 "sort": [
-                  {
+                    {
                     "desc": true,
                     "field": "SessionId (count)"
-                  }
+                    }
                 ]
-              }
+                }
             }
-          ],
-          "type": "table"
+            ],
+            "type": "table"
         },
         {
-          "datasource": {
+            "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
+            },
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "custom": {
+                },
+                "custom": {
                 "align": "auto",
                 "displayMode": "auto",
                 "filterable": false,
                 "inspect": false,
                 "minWidth": 150
-              },
-              "mappings": [],
-              "thresholds": {
+                },
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "super-light-blue",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "light-blue",
                     "value": 5
-                  },
-                  {
+                    },
+                    {
                     "color": "blue",
                     "value": 10
-                  },
-                  {
+                    },
+                    {
                     "color": "semi-dark-blue",
                     "value": 20
-                  },
-                  {
+                    },
+                    {
                     "color": "dark-blue",
                     "value": 30
-                  }
+                    }
                 ]
-              }
+                }
             },
             "overrides": [
-              {
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "SessionId (count)"
+                    "id": "byName",
+                    "options": "SessionId (count)"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 150
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.displayMode",
                     "value": "basic"
-                  }
+                    }
                 ]
-              }
+                }
             ]
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 4,
             "w": 5,
             "x": 14,
             "y": 0
-          },
-          "id": 6,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 6,
+            "interval": "1h",
+            "options": {
             "cellHeight": "sm",
             "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
+                "countRows": false,
+                "fields": "",
+                "reducer": [
                 "diffperc"
-              ],
-              "show": false
+                ],
+                "show": false
             },
             "showHeader": false,
             "sortBy": []
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "datasource",
                 "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+                },
+                "panelId": 16,
+                "refId": "A",
+                "withTransforms": true
             }
-          ],
-          "title": "CarModel",
-          "transformations": [
+            ],
+            "title": "CarModel",
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "equal",
-                      "options": {
+                        "id": "equal",
+                        "options": {
                         "value": "Valid"
-                      }
+                        }
                     },
                     "fieldName": "Check"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
+                }
             },
             {
-              "id": "groupBy",
-              "options": {
+                "id": "groupBy",
+                "options": {
                 "fields": {
-                  "CarModel": {
+                    "CarModel": {
                     "aggregations": [],
                     "operation": "groupby"
-                  },
-                  "SessionId": {
+                    },
+                    "SessionId": {
                     "aggregations": [
-                      "count"
+                        "count"
                     ],
                     "operation": "aggregate"
-                  }
+                    }
                 }
-              }
+                }
             },
             {
-              "id": "sortBy",
-              "options": {
+                "id": "sortBy",
+                "options": {
                 "fields": {},
                 "sort": [
-                  {
+                    {
                     "desc": true,
                     "field": "SessionId (count)"
-                  }
+                    }
                 ]
-              }
+                }
             }
-          ],
-          "type": "table"
+            ],
+            "type": "table"
         },
         {
-          "datasource": {
+            "datasource": {
             "type": "influxdb",
             "uid": "${DS_RACING}"
-          },
-          "description": "To get extended data may need a different  \"mqtt_telemetry.json\", Please contact us in Discord to let you know how.",
-          "fieldConfig": {
+            },
+            "description": "To get extended data may need a different  \"mqtt_telemetry.json\", Please contact us in Discord to let you know how.",
+            "fieldConfig": {
             "defaults": {
-              "color": {
+                "color": {
                 "mode": "thresholds"
-              },
-              "custom": {
+                },
+                "custom": {
                 "align": "auto",
                 "displayMode": "auto",
                 "filterable": true,
                 "inspect": false
-              },
-              "mappings": [],
-              "thresholds": {
+                },
+                "mappings": [],
+                "thresholds": {
                 "mode": "absolute",
                 "steps": [
-                  {
+                    {
                     "color": "green",
                     "value": null
-                  },
-                  {
+                    },
+                    {
                     "color": "red",
                     "value": 80
-                  }
+                    }
                 ]
-              }
+                }
             },
             "overrides": [
-              {
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "SessionId"
+                    "id": "byName",
+                    "options": "SessionId"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "links",
                     "value": [
-                      {
-                        "targetBlank": true,
+                        {
+                        "targetBlank": false,
                         "title": "",
-                        "url": "${Domain}/d/${__data.fields.Data}?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.DurationInt}&var-user=${__data.fields.user}&from${__data.fields.StartInt}&to${__data.fields.StopInt}"
-                      }
+                        "url": "${Domain}/d/${__data.fields.Data}?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.DurationInt}&var-user=${__data.fields.user}&from=${__data.fields.StartInt}&to=${__data.fields.StopInt}"
+                        }
                     ]
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.width",
                     "value": 104
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "TrackCode"
+                    "id": "byName",
+                    "options": "TrackCode"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width"
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Check"
+                    "id": "byName",
+                    "options": "Check"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 74
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.filterable",
                     "value": true
-                  },
-                  {
+                    },
+                    {
                     "id": "custom.displayMode",
                     "value": "color-text"
-                  },
-                  {
+                    },
+                    {
                     "id": "mappings",
                     "value": [
-                      {
+                        {
                         "options": {
-                          "Invalid": {
+                            "Invalid": {
                             "color": "red",
                             "index": 1
-                          },
-                          "Valid": {
+                            },
+                            "Valid": {
                             "color": "green",
                             "index": 0
-                          }
+                            }
                         },
                         "type": "value"
-                      }
+                        }
                     ]
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Top"
+                    "id": "byName",
+                    "options": "Top"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 100
-                  },
-                  {
+                    },
+                    {
                     "id": "unit",
                     "value": "none"
-                  },
-                  {
+                    },
+                    {
                     "id": "decimals",
                     "value": 0
-                  },
-                  {
+                    },
+                    {
                     "id": "displayName",
                     "value": "Top ${Speed:text}"
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "user"
+                    "id": "byName",
+                    "options": "user"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.hidden",
                     "value": true
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Duration"
+                    "id": "byName",
+                    "options": "Duration"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "unit",
-                    "value": "clocks"
-                  },
-                  {
+                    "value": "clockms"
+                    },
+                    {
                     "id": "custom.width",
-                    "value": 122
-                  }
+                    "value": 89
+                    },
+                    {
+                    "id": "decimals",
+                    "value": 1
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Stop"
+                    "id": "byName",
+                    "options": "Stop"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 151
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "SessionTypeName"
+                    "id": "byName",
+                    "options": "SessionTypeName"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 117
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Data"
+                    "id": "byName",
+                    "options": "Data"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.hidden",
                     "value": true
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "StopInt"
+                    "id": "byName",
+                    "options": "StopInt"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.hidden",
                     "value": true
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "StartInt"
+                    "id": "byName",
+                    "options": "StartInt"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.hidden",
                     "value": true
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "DurationInt"
+                    "id": "byName",
+                    "options": "DurationInt"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.hidden",
                     "value": true
-                  }
+                    }
                 ]
-              },
-              {
+                },
+                {
                 "matcher": {
-                  "id": "byName",
-                  "options": "Track"
+                    "id": "byName",
+                    "options": "Track"
                 },
                 "properties": [
-                  {
+                    {
                     "id": "custom.width",
                     "value": 151
-                  },
-                  {
+                    },
+                    {
                     "id": "links",
                     "value": [
-                      {
+                        {
                         "title": "",
                         "url": "${Domain}/d/${Track}?var-TrackName=${__value.text}"
-                      }
+                        }
                     ]
-                  }
+                    }
                 ]
-              }
+                }
             ]
-          },
-          "gridPos": {
+            },
+            "gridPos": {
             "h": 13,
             "w": 19,
             "x": 0,
             "y": 4
-          },
-          "id": 16,
-          "interval": "1h",
-          "options": {
+            },
+            "id": 16,
+            "interval": "1h",
+            "options": {
             "cellHeight": "sm",
             "footer": {
-              "countRows": false,
-              "enablePagination": true,
-              "fields": [],
-              "reducer": [
+                "countRows": false,
+                "enablePagination": true,
+                "fields": [],
+                "reducer": [
                 "count"
-              ],
-              "show": false
+                ],
+                "show": false
             },
             "frameIndex": 1,
             "showHeader": true,
             "sortBy": [
-              {
+                {
                 "desc": true,
                 "displayName": "Stop"
-              }
+                }
             ]
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
+            },
+            "pluginVersion": "9.1.7",
+            "targets": [
             {
-              "datasource": {
+                "datasource": {
                 "type": "influxdb",
                 "uid": "${DS_RACING}"
-              },
-              "hide": false,
-              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"SpeedMs\"  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group(columns: []) \r\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\",  \"_value\", \"_time\"])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Top: r._value * ${Speed},\r\n    Check: \r\n      if r._value > 1 then \"Valid\"\r\n      else \"Invalid\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),  \r\n    Track: regexp.findString(v: r.TrackCode, r: regex)\r\n    })) \r\n  |> group(columns: [])  \r\n  \r\n\r\n\r\nfilter = Valid\r\n |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\n |> filter(fn: (r) => contains(value: r.GameName, set: games) )\r\n |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\r\n\r\n\r\n\r\n |> yield() \r\n",
-              "refId": "A"
+                },
+                "hide": false,
+                "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"SpeedMs\"  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group(columns: []) \r\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\",  \"_value\", \"_time\"])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Top: r._value * ${Speed},\r\n    Check: \r\n      if r._value > 1 then \"Valid\"\r\n      else \"Invalid\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),  \r\n    Track: regexp.findString(v: r.TrackCode, r: regex)\r\n    })) \r\n  |> group(columns: [])  \r\n  \r\n\r\n\r\nfilter = Valid\r\n |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\n |> filter(fn: (r) => contains(value: r.GameName, set: games) )\r\n |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\r\n\r\n\r\n\r\n |> yield() \r\n",
+                "refId": "A"
             },
             {
-              "datasource": {
+                "datasource": {
                 "type": "influxdb",
                 "uid": "${DS_RACING}"
-              },
-              "hide": false,
-              "query": "import \"date\"\r\nimport \"math\"\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n    \r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0),\r\n   Start: r._time_min,\r\n   Stop: r._time_max}))\r\n  |> keep(columns: [\"SessionId\", \"Duration\",\"Start\",\"Stop\"])  \r\n  |> yield()  ",
-              "refId": "B"
+                },
+                "hide": false,
+                "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start:  r._time\r\n  }))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n\r\n  |> yield()",
+                "refId": "B"
             },
             {
-              "datasource": {
+                "datasource": {
                 "type": "influxdb",
                 "uid": "${DS_RACING}"
-              },
-              "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] =~ /Session_Type|Rpms/ )\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n \r\n  |> last()\r\n  |> group(columns: [])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._field == \"Session_Type\" then \"${Extended}\"\r\n      else \"${Standard}\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Data\"})\r\n  |> group()    \r\n   |> yield() \r\n",
-              "refId": "C"
+                },
+                "hide": false,
+                "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] =~ /Session_Flag|Rpms/ )\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n \r\n  |> first()\r\n  |> group(columns: [])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Data: \r\n      if r._field == \"Session_Flag\" then \"${Extended}\"\r\n      else \"${Standard}\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"Data\",\"_time\"])  \r\n  |> group(columns: [])  \r\n   |> yield() \r\n",
+                "refId": "C"
+            },
+            {
+                "datasource": {
+                "type": "influxdb",
+                "uid": "${DS_RACING}"
+                },
+                "hide": false,
+                "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop:  r._time}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n\r\n  |> yield()",
+                "refId": "D"
             }
-          ],
-          "title": "Recent Sessions",
-          "transformations": [
+            ],
+            "title": "Recent Sessions",
+            "transformations": [
             {
-              "id": "filterByValue",
-              "options": {
+                "id": "seriesToColumns",
+                "options": {
+                "byField": "SessionId"
+                }
+            },
+            {
+                "id": "filterByValue",
+                "options": {
                 "filters": [
-                  {
+                    {
                     "config": {
-                      "id": "isNotNull",
-                      "options": {}
+                        "id": "isNotNull",
+                        "options": {}
                     },
                     "fieldName": "Check"
-                  },
-                  {
+                    },
+                    {
                     "config": {
-                      "id": "isNotNull",
-                      "options": {}
+                        "id": "isNotNull",
+                        "options": {}
                     },
                     "fieldName": "CarModel"
-                  }
+                    }
                 ],
                 "match": "all",
                 "type": "include"
-              }
-            },
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "SessionId"
-              }
-            },
-            {
-              "id": "groupBy",
-              "options": {
-                "fields": {
-                  "CarModel": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Check": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Data": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Duration": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Extended Data": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Fastest": {
-                    "aggregations": [
-                      "max"
-                    ],
-                    "operation": "groupby"
-                  },
-                  "GameName": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "KeyCheck": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "SessionId": {
-                    "aggregations": [
-                      "last"
-                    ],
-                    "operation": "aggregate"
-                  },
-                  "SessionTypeName": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Start": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Stop": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Top": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Track": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "TrackCode": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "TrackKey": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "_start": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "_time": {
-                    "aggregations": []
-                  },
-                  "_value": {
-                    "aggregations": []
-                  },
-                  "user": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  }
                 }
-              }
             },
             {
-              "id": "calculateField",
-              "options": {
+                "id": "groupBy",
+                "options": {
+                "fields": {
+                    "CarModel": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Check": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Data": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Duration": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Extended Data": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Fastest": {
+                    "aggregations": [
+                        "max"
+                    ],
+                    "operation": "groupby"
+                    },
+                    "GameName": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "KeyCheck": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "SessionId": {
+                    "aggregations": [
+                        "last"
+                    ],
+                    "operation": "groupby"
+                    },
+                    "SessionTypeName": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Start": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Stop": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Top": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "Track": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "TrackCode": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "TrackKey": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "_start": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    },
+                    "_time": {
+                    "aggregations": []
+                    },
+                    "_value": {
+                    "aggregations": []
+                    },
+                    "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                    }
+                }
+                }
+            },
+            {
+                "id": "calculateField",
+                "options": {
                 "alias": "StopInt",
                 "mode": "reduceRow",
                 "reduce": {
-                  "include": [
+                    "include": [
                     "Stop"
-                  ],
-                  "reducer": "lastNotNull"
+                    ],
+                    "reducer": "lastNotNull"
                 }
-              }
+                }
             },
             {
-              "id": "calculateField",
-              "options": {
+                "id": "calculateField",
+                "options": {
                 "alias": "StartInt",
                 "mode": "reduceRow",
                 "reduce": {
-                  "include": [
+                    "include": [
                     "Start"
-                  ],
-                  "reducer": "firstNotNull"
+                    ],
+                    "reducer": "firstNotNull"
                 }
-              }
+                }
             },
             {
-              "id": "sortBy",
-              "options": {
+                "id": "calculateField",
+                "options": {
+                "alias": "Duration",
+                "binary": {
+                    "left": "Stop",
+                    "operator": "-",
+                    "reducer": "sum",
+                    "right": "Start"
+                },
+                "mode": "binary",
+                "reduce": {
+                    "reducer": "sum"
+                }
+                }
+            },
+            {
+                "id": "sortBy",
+                "options": {
                 "fields": {},
                 "sort": [
-                  {
+                    {
                     "desc": true,
                     "field": "Stop"
-                  }
+                    }
                 ]
-              }
+                }
             },
             {
-              "id": "organize",
-              "options": {
+                "id": "organize",
+                "options": {
                 "excludeByName": {
-                  "Check": false,
-                  "Extended Data": false,
-                  "SessionId": false,
-                  "SessionTypeName": false,
-                  "Start": true,
-                  "Track": false,
-                  "_start": false,
-                  "_stop": true,
-                  "_time": true,
-                  "_value": false
+                    "Check": false,
+                    "Extended Data": false,
+                    "SessionId": false,
+                    "SessionTypeName": false,
+                    "Start": true,
+                    "Stop": false,
+                    "Track": false,
+                    "_start": false,
+                    "_stop": true,
+                    "_time": true,
+                    "_value": false
                 },
                 "indexByName": {
-                  "CarModel": 5,
-                  "Check": 2,
-                  "Duration": 10,
-                  "Extended Data": 1,
-                  "GameName": 4,
-                  "SessionId (last)": 0,
-                  "SessionTypeName": 3,
-                  "Start": 8,
-                  "Stop": 9,
-                  "Top": 11,
-                  "Track": 6,
-                  "TrackCode": 7
+                    "CarModel": 4,
+                    "Check": 1,
+                    "Data": 12,
+                    "Duration": 9,
+                    "GameName": 3,
+                    "SessionId": 0,
+                    "SessionTypeName": 2,
+                    "Start": 7,
+                    "StartInt": 14,
+                    "Stop": 8,
+                    "StopInt": 13,
+                    "Top": 10,
+                    "Track": 5,
+                    "TrackCode": 6,
+                    "user": 11
                 },
                 "renameByName": {
-                  "CarModel": "",
-                  "Fastest (min)": "Fastest",
-                  "SessionId (last)": "SessionId",
-                  "Top": "Top ",
-                  "TrackCode": "Track Name",
-                  "TrackKey": "Track ",
-                  "_time": "End",
-                  "_value": "Fastest",
-                  "_value (min)": ""
+                    "CarModel": "",
+                    "Fastest (min)": "Fastest",
+                    "SessionId (last)": "SessionId",
+                    "Top": "Top ",
+                    "TrackCode": "Track Name",
+                    "TrackKey": "Track ",
+                    "_time": "End",
+                    "_value": "Fastest",
+                    "_value (min)": ""
                 }
-              }
+                }
             },
             {
-              "id": "calculateField",
-              "options": {
+                "id": "calculateField",
+                "options": {
                 "alias": "DurationInt",
                 "mode": "reduceRow",
                 "reduce": {
-                  "include": [
+                    "include": [
                     "Duration"
-                  ],
-                  "reducer": "lastNotNull"
+                    ],
+                    "reducer": "lastNotNull"
                 }
-              }
+                }
             }
-          ],
-          "type": "table"
+            ],
+            "type": "table"
         }
-      ],
-      "refresh": false,
-      "schemaVersion": 37,
-      "style": "dark",
-      "tags": [
+        ],
+        "refresh": false,
+        "schemaVersion": 37,
+        "style": "dark",
+        "tags": [
         "B4Mad",
         "2nd_Level"
-      ],
-      "templating": {
+        ],
+        "templating": {
         "list": [
-          {
+            {
             "current": {
-              "selected": false,
-              "text": "Km/h",
-              "value": "3.6"
+                "selected": false,
+                "text": "Km/h",
+                "value": "3.6"
             },
             "hide": 0,
             "includeAll": false,
             "multi": false,
             "name": "Speed",
             "options": [
-              {
+                {
                 "selected": true,
                 "text": "Km/h",
                 "value": "3.6"
-              },
-              {
+                },
+                {
                 "selected": false,
                 "text": "MPH",
                 "value": "2.236936292054"
-              }
+                }
             ],
             "query": "Km/h : 3.6 , MPH : 2.236936292054",
             "skipUrlSync": false,
             "type": "custom"
-          },
-          {
+            },
+            {
             "current": {
-              "selected": false,
-              "text": "All",
-              "value": "$__all"
+                "selected": false,
+                "text": "All",
+                "value": "$__all"
             },
             "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
+                "type": "influxdb",
+                "uid": "${DS_RACING}"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
             "hide": 0,
@@ -1352,16 +1385,16 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
-          },
-          {
+            },
+            {
             "current": {
-              "selected": false,
-              "text": "Jim",
-              "value": "Jim"
+                "selected": true,
+                "text": "Jim",
+                "value": "Jim"
             },
             "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
+                "type": "influxdb",
+                "uid": "${DS_RACING}"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
             "hide": 0,
@@ -1376,16 +1409,16 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
-          },
-          {
+            },
+            {
             "current": {
-              "selected": false,
-              "text": "All",
-              "value": "$__all"
+                "selected": false,
+                "text": "All",
+                "value": "$__all"
             },
             "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
+                "type": "influxdb",
+                "uid": "${DS_RACING}"
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
             "hide": 0,
@@ -1400,69 +1433,69 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "RegEX",
             "query": "/^([a-zA-Z0-9ü]+)/",
             "skipUrlSync": false,
             "type": "constant"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "Domain",
-            "query": "https://pitwall.b4mad.racing/",
+            "query": "https://pitwall.b4mad.racing",
             "skipUrlSync": false,
             "type": "constant"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "Extended",
             "query": "e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-session-details",
             "skipUrlSync": false,
             "type": "constant"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "Standard",
             "query": "6d57246de74745198b3385f5e446e81cf7127b47/session",
             "skipUrlSync": false,
             "type": "constant"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "Driver",
             "query": "9f21413861900279156aea9e866fdf7adc8629c5/driver",
             "skipUrlSync": false,
             "type": "constant"
-          },
-          {
+            },
+            {
             "hide": 2,
             "name": "Track",
             "query": "c726e9a2-350c-459d-aa40-2035073f5035/track-standings",
             "skipUrlSync": false,
             "type": "constant"
-          }
+            }
         ]
-      },
-      "time": {
-        "from": "now-24h",
+        },
+        "time": {
+        "from": "now-2d",
         "to": "now"
-      },
-      "timepicker": {
+        },
+        "timepicker": {
         "refresh_intervals": [
-          "1m",
-          "5m",
-          "15m",
-          "30m",
-          "1h",
-          "2h",
-          "1d"
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
         ]
-      },
-      "timezone": "",
-      "title": "Driver",
-      "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-      "version": 53,
-      "weekStart": ""
-    } 
+        },
+        "timezone": "",
+        "title": "Driver",
+        "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
+        "version": 58,
+        "weekStart": ""
+    }
