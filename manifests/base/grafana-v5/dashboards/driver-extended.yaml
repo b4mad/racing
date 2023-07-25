@@ -39,7 +39,38 @@ spec:
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
       "id": 2,
-      "links": [],
+      "links": [
+        {
+          "asDropdown": false,
+          "icon": "external link",
+          "includeVars": false,
+          "keepTime": false,
+          "tags": [
+            "B4Mad",
+            "1st_Level"
+          ],
+          "targetBlank": false,
+          "title": "Home",
+          "tooltip": "",
+          "type": "dashboards",
+          "url": ""
+        },
+        {
+          "asDropdown": true,
+          "icon": "external link",
+          "includeVars": true,
+          "keepTime": true,
+          "tags": [
+            "B4Mad",
+            "2nd_Level"
+          ],
+          "targetBlank": false,
+          "title": "Other Pages",
+          "tooltip": "",
+          "type": "dashboards",
+          "url": ""
+        }
+      ],
       "liveNow": false,
       "panels": [
         {
@@ -91,6 +122,7 @@ spec:
             "y": 0
           },
           "id": 8,
+          "interval": "1h",
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -112,7 +144,7 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 13,
+              "panelId": 16,
               "refId": "A",
               "withTransforms": true
             }
@@ -205,6 +237,7 @@ spec:
             "y": 0
           },
           "id": 14,
+          "interval": "1h",
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -226,7 +259,7 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 13,
+              "panelId": 16,
               "refId": "A",
               "withTransforms": true
             }
@@ -254,11 +287,29 @@ spec:
               "id": "groupBy",
               "options": {
                 "fields": {
+                  "CarModel": {
+                    "aggregations": []
+                  },
+                  "Check": {
+                    "aggregations": []
+                  },
+                  "Data": {
+                    "aggregations": []
+                  },
                   "SessionId": {
                     "aggregations": [
                       "count"
                     ],
                     "operation": "aggregate"
+                  },
+                  "SessionTypeName": {
+                    "aggregations": []
+                  },
+                  "TrackCode": {
+                    "aggregations": []
+                  },
+                  "_time": {
+                    "aggregations": []
                   },
                   "user": {
                     "aggregations": [],
@@ -285,7 +336,7 @@ spec:
                 "displayMode": "auto",
                 "filterable": true,
                 "inspect": false,
-                "minWidth": 50
+                "minWidth": 150
               },
               "mappings": [],
               "thresholds": {
@@ -319,24 +370,12 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "GameName"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 322
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
                   "options": "SessionId (count)"
                 },
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 30
+                    "value": 150
                   },
                   {
                     "id": "custom.displayMode",
@@ -353,6 +392,7 @@ spec:
             "y": 0
           },
           "id": 4,
+          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -373,7 +413,7 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 13,
+              "panelId": 16,
               "refId": "A",
               "withTransforms": true
             }
@@ -477,24 +517,12 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "TrackCode"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 400
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
                   "options": "SessionId (count)"
                 },
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 30
+                    "value": 150
                   },
                   {
                     "id": "custom.displayMode",
@@ -506,11 +534,12 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 6,
+            "w": 5,
             "x": 9,
             "y": 0
           },
           "id": 5,
+          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -531,7 +560,7 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 13,
+              "panelId": 16,
               "refId": "A",
               "withTransforms": true
             }
@@ -550,13 +579,6 @@ spec:
                       }
                     },
                     "fieldName": "Check"
-                  },
-                  {
-                    "config": {
-                      "id": "isNotNull",
-                      "options": {}
-                    },
-                    "fieldName": "user"
                   }
                 ],
                 "match": "all",
@@ -613,7 +635,7 @@ spec:
                 "displayMode": "auto",
                 "filterable": false,
                 "inspect": false,
-                "minWidth": 50
+                "minWidth": 150
               },
               "mappings": [],
               "thresholds": {
@@ -651,23 +673,11 @@ spec:
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 30
+                    "value": 150
                   },
                   {
                     "id": "custom.displayMode",
                     "value": "basic"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "CarModel"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 401
                   }
                 ]
               }
@@ -675,11 +685,12 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 6,
-            "x": 15,
+            "w": 5,
+            "x": 14,
             "y": 0
           },
           "id": 6,
+          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -700,7 +711,7 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 13,
+              "panelId": 16,
               "refId": "A",
               "withTransforms": true
             }
@@ -719,13 +730,6 @@ spec:
                       }
                     },
                     "fieldName": "Check"
-                  },
-                  {
-                    "config": {
-                      "id": "isNotNull",
-                      "options": {}
-                    },
-                    "fieldName": "user"
                   }
                 ],
                 "match": "all",
@@ -807,75 +811,15 @@ spec:
                     "id": "links",
                     "value": [
                       {
-                        "targetBlank": false,
+                        "targetBlank": true,
                         "title": "",
-                        "url": "https://pitwall.b4mad.racing/d/6d57246de74745198b3385f5e446e81cf7127b47/session?orgId=1&var-SessionId=﻿${__data.fields.SessionId}﻿&time=﻿${__value.time}﻿&time.window=﻿${__data.fields.Duration}﻿&var-user=﻿${__data.fields.user}﻿&from=${__data.fields.Start}&to=﻿${__data.fields.Stop}"
+                        "url": "${Domain}/d/${__data.fields.Data}?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.DurationInt}&var-user=${__data.fields.user}&from${__data.fields.StartInt}&to${__data.fields.StopInt}"
                       }
                     ]
                   },
                   {
                     "id": "custom.width",
                     "value": 104
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "_time"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 168
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "End"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 187
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "user"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 81
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "SessionTypeName"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 94
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "GameName"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 213
                   }
                 ]
               },
@@ -893,44 +837,69 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "CarModel"
+                  "options": "Check"
                 },
                 "properties": [
-                  {
-                    "id": "custom.width"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Extended Data"
-                },
-                "properties": [
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "targetBlank": false,
-                        "title": "",
-                        "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/session-details-extended?orgId=1&var-SessionId=${__data.fields.SessionId}&time.window=${__data.fields.Duration}&var-user=${__data.fields.user}&from=${__data.fields.Start}&to=${__data.fields.Stop}"
-                      }
-                    ]
-                  },
                   {
                     "id": "custom.width",
-                    "value": 81
+                    "value": 74
                   },
                   {
-                    "id": "noValue",
-                    "value": "Standard"
+                    "id": "custom.filterable",
+                    "value": true
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-text"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "Invalid": {
+                            "color": "red",
+                            "index": 1
+                          },
+                          "Valid": {
+                            "color": "green",
+                            "index": 0
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
                   }
                 ]
               },
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Start"
+                  "options": "Top"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  },
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Top ${Speed:text}"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "user"
                 },
                 "properties": [
                   {
@@ -946,8 +915,12 @@ spec:
                 },
                 "properties": [
                   {
-                    "id": "custom.hidden",
-                    "value": true
+                    "id": "unit",
+                    "value": "clocks"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 122
                   }
                 ]
               },
@@ -958,6 +931,30 @@ spec:
                 },
                 "properties": [
                   {
+                    "id": "custom.width",
+                    "value": 151
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SessionTypeName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 117
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Data"
+                },
+                "properties": [
+                  {
                     "id": "custom.hidden",
                     "value": true
                   }
@@ -966,36 +963,57 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Session Check"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 83
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Check"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 58
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "TrackName"
+                  "options": "StopInt"
                 },
                 "properties": [
                   {
                     "id": "custom.hidden",
                     "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "StartInt"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "DurationInt"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Track"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 151
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "",
+                        "url": "${Domain}/d/${Track}?var-TrackName=${__value.text}"
+                      }
+                    ]
                   }
                 ]
               }
@@ -1003,27 +1021,29 @@ spec:
           },
           "gridPos": {
             "h": 13,
-            "w": 21,
+            "w": 19,
             "x": 0,
             "y": 4
           },
-          "id": 13,
+          "id": 16,
+          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
               "countRows": false,
-              "fields": "",
+              "enablePagination": true,
+              "fields": [],
               "reducer": [
-                "sum"
+                "count"
               ],
               "show": false
             },
-            "frameIndex": 0,
+            "frameIndex": 1,
             "showHeader": true,
             "sortBy": [
               {
                 "desc": true,
-                "displayName": "End"
+                "displayName": "Stop"
               }
             ]
           },
@@ -1035,8 +1055,8 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "import \"strings\"\nimport \"regexp\"\nregex = /^([a-zA-Z0-9]+)/\n\ngames = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\ndata = from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n\nValid = data\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\n    _value: \n      if r._value > 1 then \"Valid\"\n      else \"Invalid\"\n    }))\n\n  |> rename(columns: {_value: \"Check\"})\n  |> group()  \n\n  |> yield()\n\n",
-              "refId": "Data"
+              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"SpeedMs\"  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group(columns: []) \r\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\",  \"_value\", \"_time\"])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Top: r._value * ${Speed},\r\n    Check: \r\n      if r._value > 1 then \"Valid\"\r\n      else \"Invalid\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),  \r\n    Track: regexp.findString(v: r.TrackCode, r: regex)\r\n    })) \r\n  |> group(columns: [])  \r\n  \r\n\r\n\r\nfilter = Valid\r\n |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\n |> filter(fn: (r) => contains(value: r.GameName, set: games) )\r\n |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\r\n\r\n\r\n\r\n |> yield() \r\n",
+              "refId": "A"
             },
             {
               "datasource": {
@@ -1044,8 +1064,8 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start:  r._time}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n  |> yield()",
-              "refId": "Start"
+              "query": "import \"date\"\r\nimport \"math\"\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n    \r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0),\r\n   Start: r._time_min,\r\n   Stop: r._time_max}))\r\n  |> keep(columns: [\"SessionId\", \"Duration\",\"Start\",\"Stop\"])  \r\n  |> yield()  ",
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1053,60 +1073,12 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "import \"date\"\r\nimport \"math\"\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStop = data\r\n  |> last(column: \"_time\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\njoin(tables: {min: Start, max: Stop}, on: [\"SessionId\"], method: \"inner\")\r\n  |> group()  \r\n  |> map(fn: (r) => ({r with Duration: math.round(x: (float(v: int(v: duration(v: uint(v: r._time_max) - uint(v: r._time_min))))/60000000000.0)*60.0)}))\r\n  |> keep(columns: [\"SessionId\", \"Duration\"])\r\n  |> yield()  ",
-              "refId": "Duration"
-            },
-            {
-              "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
-              },
-              "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop:  r._time}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n  |> yield()\r\n",
-              "refId": "Stop"
-            },
-            {
-              "datasource": {
-                "type": "influxdb",
-                "uid": "${DS_RACING}"
-              },
-              "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Session_Type\")\r\n\r\nExtend = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._value > 0 then \"Extended\"\r\n      else \"Basic\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Extended Data\"})\r\n  |> group()  \r\n\r\n  |> yield()\r\n",
-              "refId": "Extend"
+              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] =~ /Session_Type|Rpms/ )\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n \r\n  |> last()\r\n  |> group(columns: [])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._field == \"Session_Type\" then \"${Extended}\"\r\n      else \"${Standard}\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Data\"})\r\n  |> group()    \r\n   |> yield() \r\n",
+              "refId": "C"
             }
           ],
           "title": "Recent Sessions",
           "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "SessionId"
-              }
-            },
-            {
-              "id": "convertFieldType",
-              "options": {
-                "conversions": [
-                  {
-                    "destinationType": "number",
-                    "targetField": "Start"
-                  },
-                  {
-                    "destinationType": "number",
-                    "targetField": "Stop"
-                  },
-                  {
-                    "destinationType": "number",
-                    "targetField": "_start"
-                  },
-                  {
-                    "destinationType": "number",
-                    "targetField": "_stop"
-                  }
-                ],
-                "fields": {}
-              }
-            },
             {
               "id": "filterByValue",
               "options": {
@@ -1117,41 +1089,204 @@ spec:
                       "options": {}
                     },
                     "fieldName": "Check"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "CarModel"
                   }
                 ],
-                "match": "any",
+                "match": "all",
                 "type": "include"
+              }
+            },
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "CarModel": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Check": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Data": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Duration": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Extended Data": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Fastest": {
+                    "aggregations": [
+                      "max"
+                    ],
+                    "operation": "groupby"
+                  },
+                  "GameName": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "KeyCheck": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "SessionId": {
+                    "aggregations": [
+                      "last"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "SessionTypeName": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Start": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Stop": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Top": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Track": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "TrackCode": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "TrackKey": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "_start": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "_time": {
+                    "aggregations": []
+                  },
+                  "_value": {
+                    "aggregations": []
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "StopInt",
+                "mode": "reduceRow",
+                "reduce": {
+                  "include": [
+                    "Stop"
+                  ],
+                  "reducer": "lastNotNull"
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "StartInt",
+                "mode": "reduceRow",
+                "reduce": {
+                  "include": [
+                    "Start"
+                  ],
+                  "reducer": "firstNotNull"
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "Stop"
+                  }
+                ]
               }
             },
             {
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Start": false,
-                  "_start": true,
+                  "Check": false,
+                  "Extended Data": false,
+                  "SessionId": false,
+                  "SessionTypeName": false,
+                  "Start": true,
+                  "Track": false,
+                  "_start": false,
                   "_stop": true,
-                  "_value": true
+                  "_time": true,
+                  "_value": false
                 },
                 "indexByName": {
-                  "CarModel": 7,
+                  "CarModel": 5,
                   "Check": 2,
-                  "Duration": 12,
+                  "Duration": 10,
                   "Extended Data": 1,
-                  "GameName": 5,
-                  "SessionId": 0,
-                  "SessionTypeName": 4,
-                  "Start": 11,
-                  "Stop": 13,
-                  "TrackCode": 6,
-                  "_start": 9,
-                  "_stop": 10,
-                  "_time": 8,
-                  "user": 3
+                  "GameName": 4,
+                  "SessionId (last)": 0,
+                  "SessionTypeName": 3,
+                  "Start": 8,
+                  "Stop": 9,
+                  "Top": 11,
+                  "Track": 6,
+                  "TrackCode": 7
                 },
                 "renameByName": {
                   "CarModel": "",
+                  "Fastest (min)": "Fastest",
+                  "SessionId (last)": "SessionId",
+                  "Top": "Top ",
+                  "TrackCode": "Track Name",
+                  "TrackKey": "Track ",
                   "_time": "End",
-                  "_value": "Laps"
+                  "_value": "Fastest",
+                  "_value (min)": ""
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "DurationInt",
+                "mode": "reduceRow",
+                "reduce": {
+                  "include": [
+                    "Duration"
+                  ],
+                  "reducer": "lastNotNull"
                 }
               }
             }
@@ -1162,9 +1297,38 @@ spec:
       "refresh": false,
       "schemaVersion": 37,
       "style": "dark",
-      "tags": [],
+      "tags": [
+        "B4Mad",
+        "2nd_Level"
+      ],
       "templating": {
         "list": [
+          {
+            "current": {
+              "selected": false,
+              "text": "Km/h",
+              "value": "3.6"
+            },
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "Speed",
+            "options": [
+              {
+                "selected": true,
+                "text": "Km/h",
+                "value": "3.6"
+              },
+              {
+                "selected": false,
+                "text": "MPH",
+                "value": "2.236936292054"
+              }
+            ],
+            "query": "Km/h : 3.6 , MPH : 2.236936292054",
+            "skipUrlSync": false,
+            "type": "custom"
+          },
           {
             "current": {
               "selected": false,
@@ -1192,8 +1356,8 @@ spec:
           {
             "current": {
               "selected": false,
-              "text": "e Grant",
-              "value": "e Grant"
+              "text": "Jim",
+              "value": "Jim"
             },
             "datasource": {
               "type": "influxdb",
@@ -1201,7 +1365,7 @@ spec:
             },
             "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
             "hide": 0,
-            "includeAll": true,
+            "includeAll": false,
             "label": "User",
             "multi": false,
             "name": "user",
@@ -1236,11 +1400,53 @@ spec:
             "skipUrlSync": false,
             "sort": 1,
             "type": "query"
+          },
+          {
+            "hide": 2,
+            "name": "RegEX",
+            "query": "/^([a-zA-Z0-9ü]+)/",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "hide": 2,
+            "name": "Domain",
+            "query": "https://pitwall.b4mad.racing/",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "hide": 2,
+            "name": "Extended",
+            "query": "e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-session-details",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "hide": 2,
+            "name": "Standard",
+            "query": "6d57246de74745198b3385f5e446e81cf7127b47/session",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "hide": 2,
+            "name": "Driver",
+            "query": "9f21413861900279156aea9e866fdf7adc8629c5/driver",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "hide": 2,
+            "name": "Track",
+            "query": "c726e9a2-350c-459d-aa40-2035073f5035/track-standings",
+            "skipUrlSync": false,
+            "type": "constant"
           }
         ]
       },
       "time": {
-        "from": "now-7d",
+        "from": "now-24h",
         "to": "now"
       },
       "timepicker": {
@@ -1255,8 +1461,8 @@ spec:
         ]
       },
       "timezone": "",
-      "title": "Driver Extended",
+      "title": "Driver",
       "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-      "version": 26,
+      "version": 53,
       "weekStart": ""
-    }
+    } 
