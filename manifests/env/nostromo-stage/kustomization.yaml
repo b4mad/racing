@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - telegraf
   - ../../base/mosquitto
+  - mosquitto-sealedsecret.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
