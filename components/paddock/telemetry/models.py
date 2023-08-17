@@ -55,6 +55,21 @@ class Car(TimeStampedModel):
     name = models.CharField(max_length=200)
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="cars")
+    car_class = models.ForeignKey("CarClass", on_delete=models.CASCADE, related_name="cars", null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CarClass(TimeStampedModel):
+    class Meta:
+        ordering = [
+            "name",
+        ]
+
+    name = models.CharField(max_length=200)
+
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="car_classes")
 
     def __str__(self):
         return self.name
