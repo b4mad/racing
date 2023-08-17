@@ -1,19 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 labels:
-- pairs:
-    app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing-test
-    app.kubernetes.io/version: v0.1.0-dev
+  - pairs:
+      app.kubernetes.io/managed-by: humans
+      app.kubernetes.io/name: b4mad-racing-test
+      app.kubernetes.io/version: v0.1.0-dev
 namespace: b4mad-racing-test
 resources:
-- namespace.yaml
-- ../../base/mosquitto
-- influx
-- ../../base/telegraf
-- postgresql
-- ../../base/paddock
-- ../../base/grafana-v5
+  - namespace.yaml
+  - ../../base/mosquitto
+  - influx
+  - ../../base/telegraf
+  - postgresql
+  - ../../base/paddock
+  - ../../base/grafana-v5
 generatorOptions:
   disableNameSuffixHash: true
 patches:
@@ -58,3 +58,5 @@ images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-test/paddock
     newTag: latest
+  - name: telegraf
+    newTag: "1.27.3"
