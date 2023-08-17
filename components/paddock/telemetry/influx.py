@@ -279,9 +279,9 @@ class Influx:
         measurement="laps_cc",
         bucket="racing",
     ):
-        if type(start) == datetime:
+        if isinstance(start, datetime):
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        if type(end) == datetime:
+        if isinstance(end, datetime):
             end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
         query = f"""
@@ -329,9 +329,9 @@ class Influx:
         from_bucket="racing",
         to_bucket="fast_laps",
     ):
-        if type(start) == datetime:
+        if isinstance(start, datetime):
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        if type(end) == datetime:
+        if isinstance(end, datetime):
             end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
         query = f"""
@@ -360,9 +360,9 @@ class Influx:
                 print(".", end="", flush=True)
 
     def delete_data(self, start="", end=""):
-        if type(start) == datetime:
+        if isinstance(start, datetime):
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        if type(end) == datetime:
+        if isinstance(end, datetime):
             end = end.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
         predicate = """
