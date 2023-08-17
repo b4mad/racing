@@ -115,6 +115,13 @@ class TestSession(TestCase):
         session = self._test_session(session_id)
         self._assert_laps(session, expected_laps)
 
+    def test_car_class(self):
+        session_id = "1692140843"
+
+        session = self._test_session(session_id)
+
+        self.assertEqual(session.car_class, "ARC_CAMERO")
+
     def test_telemetry_invalid(self):
         # 2390.0: LapTimePrevious: None -> None
         # 2390.0: CurrentLapIsValid: None -> None
