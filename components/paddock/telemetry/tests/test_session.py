@@ -7,12 +7,30 @@ from django.test import TestCase
 from telemetry.models import Car, Driver, Game
 from telemetry.models import Session as SessionModel
 from telemetry.models import SessionType, Track
+from telemetry.pitcrew.firehose import Firehose
 from telemetry.pitcrew.session import Lap, Session
 
 from .utils import get_session_df
 
 
 class TestSession(TestCase):
+    def _test_session_firehose(self, session_id, measurement="fast_laps", bucket="fast_laps"):
+        session_df = get_session_df(session_id, measurement=measurement, bucket=bucket)
+
+        firehose = Firehose()
+
+        session = Session(666)
+        for index, row in session_df.iterrows():
+            # convert row to dict
+            row = row.to_dict()
+            now = row["_time"]
+            firehose.notify(row["topic"], row, now)
+            if index == 0:
+                session = firehose.sessions[row["topic"]]
+
+        pprint(session.laps)
+        return session
+
     def _test_session(self, session_id, measurement="fast_laps", bucket="fast_laps"):
         session_df = get_session_df(session_id, measurement=measurement, bucket=bucket)
 
@@ -118,7 +136,7 @@ class TestSession(TestCase):
     def test_car_class(self):
         session_id = "1692140843"
 
-        session = self._test_session(session_id)
+        session = self._test_session_firehose(session_id)
 
         self.assertEqual(session.car_class, "ARC_CAMERO")
 

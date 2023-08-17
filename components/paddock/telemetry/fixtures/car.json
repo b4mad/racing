@@ -3,16 +3,33 @@
     "model": "telemetry.car",
     "pk": 9,
     "fields": {
+      "created": "2023-07-04T16:27:23.109Z",
+      "modified": "2023-07-04T16:27:23.124Z",
       "name": "Ferrari 488 GT3 Evo 2020",
-      "game": 1
+      "game": 1,
+      "car_class": null
     }
   },
   {
     "model": "telemetry.car",
     "pk": 351,
     "fields": {
+      "created": "2023-07-04T16:27:23.109Z",
+      "modified": "2023-07-04T16:27:23.124Z",
       "name": "Reynard 95i Ford-Cosworth",
-      "game": 5
+      "game": 5,
+      "car_class": null
+    }
+  },
+  {
+    "model": "telemetry.car",
+    "pk": 1280,
+    "fields": {
+      "created": "2023-07-04T16:27:23.109Z",
+      "modified": "2023-07-04T16:27:23.124Z",
+      "name": "Ligier JS P320",
+      "game": 1,
+      "car_class": null
     }
   }
 ]
