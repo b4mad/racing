@@ -4,11 +4,11 @@ on:
     types: [opened, reopened, synchronize]
 
 env:
-    IMAGE_NAME: paddock
-    IMAGE_TAGS: ${{ github.sha }}
-    IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
-    REGISTRY_USER: ${{ github.actor }}
-    REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  IMAGE_NAME: paddock
+  IMAGE_TAGS: ${{ github.sha }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
   contents: read
@@ -16,37 +16,25 @@ permissions:
 # https://github.com/pre-commit/action/issues/7#issuecomment-1251300704
 #   run only on changed files
 jobs:
-  lint-and-format:
-    name: linting and formatting
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # requites to grab the history of the PR
-        fetch-depth: 0
-    - uses: actions/setup-python@v4
-    - uses: pre-commit/action@v3.0.0
-      with:
-        extra_args: --color=always --from-ref ${{ github.event.pull_request.base.sha }} --to-ref ${{ github.event.pull_request.head.sha }}
   build:
     name: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@8ca2b8b2ece13480cda6dacd3511b49857a23c09 # v2.5.1
-      with:
-        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+      - name: Harden Runner
+        uses: step-security/harden-runner@8ca2b8b2ece13480cda6dacd3511b49857a23c09 # v2.5.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
-    - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
-    - name: Buildah Action
-      id: build_image
-      uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2.12
-      with:
-        image: ${{ env.IMAGE_NAME }}
-        tags: ${{ env.IMAGE_TAGS }}
-        oci: true
-        context: components/paddock
-        containerfiles: |
-          ./components/paddock/Containerfile
+      - name: Buildah Action
+        id: build_image
+        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2.12
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
+          oci: true
+          context: components/paddock
+          containerfiles: |
+            ./components/paddock/Containerfile

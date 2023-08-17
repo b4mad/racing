@@ -8,9 +8,17 @@ metadata:
     tekton.dev/pipelines.minVersion: "0.12.1"
     tekton.dev/displayName: "#B4mad Racing Telemetry e2e test"
 spec:
+  steps:
+    - image: quay.io/sclorg/python-311-c9s:20230531
+      name: run-e2e-test-in-venv
+      workingDir: $(workspaces.source.path)
+      command:
+        - components/paddock/e2e-test.sh
+      env:
+        - name: SECRET_KEY
+          value: abcd1ac34873c54e158d38e7f1283977f202abcd
   workspaces:
     - name: source
-      mountPath: /workspace/src/$(params.package)
+      mountPath: /workspace/src
       description: >-
-        The workspace containing the Go source code
-        which needs to be released.
+        The workspace containing the source code which needs to be released.

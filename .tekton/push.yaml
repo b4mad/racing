@@ -3,28 +3,12 @@ kind: PipelineRun
 metadata:
   name: git-racing-git
   annotations:
-    # The event we are targeting as seen from the webhook payload
-    # this can be an array too, i.e: [pull_request, push]
     pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
-
-    # The branch or tag we are targeting (ie: main, refs/tags/*)
     pipelinesascode.tekton.dev/on-target-branch: "main"
-
-    # Fetch the git-clone task from hub, we are able to reference later on it
-    # with taskRef and it will automatically be embedded into our pipeline.
     pipelinesascode.tekton.dev/task: "[git-clone, .tekton/tasks/e2e-telemetry-test.yaml]"
-
-    # You can add more tasks in here to reuse, browse the one you like from here
-    # https://hub.tekton.dev/
-    # example:
-    # pipelinesascode.tekton.dev/task-2: "[maven, buildah]"
-
-    # How many runs we want to keep attached to this event
     pipelinesascode.tekton.dev/max-keep-runs: "5"
 spec:
   params:
-    # The variable with brackets are special to Pipelines as Code
-    # They will automatically be expanded with the events from Github.
     - name: repo_url
       value: "{{ repo_url }}"
     - name: revision
@@ -35,7 +19,6 @@ spec:
       - name: revision
     workspaces:
       - name: source
-      - name: basic-auth
     tasks:
       - name: fetch-repository
         taskRef:
@@ -43,8 +26,6 @@ spec:
         workspaces:
           - name: output
             workspace: source
-          - name: basic-auth
-            workspace: basic-auth
         params:
           - name: url
             value: $(params.repo_url)
@@ -54,27 +35,11 @@ spec:
       - name: e2e-tests
         runAfter:
           - fetch-repository
-        taskSpec:
-          workspaces:
-            - name: source
-          steps:
-            - image: quay.io/fedora/python-310@sha256:6875e96d2b8f6897e26d578c75e5a0c8efcdbe6a492f22448ff48a98a6d7d2ae
-              name: run-e2e-test-in-venv
-              workingDir: $(workspaces.source.path)
-              script: |
-                #!/usr/bin/env bash
-
-                p=$(mktemp -d)
-
-                python3.10 -m venv $p/venv
-                source $p/venv/bin/activate
-                micropipenv install --dev
-
-                python manage.py migrate
-                # python manage.py load_devel_data
-
-                python manage.py test telemetry
-
+        taskRef:
+          name: e2e-telemetry-test
+        workspaces:
+          - name: source
+            workspace: source
   workspaces:
     - name: source
       volumeClaimTemplate:
@@ -84,8 +49,3 @@ spec:
           resources:
             requests:
               storage: 1Gi
-    # This workspace will inject secret to help the git-clone task to be able to
-    # checkout the private repositories
-    - name: basic-auth
-      secret:
-        secretName: "{{ git_auth_secret }}"
