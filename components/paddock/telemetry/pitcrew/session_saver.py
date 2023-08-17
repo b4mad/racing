@@ -43,6 +43,7 @@ class SessionSaver:
                         created,
                     ) = SessionType.objects.get_or_create(type=session.session_type)
                     session.car, created = session.game.cars.get_or_create(name=session.car)
+                    session.car.car_class, created = session.game.car_classes.get_or_create(name=session.car_class)
                     session.track, created = session.game.tracks.get_or_create(name=session.track)
                     (
                         session.record,

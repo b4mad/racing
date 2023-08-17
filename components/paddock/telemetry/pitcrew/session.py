@@ -43,6 +43,7 @@ class Session(LoggingMixin):
         self.game_name = ""
         self.track = ""
         self.car = ""
+        self.car_class = ""
         self.session_type = ""
         self.record = None
 

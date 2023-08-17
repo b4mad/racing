@@ -3,11 +3,13 @@
     "model": "telemetry.coach",
     "pk": 10,
     "fields": {
-      "error": "",
-      "status": "start coaching for a lap time of 1 minute 45.50 seconds ",
+      "created": "2023-07-04T16:27:23.139Z",
+      "modified": "2023-08-14T17:33:03.225Z",
+      "error": "no data found for game Automobilista 2 on track Cascavel4:Cascavel2 in car Porsche Cayman GT4 Clubsport MR",
+      "status": "start coaching for a lap time of 2 minutes 0.44 seconds  lets get some laps in debugging mode",
       "enabled": true,
-      "mode": "default",
-      "fast_lap": 15
+      "fast_lap": 1808,
+      "mode": "debug"
     }
   }
 ]

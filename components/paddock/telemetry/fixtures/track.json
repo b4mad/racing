@@ -1,8 +1,21 @@
 [
   {
     "model": "telemetry.track",
+    "pk": 37,
+    "fields": {
+      "created": "2023-07-04T16:27:23.319Z",
+      "modified": "2023-07-04T16:27:23.330Z",
+      "name": "roadamerica full",
+      "length": 6410,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.track",
     "pk": 83,
     "fields": {
+      "created": "2023-07-04T16:27:23.319Z",
+      "modified": "2023-07-04T16:27:23.330Z",
       "name": "Road_America:Road_America_RC",
       "length": 6441,
       "game": 5
@@ -12,6 +25,8 @@
     "model": "telemetry.track",
     "pk": 193,
     "fields": {
+      "created": "2023-07-04T16:27:23.319Z",
+      "modified": "2023-07-04T16:27:23.330Z",
       "name": "virginia 2022 full",
       "length": 5220,
       "game": 1
@@ -21,6 +36,8 @@
     "model": "telemetry.track",
     "pk": 409,
     "fields": {
+      "created": "2023-07-04T16:27:23.319Z",
+      "modified": "2023-07-04T16:27:23.330Z",
       "name": "fuji nochicane",
       "length": 4460,
       "game": 1
@@ -30,6 +47,8 @@
     "model": "telemetry.track",
     "pk": 1040,
     "fields": {
+      "created": "2023-07-04T16:27:23.319Z",
+      "modified": "2023-07-04T16:27:23.330Z",
       "name": "oschersleben gp",
       "length": 3610,
       "game": 1
