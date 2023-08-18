@@ -39,7 +39,7 @@ patches:
       name: paddock
     patch: |-
       - op: add
-        path: /spec/template/spec/containers/0/env
+        path: /spec/template/spec/containers/0/env/-
         value:
           name: ALLOWED_HOST
           value: paddock-nostromo-stage.b4mad.racing
