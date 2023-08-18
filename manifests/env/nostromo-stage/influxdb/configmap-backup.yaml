@@ -1,0 +1,59 @@
+---
+# Source: influxdb/templates/configmap-backup.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: influxdb2-backup
+data:
+  backup.sh: |-
+    #!/bin/bash
+
+    set -e
+
+    . /opt/bitnami/scripts/libinfluxdb.sh
+
+    DATE="$(date +%Y%m%d_%H%M%S)"
+
+    host="influxdb2.b4mad-racing-stage.svc"
+
+    get_orgs() {
+      INFLUX_TOKEN="${INFLUXDB_ADMIN_USER_TOKEN}" influx org list --host "http://${host}:8086" 2> /dev/null | grep -v 'ID' | awk -F '\t' 'BEGIN{ORS=" "} {print $2}'
+    }
+
+    get_databases() {
+        local org_name="${1:-}"
+        INFLUX_TOKEN="${INFLUXDB_ADMIN_USER_TOKEN}" influx bucket list --host "http://${host}:8086" --org "${org_name}" 2> /dev/null | grep -v 'ID' | awk -F '\t' 'BEGIN{ORS=" "} {print $2}'
+    }
+
+    for ORG in $(get_orgs); do
+        echo "finding buckets in org ${ORG}"
+        for BUCKET in $(get_databases "${ORG}"); do
+            backup_dir="/backups/${ORG}/${BUCKET}"
+            echo "backuping ${BUCKET} bucket to ${backup_dir}"
+            mkdir -p "${backup_dir}"
+
+            INFLUX_TOKEN="${INFLUXDB_ADMIN_USER_TOKEN}" influx backup --host "http://${host}:8086" --bucket "${BUCKET}" "${backup_dir}/${DATE}"
+        done
+    done
+
+    echo "deleting old backups"
+    find /backups -mindepth 3 -maxdepth 3 -not -name ".snapshot" -not -name "lost+found" -type d -mtime +4 -exec rm -r {} \;
+  upload-google.sh: |-
+    #!/bin/sh
+
+    set -e
+
+    gcloud auth activate-service-account --key-file /var/secrets/google/key.json
+    gsutil -m rsync -r -d /backups/ gs://bucket/influxdb
+  upload-azure.sh: |-
+    #!/bin/sh
+
+    set -e
+
+    az storage blob sync --source /backups --container influxdb-container
+  upload-aws.sh: |-
+    #!/bin/sh
+
+    set -e
+
+    aws s3 sync /backups s3://bucket/influxdb

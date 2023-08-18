@@ -3,10 +3,15 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  - telegraf
+
+  - telegraf/
+
   - ../../base/mosquitto
   - secrets/mosquitto.yaml
+
+  - influxdb/
   - secrets/influxdb2-auth.yaml
+  - secrets/influxdb2-backup.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
