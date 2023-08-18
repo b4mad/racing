@@ -9,7 +9,8 @@ spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    deploymentConfig: paddock
+    app: paddock
+    app.kubernetes.io/component: paddock
   triggers:
     - type: ConfigChange
     - imageChangeParams:
