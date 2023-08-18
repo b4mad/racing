@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: influxdb-init
-  namespace: b4mad-racing
 spec:
   template:
     metadata:

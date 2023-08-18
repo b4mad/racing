@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+
+  - telegraf/
+
+  - mosquitto/
+  - secrets/mosquitto.yaml
+
+  - influxdb/
+  - secrets/influxdb2-auth.yaml
+  - secrets/influxdb2-backup.yaml
+
+  - postgresql/
+  - secrets/pgo-s3-creds.yaml
+  - secrets/pgo-reader.yaml
+
+  - paddock/
+  - secrets/paddock-settings.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+images:
+  - name: telegraf
+    newTag: "1.27.3"
+  - name: paddock
+    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-stage/paddock
+    newTag: latest

@@ -2,13 +2,15 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    application: paddock
+    app: paddock
+    app.kubernetes.io/component: paddock
   name: paddock
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    deploymentConfig: paddock
+    app: paddock
+    app.kubernetes.io/component: paddock
   triggers:
     - type: ConfigChange
     - imageChangeParams:
@@ -24,8 +26,8 @@ spec:
   template:
     metadata:
       labels:
-        application: paddock
-        deploymentConfig: paddock
+        app: paddock
+        app.kubernetes.io/component: paddock
       name: paddock
     spec:
       containers:
@@ -149,11 +151,31 @@ spec:
           image: paddock:latest
           imagePullPolicy: Always
           env:
-            - name: DATABASE_URL
+            - name: DB_HOST
               valueFrom:
                 secretKeyRef:
                   name: db-pguser-paddock
-                  key: uri
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
           envFrom:
             - secretRef:
                 name: paddock-settings

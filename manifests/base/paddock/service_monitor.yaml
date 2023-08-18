@@ -13,4 +13,4 @@ spec:
       - b4mad-racing
   selector:
     matchLabels:
-      app: paddock
+      app.kubernetes.io/component: paddock

@@ -4,7 +4,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: influxdb2
-  namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
     helm.sh/chart: influxdb-5.7.2
@@ -29,7 +28,6 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: influxdb
     spec:
-
       affinity:
         podAffinity:
 

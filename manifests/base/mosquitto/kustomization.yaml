@@ -6,7 +6,6 @@ resources:
   - deployment.yaml
   - services.yaml
   - service_account.yaml
-  - secret.sealed.yaml
 configMapGenerator:
   - name: mosquitto-config
     files:

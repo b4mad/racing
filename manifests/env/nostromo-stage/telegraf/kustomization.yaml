@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../base/telegraf
+
+configMapGenerator:
+  - name: telegraf-config
+    behavior: replace
+    files:
+      - telegraf.conf
+
+patches:
+  - target:
+      kind: ServiceMonitor
+      name: telegraf
+    patch: |-
+      - op: replace
+        path: /spec/namespaceSelector/matchNames/0
+        value: b4mad-racing-stage

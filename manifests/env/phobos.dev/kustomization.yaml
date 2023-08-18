@@ -1,19 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 labels:
-- pairs:
-    app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing-dev
-    app.kubernetes.io/version: v0.1.0-dev
+  - pairs:
+      app.kubernetes.io/managed-by: humans
+      app.kubernetes.io/name: b4mad-racing-dev
+      app.kubernetes.io/version: v0.1.0-dev
 namespace: b4mad-racing-dev
 resources:
-- namespace.yaml
-- ../../base/grafana-v5
-- ../../base/mosquitto
-- ../../base/influxdb
-- ../../base/telegraf
-- ../../base/postgresql
-- ../../base/paddock
+  - namespace.yaml
+  - ../../base/grafana-v5
+  - ../../base/mosquitto
+  - ../../base/influxdb
+  - ../../base/telegraf
+  - ../../base/postgresql
+  - ../../base/paddock
 generatorOptions:
   disableNameSuffixHash: true
 patches:

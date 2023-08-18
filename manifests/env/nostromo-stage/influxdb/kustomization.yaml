@@ -1,0 +1,47 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../base/influxdb
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+patchesStrategicMerge:
+  - configmap-backup.yaml
+
+patches:
+  - target:
+      kind: PersistentVolumeClaim
+      name: influxdb2-backups
+    patch: |-
+      - op: add
+        path: /spec/storageClassName
+        value: lvms-vg1
+  - target:
+      kind: PersistentVolumeClaim
+      name: influxdb2-backups
+    patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: "100Gi"
+  - target:
+      kind: PersistentVolumeClaim
+      name: influxdb2
+    patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: "20Gi"
+  - target:
+      kind: Ingress
+      name: influx
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: telemetry-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: telemetry-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-telemetry-nostromo-stage.b4mad.racing

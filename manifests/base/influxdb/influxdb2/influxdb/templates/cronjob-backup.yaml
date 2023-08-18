@@ -4,7 +4,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: "influxdb2-backup"
-  namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
     helm.sh/chart: influxdb-5.7.2
@@ -22,8 +21,7 @@ spec:
           labels:
             app.kubernetes.io/name: influxdb
             app.kubernetes.io/instance: influxdb2
-          annotations:
-            {}
+          annotations: {}
         spec:
           restartPolicy: OnFailure
           volumes:
