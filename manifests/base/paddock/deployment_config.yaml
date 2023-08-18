@@ -3,6 +3,7 @@ kind: DeploymentConfig
 metadata:
   labels:
     app: paddock
+    app.kubernetes.io/component: paddock
   name: paddock
 spec:
   replicas: 1
@@ -25,7 +26,7 @@ spec:
     metadata:
       labels:
         app: paddock
-        deploymentConfig: paddock
+        app.kubernetes.io/component: paddock
       name: paddock
     spec:
       containers:
