@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: "influxdb2-backup"
-  namespace: "b4mad-racing-test"
 spec:
   schedule: "0 2 * * *"
   jobTemplate:

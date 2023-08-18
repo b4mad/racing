@@ -4,7 +4,6 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: influxdb2-backups
-  namespace: "b4mad-racing-test"
   labels:
     app.kubernetes.io/name: influxdb
     helm.sh/chart: influxdb-5.7.2
