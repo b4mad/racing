@@ -7,3 +7,4 @@ resources:
   - driver-extended.yaml
   - driver.yaml
   - landingpage.yaml
+  - track-standings.yaml
