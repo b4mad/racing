@@ -71,5 +71,3 @@ images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
     newTag: latest
-  - name: telegraf
-    newTag: "1.27.3"
