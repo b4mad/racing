@@ -2,18 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../../base/telegraf
-
-configMapGenerator:
-  - name: telegraf-config
-    behavior: replace
-    files:
-      - telegraf.conf
+  - ../../../base/mosquitto
 
 patches:
   - target:
       kind: ServiceMonitor
-      name: telegraf
+      name: mosquitto
     patch: |-
       - op: replace
         path: /spec/namespaceSelector/matchNames/0
