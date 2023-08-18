@@ -22,7 +22,10 @@ spec:
         "list": [
           {
             "builtIn": 1,
-            "datasource": "-- Grafana --",
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
@@ -36,7 +39,10 @@ spec:
             "type": "dashboard"
           },
           {
-            "datasource": "Racing",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "XJVakXj4z"
+            },
             "enable": false,
             "iconColor": "red",
             "mappings": {
@@ -72,11 +78,27 @@ spec:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "iteration": 1664619458885,
-      "links": [],
+      "id": 6,
+      "links": [
+        {
+          "asDropdown": false,
+          "icon": "external link",
+          "includeVars": true,
+          "keepTime": true,
+          "tags": [
+            "Extended"
+          ],
+          "targetBlank": false,
+          "title": "Extended",
+          "tooltip": "",
+          "type": "dashboards",
+          "url": ""
+        }
+      ],
       "liveNow": false,
       "panels": [
         {
+          "datasource": {},
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -85,7 +107,8 @@ spec:
               },
               "custom": {
                 "align": "auto",
-                "displayMode": "auto"
+                "displayMode": "auto",
+                "inspect": false
               },
               "mappings": [],
               "thresholds": {
@@ -135,7 +158,7 @@ spec:
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "8.4.3",
+          "pluginVersion": "9.1.7",
           "targets": [
             {
               "datasource": {
@@ -181,12 +204,15 @@ spec:
           "type": "table"
         },
         {
+          "datasource": {},
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -243,7 +269,8 @@ spec:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
               "mode": "single",
@@ -264,12 +291,15 @@ spec:
           "type": "timeseries"
         },
         {
+          "datasource": {},
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -326,7 +356,8 @@ spec:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
               "mode": "single",
@@ -347,12 +378,18 @@ spec:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "XJVakXj4z"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -409,7 +446,8 @@ spec:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
               "mode": "single",
@@ -422,20 +460,23 @@ spec:
                 "type": "influxdb",
                 "uid": "${DS_RACING}"
               },
-              "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"SpeedMs\"))\n  |> map(fn: (r) => ({ r with _value: r._value * 3.6 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
+              "query": "from(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"SessionId\"] == \"${SessionId}\")\n  |> filter(fn: (r) => (r[\"_field\"] == \"SpeedMs\"))\n  |> map(fn: (r) => ({ r with _value: r._value * ${Speed}}))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")\n",
               "refId": "A"
             }
           ],
-          "title": "SpeedKmh",
+          "title": "Speed (${Speed:text})",
           "type": "timeseries"
         },
         {
+          "datasource": {},
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -492,7 +533,8 @@ spec:
             "legend": {
               "calcs": [],
               "displayMode": "list",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
               "mode": "single",
@@ -513,6 +555,10 @@ spec:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "XJVakXj4z"
+          },
           "gridPos": {
             "h": 8,
             "w": 24,
@@ -521,6 +567,7 @@ spec:
           },
           "id": 11,
           "options": {
+            "ReferenceLines": [],
             "border": {
               "color": "yellow",
               "size": 0
@@ -557,7 +604,8 @@ spec:
             },
             "legend": {
               "show": false,
-              "size": 3
+              "size": 3,
+              "showLegend": true
             },
             "xAxis": {
               "col": 1,
@@ -572,7 +620,9 @@ spec:
               "color": "white",
               "textSize": 2,
               "rotated": false,
-              "logScale": false
+              "logScale": false,
+              "fontSize": 4,
+              "fontColor": "white"
             },
             "xMargins": {
               "lower": 30,
@@ -587,7 +637,9 @@ spec:
               "color": "#777",
               "textSize": 1,
               "rotated": false,
-              "logScale": false
+              "logScale": false,
+              "fontSize": 4,
+              "fontColor": "white"
             },
             "yMargins": {
               "lower": 20,
@@ -609,33 +661,88 @@ spec:
         }
       ],
       "refresh": false,
-      "schemaVersion": 35,
+      "schemaVersion": 37,
       "style": "dark",
-      "tags": [],
+      "tags": [
+        "B4Mad",
+        "2nd_Level",
+        "Standard"
+      ],
       "templating": {
         "list": [
           {
             "current": {
               "selected": false,
-              "text": "1664554326",
-              "value": "1664554326"
+              "text": "Km/h",
+              "value": "3.6"
             },
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "Speed",
+            "options": [
+              {
+                "selected": true,
+                "text": "Km/h",
+                "value": "3.6"
+              },
+              {
+                "selected": false,
+                "text": "MPH",
+                "value": "2.236936292054"
+              }
+            ],
+            "query": "Km/h : 3.6 , MPH : 2.236936292054",
+            "skipUrlSync": false,
+            "type": "custom"
+          },
+          {
+            "current": {
+              "selected": false,
+              "text": "1690043742",
+              "value": "1690043742"
+            },
+            "datasource": {
+              "type": "influxdb",
+              "uid": "XJVakXj4z"
+            },
+            "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n    bucket: \"racing\",\r\n    tag: \"SessionId\",\r\n    predicate: (r) => r[\"user\"] == \"${user}\",\r\n)",
             "hide": 2,
             "includeAll": false,
             "label": "SessionId",
             "multi": false,
             "name": "SessionId",
-            "options": [
-              {
-                "selected": false,
-                "text": "49080d03-6f93-47fb-8602-be3dadab2567",
-                "value": "49080d03-6f93-47fb-8602-be3dadab2567"
-              }
-            ],
-            "query": "49080d03-6f93-47fb-8602-be3dadab2567",
-            "queryValue": "",
+            "options": [],
+            "query": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n    bucket: \"racing\",\r\n    tag: \"SessionId\",\r\n    predicate: (r) => r[\"user\"] == \"${user}\",\r\n)",
+            "refresh": 1,
+            "regex": "",
             "skipUrlSync": false,
-            "type": "custom"
+            "sort": 0,
+            "type": "query"
+          },
+          {
+            "current": {
+              "selected": false,
+              "text": "Alex",
+              "value": "Alex"
+            },
+            "datasource": {
+              "type": "influxdb",
+              "uid": "XJVakXj4z"
+            },
+            "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(bucket: \"racing\", tag: \"user\")",
+            "hide": 2,
+            "includeAll": false,
+            "label": "",
+            "multi": false,
+            "name": "user",
+            "options": [],
+            "query": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(bucket: \"racing\", tag: \"user\")",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
           }
         ]
       },
@@ -647,6 +754,6 @@ spec:
       "timezone": "",
       "title": "Session",
       "uid": "6d57246de74745198b3385f5e446e81cf7127b47",
-      "version": 5,
+      "version": 12,
       "weekStart": ""
     }
