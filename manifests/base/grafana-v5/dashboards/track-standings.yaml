@@ -1435,7 +1435,7 @@ spec:
           {
             "hide": 2,
             "name": "Domain",
-            "query": "http://192.168.0.2:49222",
+            "query": "https://pitwall.b4mad.racing",
             "skipUrlSync": true,
             "type": "constant"
           },
