@@ -17,9 +17,15 @@ resources:
   - secrets/pgo-s3-creds.yaml
   - secrets/pgo-reader.yaml
 
+  - paddock/
+  - secrets/paddock-settings.yaml
+
 generatorOptions:
   disableNameSuffixHash: true
 
 images:
   - name: telegraf
     newTag: "1.27.3"
+  - name: paddock
+    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-stage/paddock
+    newTag: latest
