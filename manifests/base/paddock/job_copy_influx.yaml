@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: copy-influx
-  namespace: b4mad-racing
 spec:
   selector: {}
   template:
