@@ -2,7 +2,7 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    application: paddock
+    app: paddock
   name: paddock
 spec:
   replicas: 1
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        application: paddock
+        app: paddock
         deploymentConfig: paddock
       name: paddock
     spec:
