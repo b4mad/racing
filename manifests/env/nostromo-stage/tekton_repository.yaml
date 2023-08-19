@@ -1,0 +1,7 @@
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: github-com-goern-racing
+  creationTimestamp: null
+spec:
+  url: https://github.com/goern/racing
