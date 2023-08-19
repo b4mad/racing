@@ -3,8 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: telegraf
-  labels:
-    app.kubernetes.io/component: telegraf
 spec:
   replicas: 1
   revisionHistoryLimit: 4

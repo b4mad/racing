@@ -2,10 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mosquitto
-  annotations:
-    original-image-tag.thoth-station.ninja: 2.0.15-openssl
   labels:
-    app.kubernetes.io/version: "2.0.15-openssl"
     app: mosquitto
 spec:
   replicas: 1
