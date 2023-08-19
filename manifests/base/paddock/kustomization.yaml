@@ -5,8 +5,7 @@ commonLabels:
   app.kubernetes.io/component: paddock
 
 resources:
-  - deployment_config.yaml
-  - image_stream.yaml
+  - deployment.yaml
   - ingress.yaml
   - monitoring_alerting.yaml
   - service_account.yaml
