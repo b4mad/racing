@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: driver-extended
+  name: track-standings
 spec:
   instanceSelector:
     matchLabels:
@@ -38,7 +38,7 @@ spec:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 2,
+      "id": 10,
       "links": [
         {
           "asDropdown": false,
@@ -46,11 +46,10 @@ spec:
           "includeVars": false,
           "keepTime": false,
           "tags": [
-            "B4Mad",
             "1st_Level"
           ],
           "targetBlank": false,
-          "title": "Home",
+          "title": "Menu",
           "tooltip": "",
           "type": "dashboards",
           "url": ""
@@ -61,7 +60,6 @@ spec:
           "includeVars": true,
           "keepTime": true,
           "tags": [
-            "B4Mad",
             "2nd_Level"
           ],
           "targetBlank": false,
@@ -71,44 +69,38 @@ spec:
           "url": ""
         }
       ],
-      "liveNow": true,
+      "liveNow": false,
       "panels": [
         {
           "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "description": "Sessions with a lap time greater than 0",
+          "description": "Total Valid Sessions in ${TrackName}",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
-              "decimals": 0,
-              "displayName": "Valid Session",
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "super-light-green",
+                    "color": "green",
                     "value": null
                   },
                   {
-                    "color": "light-green",
+                    "color": "yellow",
                     "value": 10
                   },
                   {
-                    "color": "green",
+                    "color": "orange",
                     "value": 20
                   },
                   {
-                    "color": "semi-dark-green",
-                    "value": 30
-                  },
-                  {
-                    "color": "dark-green",
-                    "value": 40
+                    "color": "red",
+                    "value": 50
                   }
                 ]
               }
@@ -121,8 +113,7 @@ spec:
             "x": 0,
             "y": 0
           },
-          "id": 8,
-          "interval": "1h",
+          "id": 16,
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -144,12 +135,18 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+              "panelId": 13,
+              "refId": "A"
             }
           ],
+          "title": "Valid Sessions",
           "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
             {
               "id": "filterByValue",
               "options": {
@@ -159,121 +156,6 @@ spec:
                       "id": "equal",
                       "options": {
                         "value": "Valid"
-                      }
-                    },
-                    "fieldName": "Check"
-                  }
-                ],
-                "match": "all",
-                "type": "include"
-              }
-            },
-            {
-              "id": "groupBy",
-              "options": {
-                "fields": {
-                  "SessionId": {
-                    "aggregations": [
-                      "count"
-                    ],
-                    "operation": "aggregate"
-                  },
-                  "user": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  }
-                }
-              }
-            }
-          ],
-          "type": "stat"
-        },
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
-          },
-          "description": "Sessions with a lap time greater than 0",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "displayName": "Invalid Sessions",
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "light-red",
-                    "value": 10
-                  },
-                  {
-                    "color": "red",
-                    "value": 20
-                  },
-                  {
-                    "color": "semi-dark-red",
-                    "value": 30
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 40
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 2,
-            "x": 2,
-            "y": 0
-          },
-          "id": 14,
-          "interval": "1h",
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "value_and_name"
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
-            }
-          ],
-          "transformations": [
-            {
-              "id": "filterByValue",
-              "options": {
-                "filters": [
-                  {
-                    "config": {
-                      "id": "equal",
-                      "options": {
-                        "value": "Invalid"
                       }
                     },
                     "fieldName": "Check"
@@ -291,9 +173,16 @@ spec:
                     "aggregations": []
                   },
                   "Check": {
-                    "aggregations": []
+                    "aggregations": [],
+                    "operation": "groupby"
                   },
                   "Data": {
+                    "aggregations": []
+                  },
+                  "Fastest": {
+                    "aggregations": []
+                  },
+                  "GameName": {
                     "aggregations": []
                   },
                   "SessionId": {
@@ -305,15 +194,17 @@ spec:
                   "SessionTypeName": {
                     "aggregations": []
                   },
+                  "Stop": {
+                    "aggregations": []
+                  },
+                  "Track": {
+                    "aggregations": []
+                  },
                   "TrackCode": {
                     "aggregations": []
                   },
-                  "_time": {
-                    "aggregations": []
-                  },
                   "user": {
-                    "aggregations": [],
-                    "operation": "groupby"
+                    "aggregations": []
                   }
                 }
               }
@@ -326,60 +217,52 @@ spec:
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
+          "description": "Fastest Valid Time in ${TrackName}",
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "thresholds"
+                "fixedColor": "purple",
+                "mode": "continuous-BlPu"
               },
               "custom": {
                 "align": "auto",
                 "displayMode": "auto",
-                "filterable": true,
                 "inspect": false,
-                "minWidth": 150
+                "minWidth": 135
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "super-light-purple",
+                    "color": "green",
                     "value": null
                   },
                   {
-                    "color": "light-purple",
-                    "value": 5
-                  },
-                  {
-                    "color": "purple",
-                    "value": 10
-                  },
-                  {
-                    "color": "semi-dark-purple",
-                    "value": 20
-                  },
-                  {
-                    "color": "dark-purple",
-                    "value": 30
+                    "color": "red",
+                    "value": 80
                   }
                 ]
-              },
-              "unit": "none"
+              }
             },
             "overrides": [
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "SessionId (count)"
+                  "options": "Fastest (min)"
                 },
                 "properties": [
                   {
-                    "id": "custom.width",
-                    "value": 150
-                  },
-                  {
                     "id": "custom.displayMode",
                     "value": "basic"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "clocks"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
                   }
                 ]
               }
@@ -387,12 +270,11 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 5,
-            "x": 4,
+            "w": 9,
+            "x": 2,
             "y": 0
           },
           "id": 4,
-          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -403,8 +285,7 @@ spec:
               ],
               "show": false
             },
-            "showHeader": false,
-            "sortBy": []
+            "showHeader": false
           },
           "pluginVersion": "9.1.7",
           "targets": [
@@ -413,13 +294,18 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+              "panelId": 13,
+              "refId": "A"
             }
           ],
-          "title": "GameName",
+          "title": "Fastest Time in Game ",
           "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
             {
               "id": "filterByValue",
               "options": {
@@ -432,6 +318,20 @@ spec:
                       }
                     },
                     "fieldName": "Check"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "Track"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "GameName"
                   }
                 ],
                 "match": "all",
@@ -442,6 +342,17 @@ spec:
               "id": "groupBy",
               "options": {
                 "fields": {
+                  "Check": {
+                    "aggregations": [
+                      "count"
+                    ]
+                  },
+                  "Fastest": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
                   "GameName": {
                     "aggregations": [],
                     "operation": "groupby"
@@ -449,157 +360,24 @@ spec:
                   "SessionId": {
                     "aggregations": [
                       "count"
-                    ],
-                    "operation": "aggregate"
-                  }
-                }
-              }
-            },
-            {
-              "id": "sortBy",
-              "options": {
-                "fields": {},
-                "sort": [
-                  {
-                    "desc": true,
-                    "field": "SessionId (count)"
-                  }
-                ]
-              }
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "displayMode": "auto",
-                "filterable": false,
-                "inspect": false
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "super-light-orange",
-                    "value": null
+                    ]
                   },
-                  {
-                    "color": "light-orange",
-                    "value": 5
-                  },
-                  {
-                    "color": "orange",
-                    "value": 10
-                  },
-                  {
-                    "color": "semi-dark-orange",
-                    "value": 20
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 30
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "SessionId (count)"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 150
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "basic"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 9,
-            "y": 0
-          },
-          "id": 5,
-          "interval": "1h",
-          "options": {
-            "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": false,
-            "sortBy": []
-          },
-          "pluginVersion": "9.1.7",
-          "targets": [
-            {
-              "datasource": {
-                "type": "datasource",
-                "uid": "-- Dashboard --"
-              },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
-            }
-          ],
-          "title": "TrackCode",
-          "transformations": [
-            {
-              "id": "filterByValue",
-              "options": {
-                "filters": [
-                  {
-                    "config": {
-                      "id": "equal",
-                      "options": {
-                        "value": "Valid"
-                      }
-                    },
-                    "fieldName": "Check"
-                  }
-                ],
-                "match": "all",
-                "type": "include"
-              }
-            },
-            {
-              "id": "groupBy",
-              "options": {
-                "fields": {
-                  "SessionId": {
-                    "aggregations": [
-                      "count"
-                    ],
-                    "operation": "aggregate"
+                  "Track": {
+                    "aggregations": []
                   },
                   "TrackCode": {
-                    "aggregations": [],
-                    "operation": "groupby"
+                    "aggregations": []
                   },
-                  "TrackName": {
+                  "TrackKey": {
+                    "aggregations": []
+                  },
+                  "_value": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "user": {
                     "aggregations": []
                   }
                 }
@@ -611,10 +389,21 @@ spec:
                 "fields": {},
                 "sort": [
                   {
-                    "desc": true,
-                    "field": "SessionId (count)"
+                    "desc": false,
+                    "field": "Fastest (min)"
                   }
                 ]
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Track": true,
+                  "TrackCode": true
+                },
+                "indexByName": {},
+                "renameByName": {}
               }
             }
           ],
@@ -628,38 +417,24 @@ spec:
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "thresholds"
+                "mode": "continuous-GrYlRd"
               },
               "custom": {
                 "align": "auto",
                 "displayMode": "auto",
-                "filterable": false,
-                "inspect": false,
-                "minWidth": 150
+                "inspect": false
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "super-light-blue",
+                    "color": "green",
                     "value": null
                   },
                   {
-                    "color": "light-blue",
-                    "value": 5
-                  },
-                  {
-                    "color": "blue",
-                    "value": 10
-                  },
-                  {
-                    "color": "semi-dark-blue",
-                    "value": 20
-                  },
-                  {
-                    "color": "dark-blue",
-                    "value": 30
+                    "color": "red",
+                    "value": 80
                   }
                 ]
               }
@@ -668,16 +443,20 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "SessionId (count)"
+                  "options": "Fastest (min)"
                 },
                 "properties": [
                   {
-                    "id": "custom.width",
-                    "value": 150
+                    "id": "unit",
+                    "value": "clocks"
                   },
                   {
                     "id": "custom.displayMode",
                     "value": "basic"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
                   }
                 ]
               }
@@ -685,24 +464,22 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 5,
-            "x": 14,
+            "w": 8,
+            "x": 11,
             "y": 0
           },
           "id": 6,
-          "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
               "reducer": [
-                "diffperc"
+                "sum"
               ],
               "show": false
             },
-            "showHeader": false,
-            "sortBy": []
+            "showHeader": false
           },
           "pluginVersion": "9.1.7",
           "targets": [
@@ -711,13 +488,175 @@ spec:
                 "type": "datasource",
                 "uid": "-- Dashboard --"
               },
-              "panelId": 16,
-              "refId": "A",
-              "withTransforms": true
+              "panelId": 13,
+              "refId": "A"
             }
           ],
-          "title": "CarModel",
+          "title": "Fastest Time by Car",
           "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "Track"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "CarModel": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Fastest": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Track": {
+                    "aggregations": []
+                  },
+                  "_value": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  }
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "field": "Fastest (min)"
+                  }
+                ]
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-YlRd"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Fastest (min)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "clocks"
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "basic"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 11,
+            "x": 0,
+            "y": 4
+          },
+          "id": 17,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": false
+          },
+          "pluginVersion": "9.1.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "datasource",
+                "uid": "-- Dashboard --"
+              },
+              "panelId": 13,
+              "refId": "A"
+            }
+          ],
+          "title": "Track Times ",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
             {
               "id": "filterByValue",
               "options": {
@@ -741,12 +680,21 @@ spec:
               "options": {
                 "fields": {
                   "CarModel": {
+                    "aggregations": []
+                  },
+                  "Fastest": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "TrackCode": {
                     "aggregations": [],
                     "operation": "groupby"
                   },
-                  "SessionId": {
+                  "_value": {
                     "aggregations": [
-                      "count"
+                      "min"
                     ],
                     "operation": "aggregate"
                   }
@@ -759,8 +707,161 @@ spec:
                 "fields": {},
                 "sort": [
                   {
-                    "desc": true,
-                    "field": "SessionId (count)"
+                    "field": "Fastest (min)"
+                  }
+                ]
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-BlYlRd"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Fastest (min)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "clocks"
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "basic"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 11,
+            "y": 4
+          },
+          "id": 18,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": false
+          },
+          "pluginVersion": "9.1.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "datasource",
+                "uid": "-- Dashboard --"
+              },
+              "panelId": 13,
+              "refId": "A"
+            }
+          ],
+          "title": "User Standings",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "SessionId"
+              }
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
+                    },
+                    "fieldName": "Check"
+                  }
+                ],
+                "match": "all",
+                "type": "include"
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "CarModel": {
+                    "aggregations": []
+                  },
+                  "Fastest": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "TrackCode": {
+                    "aggregations": []
+                  },
+                  "_value": {
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": false,
+                    "field": "Fastest (min)"
                   }
                 ]
               }
@@ -773,7 +874,7 @@ spec:
             "type": "influxdb",
             "uid": "${DS_RACING}"
           },
-          "description": "To get extended data may need a different  \"mqtt_telemetry.json\", Please contact us in Discord to let you know how.",
+          "description": "Times are base only on Valid Clean laps in Race Type",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -813,13 +914,25 @@ spec:
                       {
                         "targetBlank": false,
                         "title": "",
-                        "url": "${Domain}/d/${__data.fields.Data}?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.DurationInt}&var-user=${__data.fields.user}&from=${__data.fields.StartInt}&to=${__data.fields.StopInt}"
+                        "url": "${Domain}/d/${__data.fields.Data}?orgId=1&var-SessionId=${__data.fields.SessionId}&time=${__value.time}&time.window=${__data.fields.Duration}&var-User=${__data.fields.user}&from=${__data.fields.Start}&to=${__data.fields.Stop}"
                       }
                     ]
                   },
                   {
                     "id": "custom.width",
                     "value": 104
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "GameName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 219
                   }
                 ]
               },
@@ -837,69 +950,18 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Check"
+                  "options": "CarModel"
                 },
                 "properties": [
                   {
-                    "id": "custom.width",
-                    "value": 74
-                  },
-                  {
-                    "id": "custom.filterable",
-                    "value": true
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
-                  },
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "Invalid": {
-                            "color": "red",
-                            "index": 1
-                          },
-                          "Valid": {
-                            "color": "green",
-                            "index": 0
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
+                    "id": "custom.width"
                   }
                 ]
               },
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Top"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 100
-                  },
-                  {
-                    "id": "unit",
-                    "value": "none"
-                  },
-                  {
-                    "id": "decimals",
-                    "value": 0
-                  },
-                  {
-                    "id": "displayName",
-                    "value": "Top ${Speed:text}"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "user"
+                  "options": "Stop"
                 },
                 "properties": [
                   {
@@ -911,44 +973,85 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Duration"
+                  "options": "Fastest"
                 },
                 "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
                   {
                     "id": "unit",
-                    "value": "clockms"
-                  },
-                  {
-                    "id": "custom.width",
-                    "value": 89
-                  },
-                  {
-                    "id": "decimals",
-                    "value": 1
+                    "value": "clocks"
                   }
                 ]
               },
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Stop"
+                  "options": "user"
                 },
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 151
+                    "value": 146
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "",
+                        "url": "${Domain}/d/${Driver}?var-user=${__value.text}"
+                      }
+                    ]
                   }
                 ]
               },
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "SessionTypeName"
+                  "options": "TrackKey"
                 },
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 117
+                    "value": 90
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Track"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Track Name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 330
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "\\d"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": false
                   }
                 ]
               },
@@ -967,7 +1070,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "StopInt"
+                  "options": "Duration"
                 },
                 "properties": [
                   {
@@ -979,7 +1082,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "StartInt"
+                  "options": "Start"
                 },
                 "properties": [
                   {
@@ -991,51 +1094,30 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "DurationInt"
+                  "options": "_time"
                 },
                 "properties": [
                   {
                     "id": "custom.hidden",
                     "value": true
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Track"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 151
-                  },
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "title": "",
-                        "url": "${Domain}/d/${Track}?var-TrackName=${__value.text}"
-                      }
-                    ]
                   }
                 ]
               }
             ]
           },
           "gridPos": {
-            "h": 13,
+            "h": 11,
             "w": 19,
             "x": 0,
-            "y": 4
+            "y": 8
           },
-          "id": 16,
+          "id": 13,
           "interval": "1h",
           "options": {
             "cellHeight": "sm",
             "footer": {
               "countRows": false,
-              "enablePagination": true,
+              "enablePagination": false,
               "fields": [],
               "reducer": [
                 "count"
@@ -1044,12 +1126,7 @@ spec:
             },
             "frameIndex": 1,
             "showHeader": true,
-            "sortBy": [
-              {
-                "desc": true,
-                "displayName": "Stop"
-              }
-            ]
+            "sortBy": []
           },
           "pluginVersion": "9.1.7",
           "targets": [
@@ -1059,7 +1136,7 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\ngames = [${GameName:doublequote}]\r\nsession_types = [${SessionTypeName:doublequote}]\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"SpeedMs\"  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group(columns: []) \r\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\",  \"_value\", \"_time\"])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Top: r._value * ${Speed},\r\n    Check: \r\n      if r._value > 1 then \"Valid\"\r\n      else \"Invalid\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),  \r\n    Track: regexp.findString(v: r.TrackCode, r: regex)\r\n    })) \r\n  |> group(columns: [])  \r\n  \r\n\r\n\r\nfilter = Valid\r\n |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\n |> filter(fn: (r) => contains(value: r.GameName, set: games) )\r\n |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\r\n\r\n\r\n\r\n |> yield() \r\n",
+              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r.SessionTypeName == \"Race\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"LapTimePrevious\" and r._value > 0 )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: min, createEmpty: false)\r\n  |> group(columns: []) \r\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\",  \"_value\"])\r\n  |> rename(columns: {_value: \"Fastest\"})\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Check: \r\n      if r.Fastest > 1 then \"Valid\"\r\n      else \"Invalid\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),    \r\n    Track: regexp.findString(v: r.TrackCode, r: regex)\r\n    })) \r\n  |> group(columns: [])  \r\nfilter = Valid\r\n |> filter(fn: (r) => r[\"TrackCode\"] =~ /${TrackName}/)\r\n \r\n |> yield() \r\n",
               "refId": "A"
             },
             {
@@ -1068,7 +1145,7 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start:  r._time\r\n  }))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\", \"Start\"])\r\n\r\n  |> yield()",
+              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r.SessionTypeName == \"Race\")\r\n  |> filter(fn: (r) => r[\"_field\"] =~ /Session_Sector|Gear/ )\r\n  |> first()\r\n  |> group(columns: [])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    _value: \r\n      if r._field == \"Session_Sector\" then \"${Extended}\"\r\n      else \"${Standard}\",\r\n    TrackCode: strings.toLower(v: r.TrackCode),    \r\n    }))\r\n  |> filter(fn: (r) => r[\"TrackCode\"] =~ /${TrackName}/)  \r\n  |> keep(columns: [\"SessionId\",\"_value\"])  \r\n  |> rename(columns: {_value: \"Data\"})\r\n  |> group()    \r\n   |> yield() \r\n",
               "refId": "B"
             },
             {
@@ -1077,7 +1154,7 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] =~ /Session_Flag|Rpms/ )\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")  \r\n \r\n  |> first()\r\n  |> group(columns: [])\r\n\r\nValid = data\r\n  |> map(fn: (r) => ({r with SessionId: r.SessionId,\r\n    Data: \r\n      if r._field == \"Session_Flag\" then \"${Extended}\"\r\n      else \"${Standard}\"\r\n    }))\r\n  |> keep(columns: [\"SessionId\",\"Data\",\"_time\"])  \r\n  |> group(columns: [])  \r\n   |> yield() \r\n",
+              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\nStart = data\r\n  |> first(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Start:  r._time,\r\n    TrackCode: strings.toLower(v: r.TrackCode),    \r\n  }))\r\n  |> group()  \r\n  |> filter(fn: (r) => r[\"TrackCode\"] =~ /${TrackName}/)\r\n  |> keep(columns: [\"SessionId\", \"Start\", \"_time\" ])\r\n\r\n  |> yield()",
               "refId": "C"
             },
             {
@@ -1086,11 +1163,11 @@ spec:
                 "uid": "${DS_RACING}"
               },
               "hide": false,
-              "query": "data = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop:  r._time}))\r\n  |> group()  \r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n\r\n  |> yield()",
+              "query": "import \"regexp\"\r\nimport \"strings\"\r\nregex = ${RegEX}\r\n\r\ndata = from(bucket: \"racing\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\")\r\n\r\n\r\nStop = data\r\n  |> last(column: \"_time\")\r\n  |> map(fn: (r) => ({r with Stop:  r._time,\r\n    TrackCode: strings.toLower(v: r.TrackCode), \r\n      }))   \r\n  |> group()  \r\n  |> filter(fn: (r) => r[\"TrackCode\"] =~ /${TrackName}/)\r\n  |> keep(columns: [\"SessionId\",\"Stop\"])\r\n\r\n  |> yield()",
               "refId": "D"
             }
           ],
-          "title": "Recent Sessions in last 2 Days",
+          "title": "Track Standings ",
           "transformations": [
             {
               "id": "seriesToColumns",
@@ -1104,8 +1181,10 @@ spec:
                 "filters": [
                   {
                     "config": {
-                      "id": "isNotNull",
-                      "options": {}
+                      "id": "equal",
+                      "options": {
+                        "value": "Valid"
+                      }
                     },
                     "fieldName": "Check"
                   },
@@ -1114,11 +1193,50 @@ spec:
                       "id": "isNotNull",
                       "options": {}
                     },
-                    "fieldName": "CarModel"
+                    "fieldName": "Fastest"
+                  },
+                  {
+                    "config": {
+                      "id": "isNotNull",
+                      "options": {}
+                    },
+                    "fieldName": "Track"
                   }
                 ],
                 "match": "all",
                 "type": "include"
+              }
+            },
+            {
+              "id": "convertFieldType",
+              "options": {
+                "conversions": [
+                  {
+                    "destinationType": "number",
+                    "targetField": "Start"
+                  },
+                  {
+                    "destinationType": "number",
+                    "targetField": "Stop"
+                  }
+                ],
+                "fields": {}
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "Duration",
+                "binary": {
+                  "left": "Stop",
+                  "operator": "-",
+                  "reducer": "sum",
+                  "right": "Start"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "reducer": "sum"
+                }
               }
             },
             {
@@ -1141,15 +1259,11 @@ spec:
                     "aggregations": [],
                     "operation": "groupby"
                   },
-                  "Extended Data": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
                   "Fastest": {
                     "aggregations": [
-                      "max"
+                      "min"
                     ],
-                    "operation": "groupby"
+                    "operation": "aggregate"
                   },
                   "GameName": {
                     "aggregations": [],
@@ -1160,9 +1274,7 @@ spec:
                     "operation": "groupby"
                   },
                   "SessionId": {
-                    "aggregations": [
-                      "last"
-                    ],
+                    "aggregations": [],
                     "operation": "groupby"
                   },
                   "SessionTypeName": {
@@ -1174,10 +1286,6 @@ spec:
                     "operation": "groupby"
                   },
                   "Stop": {
-                    "aggregations": [],
-                    "operation": "groupby"
-                  },
-                  "Top": {
                     "aggregations": [],
                     "operation": "groupby"
                   },
@@ -1193,15 +1301,15 @@ spec:
                     "aggregations": [],
                     "operation": "groupby"
                   },
-                  "_start": {
+                  "_time": {
                     "aggregations": [],
                     "operation": "groupby"
                   },
-                  "_time": {
-                    "aggregations": []
-                  },
                   "_value": {
-                    "aggregations": []
+                    "aggregations": [
+                      "min"
+                    ],
+                    "operation": "aggregate"
                   },
                   "user": {
                     "aggregations": [],
@@ -1211,55 +1319,13 @@ spec:
               }
             },
             {
-              "id": "calculateField",
-              "options": {
-                "alias": "StopInt",
-                "mode": "reduceRow",
-                "reduce": {
-                  "include": [
-                    "Stop"
-                  ],
-                  "reducer": "lastNotNull"
-                }
-              }
-            },
-            {
-              "id": "calculateField",
-              "options": {
-                "alias": "StartInt",
-                "mode": "reduceRow",
-                "reduce": {
-                  "include": [
-                    "Start"
-                  ],
-                  "reducer": "firstNotNull"
-                }
-              }
-            },
-            {
-              "id": "calculateField",
-              "options": {
-                "alias": "Duration",
-                "binary": {
-                  "left": "Stop",
-                  "operator": "-",
-                  "reducer": "sum",
-                  "right": "Start"
-                },
-                "mode": "binary",
-                "reduce": {
-                  "reducer": "sum"
-                }
-              }
-            },
-            {
               "id": "sortBy",
               "options": {
                 "fields": {},
                 "sort": [
                   {
-                    "desc": true,
-                    "field": "Stop"
+                    "desc": false,
+                    "field": "Fastest (min)"
                   }
                 ]
               }
@@ -1268,58 +1334,40 @@ spec:
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Check": false,
-                  "Extended Data": false,
+                  "Check": true,
+                  "Extended Data": true,
                   "SessionId": false,
-                  "SessionTypeName": false,
-                  "Start": true,
-                  "Stop": false,
-                  "Track": false,
-                  "_start": false,
+                  "SessionId (uniqueValues)": false,
+                  "SessionTypeName": true,
+                  "Start": false,
+                  "Track": true,
+                  "_start": true,
                   "_stop": true,
-                  "_time": true,
+                  "_time": false,
                   "_value": false
                 },
                 "indexByName": {
-                  "CarModel": 4,
-                  "Check": 1,
-                  "Data": 12,
-                  "Duration": 9,
-                  "GameName": 3,
-                  "SessionId": 0,
-                  "SessionTypeName": 2,
-                  "Start": 7,
-                  "StartInt": 14,
-                  "Stop": 8,
-                  "StopInt": 13,
-                  "Top": 10,
-                  "Track": 5,
+                  "CarModel": 7,
+                  "Check": 3,
+                  "Data": 9,
+                  "Fastest (min)": 0,
+                  "GameName": 5,
+                  "SessionId": 1,
+                  "SessionTypeName": 4,
+                  "Track": 8,
                   "TrackCode": 6,
-                  "user": 11
+                  "user": 2
                 },
                 "renameByName": {
+                  "0": "SessionId",
                   "CarModel": "",
                   "Fastest (min)": "Fastest",
                   "SessionId (last)": "SessionId",
-                  "Top": "Top ",
                   "TrackCode": "Track Name",
                   "TrackKey": "Track ",
-                  "_time": "End",
+                  "_time": "",
                   "_value": "Fastest",
-                  "_value (min)": ""
-                }
-              }
-            },
-            {
-              "id": "calculateField",
-              "options": {
-                "alias": "DurationInt",
-                "mode": "reduceRow",
-                "reduce": {
-                  "include": [
-                    "Duration"
-                  ],
-                  "reducer": "lastNotNull"
+                  "_value (min)": "Fastest"
                 }
               }
             }
@@ -1327,7 +1375,7 @@ spec:
           "type": "table"
         }
       ],
-      "refresh": "5m",
+      "refresh": false,
       "schemaVersion": 37,
       "style": "dark",
       "tags": [
@@ -1336,104 +1384,6 @@ spec:
       ],
       "templating": {
         "list": [
-          {
-            "current": {
-              "selected": false,
-              "text": "Km/h",
-              "value": "3.6"
-            },
-            "hide": 0,
-            "includeAll": false,
-            "multi": false,
-            "name": "Speed",
-            "options": [
-              {
-                "selected": true,
-                "text": "Km/h",
-                "value": "3.6"
-              },
-              {
-                "selected": false,
-                "text": "MPH",
-                "value": "2.236936292054"
-              }
-            ],
-            "query": "Km/h : 3.6 , MPH : 2.236936292054",
-            "skipUrlSync": true,
-            "type": "custom"
-          },
-          {
-            "current": {
-              "selected": false,
-              "text": "All",
-              "value": "$__all"
-            },
-            "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
-            },
-            "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
-            "hide": 0,
-            "includeAll": true,
-            "label": "SessionTypeName",
-            "multi": false,
-            "name": "SessionTypeName",
-            "options": [],
-            "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
-            "refresh": 1,
-            "regex": "",
-            "skipUrlSync": true,
-            "sort": 1,
-            "type": "query"
-          },
-          {
-            "current": {
-              "selected": false,
-              "text": "Jim",
-              "value": "Jim"
-            },
-            "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
-            },
-            "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
-            "hide": 0,
-            "includeAll": false,
-            "label": "User",
-            "multi": false,
-            "name": "user",
-            "options": [],
-            "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
-            "refresh": 1,
-            "regex": "",
-            "skipUrlSync": false,
-            "sort": 1,
-            "type": "query"
-          },
-          {
-            "current": {
-              "selected": false,
-              "text": "All",
-              "value": "$__all"
-            },
-            "datasource": {
-              "type": "influxdb",
-              "uid": "${DS_RACING}"
-            },
-            "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
-            "hide": 0,
-            "includeAll": true,
-            "label": "GameName",
-            "multi": false,
-            "name": "GameName",
-            "options": [],
-            "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
-            "refresh": 1,
-            "regex": "",
-            "skipUrlSync": true,
-            "sort": 1,
-            "type": "query"
-          },
           {
             "current": {
               "selected": false,
@@ -1446,10 +1396,34 @@ spec:
             "name": "DS_RACING",
             "options": [],
             "query": "influxdb",
+            "queryValue": "",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": true,
             "type": "datasource"
+          },
+          {
+            "current": {
+              "selected": false,
+              "text": "spa",
+              "value": "spa"
+            },
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DS_RACING}"
+            },
+            "definition": "import \"influxdata/influxdb/schema\"\r\nimport \"strings\"\r\nimport \"regexp\"\r\nregex = /^([a-zA-Z0-9ü]+)/\r\n\r\ndata  = schema.tagValues(\r\n    bucket: \"racing\",\r\n    tag: \"TrackCode\",\r\n    start: v.timeRangeStart,\r\n)\r\n\r\nsingle = data\r\n |> map(fn: (r) => ({r with  _value: regexp.findString(v: strings.toLower(v: r._value), r: regex)}))\r\n |> distinct()\r\n  |> yield() \r\n",
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "TrackName",
+            "options": [],
+            "query": "import \"influxdata/influxdb/schema\"\r\nimport \"strings\"\r\nimport \"regexp\"\r\nregex = /^([a-zA-Z0-9ü]+)/\r\n\r\ndata  = schema.tagValues(\r\n    bucket: \"racing\",\r\n    tag: \"TrackCode\",\r\n    start: v.timeRangeStart,\r\n)\r\n\r\nsingle = data\r\n |> map(fn: (r) => ({r with  _value: regexp.findString(v: strings.toLower(v: r._value), r: regex)}))\r\n |> distinct()\r\n  |> yield() \r\n",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 5,
+            "type": "query"
           },
           {
             "hide": 2,
@@ -1500,7 +1474,6 @@ spec:
         "to": "now"
       },
       "timepicker": {
-        "hidden": false,
         "refresh_intervals": [
           "1m",
           "5m",
@@ -1512,8 +1485,8 @@ spec:
         ]
       },
       "timezone": "",
-      "title": "Driver Extended",
-      "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
-      "version": 64,
+      "title": "Track Standings",
+      "uid": "c726e9a2-350c-459d-aa40-2035073f5035",
+      "version": 45,
       "weekStart": ""
     }
