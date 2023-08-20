@@ -41,7 +41,7 @@ spec:
           {
             "datasource": {
               "type": "influxdb",
-              "uid": "XJVakXj4z"
+              "uid": "${DS_RACING}"
             },
             "enable": false,
             "iconColor": "red",
@@ -557,7 +557,7 @@ spec:
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "XJVakXj4z"
+            "uid": "${DS_RACING}"
           },
           "gridPos": {
             "h": 8,
@@ -704,7 +704,7 @@ spec:
             },
             "datasource": {
               "type": "influxdb",
-              "uid": "XJVakXj4z"
+              "uid": "${DS_RACING}"
             },
             "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n    bucket: \"racing\",\r\n    tag: \"SessionId\",\r\n    predicate: (r) => r[\"user\"] == \"${user}\",\r\n)",
             "hide": 2,
@@ -728,7 +728,7 @@ spec:
             },
             "datasource": {
               "type": "influxdb",
-              "uid": "XJVakXj4z"
+              "uid": "${DS_RACING}"
             },
             "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(bucket: \"racing\", tag: \"user\")",
             "hide": 2,
