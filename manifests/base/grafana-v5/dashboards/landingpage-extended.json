@@ -31,7 +31,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "XJVakXj4z"
+        "uid": "${DS_RACING}"
       },
       "gridPos": {
         "h": 6,
