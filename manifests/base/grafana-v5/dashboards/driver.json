@@ -1,0 +1,616 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 38,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "Racing"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "Racing"
+          },
+          "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\nfrom(bucket: \"racing\")\n  |> range(start: -10y)\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> keep(columns: [\"SessionId\", \"SessionTypeName\", \"GameName\"])\n  |> limit(n: 1)\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n  |> group()\n  |> distinct(column: \"SessionId\")\n  |> count()\n\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Sessions",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "Racing"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": false
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "Racing"
+          },
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"GameName\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
+          "refId": "A"
+        }
+      ],
+      "title": "GameName",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "Racing"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 8,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": false
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "Racing"
+          },
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"TrackCode\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)",
+          "refId": "A"
+        }
+      ],
+      "title": "TrackCode",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "Racing"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 15,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": false
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "Racing"
+          },
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n    bucket: \"racing\",\n    tag: \"CarModel\",\n    predicate: (r) => r[\"user\"] == \"${user}\",\n)\n",
+          "refId": "A"
+        }
+      ],
+      "title": "CarModel",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "Racing"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SessionId"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "https://pitwall.b4mad.racing/d/6d57246de74745198b3385f5e446e81cf7127b47/b4mad-racing-details-crewchief?orgId=1&var-SessionId=${__value.text}&time=${__value.time}&time.window=3600000"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 168
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Laps"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "End"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 187
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "user"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SessionTypeName"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GameName"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TrackCode"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CarModel"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extended Data"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "https://pitwall.b4mad.racing/d/e12c7ccb-ff51-4525-b5da-0d783a1019ef/b4mad-racing-details-crewchief?orgId=1&var-SessionId=${__value.text}&time=${__value.time}&time.window=3600000&var-user=${__data.fields.user}\n\n"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 13,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "SessionId"
+          }
+        ]
+      },
+      "pluginVersion": "9.1.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "Racing"
+          },
+          "query": "games = [${GameName:doublequote}]\nsession_types = [${SessionTypeName:doublequote}]\n\nfrom(bucket: \"racing\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"laps_cc\")\n  |> filter(fn: (r) => r[\"user\"] == \"${user}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CurrentLapTime\" )\n  |> keep(columns: [\"GameName\", \"user\", \"CarModel\", \"TrackCode\", \"SessionId\", \"SessionTypeName\", \"_time\", \"_value\"])\n  |> sort(columns: [\"_time\"], desc: true)\n  |> last()\n  |> group(columns: [])\n  |> filter(fn: (r) => contains(value: r.GameName, set: games) )\n  |> filter(fn: (r) => contains(value: r.SessionTypeName, set: session_types) )\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent Sessions",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Extended Data",
+            "binary": {
+              "left": "SessionId",
+              "reducer": "sum"
+            },
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "SessionId"
+              ],
+              "reducer": "last"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_value": true
+            },
+            "indexByName": {
+              "CarModel": 7,
+              "Extended Data": 1,
+              "GameName": 5,
+              "SessionId": 0,
+              "SessionTypeName": 4,
+              "TrackCode": 6,
+              "_time": 8,
+              "_value": 3,
+              "user": 2
+            },
+            "renameByName": {
+              "CarModel": "",
+              "_time": "End",
+              "_value": "Laps"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "Racing"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
+        "hide": 0,
+        "includeAll": true,
+        "label": "SessionTypeName",
+        "multi": false,
+        "name": "SessionTypeName",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"SessionTypeName\")\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "durandom",
+          "value": "durandom"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "Racing"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
+        "hide": 0,
+        "includeAll": true,
+        "label": "User",
+        "multi": false,
+        "name": "user",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"user\")\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "Racing"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
+        "hide": 0,
+        "includeAll": true,
+        "label": "GameName",
+        "multi": false,
+        "name": "GameName",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(bucket: \"racing\", tag: \"GameName\")\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Driver",
+  "uid": "9f21413861900279156aea9e866fdf7adc8629c5",
+  "version": 59,
+  "weekStart": ""
+}
