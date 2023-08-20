@@ -1,0 +1,14 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: landingpage-extended
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  datasources:
+    - inputName: "DS_RACING"
+      datasourceName: "Racing"
+  folder: CrewChief
+  # resyncPeriod: 30s
+  url: "https://raw.githubusercontent.com/b4mad/racing/main/manifests/base/grafana-v5/dashboards/landingpage-extended.json"
