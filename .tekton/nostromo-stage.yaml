@@ -5,7 +5,7 @@ metadata:
   annotations:
     pipelinesascode.tekton.dev/on-event: "[push]"
     pipelinesascode.tekton.dev/on-target-branch: "nostromo-stage"
-    pipelinesascode.tekton.dev/task: "[git-clone, .tekton/tasks/e2e-telemetry-test.yaml]"
+    pipelinesascode.tekton.dev/task: "[git-clone, buildah, .tekton/tasks/e2e-telemetry-test.yaml]"
     pipelinesascode.tekton.dev/max-keep-runs: "5"
 spec:
   params:
@@ -32,11 +32,29 @@ spec:
           - name: revision
             value: $(params.revision)
 
-      - name: e2e-tests
+      # - name: e2e-tests
+      #   runAfter:
+      #     - fetch-repository
+      #   taskRef:
+      #     name: e2e-telemetry-test
+      #   workspaces:
+      #     - name: source
+      #       workspace: source
+
+      - name: buildah
+        taskRef:
+          name: buildah
         runAfter:
           - fetch-repository
-        taskRef:
-          name: e2e-telemetry-test
+        params:
+          - name: IMAGE
+            value: paddock:$(params.revision)
+          - name: BUILDER_IMAGE
+            value: quay.io/buildah/stable:v1.31.0
+          - name: DOCKERFILE
+            value: Containerfile
+          - name: CONTEXT
+            value: components/paddock
         workspaces:
           - name: source
             workspace: source
