@@ -13,7 +13,7 @@ spec:
   # resyncPeriod: 30s
   # Error: ✗ failed to create temporary file: open /tmp/919128373.zip: read-only file system
   # https://github.com/prometheus-operator/kube-prometheus/pull/1624/files
-  # plugins:
-  #   - name: "michaeldmoore-scatter-panel"
-  #     version: "1.1.0"
+  plugins:
+    - name: "michaeldmoore-scatter-panel"
+      version: "1.2.0"
   url: "https://raw.githubusercontent.com/b4mad/racing/main/manifests/base/grafana-v5/dashboards/details-cref-chief.json"
