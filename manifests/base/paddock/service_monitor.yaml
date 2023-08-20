@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paddock
+spec:
+  endpoints:
+    - interval: 15s
+      port: django-http
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - b4mad-racing
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paddock
