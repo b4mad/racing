@@ -16,6 +16,9 @@ resources:
   - secrets/pgo-s3-creds.yaml
   - secrets/pgo-reader.yaml
 
+  - grafana-v5/
+  - secrets/grafana.yaml
+
   - paddock/
   - secrets/paddock-settings.yaml
 
