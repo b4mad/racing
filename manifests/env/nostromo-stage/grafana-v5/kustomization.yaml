@@ -8,13 +8,6 @@ generatorOptions:
   disableNameSuffixHash: true
 
 patches:
-  # - target:
-  #     kind: GrafanaDatasource
-  #     name: racing
-  #   patch: |-
-  #     - op: replace
-  #       path: /spec/datasource/url
-  #       value: http://influxdb2.b4mad-racing.svc.cluster.local:8086
   - target:
       kind: Ingress
       name: grafana
@@ -25,3 +18,6 @@ patches:
       - op: replace
         path: /spec/tls/0/hosts/0
         value: pitwall-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-pitwall-nostromo-stage.b4mad.racing
