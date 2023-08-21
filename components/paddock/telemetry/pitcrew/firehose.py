@@ -43,21 +43,31 @@ class Firehose:
 
     # TODO: clear sessions every now and then
     def clear_sessions(self, now):
+        """Clear inactive telemetry sessions.
+
+        Loops through all sessions and deletes:
+        - Any session inactive for more than 10 minutes
+        - Any lap marked for deletion
+
+        Args:
+            now (datetime): The current datetime
+
+        """
+
         delete_sessions = []
         for topic, session in self.sessions.items():
-            # delete session without updates for 10 minutes
+            # Delete session without updates for 10 minutes
             if (now - session["end"]).seconds > 600:
                 delete_sessions.append(topic)
 
-            # get the length of the session['laps'] list and count down the index
-            # and delete the lap if it has the delete flag set
+            # Delete any lap marked for deletion
             for i in range(len(session["laps"]) - 1, -1, -1):
                 lap = session["laps"][i]
                 if lap.get("delete", False):
                     logging.debug(f"{topic}\n\t deleting lap {lap['number']}")
                     del session["laps"][i]
 
-        # delete all sessions by iterating over delete_sessions
+        # Delete all inactive sessions
         for topic in delete_sessions:
             del self.sessions[topic]
             logging.debug(f"{topic}\n\t deleting inactive session")
