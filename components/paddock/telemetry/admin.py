@@ -2,7 +2,7 @@ from django.contrib import admin
 from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter  # ChoiceDropdownFilter,
 from django_admin_relation_links import AdminChangeLinksMixin
 
-from .models import Car, Coach, Driver, FastLap, FastLapSegment, Game, Lap, Session, SessionType, Track
+from .models import Car, Coach, Driver, FastLap, FastLapSegment, Game, Landmark, Lap, Session, SessionType, Track
 
 
 class FastLapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
@@ -78,8 +78,8 @@ class SessionAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 
 class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
-    list_display = ["name", "game"]
-    changelist_links = ["laps"]
+    list_display = ["name", "game", "created", "modified"]
+    changelist_links = ["laps", "landmarks"]
 
 
 class CarAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
@@ -103,6 +103,10 @@ class CoachAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     # changelist_links = ["se"]
 
 
+class LandmarkAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["name", "kind", "start", "end", "created", "modified"]
+
+
 # class DriverAdmin(admin.ModelAdmin):
 #     model = Driver
 #     display = ('name')
@@ -119,3 +123,4 @@ admin.site.register(Session, SessionAdmin)
 admin.site.register(FastLap, FastLapAdmin)
 admin.site.register(FastLapSegment, FastLapSegmentAdmin)
 admin.site.register(Coach, CoachAdmin)
+admin.site.register(Landmark, LandmarkAdmin)
