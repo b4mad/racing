@@ -16,4 +16,4 @@ spec:
   plugins:
     - name: "michaeldmoore-scatter-panel"
       version: "1.2.0"
-  url: "https://raw.githubusercontent.com/b4mad/racing/main/manifests/base/grafana-v5/dashboards/details-cref-chief.json"
+  url: "https://raw.githubusercontent.com/b4mad/racing/main/manifests/base/grafana-v5/dashboards/details-crew-chief.json"
