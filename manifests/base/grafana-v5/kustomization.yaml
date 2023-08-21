@@ -5,8 +5,8 @@ commonLabels:
   app.kubernetes.io/component: grafana
 
 resources:
-  - grafana.yaml
+  - dashboards/
   - datasource-influx.yaml
   - datasource-psql.yaml
-  - dashboards
+  - grafana.yaml
   - ingress.yaml

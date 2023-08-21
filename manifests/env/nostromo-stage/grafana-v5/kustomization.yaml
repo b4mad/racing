@@ -21,3 +21,11 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: https-cert-pitwall-nostromo-stage.b4mad.racing
+
+  - target:
+      kind: GrafanaDatasource
+      name: paddock
+    patch: |-
+      - op: replace
+        path: /spec/datasource/url
+        value: db-primary.b4mad-racing-stage.svc:5432
