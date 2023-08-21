@@ -215,6 +215,7 @@ class Landmark(TimeStampedModel):
     start = models.IntegerField(null=True)
     end = models.IntegerField(null=True)
     is_overtaking_spot = models.BooleanField(null=True)
+    from_cc = models.BooleanField(default=False)
 
     KIND_MISC = "misc"
     KIND_SEGMENT = "segment"
@@ -228,3 +229,6 @@ class Landmark(TimeStampedModel):
     kind = models.CharField(max_length=64, default=KIND_MISC, choices=KIND_CHOICES)
 
     track = models.ForeignKey(Track, on_delete=models.CASCADE, related_name="landmarks")
+
+    def __str__(self):
+        return self.name
