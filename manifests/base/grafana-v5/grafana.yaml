@@ -5,28 +5,6 @@ metadata:
   labels:
     dashboards: "grafana"
 spec:
-  # ingress:
-  #   metadata:
-  #     annotations:
-  #       cert-manager.io/cluster-issuer: letsencrypt
-  #   spec:
-  #     rules:
-  #       - host: pitwall.dev.b4mad.racing
-  #         http:
-  #           paths:
-  #             - pathType: Prefix
-  #               path: /
-  #               backend:
-  #                 service:
-  #                   name: grafana-service
-  #                   port:
-  #                     name: grafana
-  #     tls:
-  #       - hosts:
-  #           - pitwall.dev.b4mad.racing
-  #         secretName: https-cert-pitwall.b4mad.racing
-  # client:
-  #   preferIngress: true
   persistentVolumeClaim:
     spec:
       accessModes:

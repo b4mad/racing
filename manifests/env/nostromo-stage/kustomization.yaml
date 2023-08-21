@@ -18,6 +18,7 @@ resources:
 
   - grafana-v5/
   - secrets/grafana.yaml
+  - secrets/influxdb2-grafana-auth.yaml
 
   - paddock/
   - secrets/paddock-settings.yaml
