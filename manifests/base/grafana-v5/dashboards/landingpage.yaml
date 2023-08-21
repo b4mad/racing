@@ -10,5 +10,5 @@ spec:
     - inputName: "DS_RACING"
       datasourceName: "Racing"
   folder: CrewChief
-  # resyncPeriod: 30s
+  resyncPeriod: 1h
   url: "https://raw.githubusercontent.com/b4mad/racing/main/manifests/base/grafana-v5/dashboards/landingpage.json"
