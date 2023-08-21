@@ -83,6 +83,8 @@ class FastLapAnalyzer:
 
     def extract_sectors(self, lap_data):
         df_max = self.analyzer.combine_max_throttle(lap_data)
+        if df_max is None:
+            return None, None
         sector_start_end = self.analyzer.split_sectors(
             df_max, min_distance_between_sectors=35, min_length_throttle_below_threshold=20
         )
@@ -152,6 +154,8 @@ class FastLapAnalyzer:
             return
 
         sector_start_end, df_max = self.extract_sectors(lap_telemetry)
+        if sector_start_end is None:
+            return None
 
         current_sectors = self.current_fast_lap_sectors()
         if self.similar_sectors(sector_start_end, current_sectors):

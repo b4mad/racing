@@ -436,6 +436,10 @@ class Analyzer:
             else:
                 logging.debug(f"Lap {i} too short, skipping")
 
+        if len(valid_laps) == 0:
+            logging.debug("!!! No valid laps found")
+            return None
+
         df_max = valid_laps[0]
 
         # from .visualizer import lap_fig
