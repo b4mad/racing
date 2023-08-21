@@ -13,6 +13,9 @@ spec:
       value: "{{ repo_url }}"
     - name: revision
       value: "{{ revision }}"
+  taskRunSpecs:
+    - pipelineTaskName: buildah
+      taskServiceAccountName: pipelines-sa-userid-1000
   pipelineSpec:
     params:
       - name: repo_url
@@ -32,23 +35,24 @@ spec:
           - name: revision
             value: $(params.revision)
 
-      # - name: e2e-tests
-      #   runAfter:
-      #     - fetch-repository
-      #   taskRef:
-      #     name: e2e-telemetry-test
-      #   workspaces:
-      #     - name: source
-      #       workspace: source
+      - name: e2e-tests
+        runAfter:
+          - fetch-repository
+        taskRef:
+          name: e2e-telemetry-test
+        workspaces:
+          - name: source
+            workspace: source
 
       - name: buildah
         taskRef:
-          name: buildah
+          name: buildah-as-userid-1000
+          kind: ClusterTask
         runAfter:
           - fetch-repository
         params:
           - name: IMAGE
-            value: paddock:$(params.revision)
+            value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/paddock:$(params.revision)
           - name: BUILDER_IMAGE
             value: quay.io/buildah/stable:v1.31.0
           - name: DOCKERFILE
