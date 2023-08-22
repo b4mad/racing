@@ -1,18 +1,32 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
 metadata:
   labels:
+    app: paddock
     app.kubernetes.io/component: paddock
   name: paddock
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    matchLabels:
-      app.kubernetes.io/component: paddock
+    app: paddock
+    app.kubernetes.io/component: paddock
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - paddock
+          - pitcrew
+        from:
+          kind: ImageStreamTag
+          name: paddock:latest
+          namespace: b4mad-racing
+      type: ImageChange
   template:
     metadata:
       labels:
+        app: paddock
         app.kubernetes.io/component: paddock
       name: paddock
     spec:
