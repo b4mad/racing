@@ -21,7 +21,6 @@ spec:
         from:
           kind: ImageStreamTag
           name: paddock:latest
-          namespace: b4mad-racing
       type: ImageChange
   template:
     metadata:
