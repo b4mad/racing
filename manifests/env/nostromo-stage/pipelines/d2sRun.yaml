@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: dev-to-stage-pipeline-
+  namespace: b4mad-racing-ci
+spec:
+  params:
+    - name: IMAGE_TAG
+      value: b7f7c1a599a82f0c3c78ce1f2b820dc905733cb2
+    - name: SRC_IMAGE_URL
+      value: image-registry.openshift-image-registry.svc:5000/b4mad-racing-ci/paddock
+    - name: DEST_IMAGE_URL
+      value: quay.io/b4mad/paddock
+  pipelineRef:
+    name: dev-to-stage-pipeline
+  serviceAccountName: pipelines-sa-userid-1000
+  timeout: 1h0m0s
+  workspaces:
+    - emptyDir: {}
+      name: images-url

@@ -1,0 +1,18 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: quay-b4mad-op1st-pipelines-pull-secret
+  namespace: b4mad-racing-ci
+spec:
+  encryptedData:
+    .dockerconfigjson: AgCD3/hmW2lVYVyiEffc6NQZUX0uq0+ggPB0/S5ozA+I0mIfCoJEkZLoNkP8nxf81c+qzcNrVl92qsOPDe7D3wC2D0+qKHB7ioAYKcK/BPydJ2mi0Z/FRFASpAGJcJWSSbWQZmXMuJ8b28vW4hpMt/rL8lUjyjZw1WRPSOf2dvfVlGzuuH/tbA+goW86SExwPahsM7BGshABepuRoydCpf58Bc3pJf205zWTh4/3TU8DOxdYzKD4GkioiLowyM37OgtSH4Pm+1QdQoXmC3+VITYTDKkcIvlhyOEodKzh2X69JxSWqxyVrhVF6OlD39kKm2VcH+I95LiVqQ6egwfYkMFrj0GbckZhCz1KK3EPIDqlwFEwuwL4CU+kWrwwrtq2NJM0WzmWTV2BuI/whdlCEcHJbouaVxtpCREiBJ8pa5oD3NgB0KP7mC//rT/IlblWZNwJztiTXxRfu9d1yO/BXbGKq3P6CqDzjk/nCWLCiIbwoZXPbyp+PyNAcX99VQRk5/VMOIjFfDROOiK2RHNjxRsUwG5ZO2vjYbfUvIBQ0RlDn87HhBMU8OyNsNNzMLe/MmGPxV3uiowEz78y+NPQUFU+J0q/qdYmFwNi8ueu4pNtN8RUNaR9yjBnhj0aMRGFxmGqE1OYi/mRPel5rKPUD+7phI/mYv0iVSkNVeXUgToVcaaGLrqjBSfavbU/qIchuZZBsdNm0FdTWMGR7AilUvcWIzSseJS6QiXLg1Uw07WMh3pfgVL+vxGFQKTIGshNDh5yJlNBLCaGLi/DH+32LyflX3yDCHpwh8oI4okkPf2oSfuVKzKqYJ1duLmR+46KbASh4mbElC4bxK1sQgzsIkfJy1XionggxwOulBj18wx+FQaCX+nUgEpS8ze9cKPwyV8/k6msexgsJr9wwW6RKj8odxP8FJdLsu86Zxq6IxcRGbJC17lMMfqVKxYkVz6KLeJriBI=
+  template:
+    metadata:
+      annotations:
+        kubernetes.io/description: this secret is used to push to quay.io/b4mad/ repositories.
+        tekton.dev/docker-0: https://quay.io
+      creationTimestamp: null
+      name: quay-b4mad-op1st-pipelines-pull-secret
+      namespace: b4mad-racing-ci
+    type: kubernetes.io/dockerconfigjson

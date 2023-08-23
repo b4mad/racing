@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: dev-to-stage-pipeline
+  namespace: b4mad-racing-ci
+spec:
+  params:
+    - description: Git commit id of the change to deploy
+      name: IMAGE_TAG
+      type: string
+    - description: Source image url without tag
+      name: SRC_IMAGE_URL
+      type: string
+    - description: Destination image url without tag
+      name: DEST_IMAGE_URL
+      type: string
+  tasks:
+    - name: skopeo-copy
+      params:
+        - name: srcImageURL
+          value: "docker://$(params.SRC_IMAGE_URL):$(params.IMAGE_TAG)"
+        - name: destImageURL
+          value: "docker://$(params.DEST_IMAGE_URL):$(params.IMAGE_TAG)"
+        - name: srcTLSverify
+          value: "false"
+        - name: destTLSverify
+          value: "false"
+      taskRef:
+        kind: ClusterTask
+        name: skopeo-copy
+      workspaces:
+        - name: images-url
+          workspace: images-url
+  workspaces:
+    - name: images-url
