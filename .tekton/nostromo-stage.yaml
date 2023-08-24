@@ -65,26 +65,6 @@ spec:
           - name: source
             workspace: source
 
-      - name: push-to-quay
-        taskRef:
-          kind: ClusterTask
-          name: skopeo-copy
-        runAfter:
-          - build
-          - e2e-tests
-        params:
-          - name: srcImageURL
-            value: docker://image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/paddock:$(params.revision)
-          - name: destImageURL
-            value: docker://$(params.DEST_IMAGE_URL):$(params.IMAGE_TAG)
-          - name: srcTLSverify
-            value: "false"
-          - name: destTLSverify
-            value: "false"
-        workspaces:
-          - name: images-url
-            workspace: images-url
-
   workspaces:
     - name: source
       volumeClaimTemplate:
