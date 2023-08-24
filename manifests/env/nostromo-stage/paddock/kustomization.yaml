@@ -2,12 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-<<<<<<< HEAD
   - ../../../base/paddock/
   - ../../../base/paddock/metrics-exporter/
-=======
-  - ../../../base/paddock
->>>>>>> 158bb4a (remove test servicemonitor from nostromo-stage)
 
 patches:
   - target:
@@ -49,19 +45,8 @@ patches:
         value:
           name: ALLOWED_HOST
           value: paddock-nostromo-stage.b4mad.racing
-<<<<<<< HEAD
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:
           name: PROMETHEUS_MULTIPROC_DIR
           value: /tmp/django-metrics
-=======
-
-  - target:
-      kind: ServiceMonitor
-      name: paddock
-    patch: |-
-      - op: replace
-        path: /spec/namespaceSelector/matchNames/0
-        value: b4mad-racing-stage
->>>>>>> 158bb4a (remove test servicemonitor from nostromo-stage)
