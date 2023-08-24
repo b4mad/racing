@@ -57,6 +57,10 @@ spec:
                 secretKeyRef:
                   name: db-pguser-paddock
                   key: dbname
+            - name: PADDOCK_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           envFrom:
             - secretRef:
                 name: paddock-settings

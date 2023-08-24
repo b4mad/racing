@@ -46,11 +46,16 @@ SECRET_KEY = env("SECRET_KEY")
 # https://github.com/korfuri/django-prometheus#monitoring-your-models
 PROMETHEUS_EXPORT_MIGRATIONS = False
 
+# PADDOCK_POD_IP might be set via kubernetes downward API
+# https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
+# and https://github.com/korfuri/django-prometheus/issues/81
+# ALLOWED_HOST might be set via kubernetes deployment env
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "paddock.b4mad.racing",
     os.environ.get("ALLOWED_HOST", ""),
+    os.environ.get("PADDOCK_POD_IP", ""),
 ]
 
 
