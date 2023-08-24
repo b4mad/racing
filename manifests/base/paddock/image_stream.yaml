@@ -3,12 +3,14 @@ kind: ImageStream
 metadata:
   name: paddock
 spec:
+  lookupPolicy:
+    local: true
   tags:
-  - from:
-      kind: DockerImage
-      name: ghcr.io/b4mad/paddock:latest
-    importPolicy:
-      scheduled: true
-    name: latest
-    referencePolicy:
-      type: Source
+    - from:
+        kind: DockerImage
+        name: ghcr.io/b4mad/paddock:latest
+      importPolicy:
+        scheduled: true
+      name: latest
+      referencePolicy:
+        type: Source
