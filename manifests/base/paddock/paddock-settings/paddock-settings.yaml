@@ -1,0 +1,20 @@
+kind: Secret
+apiVersion: v1
+metadata:
+    name: paddock-settings
+    annotations:
+        kustomize.config.k8s.io/behavior: replace
+stringData:
+    SECRET_KEY: some-secret-key
+    DJANGO_SUPERUSER_PASSWORD: some-password
+    DJANGO_SUPERUSER_EMAIL: info@b4mad.racing
+    DJANGO_SUPERUSER_USERNAME: admin
+    B4MAD_RACING_MQTT_USER: crewchief
+    B4MAD_RACING_MQTT_PASSWORD: crewchief
+    B4MAD_RACING_MQTT_HOST: mosquitto-tcp
+    B4MAD_RACING_MQTT_PORT: "1883"
+    B4MAD_RACING_INFLUX_ORG: b4mad
+    B4MAD_RACING_INFLUX_TOKEN: some-influx-token
+    B4MAD_RACING_INFLUX_URL: http://influxdb2:8086/
+    READONLY_DATABASE_URL: postgresql://reader:some-reader-password@b4mad-racing-primary:5432/paddock
+type: Opaque

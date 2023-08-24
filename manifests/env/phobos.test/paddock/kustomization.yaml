@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../base/paddock
+  - ../../../base/paddock/paddock-settings
+
+patches:
+  - target:
+      kind: ServiceMonitor
+      name: paddock
+    patch: |
+      - op: replace
+        path: /spec/namespaceSelector/matchNames/0
+        value: b4mad-racing-test
+
+  - target:
+      kind: Ingress
+      name: paddock
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: paddock-test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: paddock-test.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-paddock-test.b4mad.racing
+  - target:
+      kind: DeploymentConfig
+      name: paddock
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: ALLOWED_HOST
+          value: paddock-test.b4mad.racing
+images:
+  - name: paddock
+    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-test/paddock
+    newTag: latest

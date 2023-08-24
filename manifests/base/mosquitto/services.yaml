@@ -9,7 +9,7 @@ spec:
     app: mosquitto
   ports:
     - name: mosquitto-tcp
-      nodePort: 31883
+      nodePort: 31880
       port: 1883
       protocol: TCP
       targetPort: 1883
