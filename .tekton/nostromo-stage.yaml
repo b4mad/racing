@@ -14,7 +14,9 @@ spec:
     - name: revision
       value: "{{ revision }}"
   taskRunSpecs:
-    - pipelineTaskName: buildah
+    - pipelineTaskName: build
+      taskServiceAccountName: pipelines-sa-userid-1000
+    - pipelineTaskName: push-to-quay
       taskServiceAccountName: pipelines-sa-userid-1000
   pipelineSpec:
     params:
@@ -44,7 +46,7 @@ spec:
           - name: source
             workspace: source
 
-      - name: buildah
+      - name: build
         taskRef:
           name: buildah-as-userid-1000
           kind: ClusterTask
@@ -63,6 +65,26 @@ spec:
           - name: source
             workspace: source
 
+      - name: push-to-quay
+        taskRef:
+          kind: ClusterTask
+          name: skopeo-copy
+        runAfter:
+          - build
+          - e2e-tests
+        params:
+          - name: srcImageURL
+            value: docker://image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/paddock:$(params.revision)
+          - name: destImageURL
+            value: docker://$(params.DEST_IMAGE_URL):$(params.IMAGE_TAG)
+          - name: srcTLSverify
+            value: "false"
+          - name: destTLSverify
+            value: "false"
+        workspaces:
+          - name: images-url
+            workspace: images-url
+
   workspaces:
     - name: source
       volumeClaimTemplate:
@@ -72,3 +94,5 @@ spec:
           resources:
             requests:
               storage: 1Gi
+    - name: images-url
+      emptyDir: {}
