@@ -3,6 +3,4 @@ kind: Namespace
 metadata:
   annotations:
     openshift.io/display-name: "#B4mad Racing"
-  labels:
-    openshift.io/cluster-monitoring: "true"
   name: b4mad-racing-stage
