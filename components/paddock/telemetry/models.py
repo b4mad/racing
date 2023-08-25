@@ -232,3 +232,36 @@ class Landmark(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class TrackGuide(TimeStampedModel):
+    name = models.CharField(max_length=200)
+    description = models.TextField(default="")
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+
+    def car_game(self):
+        return self.car.game
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class TrackGuideNote(TimeStampedModel):
+    track_guide = models.ForeignKey(TrackGuide, on_delete=models.CASCADE, related_name="notes")
+
+    landmark = models.ForeignKey(Landmark, on_delete=models.CASCADE, related_name="notes", null=True)
+    segment = models.IntegerField(default=0)
+
+    priority = models.IntegerField(default=0)
+    ref_id = models.CharField(max_length=64, default="")
+    ref_eval = models.CharField(max_length=64, default="")
+
+    message = models.TextField(default="")
+    eval = models.TextField(default="")
+    notes = models.TextField(default="")
+
+    def __str__(self):
+        where = self.landmark or self.segment
+        repr = f"{where}: {self.message}"
+        return repr
