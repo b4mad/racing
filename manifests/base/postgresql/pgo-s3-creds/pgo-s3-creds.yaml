@@ -14,4 +14,3 @@ stringData:
         repo1-s3-key-secret=mbtGtSfl2fopHjlKP5IJ2fO1MhoPrpMH0cuNslV2
         repo1-s3-uri-style=path
         repo1-storage-verify-tls=n
-        repo1-retention-full=7
