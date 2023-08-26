@@ -47,6 +47,7 @@ class Command(BaseCommand):
 
             for row in reader:
                 # notes.append(row)
+                logging.debug(row)
                 data = row
                 data["priority"] = int(data["priority"] or "0")
                 track_guide.notes.create(**data)

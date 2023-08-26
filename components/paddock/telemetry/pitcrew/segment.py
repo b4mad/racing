@@ -278,3 +278,6 @@ class Segment:
 
         # return median gear
         # return statistics.median(gears)
+
+    def session_laps(self):
+        return len(self.live_telemetry_frames)

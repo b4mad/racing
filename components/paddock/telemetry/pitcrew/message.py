@@ -14,6 +14,8 @@ class Message:
         self.active = True
         self.mode = mode
         self.init()
+        self.max_distance = None
+        self.msg = ""
         if self.at is not None:
             self.max_distance = self.at + self.max_distance_delta()
 
@@ -405,22 +407,6 @@ class MessageTrackGuide(Message):
         return False
 
 
-class MessageTrackGuideNotes(Message):
-    def init(self):
-        self.msg = self.build_msg()
-        finish_at = self.segment.brake_point() or self.segment.throttle_point()
-        self.at = self.finish_at(finish_at)
-
-    def set_notes(self, notes):
-        self.notes = notes
-
-    def build_msg(self):
-        return "bla"
-
-    def needs_coaching(self):
-        return True
-
-
 class MessageFocus(Message):
     def init(self):
         self.msg = self.build_msg()
@@ -432,3 +418,54 @@ class MessageFocus(Message):
 
     def needs_coaching(self):
         return False
+
+
+class MessageTrackGuideNotes(Message):
+    def init(self):
+        self.notes = []
+        self.current_note = None
+        self.brake_or_throttle_point = self.segment.brake_point() or self.segment.throttle_point()
+        self.current_note_index = 0
+
+    def set_notes(self, notes):
+        self.eval_notes = {}
+        self.notes = []
+        for note in notes:
+            if note.ref_eval:
+                if note.ref_eval not in self.eval_notes:
+                    self.eval_notes[note.ref_id] = []
+                self.eval_notes[note.ref_id].append(note)
+            else:
+                self.notes.append(note)
+
+        # sort notes by priority
+        self.notes.sort(key=lambda x: x.priority)
+
+        self.current_note = self.notes[0]
+        self.build_msg()
+
+    def next_note(self):
+        if self.current_note_index < len(self.notes):
+            self.current_note_index += 1
+        return self.notes[self.current_note_index]
+
+    def build_msg(self):
+        self.msg = self.current_note.message
+        self.at = self.finish_at(self.brake_or_throttle_point)
+
+    def needs_coaching(self):
+        # eval current note
+        globals = {"segment": self.segment}
+        try:
+            rv = eval(self.current_note.eval, globals)
+            self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
+            if rv:
+                # progress to next note
+                self.current_note = self.next_note()
+                return True
+            else:
+                self.build_msg()
+        except Exception as e:
+            self.log_debug(e)
+            return False
+        return True

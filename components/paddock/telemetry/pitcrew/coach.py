@@ -298,9 +298,10 @@ class Coach(LoggingMixin):
 
             if self.mode == DbCoach.MODE_TRACK_GUIDE:
                 message = MessageTrackGuideNotes(segment, logger=self.log_debug, mode=self.mode)
-                notes = self.track_guide.notes.filter(segment=segment.turn)
-                message.set_notes(notes)
-                self.messages.append(message)
+                notes = list(self.track_guide.notes.filter(segment=segment.turn))
+                if notes:
+                    message.set_notes(notes)
+                    self.messages.append(message)
                 continue
 
             if self.mode == DbCoach.MODE_DEBUG:

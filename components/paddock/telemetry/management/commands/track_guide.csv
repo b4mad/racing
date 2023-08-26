@@ -1,12 +1,15 @@
 segment,priority,ref_id,ref_eval,message,eval,notes
-1,1,,,approach far left in 4th,coach.line_at(T1.entry) - driver.line_at(T1.entry),
-1,1,bp,,brake at the kink in the road on left,coach.brakepoint - driver.brakepoint,
-1,,,bp,brake a bit earlier,eval_result < 0,
-1,,,bp,brake a bit later,eval_result > 0,
-1,,,,turn-in at same time,,
-1,,,,brake 60% briefly,,
-1,,,,then trailbrake,,
-1,3,,,down shift to 3rd,driver.gear == 3,evals to either true or false
-1,,,,instant full throttle before apex,,
-1,,,,late apex and full curb,,
-1,,,,ext wide past strip ( be careful ),,
+1,1,,,brake hard before the 150 sign and shift down to 2nd,segment.session_laps() < 1,
+1,2,,,approach far left in 5th,coach.line_at(T1.entry) - driver.line_at(T1.entry),
+1,3,bp,,brake just before the 150 marker,abs(coach.brakepoint - driver.brakepoint) < 30,"if false, stay at this stage"
+1,1,,bp,brake a bit earlier,50 > coach.brakepoint - driver.brakepoint > 20,evaluated if ref_eval is false
+1,2,,bp,brake a bit later,coach.brakepoint - driver.brakepoint < 20,
+1,4,,,brake 90% steady down to 75,,
+1,5,,,down shift to 2nd,driver.gear == 2,
+1,6,,,turn in halfway thrugh green strip,,
+1,7,,,control throttle to 50% just just before the curb,,
+1,8,,,attack curb and clip the sausage,,
+1,9,,,lift and rotate when you land,,
+1,10,,,control throttle and clip the sausage,,
+1,10,,,get to full throttle quickly,,
+1,11,,,exit wide on the strip,,
