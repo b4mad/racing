@@ -24,10 +24,10 @@ spec:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.45-3
       global:
-        # repo1-retention-full: "2"
-        # repo1-retention-full-type: count
+        repo1-retention-full: "7"
+        repo1-retention-full-type: count
         # repo1-type: posix
-          log-level-console: debug
+        log-level-console: debug
       # repoHost:
       #   resources:
       #     limits:

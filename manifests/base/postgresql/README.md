@@ -9,6 +9,12 @@ oc annotate postgrescluster db --overwrite postgres-operator.crunchydata.com/pgb
 
 oc create job --from=cronjob/db-repo1-diff db-repo1-diff
 
+### Run a pgbackrest one off inside the db pod
+```
+oc rsh sts/db-instance-hnkw
+pgbackrest backup --stanza=db --repo=1 --type=full
+```
+
 
 # Upgrade to psql 15
 
