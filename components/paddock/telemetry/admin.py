@@ -98,7 +98,7 @@ class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 class CarAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name", "game"]
-    changelist_links = ["laps"]
+    changelist_links = ["laps", "fast_laps"]
 
 
 class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):

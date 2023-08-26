@@ -4,7 +4,7 @@ from pprint import pprint  # noqa
 
 from django.test import TransactionTestCase
 
-from telemetry.models import Driver
+from telemetry.models import Coach, Driver
 from telemetry.pitcrew.coach import Coach as PitCrewCoach
 from telemetry.pitcrew.history import History
 
@@ -23,6 +23,8 @@ class TestCoach(TransactionTestCase):
         "fastlapsegment.json",
         "driver.json",
         "coach.json",
+        "trackguide.json",
+        "trackguidenote.json",
     ]
     maxDiff = None
 
@@ -82,3 +84,43 @@ class TestCoach(TransactionTestCase):
         driver_segments = fast_lap.data["segments"]
         self.assertEqual(len(driver_segments), 8)
         self.assertEqual(len(driver_segments[1].live_features["brake"]), 16)
+
+    def test_track_guide(self):
+        # Automobilista 2 / BMW M4 GT4/  Monza:Monza_2020
+
+        session_id = "1692949947"
+        driver = Driver.objects.get(name="durandom")
+        coach = driver.coach
+        coach.mode = Coach.MODE_TRACK_GUIDE
+        coach.save()
+
+        history = History()
+
+        coach = PitCrewCoach(history, coach)
+
+        session_df = get_session_df(session_id, measurement="laps_cc", bucket="racing")
+
+        row = session_df.iloc[0].to_dict()
+        topic = row["topic"].replace("Jim", "durandom")
+        coach.notify(topic, row)
+        history.init()
+        history._do_init = False
+
+        captured_responses = []
+        try:
+            for index, row in session_df.iterrows():
+                row = row.to_dict()
+                response = coach.notify(topic, row, row["_time"])
+                if response:
+                    captured_responses.append(response)
+        except Exception as e:
+            raise e
+        finally:
+            print("stopping history thread")
+            history.disconnect()
+
+        expected_responses = read_responses("test_track_guide")
+        # save_responses(captured_responses, "test_track_guide")
+
+        # pprint(captured_responses, width=200)
+        self.assertEqual(captured_responses, expected_responses)

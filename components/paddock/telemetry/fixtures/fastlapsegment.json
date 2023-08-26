@@ -3,6 +3,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873078,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "1",
       "start": 486,
       "end": 668,
@@ -21,6 +23,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873079,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "2",
       "start": 669,
       "end": 981,
@@ -39,6 +43,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873080,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "3",
       "start": 982,
       "end": 2073,
@@ -57,6 +63,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873081,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "4",
       "start": 2074,
       "end": 2473,
@@ -75,6 +83,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873082,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "5",
       "start": 2474,
       "end": 2767,
@@ -93,6 +103,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873083,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "6",
       "start": 2768,
       "end": 3096,
@@ -111,6 +123,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873084,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "7",
       "start": 3097,
       "end": 3399,
@@ -129,6 +143,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873085,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "8",
       "start": 3400,
       "end": 4932,
@@ -147,6 +163,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1873086,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "9",
       "start": 4933,
       "end": 485,
@@ -165,6 +183,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874658,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "1",
       "start": 555,
       "end": 1184,
@@ -183,6 +203,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874659,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "2",
       "start": 1185,
       "end": 1450,
@@ -201,6 +223,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874660,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "3",
       "start": 1451,
       "end": 1863,
@@ -219,6 +243,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874661,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "4",
       "start": 1864,
       "end": 2659,
@@ -237,6 +263,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874662,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "5",
       "start": 2660,
       "end": 2957,
@@ -255,6 +283,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874663,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "6",
       "start": 2958,
       "end": 3188,
@@ -273,6 +303,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874664,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "7",
       "start": 3189,
       "end": 3452,
@@ -291,6 +323,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874665,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "8",
       "start": 3453,
       "end": 554,
@@ -309,6 +343,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874818,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "1",
       "start": 318,
       "end": 877,
@@ -327,6 +363,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874819,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "2",
       "start": 878,
       "end": 1285,
@@ -345,6 +383,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874820,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "3",
       "start": 1286,
       "end": 1602,
@@ -363,6 +403,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874821,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "4",
       "start": 1603,
       "end": 1945,
@@ -381,6 +423,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874822,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "5",
       "start": 1946,
       "end": 2612,
@@ -399,6 +443,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874823,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "6",
       "start": 2613,
       "end": 3005,
@@ -417,6 +463,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874824,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "7",
       "start": 3006,
       "end": 3189,
@@ -435,6 +483,8 @@
     "model": "telemetry.fastlapsegment",
     "pk": 1874825,
     "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
       "turn": "8",
       "start": 3190,
       "end": 317,

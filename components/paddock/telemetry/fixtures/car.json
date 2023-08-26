@@ -12,6 +12,17 @@
   },
   {
     "model": "telemetry.car",
+    "pk": 260,
+    "fields": {
+      "created": "2023-07-04T16:27:23.109Z",
+      "modified": "2023-07-04T16:27:23.124Z",
+      "name": "BMW M4 GT4",
+      "game": 5,
+      "car_class": null
+    }
+  },
+  {
+    "model": "telemetry.car",
     "pk": 351,
     "fields": {
       "created": "2023-07-04T16:27:23.109Z",

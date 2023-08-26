@@ -405,6 +405,22 @@ class MessageTrackGuide(Message):
         return False
 
 
+class MessageTrackGuideNotes(Message):
+    def init(self):
+        self.msg = self.build_msg()
+        finish_at = self.segment.brake_point() or self.segment.throttle_point()
+        self.at = self.finish_at(finish_at)
+
+    def set_notes(self, notes):
+        self.notes = notes
+
+    def build_msg(self):
+        return "bla"
+
+    def needs_coaching(self):
+        return True
+
+
 class MessageFocus(Message):
     def init(self):
         self.msg = self.build_msg()
