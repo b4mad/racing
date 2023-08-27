@@ -13,9 +13,9 @@ class Message:
         self.logger = logger
         self.active = True
         self.mode = mode
+        self.msg = ""
         self.init()
         self.max_distance = None
-        self.msg = ""
         if self.at is not None:
             self.max_distance = self.at + self.max_distance_delta()
 
