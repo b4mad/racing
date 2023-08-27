@@ -462,7 +462,7 @@ class MessageTrackGuideNotes(Message):
         # eval current note
         globals = {"segment": self.segment, "brake_point_diff": self.segment.brake_point_diff}
         try:
-            rv = eval(self.current_note.eval, globals)
+            rv = eval(self.current_note.eval, globals)  # nosec
             self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
             self.build_msg()
             if rv:
