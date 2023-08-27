@@ -447,7 +447,12 @@ class MessageTrackGuideNotes(Message):
     def next_note(self):
         if self.current_note_index < len(self.notes):
             self.current_note_index += 1
-        return self.notes[self.current_note_index]
+        else:
+            return self.current_note
+        nn = self.notes[self.current_note_index]
+        if len(nn.eval.strip()) == 0:
+            return self.next_note()
+        return nn
 
     def build_msg(self):
         self.msg = self.current_note.message
@@ -455,16 +460,15 @@ class MessageTrackGuideNotes(Message):
 
     def needs_coaching(self):
         # eval current note
-        globals = {"segment": self.segment}
+        globals = {"segment": self.segment, "brake_point_diff": self.segment.brake_point_diff}
         try:
             rv = eval(self.current_note.eval, globals)
             self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
+            self.build_msg()
             if rv:
                 # progress to next note
                 self.current_note = self.next_note()
                 return True
-            else:
-                self.build_msg()
         except Exception as e:
             self.log_debug(e)
             return False

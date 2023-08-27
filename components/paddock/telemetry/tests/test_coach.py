@@ -120,7 +120,7 @@ class TestCoach(TransactionTestCase):
             history.disconnect()
 
         expected_responses = read_responses("test_track_guide")
-        # save_responses(captured_responses, "test_track_guide")
+        save_responses(captured_responses, "test_track_guide")
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)

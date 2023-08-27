@@ -281,3 +281,10 @@ class Segment:
 
     def session_laps(self):
         return len(self.live_telemetry_frames)
+
+    def brake_point_diff(self):
+        bp = self.brake_point()
+        a_bp = self.avg_brake_start()
+        if bp and a_bp:
+            return abs(a_bp - bp)
+        return 99_999
