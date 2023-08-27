@@ -1,10 +1,10 @@
 [
 {
   "model": "telemetry.trackguidenote",
-  "pk": 86,
+  "pk": 120,
   "fields": {
-    "created": "2023-08-27T09:39:53.306Z",
-    "modified": "2023-08-27T09:39:53.306Z",
+    "created": "2023-08-27T11:44:05.212Z",
+    "modified": "2023-08-27T11:44:05.212Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -18,10 +18,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 87,
+  "pk": 121,
   "fields": {
-    "created": "2023-08-27T09:39:53.309Z",
-    "modified": "2023-08-27T09:39:53.309Z",
+    "created": "2023-08-27T11:44:05.215Z",
+    "modified": "2023-08-27T11:44:05.215Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -35,10 +35,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 88,
+  "pk": 122,
   "fields": {
-    "created": "2023-08-27T09:39:53.311Z",
-    "modified": "2023-08-27T09:39:53.311Z",
+    "created": "2023-08-27T11:44:05.217Z",
+    "modified": "2023-08-27T11:44:05.217Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -52,10 +52,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 89,
+  "pk": 123,
   "fields": {
-    "created": "2023-08-27T09:39:53.314Z",
-    "modified": "2023-08-27T09:39:53.314Z",
+    "created": "2023-08-27T11:44:05.219Z",
+    "modified": "2023-08-27T11:44:05.219Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -69,10 +69,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 90,
+  "pk": 124,
   "fields": {
-    "created": "2023-08-27T09:39:53.316Z",
-    "modified": "2023-08-27T09:39:53.316Z",
+    "created": "2023-08-27T11:44:05.222Z",
+    "modified": "2023-08-27T11:44:05.222Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -86,10 +86,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 91,
+  "pk": 125,
   "fields": {
-    "created": "2023-08-27T09:39:53.318Z",
-    "modified": "2023-08-27T09:39:53.318Z",
+    "created": "2023-08-27T11:44:05.224Z",
+    "modified": "2023-08-27T11:44:05.224Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -103,10 +103,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 92,
+  "pk": 126,
   "fields": {
-    "created": "2023-08-27T09:39:53.321Z",
-    "modified": "2023-08-27T09:39:53.321Z",
+    "created": "2023-08-27T11:44:05.226Z",
+    "modified": "2023-08-27T11:44:05.226Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -120,10 +120,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 93,
+  "pk": 127,
   "fields": {
-    "created": "2023-08-27T09:39:53.323Z",
-    "modified": "2023-08-27T09:39:53.323Z",
+    "created": "2023-08-27T11:44:05.229Z",
+    "modified": "2023-08-27T11:44:05.229Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -137,10 +137,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 94,
+  "pk": 128,
   "fields": {
-    "created": "2023-08-27T09:39:53.326Z",
-    "modified": "2023-08-27T09:39:53.326Z",
+    "created": "2023-08-27T11:44:05.231Z",
+    "modified": "2023-08-27T11:44:05.231Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -154,10 +154,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 95,
+  "pk": 129,
   "fields": {
-    "created": "2023-08-27T09:39:53.328Z",
-    "modified": "2023-08-27T09:39:53.328Z",
+    "created": "2023-08-27T11:44:05.234Z",
+    "modified": "2023-08-27T11:44:05.234Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -171,10 +171,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 96,
+  "pk": 130,
   "fields": {
-    "created": "2023-08-27T09:39:53.330Z",
-    "modified": "2023-08-27T09:39:53.330Z",
+    "created": "2023-08-27T11:44:05.236Z",
+    "modified": "2023-08-27T11:44:05.236Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -188,10 +188,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 97,
+  "pk": 131,
   "fields": {
-    "created": "2023-08-27T09:39:53.333Z",
-    "modified": "2023-08-27T09:39:53.333Z",
+    "created": "2023-08-27T11:44:05.238Z",
+    "modified": "2023-08-27T11:44:05.238Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -205,10 +205,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 98,
+  "pk": 132,
   "fields": {
-    "created": "2023-08-27T09:39:53.335Z",
-    "modified": "2023-08-27T09:39:53.335Z",
+    "created": "2023-08-27T11:44:05.241Z",
+    "modified": "2023-08-27T11:44:05.241Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -222,10 +222,10 @@
 },
 {
   "model": "telemetry.trackguidenote",
-  "pk": 99,
+  "pk": 133,
   "fields": {
-    "created": "2023-08-27T09:39:53.338Z",
-    "modified": "2023-08-27T09:39:53.338Z",
+    "created": "2023-08-27T11:44:05.243Z",
+    "modified": "2023-08-27T11:44:05.243Z",
     "track_guide": 1,
     "landmark": null,
     "segment": 1,
@@ -234,6 +234,108 @@
     "ref_eval": "",
     "message": "exit wide on the strip",
     "eval": "",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 134,
+  "fields": {
+    "created": "2023-08-27T11:44:05.246Z",
+    "modified": "2023-08-27T11:44:05.246Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 2,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "up to 4th stay on the right",
+    "eval": "segment.session_laps() < 5",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 135,
+  "fields": {
+    "created": "2023-08-27T11:44:05.248Z",
+    "modified": "2023-08-27T11:44:05.248Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 3,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "brake hard under the bridge down to 3rd",
+    "eval": "segment.session_laps() < 5",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 136,
+  "fields": {
+    "created": "2023-08-27T11:44:05.250Z",
+    "modified": "2023-08-27T11:44:05.250Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 4,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "brake 50% before the orange on the fence down one gear",
+    "eval": "segment.session_laps() < 5",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 137,
+  "fields": {
+    "created": "2023-08-27T11:44:05.253Z",
+    "modified": "2023-08-27T11:44:05.253Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 5,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "brake 75% before the 50 marker down to 3rd",
+    "eval": "segment.session_laps() < 5",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 138,
+  "fields": {
+    "created": "2023-08-27T11:44:05.255Z",
+    "modified": "2023-08-27T11:44:05.255Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 6,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "brake hard before the 100 shift down to 3rd",
+    "eval": "segment.session_laps() < 5",
+    "notes": ""
+  }
+},
+{
+  "model": "telemetry.trackguidenote",
+  "pk": 139,
+  "fields": {
+    "created": "2023-08-27T11:44:05.258Z",
+    "modified": "2023-08-27T11:44:05.258Z",
+    "track_guide": 1,
+    "landmark": null,
+    "segment": 7,
+    "priority": 1,
+    "ref_id": "",
+    "ref_eval": "",
+    "message": "brake hard at the 100 marker to 3rd gear",
+    "eval": "segment.session_laps() < 5",
     "notes": ""
   }
 }
