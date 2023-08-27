@@ -158,9 +158,6 @@ class Coach(LoggingMixin):
         if self.distance == self.previous_distance:
             return None
 
-        if self.distance % 100 == 0:
-            self.log_debug(f"distance: {self.distance}")
-
         distance_diff = self.previous_distance - self.distance
         if self.track_length - 10 > distance_diff >= 1:
             # we jumped at least 1 meters back
@@ -186,8 +183,13 @@ class Coach(LoggingMixin):
             stop += self.track_length
             self.log_debug(f"distance: wrap around: {start} -> {stop}")
 
+        # if start != self.distance:
+        #     self.log_debug(f"distance jump: {start} -> {self.distance}")
+
         responses = []
         for distance in range(start, stop):
+            if distance % 100 == 0:
+                self.log_debug(f"distance: {distance} ({self.distance})")
             responses.extend(self.collect_responses(distance, telemetry))
 
         self.previous_distance = self.distance

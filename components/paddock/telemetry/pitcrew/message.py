@@ -59,6 +59,7 @@ class Message:
             at = self.at
         read_time = self.read_time(msg)
         respond_at = self.segment.offset_distance(at, seconds=read_time)
+        self.max_distance = respond_at + self.max_distance_delta()
         return int(respond_at)
 
     def finish_at_segment_start(self, msg=""):
@@ -445,10 +446,10 @@ class MessageTrackGuideNotes(Message):
         self.build_msg()
 
     def next_note(self):
-        if self.current_note_index < len(self.notes):
-            self.current_note_index += 1
-        else:
+        if self.current_note_index == len(self.notes) - 1:
             return self.current_note
+        else:
+            self.current_note_index += 1
         nn = self.notes[self.current_note_index]
         if len(nn.eval.strip()) == 0:
             return self.next_note()
@@ -464,12 +465,12 @@ class MessageTrackGuideNotes(Message):
         try:
             rv = eval(self.current_note.eval, globals)  # nosec
             self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
-            self.build_msg()
-            if rv:
-                # progress to next note
-                self.current_note = self.next_note()
-                return True
         except Exception as e:
-            self.log_debug(e)
+            self.log_debug(f"eval error: {self.current_note.eval} -> {e}")
             return False
+
+        self.build_msg()
+        if rv:
+            self.current_note = self.next_note()
+
         return True
