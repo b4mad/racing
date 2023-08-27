@@ -3,6 +3,7 @@ import json
 import django.utils.timezone
 
 from telemetry.models import Coach as DbCoach
+from telemetry.models import TrackGuide
 from telemetry.pitcrew.logging import LoggingMixin
 
 from .history import History
@@ -17,6 +18,7 @@ from .message import (
     MessageThrottleForce,
     MessageThrottlePoint,
     MessageTrackGuide,
+    MessageTrackGuideNotes,
     MessageTrailBrake,
 )
 
@@ -108,8 +110,12 @@ class Coach(LoggingMixin):
                 startup_message += " announcing only brake points"
             elif self.mode == DbCoach.MODE_ONLY_BRAKE_DEBUG:
                 startup_message += " debugging only brake points"
+            elif self.mode == DbCoach.MODE_TRACK_GUIDE:
+                startup_message += " track guide mode"
 
-            self.init_messages()
+            init_success = self.init_messages()
+            if not init_success:
+                startup_message += " " + str(self.get_and_reset_error())
 
             self.say_next(startup_message)
             self.db_coach.status = startup_message
@@ -275,12 +281,27 @@ class Coach(LoggingMixin):
             MessageTrackGuide,
             MessageApex,
         ]
+        if self.mode == DbCoach.MODE_TRACK_GUIDE:
+            self.track_guide = TrackGuide.objects.filter(car=self.history.car, track=self.history.track).first()
+            if not self.track_guide:
+                self.log_debug("no track guide found")
+                self._error = "no track guide found"
+                return False
+
         for segment in self.history.segments:
             if self.mode == DbCoach.MODE_ONLY_BRAKE or self.mode == DbCoach.MODE_ONLY_BRAKE_DEBUG:
                 message = MessageBrakePoint(segment, logger=self.log_debug, mode=self.mode)
                 self.messages.append(message)
                 message = MessageThrottlePoint(segment, logger=self.log_debug, mode=self.mode)
                 self.messages.append(message)
+                continue
+
+            if self.mode == DbCoach.MODE_TRACK_GUIDE:
+                message = MessageTrackGuideNotes(segment, logger=self.log_debug, mode=self.mode)
+                notes = list(self.track_guide.notes.filter(segment=segment.turn))
+                if notes:
+                    message.set_notes(notes)
+                    self.messages.append(message)
                 continue
 
             if self.mode == DbCoach.MODE_DEBUG:
@@ -303,3 +324,5 @@ class Coach(LoggingMixin):
                 message = message_class(segment, logger=self.log_debug, mode=self.mode)
                 if message.active:
                     self.messages.append(message)
+
+        return True

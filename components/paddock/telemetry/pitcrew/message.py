@@ -13,7 +13,9 @@ class Message:
         self.logger = logger
         self.active = True
         self.mode = mode
+        self.msg = ""
         self.init()
+        self.max_distance = None
         if self.at is not None:
             self.max_distance = self.at + self.max_distance_delta()
 
@@ -416,3 +418,58 @@ class MessageFocus(Message):
 
     def needs_coaching(self):
         return False
+
+
+class MessageTrackGuideNotes(Message):
+    def init(self):
+        self.notes = []
+        self.current_note = None
+        self.brake_or_throttle_point = self.segment.brake_point() or self.segment.throttle_point()
+        self.current_note_index = 0
+
+    def set_notes(self, notes):
+        self.eval_notes = {}
+        self.notes = []
+        for note in notes:
+            if note.ref_eval:
+                if note.ref_eval not in self.eval_notes:
+                    self.eval_notes[note.ref_id] = []
+                self.eval_notes[note.ref_id].append(note)
+            else:
+                self.notes.append(note)
+
+        # sort notes by priority
+        self.notes.sort(key=lambda x: x.priority)
+
+        self.current_note = self.notes[0]
+        self.build_msg()
+
+    def next_note(self):
+        if self.current_note_index < len(self.notes):
+            self.current_note_index += 1
+        else:
+            return self.current_note
+        nn = self.notes[self.current_note_index]
+        if len(nn.eval.strip()) == 0:
+            return self.next_note()
+        return nn
+
+    def build_msg(self):
+        self.msg = self.current_note.message
+        self.at = self.finish_at(self.brake_or_throttle_point)
+
+    def needs_coaching(self):
+        # eval current note
+        globals = {"segment": self.segment, "brake_point_diff": self.segment.brake_point_diff}
+        try:
+            rv = eval(self.current_note.eval, globals)  # nosec
+            self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
+            self.build_msg()
+            if rv:
+                # progress to next note
+                self.current_note = self.next_note()
+                return True
+        except Exception as e:
+            self.log_debug(e)
+            return False
+        return True

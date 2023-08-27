@@ -1,0 +1,5 @@
+[('/coach/durandom', ['start coaching for a lap time of 2 minutes 33.61 seconds  lets get some laps in track guide mode']),
+ ('/coach/durandom', ['{"distance": 169, "message": "brake hard before the 150 sign and shift down to 2nd", "priority": 9}']),
+ ('/coach/durandom', ['{"distance": 276, "message": "brake just before the 150 marker", "priority": 9}']),
+ ('/coach/durandom', ['{"distance": 276, "message": "brake 90% steady down to 75", "priority": 9}']),
+ ('/coach/durandom', ['{"distance": 318, "message": "down shift to 2nd", "priority": 9}'])]

@@ -105,7 +105,7 @@ class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, TimeStamp
 
 class FastLap(ExportModelOperationsMixin("fastlap"), TimeStampedModel):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="fast_laps")
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="fast_laps", null=True)
     # add binary field to hold arbitrary data
@@ -195,11 +195,13 @@ class Coach(ExportModelOperationsMixin("coach"), TimeStampedModel):
     fast_lap = models.ForeignKey(FastLap, on_delete=models.SET_NULL, related_name="coaches", null=True)
 
     MODE_DEFAULT = "default"
+    MODE_TRACK_GUIDE = "track_guide"
     MODE_DEBUG = "debug"
     MODE_ONLY_BRAKE = "only_brake"
     MODE_ONLY_BRAKE_DEBUG = "only_brake_debug"
     MODE_CHOICES = [
         (MODE_DEFAULT, "Default"),
+        (MODE_TRACK_GUIDE, "Track Guide"),
         (MODE_DEBUG, "Debug"),
         (MODE_ONLY_BRAKE, "Only Brakepoints"),
         (MODE_ONLY_BRAKE_DEBUG, "Only Brakepoints (Debug))"),
@@ -232,3 +234,36 @@ class Landmark(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class TrackGuide(TimeStampedModel):
+    name = models.CharField(max_length=200)
+    description = models.TextField(default="")
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+
+    def car_game(self):
+        return self.car.game
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class TrackGuideNote(TimeStampedModel):
+    track_guide = models.ForeignKey(TrackGuide, on_delete=models.CASCADE, related_name="notes")
+
+    landmark = models.ForeignKey(Landmark, on_delete=models.CASCADE, related_name="notes", null=True)
+    segment = models.IntegerField(default=0)
+
+    priority = models.IntegerField(default=0)
+    ref_id = models.CharField(max_length=64, default="")
+    ref_eval = models.CharField(max_length=64, default="")
+
+    message = models.TextField(default="")
+    eval = models.TextField(default="")
+    notes = models.TextField(default="")
+
+    def __str__(self):
+        where = self.landmark or self.segment
+        repr = f"{where}: {self.message}"
+        return repr

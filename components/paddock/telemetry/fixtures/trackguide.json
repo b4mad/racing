@@ -1,0 +1,14 @@
+[
+{
+  "model": "telemetry.trackguide",
+  "pk": 1,
+  "fields": {
+    "created": "2023-08-25T09:03:25.166Z",
+    "modified": "2023-08-27T09:39:53.299Z",
+    "name": "BMW GT4 at Monza GP S1 2022 by Pablo Lopez",
+    "description": "https://virtualracingschool.com/wp-content/uploads/BMW-12.0-GT4-Monza.pdf",
+    "car": 260,
+    "track": 129
+  }
+}
+]

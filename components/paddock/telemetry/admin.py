@@ -2,7 +2,21 @@ from django.contrib import admin
 from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter  # ChoiceDropdownFilter,
 from django_admin_relation_links import AdminChangeLinksMixin
 
-from .models import Car, Coach, Driver, FastLap, FastLapSegment, Game, Landmark, Lap, Session, SessionType, Track
+from .models import (
+    Car,
+    Coach,
+    Driver,
+    FastLap,
+    FastLapSegment,
+    Game,
+    Landmark,
+    Lap,
+    Session,
+    SessionType,
+    Track,
+    TrackGuide,
+    TrackGuideNote,
+)
 
 
 class FastLapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
@@ -84,7 +98,7 @@ class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 class CarAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name", "game"]
-    changelist_links = ["laps"]
+    changelist_links = ["laps", "fast_laps"]
 
 
 class GameAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
@@ -107,6 +121,15 @@ class LandmarkAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name", "kind", "start", "end", "created", "modified"]
 
 
+class TrackGuideAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["car_game", "car", "track", "name", "created", "modified"]
+    changelist_links = ["notes"]
+
+
+class TrackGuideNoteAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
+    list_display = ["segment", "priority", "ref_id", "ref_eval", "message", "eval", "notes"]
+
+
 # class DriverAdmin(admin.ModelAdmin):
 #     model = Driver
 #     display = ('name')
@@ -124,3 +147,5 @@ admin.site.register(FastLap, FastLapAdmin)
 admin.site.register(FastLapSegment, FastLapSegmentAdmin)
 admin.site.register(Coach, CoachAdmin)
 admin.site.register(Landmark, LandmarkAdmin)
+admin.site.register(TrackGuide, TrackGuideAdmin)
+admin.site.register(TrackGuideNote, TrackGuideNoteAdmin)
