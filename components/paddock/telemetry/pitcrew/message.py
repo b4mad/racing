@@ -5,7 +5,10 @@ from .segment import Segment
 
 class Message:
     def __init__(self, segment: Segment, logger=None, mode="hotlap"):
-        self.segment = segment
+        self.segment = None
+        self.segments = []
+        self.add_segment(segment)
+
         self.finish_at_words = "one two"
         self.at = None
         self.at_track_walk = None
@@ -18,6 +21,14 @@ class Message:
         self.max_distance = None
         if self.at is not None:
             self.max_distance = self.at + self.max_distance_delta()
+
+    def add_segment(self, segment):
+        if segment:
+            if self.segment is None:
+                self.segment = segment
+                self.segments.append(segment)
+            else:
+                self.segments.append(segment)
 
     def log_debug(self, msg):
         if self.logger:
@@ -365,7 +376,7 @@ class MessageTrackGuide(Message):
         # self.at = self.segment.previous_segment.full_throttle_point()
         # if self.at is not None:
         #     diff = (self.segment.brake_point() - self.at) % self.segment.track_length()
-        finish_at = self.segment.brake_point() or self.segment.throttle_point()
+        finish_at = self.segment.brake_point() or self.segment.throttle_point() or self.segment.start
         self.at = self.finish_at(finish_at)
         # self.msg = f"{self.msg} {self.segment.start}"
         self.at_track_walk = self.at
@@ -425,10 +436,14 @@ class MessageTrackGuideNotes(Message):
     def init(self):
         self.notes = []
         self.current_note = None
-        self.brake_or_throttle_point = self.segment.brake_point() or self.segment.throttle_point()
         self.current_note_index = 0
 
-    def set_notes(self, notes):
+    def set_notes(self, notes, mode="segment"):
+        if mode == "segment":
+            self.brake_or_throttle_point = self.segment.brake_point() or self.segment.throttle_point()
+        elif mode == "landmark":
+            self.landmark = notes[0].landmark
+            self.brake_or_throttle_point = self.landmark.start
         self.eval_notes = {}
         self.notes = []
         for note in notes:
@@ -467,7 +482,10 @@ class MessageTrackGuideNotes(Message):
             self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
         except Exception as e:
             self.log_debug(f"eval error: {self.current_note.eval} -> {e}")
-            return False
+            self.msg = f"eval error {e}"
+            self.at = self.finish_at(self.brake_or_throttle_point)
+            return True
+            # return False
 
         self.build_msg()
         if rv:

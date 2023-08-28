@@ -498,5 +498,65 @@
       "mark": "brake",
       "fast_lap": 1237
     }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1875845,
+    "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
+      "turn": "1",
+      "start": 115,
+      "end": 405,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 100,
+      "gear": 1,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 47,
+      "mark": "brake",
+      "fast_lap": 1591
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1875846,
+    "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
+      "turn": "2",
+      "start": 406,
+      "end": 853,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 84,
+      "gear": 1,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 37,
+      "mark": "brake",
+      "fast_lap": 1591
+    }
+  },
+  {
+    "model": "telemetry.fastlapsegment",
+    "pk": 1875847,
+    "fields": {
+      "created": "2023-07-04T16:27:23.211Z",
+      "modified": "2023-07-04T16:27:23.221Z",
+      "turn": "3",
+      "start": 854,
+      "end": 114,
+      "brake": 0,
+      "turn_in": 0,
+      "force": 99,
+      "gear": 1,
+      "stop": 0,
+      "accelerate": 0,
+      "speed": 38,
+      "mark": "brake",
+      "fast_lap": 1591
+    }
   }
 ]

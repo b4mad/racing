@@ -16,40 +16,58 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--landmarks", action="store_true")
-        parser.add_argument("--track-guide", action="store_true")
+        parser.add_argument("--track-guide", nargs="?", type=str)
 
     def handle(self, *args, **options):
         if options["landmarks"]:
             self.landmarks()
         if options["track_guide"]:
-            self.trackguide()
+            self.trackguide(options["track_guide"])
 
-    def trackguide(self):
+    def trackguide(self, filename):
         # https://simracing.wiki/BMW_M4_GT4_(iRacing)
         # https://iracing.fandom.com/wiki/BMW_M4_GT4
         # https://ams2cars.info/gt-sports/gt4/m4-gt4/
         # https://virtualracingschool.convertri.com/vrs-qrtm-download/
         # https://virtualracingschool.com/wp-content/uploads/BMW-12.0-GT4-Monza.pdf
 
-        game = Game.objects.filter(name="Automobilista 2").first()
-        track = game.tracks.filter(name="Monza:Monza_2020").first()
-        car = game.cars.filter(name="BMW M4 GT4").first()
+        # filename without extension and leading path
+        basename = Path(filename).stem
+        (game_name, car_name, track_name) = basename.split("--")
+
+        game = Game.objects.filter(name=game_name).first()
+        track = game.tracks.filter(name=track_name).first()
+        car = game.cars.filter(name=car_name).first()
+
+        logging.debug(f"Track Guide for {game} - {track} - {car}")
 
         track_guide = TrackGuide.objects.get_or_create(track=track, car=car)[0]
-        track_guide.name = "BMW GT4 at Monza GP S1 2022 by Pablo Lopez"
-        track_guide.description = "https://virtualracingschool.com/wp-content/uploads/BMW-12.0-GT4-Monza.pdf"
+        # track_guide.name = "BMW GT4 at Monza GP S1 2022 by Pablo Lopez"
+        # track_guide.description = "https://virtualracingschool.com/wp-content/uploads/BMW-12.0-GT4-Monza.pdf"
         track_guide.save()
 
         track_guide.notes.all().delete()
-        data_file = Path(__file__).parent / "track_guide.csv"
+        # data_file = Path(__file__).parent / "track_guide.csv"
+        data_file = Path(filename)
         with open(data_file) as csvfile:
             reader = csv.DictReader(csvfile)
 
             for row in reader:
                 # notes.append(row)
-                logging.debug(row)
                 data = row
                 data["priority"] = int(data["priority"] or "0")
+                # check if segment is just numbers
+                if row["segment"].isnumeric():
+                    data["segment"] = int(data["segment"])
+                else:
+                    # find the landmark
+                    data["landmark"] = track.landmarks.filter(name=row["segment"].strip()).first()
+                    if not data["landmark"]:
+                        logging.debug(f"!!! Landmark not found: '{row['segment']}' for track {track}")
+                        exit(1)
+                    # unset segment
+                    data.pop("segment")
+                logging.debug(data)
                 track_guide.notes.create(**data)
 
     def landmarks(self):

@@ -104,9 +104,9 @@ class Session(ExportModelOperationsMixin("session"), DirtyFieldsMixin, TimeStamp
 
 
 class FastLap(ExportModelOperationsMixin("fastlap"), TimeStampedModel):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="fast_laps")
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="fast_laps")
-    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE, related_name="fast_laps")
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="fast_laps", null=True)
     # add binary field to hold arbitrary data
     data = PickledObjectField(null=True)
