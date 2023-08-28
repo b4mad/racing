@@ -254,6 +254,7 @@ class TrackGuideNote(TimeStampedModel):
 
     landmark = models.ForeignKey(Landmark, on_delete=models.CASCADE, related_name="notes", null=True)
     segment = models.IntegerField(default=0)
+    at = models.TextField(null=True)
 
     priority = models.IntegerField(default=0)
     ref_id = models.CharField(max_length=64, default="")

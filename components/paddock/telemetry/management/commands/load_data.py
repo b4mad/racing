@@ -56,6 +56,10 @@ class Command(BaseCommand):
                 # notes.append(row)
                 data = row
                 data["priority"] = int(data["priority"] or "0")
+
+                if not data["at"].strip():
+                    data.pop("at")
+
                 # check if segment is just numbers
                 if row["segment"].isnumeric():
                     data["segment"] = int(data["segment"])

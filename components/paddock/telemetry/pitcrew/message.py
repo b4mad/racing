@@ -470,25 +470,45 @@ class MessageTrackGuideNotes(Message):
             return self.next_note()
         return nn
 
-    def build_msg(self):
-        self.msg = self.current_note.message
-        self.at = self.finish_at(self.brake_or_throttle_point)
+    def build_msg(self, msg=None):
+        self.msg = msg or self.current_note.message
+        if self.current_note.at:
+            at = self.eval(self.current_note.at)
+            if type(at) is str and at.isnumeric():
+                at = int(at)
+            if type(at) is int or type(at) is float:
+                at = int(at)
+            if type(at) is int:
+                self.at = self.finish_at(at)
+            else:
+                self.msg = f"{at}"
+                self.log_debug(f"eval at error: {self.msg}")
+        else:
+            self.at = self.finish_at(self.brake_or_throttle_point)
 
     def needs_coaching(self):
         # eval current note
-        globals = {"segment": self.segment, "brake_point_diff": self.segment.brake_point_diff}
-        try:
-            rv = eval(self.current_note.eval, globals)  # nosec
-            self.log_debug(f"eval: {self.current_note.eval} -> {rv}")
-        except Exception as e:
-            self.log_debug(f"eval error: {self.current_note.eval} -> {e}")
-            self.msg = f"eval error {e}"
-            self.at = self.finish_at(self.brake_or_throttle_point)
-            return True
-            # return False
-
-        self.build_msg()
+        rv = self.eval(self.current_note.eval)
+        if type(rv) is str:
+            self.build_msg(rv)
+        else:
+            self.build_msg()
         if rv:
             self.current_note = self.next_note()
 
         return True
+
+    def eval(self, snippet):
+        globals = {
+            "segment": self.segment,
+            "brake_point_diff": self.segment.brake_point_diff,
+            "brake_point": self.segment.brake_point,
+        }
+        try:
+            rv = eval(snippet, globals)  # nosec
+            self.log_debug(f"eval: {snippet} -> {rv}")
+            return rv
+        except Exception as e:
+            error = f"eval error: {snippet} -> {e}"
+            self.log_debug(error)
+            return error
