@@ -1,0 +1,107 @@
+[
+  {
+    "model": "telemetry.landmark",
+    "pk": 1806,
+    "fields": {
+      "created": "2023-08-21T15:53:11.883Z",
+      "modified": "2023-08-21T15:53:11.887Z",
+      "name": "first_corner",
+      "start": 150,
+      "end": 370,
+      "is_overtaking_spot": true,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1807,
+    "fields": {
+      "created": "2023-08-21T15:53:11.892Z",
+      "modified": "2023-08-21T15:53:11.895Z",
+      "name": "turn2",
+      "start": 420,
+      "end": 577,
+      "is_overtaking_spot": false,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1808,
+    "fields": {
+      "created": "2023-08-21T15:53:11.900Z",
+      "modified": "2023-08-21T15:53:11.904Z",
+      "name": "piper",
+      "start": 580,
+      "end": 714,
+      "is_overtaking_spot": false,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1809,
+    "fields": {
+      "created": "2023-08-21T15:53:11.908Z",
+      "modified": "2023-08-21T15:53:11.912Z",
+      "name": "redman_corner",
+      "start": 888,
+      "end": 1020,
+      "is_overtaking_spot": true,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1810,
+    "fields": {
+      "created": "2023-08-21T15:53:11.916Z",
+      "modified": "2023-08-21T15:53:11.920Z",
+      "name": "hobbs",
+      "start": 1026,
+      "end": 1185,
+      "is_overtaking_spot": false,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1811,
+    "fields": {
+      "created": "2023-08-21T15:53:11.925Z",
+      "modified": "2023-08-21T15:53:11.928Z",
+      "name": "mike_knight_corner",
+      "start": 1266,
+      "end": 1406,
+      "is_overtaking_spot": false,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  },
+  {
+    "model": "telemetry.landmark",
+    "pk": 1812,
+    "fields": {
+      "created": "2023-08-21T15:53:11.933Z",
+      "modified": "2023-08-21T15:53:11.937Z",
+      "name": "last_corner",
+      "start": 1431,
+      "end": 1609,
+      "is_overtaking_spot": false,
+      "from_cc": true,
+      "kind": "turn",
+      "track": 1029
+    }
+  }
+]

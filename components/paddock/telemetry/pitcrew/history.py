@@ -96,7 +96,7 @@ class History(LoggingMixin):
             return False
 
         self.log_debug("loading segments for %s %s - %s", self.game, self.track, self.car)
-        self.log_debug(f"  based on laps {fast_lap.laps}")
+        self.log_debug(f"  based on laps {fast_lap.laps.count()}")
 
         self.segments = fast_lap.data.get("segments")
 

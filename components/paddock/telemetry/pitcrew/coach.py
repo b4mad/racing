@@ -290,6 +290,30 @@ class Coach(LoggingMixin):
                 self._error = "no track guide found"
                 return False
 
+        if self.mode == DbCoach.MODE_TRACK_GUIDE:
+            # filter all notes that have a landmark set
+            landmark_notes = list(self.track_guide.notes.filter(landmark__isnull=False))
+            if landmark_notes:
+                # find all unique landmarks
+                landmarks = set([note.landmark for note in landmark_notes])
+
+                for landmark in landmarks:
+                    # find all notes for the landmark
+                    notes = [note for note in landmark_notes if note.landmark == landmark]
+                    # find the segment that contains the landmark the most
+                    # i.e. the segement.start is closest to the landmark.start
+                    #  and the segement.end is closest to the landmark.end
+
+                    message = MessageTrackGuideNotes(segment=None, logger=self.log_debug, mode=self.mode)
+                    for segment in self.history.segments:
+                        if segment.start <= landmark.start <= segment.end:
+                            message.add_segment(segment)
+                        if segment.start <= landmark.end <= segment.end:
+                            message.add_segment(segment)
+                    if message.segment:
+                        message.set_notes(notes, mode="landmark")
+                        self.messages.append(message)
+
         for segment in self.history.segments:
             if self.mode == DbCoach.MODE_ONLY_BRAKE or self.mode == DbCoach.MODE_ONLY_BRAKE_DEBUG:
                 message = MessageBrakePoint(segment, logger=self.log_debug, mode=self.mode)

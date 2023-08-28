@@ -12,6 +12,17 @@
   },
   {
     "model": "telemetry.car",
+    "pk": 15,
+    "fields": {
+      "created": "2023-07-04T16:27:23.109Z",
+      "modified": "2023-07-04T16:27:23.124Z",
+      "name": "Mazda MX-5 Cup",
+      "game": 1,
+      "car_class": null
+    }
+  },
+  {
+    "model": "telemetry.car",
     "pk": 260,
     "fields": {
       "created": "2023-07-04T16:27:23.109Z",

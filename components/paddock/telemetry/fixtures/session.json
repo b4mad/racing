@@ -73,6 +73,18 @@
   },
   {
     "model": "telemetry.session",
+    "pk": 57775,
+    "fields": {
+      "session_id": "1685941948",
+      "start": "2023-06-05T01:12:31.916Z",
+      "end": "2023-06-05T01:23:19.548Z",
+      "driver": 1,
+      "session_type": 1,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
     "pk": 57975,
     "fields": {
       "session_id": "1685948380",
@@ -104,6 +116,18 @@
       "end": "2023-06-05T16:15:41.810Z",
       "driver": 10,
       "session_type": 2,
+      "game": 1
+    }
+  },
+  {
+    "model": "telemetry.session",
+    "pk": 76795,
+    "fields": {
+      "session_id": "1687847759",
+      "start": "2023-06-27T02:36:02.414Z",
+      "end": "2023-06-27T02:55:08.740Z",
+      "driver": 1,
+      "session_type": 1,
       "game": 1
     }
   }

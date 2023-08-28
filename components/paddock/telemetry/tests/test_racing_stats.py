@@ -21,4 +21,4 @@ class TestRacingStats(TransactionTestCase):
     def test_stats(self):
         racing_stats = RacingStats()
 
-        self.assertEqual(racing_stats.laps().count(), 15)
+        self.assertEqual(racing_stats.laps().count(), 18)

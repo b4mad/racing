@@ -21,7 +21,8 @@ from .models import (
 
 class FastLapAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["track"]
-    changelist_links = ["fast_lap_segments"]
+    changelist_links = ["fast_lap_segments", "laps"]
+    list_display = ["game", "car", "track", "driver"]
 
 
 class FastLapSegmentAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
@@ -93,7 +94,7 @@ class SessionAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
 
 class TrackAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
     list_display = ["name", "game", "created", "modified"]
-    changelist_links = ["laps", "landmarks"]
+    changelist_links = ["laps", "landmarks", "fast_laps"]
 
 
 class CarAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
