@@ -479,7 +479,7 @@ class MessageTrackGuideNotes(Message):
             if type(at) is int or type(at) is float:
                 at = int(at)
             if type(at) is int:
-                self.at = self.finish_at(at)
+                self.at = at
             else:
                 self.msg = f"{at}"
                 self.log_debug(f"eval at error: {self.msg}")
@@ -501,8 +501,12 @@ class MessageTrackGuideNotes(Message):
     def eval(self, snippet):
         globals = {
             "segment": self.segment,
-            "brake_point_diff": self.segment.brake_point_diff,
             "brake_point": self.segment.brake_point,
+            "apex": self.segment.apex,
+            "brake_point_diff": self.segment.brake_point_diff,
+            "apex_diff": self.segment.apex_diff,
+            "gear_diff": self.segment.gear_diff,
+            "coach_brake_force": self.segment.coach_brake_force,
         }
         try:
             rv = eval(snippet, globals)  # nosec
