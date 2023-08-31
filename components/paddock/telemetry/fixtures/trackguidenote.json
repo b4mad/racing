@@ -361,10 +361,10 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 312,
+    "pk": 502,
     "fields": {
-      "created": "2023-08-30T15:33:44.639Z",
-      "modified": "2023-08-30T15:33:44.639Z",
+      "created": "2023-08-31T16:39:09.625Z",
+      "modified": "2023-08-31T16:39:09.625Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
@@ -379,10 +379,10 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 313,
+    "pk": 503,
     "fields": {
-      "created": "2023-08-30T15:33:44.643Z",
-      "modified": "2023-08-30T15:33:44.643Z",
+      "created": "2023-08-31T16:39:09.628Z",
+      "modified": "2023-08-31T16:39:09.628Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
@@ -397,10 +397,10 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 314,
+    "pk": 504,
     "fields": {
-      "created": "2023-08-30T15:33:44.645Z",
-      "modified": "2023-08-30T15:33:44.645Z",
+      "created": "2023-08-31T16:39:09.630Z",
+      "modified": "2023-08-31T16:39:09.630Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
@@ -415,10 +415,10 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 315,
+    "pk": 505,
     "fields": {
-      "created": "2023-08-30T15:33:44.647Z",
-      "modified": "2023-08-30T15:33:44.647Z",
+      "created": "2023-08-31T16:39:09.633Z",
+      "modified": "2023-08-31T16:39:09.633Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
@@ -433,46 +433,136 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 316,
+    "pk": 506,
     "fields": {
-      "created": "2023-08-30T15:33:44.650Z",
-      "modified": "2023-08-30T15:33:44.650Z",
+      "created": "2023-08-31T16:39:09.635Z",
+      "modified": "2023-08-31T16:39:09.635Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
-      "at": "apex()",
+      "at": null,
       "priority": 5,
       "ref_id": "",
       "ref_eval": "",
-      "message": "very late apex",
+      "message": "turn in just before the marshals shack",
+      "eval": "coach_turn_in()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 507,
+    "fields": {
+      "created": "2023-08-31T16:39:09.638Z",
+      "modified": "2023-08-31T16:39:09.638Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 1,
+      "at": null,
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Full-throttle at the dirt patch above the curb",
       "eval": "apex_diff() < 10",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 317,
+    "pk": 508,
     "fields": {
-      "created": "2023-08-30T15:33:44.652Z",
-      "modified": "2023-08-30T15:33:44.652Z",
+      "created": "2023-08-31T16:39:09.640Z",
+      "modified": "2023-08-31T16:39:09.640Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 1,
+      "at": "apex()",
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "very late apex - full curb",
+      "eval": "apex_diff() < 10",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 509,
+    "fields": {
+      "created": "2023-08-31T16:39:09.644Z",
+      "modified": "2023-08-31T16:39:09.644Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 1,
       "at": "brake_point()",
-      "priority": 6,
+      "priority": 8,
       "ref_id": "",
       "ref_eval": "",
       "message": "brake",
-      "eval": "True",
+      "eval": "coach_brake_point()",
       "notes": "this is the last message, which gets always repeated"
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 318,
+    "pk": 510,
     "fields": {
-      "created": "2023-08-30T15:33:44.655Z",
-      "modified": "2023-08-30T15:33:44.655Z",
+      "created": "2023-08-31T16:39:09.646Z",
+      "modified": "2023-08-31T16:39:09.646Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 1,
+      "at": "apex()",
+      "priority": 9,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit wide using all the curb",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 511,
+    "fields": {
+      "created": "2023-08-31T16:39:09.648Z",
+      "modified": "2023-08-31T16:39:09.648Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 1,
+      "at": "apex()",
+      "priority": 10,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Get back on track by the end of the green",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 512,
+    "fields": {
+      "created": "2023-08-31T16:39:09.656Z",
+      "modified": "2023-08-31T16:39:09.656Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 1,
+      "at": "apex()",
+      "priority": 11,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "UP-shift to 3rd",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 513,
+    "fields": {
+      "created": "2023-08-31T16:39:09.659Z",
+      "modified": "2023-08-31T16:39:09.659Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 2,
@@ -481,34 +571,268 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "brake at the end of the dirt 65 % down to 1st",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 319,
+    "pk": 514,
     "fields": {
-      "created": "2023-08-30T15:33:44.657Z",
-      "modified": "2023-08-30T15:33:44.657Z",
+      "created": "2023-08-31T16:39:09.661Z",
+      "modified": "2023-08-31T16:39:09.661Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 2,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "approach far left",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 515,
+    "fields": {
+      "created": "2023-08-31T16:39:09.664Z",
+      "modified": "2023-08-31T16:39:09.664Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "turn in at the end of the dirt",
+      "eval": "coach_turn_in()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 516,
+    "fields": {
+      "created": "2023-08-31T16:39:09.666Z",
+      "modified": "2023-08-31T16:39:09.666Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 2,
       "at": "429",
-      "priority": 2,
+      "priority": 4,
       "ref_id": "",
       "ref_eval": "",
       "message": "brake now",
-      "eval": "brake_point_diff() < 30",
+      "eval": "coach_brake_point()",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 320,
+    "pk": 517,
     "fields": {
-      "created": "2023-08-30T15:33:44.659Z",
-      "modified": "2023-08-30T15:33:44.659Z",
+      "created": "2023-08-31T16:39:09.669Z",
+      "modified": "2023-08-31T16:39:09.669Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "brake when you turn-in",
+      "eval": "coach_brake_point()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 518,
+    "fields": {
+      "created": "2023-08-31T16:39:09.671Z",
+      "modified": "2023-08-31T16:39:09.671Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Brake 65% until you cross the white line",
+      "eval": "coach_brake_force()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 519,
+    "fields": {
+      "created": "2023-08-31T16:39:09.674Z",
+      "modified": "2023-08-31T16:39:09.674Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Down shift to 2nd",
+      "eval": "True",
+      "notes": "need gear_features across the segment"
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 520,
+    "fields": {
+      "created": "2023-08-31T16:39:09.676Z",
+      "modified": "2023-08-31T16:39:09.676Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": null,
+      "priority": 8,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Sharp Trailbrake to minimum Trailbrake",
+      "eval": "True",
+      "notes": "could coach based on length of TB"
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 521,
+    "fields": {
+      "created": "2023-08-31T16:39:09.679Z",
+      "modified": "2023-08-31T16:39:09.679Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 9,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Apex just past white line",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 522,
+    "fields": {
+      "created": "2023-08-31T16:39:09.681Z",
+      "modified": "2023-08-31T16:39:09.681Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 10,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Clip curb",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 523,
+    "fields": {
+      "created": "2023-08-31T16:39:09.683Z",
+      "modified": "2023-08-31T16:39:09.683Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 11,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Down shift to first",
+      "eval": "coach_gear()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 524,
+    "fields": {
+      "created": "2023-08-31T16:39:09.686Z",
+      "modified": "2023-08-31T16:39:09.686Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 12,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit middle and continue to rotate",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 525,
+    "fields": {
+      "created": "2023-08-31T16:39:09.688Z",
+      "modified": "2023-08-31T16:39:09.688Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 13,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Control throttle to 75% then full",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 526,
+    "fields": {
+      "created": "2023-08-31T16:39:09.691Z",
+      "modified": "2023-08-31T16:39:09.691Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 14,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Very late 2nd apex - full curb",
+      "eval": "coach_apex()",
+      "notes": "this is a double apex, need more specific features to handle that"
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 527,
+    "fields": {
+      "created": "2023-08-31T16:39:09.693Z",
+      "modified": "2023-08-31T16:39:09.693Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 2,
+      "at": "apex()",
+      "priority": 15,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit middle",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 528,
+    "fields": {
+      "created": "2023-08-31T16:39:09.696Z",
+      "modified": "2023-08-31T16:39:09.696Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 3,
@@ -517,16 +841,124 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "brief lift to 50 and up shift to 2nd",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 321,
+    "pk": 529,
     "fields": {
-      "created": "2023-08-30T15:33:44.662Z",
-      "modified": "2023-08-30T15:33:44.662Z",
+      "created": "2023-08-31T16:39:09.699Z",
+      "modified": "2023-08-31T16:39:09.699Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": null,
+      "priority": 2,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in as soon as you straighten car",
+      "eval": "coach_turn_in()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 530,
+    "fields": {
+      "created": "2023-08-31T16:39:09.701Z",
+      "modified": "2023-08-31T16:39:09.701Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Very brief lift to 50% and Up shift to 2nd",
+      "eval": "coach_throttle_force()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 531,
+    "fields": {
+      "created": "2023-08-31T16:39:09.704Z",
+      "modified": "2023-08-31T16:39:09.704Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": "apex()",
+      "priority": 4,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Full-throttle by apex",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 532,
+    "fields": {
+      "created": "2023-08-31T16:39:09.706Z",
+      "modified": "2023-08-31T16:39:09.706Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": "apex()",
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit wide (all of curb plus green)",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 533,
+    "fields": {
+      "created": "2023-08-31T16:39:09.709Z",
+      "modified": "2023-08-31T16:39:09.709Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": "apex()",
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Back on tarmack before curb ends",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 534,
+    "fields": {
+      "created": "2023-08-31T16:39:09.711Z",
+      "modified": "2023-08-31T16:39:09.711Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 3,
+      "at": "apex()",
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Up shift to 3rd",
+      "eval": "True",
+      "notes": "need gear_features across the segment"
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 535,
+    "fields": {
+      "created": "2023-08-31T16:39:09.714Z",
+      "modified": "2023-08-31T16:39:09.714Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 4,
@@ -535,16 +967,142 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "just after the 50 marker brake 80 % down to first",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 322,
+    "pk": 536,
     "fields": {
-      "created": "2023-08-30T15:33:44.664Z",
-      "modified": "2023-08-30T15:33:44.664Z",
+      "created": "2023-08-31T16:39:09.716Z",
+      "modified": "2023-08-31T16:39:09.716Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": null,
+      "priority": 2,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Approach far right",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 537,
+    "fields": {
+      "created": "2023-08-31T16:39:09.719Z",
+      "modified": "2023-08-31T16:39:09.719Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "brake just after 50 marker",
+      "eval": "coach_brake_point()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 538,
+    "fields": {
+      "created": "2023-08-31T16:39:09.721Z",
+      "modified": "2023-08-31T16:39:09.721Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": null,
+      "priority": 4,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Brake 80 % briefly then reduce to 40% before sharp trailbrake",
+      "eval": "coach_brake_force()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 539,
+    "fields": {
+      "created": "2023-08-31T16:39:09.724Z",
+      "modified": "2023-08-31T16:39:09.724Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": null,
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in early and Down shift to 1st",
+      "eval": "coach_gear()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 540,
+    "fields": {
+      "created": "2023-08-31T16:39:09.726Z",
+      "modified": "2023-08-31T16:39:09.726Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": "apex()",
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Aggressive full-throttle before late apex",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 541,
+    "fields": {
+      "created": "2023-08-31T16:39:09.728Z",
+      "modified": "2023-08-31T16:39:09.728Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": "apex()",
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Get on curb early",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 542,
+    "fields": {
+      "created": "2023-08-31T16:39:09.731Z",
+      "modified": "2023-08-31T16:39:09.731Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 4,
+      "at": "apex()",
+      "priority": 8,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit mostly right then get back left",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 543,
+    "fields": {
+      "created": "2023-08-31T16:39:09.733Z",
+      "modified": "2023-08-31T16:39:09.733Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 5,
@@ -553,21 +1111,21 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "approach center brake 30 % ",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 323,
+    "pk": 544,
     "fields": {
-      "created": "2023-08-30T15:33:44.667Z",
-      "modified": "2023-08-30T15:33:44.667Z",
+      "created": "2023-08-31T16:39:09.735Z",
+      "modified": "2023-08-31T16:39:09.735Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 5,
       "at": "brake_point()",
-      "priority": 1,
+      "priority": 2,
       "ref_id": "",
       "ref_eval": "",
       "message": "brake",
@@ -577,10 +1135,136 @@
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 324,
+    "pk": 545,
     "fields": {
-      "created": "2023-08-30T15:33:44.671Z",
-      "modified": "2023-08-30T15:33:44.671Z",
+      "created": "2023-08-31T16:39:09.738Z",
+      "modified": "2023-08-31T16:39:09.738Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Approach left of center",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 546,
+    "fields": {
+      "created": "2023-08-31T16:39:09.741Z",
+      "modified": "2023-08-31T16:39:09.741Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": null,
+      "priority": 4,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in when you straighten car",
+      "eval": "coach_turn_in()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 547,
+    "fields": {
+      "created": "2023-08-31T16:39:09.743Z",
+      "modified": "2023-08-31T16:39:09.743Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": null,
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "brake just after you turn-in Brake 35% briefly then trailbrake",
+      "eval": "coach_brake_force()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 548,
+    "fields": {
+      "created": "2023-08-31T16:39:09.746Z",
+      "modified": "2023-08-31T16:39:09.746Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": "apex()",
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Aggressive full-throttle before apex",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 549,
+    "fields": {
+      "created": "2023-08-31T16:39:09.748Z",
+      "modified": "2023-08-31T16:39:09.748Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": "apex()",
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Very late apex - full curb",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 550,
+    "fields": {
+      "created": "2023-08-31T16:39:09.751Z",
+      "modified": "2023-08-31T16:39:09.751Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": "apex()",
+      "priority": 8,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit wide using all of curb",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 551,
+    "fields": {
+      "created": "2023-08-31T16:39:09.753Z",
+      "modified": "2023-08-31T16:39:09.753Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 5,
+      "at": "apex()",
+      "priority": 9,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Up shift to 2nd and stay left",
+      "eval": "coach_gear()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 552,
+    "fields": {
+      "created": "2023-08-31T16:39:09.758Z",
+      "modified": "2023-08-31T16:39:09.758Z",
       "track_guide": 5,
       "landmark": 1811,
       "segment": 0,
@@ -589,16 +1273,106 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "flat out up to 3rd before the apex",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
+      "notes": "a landmark can have multiple segments"
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 553,
+    "fields": {
+      "created": "2023-08-31T16:39:09.761Z",
+      "modified": "2023-08-31T16:39:09.761Z",
+      "track_guide": 5,
+      "landmark": 1811,
+      "segment": 0,
+      "at": null,
+      "priority": 2,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Approach far left flat out",
+      "eval": "True",
       "notes": ""
     }
   },
   {
     "model": "telemetry.trackguidenote",
-    "pk": 325,
+    "pk": 554,
     "fields": {
-      "created": "2023-08-30T15:33:44.674Z",
-      "modified": "2023-08-30T15:33:44.674Z",
+      "created": "2023-08-31T16:39:09.765Z",
+      "modified": "2023-08-31T16:39:09.765Z",
+      "track_guide": 5,
+      "landmark": 1811,
+      "segment": 0,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in at the marshal station on the left",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 555,
+    "fields": {
+      "created": "2023-08-31T16:39:09.768Z",
+      "modified": "2023-08-31T16:39:09.768Z",
+      "track_guide": 5,
+      "landmark": 1811,
+      "segment": 0,
+      "at": null,
+      "priority": 4,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Up shift to 3rd before the apex",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 556,
+    "fields": {
+      "created": "2023-08-31T16:39:09.772Z",
+      "modified": "2023-08-31T16:39:09.772Z",
+      "track_guide": 5,
+      "landmark": 1811,
+      "segment": 0,
+      "at": null,
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Late apex - clip the curb",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 557,
+    "fields": {
+      "created": "2023-08-31T16:39:09.775Z",
+      "modified": "2023-08-31T16:39:09.775Z",
+      "track_guide": 5,
+      "landmark": 1811,
+      "segment": 0,
+      "at": null,
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit wide to the grass - be careful of 1x",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 558,
+    "fields": {
+      "created": "2023-08-31T16:39:09.777Z",
+      "modified": "2023-08-31T16:39:09.777Z",
       "track_guide": 5,
       "landmark": null,
       "segment": 6,
@@ -607,7 +1381,115 @@
       "ref_id": "",
       "ref_eval": "",
       "message": "brake briefly after green paint downshift to 2nd",
-      "eval": "segment.session_laps() > 1",
+      "eval": "True",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 559,
+    "fields": {
+      "created": "2023-08-31T16:39:09.780Z",
+      "modified": "2023-08-31T16:39:09.780Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": null,
+      "priority": 2,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in and brake just after green paint ends",
+      "eval": "coach_brake_point()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 560,
+    "fields": {
+      "created": "2023-08-31T16:39:09.782Z",
+      "modified": "2023-08-31T16:39:09.782Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": null,
+      "priority": 3,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Brake 75% briefly then trailbrake to the tire barrier",
+      "eval": "coach_brake_force()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 561,
+    "fields": {
+      "created": "2023-08-31T16:39:09.785Z",
+      "modified": "2023-08-31T16:39:09.785Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": null,
+      "priority": 4,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Turn-in and down shift to 2nd",
+      "eval": "coach_gear()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 562,
+    "fields": {
+      "created": "2023-08-31T16:39:09.787Z",
+      "modified": "2023-08-31T16:39:09.787Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": "apex()",
+      "priority": 5,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Coast briefly before sharp full throttle",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 563,
+    "fields": {
+      "created": "2023-08-31T16:39:09.790Z",
+      "modified": "2023-08-31T16:39:09.790Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": "apex()",
+      "priority": 6,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Late apex - full curb",
+      "eval": "coach_apex()",
+      "notes": ""
+    }
+  },
+  {
+    "model": "telemetry.trackguidenote",
+    "pk": 564,
+    "fields": {
+      "created": "2023-08-31T16:39:09.792Z",
+      "modified": "2023-08-31T16:39:09.792Z",
+      "track_guide": 5,
+      "landmark": null,
+      "segment": 6,
+      "at": "apex()",
+      "priority": 7,
+      "ref_id": "",
+      "ref_eval": "",
+      "message": "Exit wide using all of green area",
+      "eval": "True",
       "notes": ""
     }
   }

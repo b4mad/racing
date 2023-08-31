@@ -343,3 +343,41 @@ class Segment:
         #     new_fragments.append("a bit less")
         # elif force_diff < -0.1:
         #     new_fragments.append("a bit harder")
+
+    def coach_turn_in(self):
+        avg_value = self.avg_feature(n=0, feature="max_end", type=self.type)
+        if avg_value is None:
+            return False
+        diff = avg_value - self.brake_feature("max_end")
+        diff_abs = abs(diff)
+        if diff_abs > 20:
+            return False
+        # no more coaching needed
+        return True
+
+    def coach_brake_point(self):
+        if self.brake_point_diff() > 30:
+            return False
+        return True
+
+    def coach_gear(self):
+        if self.gear_diff() > 0.5:
+            return False
+        return True
+
+    def coach_apex(self):
+        if self.apex_diff() > 10:
+            return False
+        return True
+
+    def coach_throttle_force(self):
+        last_throttle_force = self.avg_throttle_force()
+        if last_throttle_force is None:
+            return False
+        force_diff = last_throttle_force - self.throttle_force()
+        force_diff_abs = abs(force_diff)
+        if force_diff_abs > 0.3:
+            return False
+
+        # no more coaching needed
+        return True
