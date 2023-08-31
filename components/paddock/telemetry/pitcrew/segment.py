@@ -1,4 +1,9 @@
+import statistics
+
 import pandas as pd
+
+# import numpy as np
+from scipy.stats import zscore
 
 
 class Segment:
@@ -31,6 +36,10 @@ class Segment:
             "gear": [],
             "other": [],
         }
+
+    def log_debug(self, msg):
+        if self.history:
+            self.history.log_debug(msg)
 
     @property
     def start(self):
@@ -179,7 +188,10 @@ class Segment:
         return False
 
     def apex(self):
-        return self.throttle_feature("max_end")
+        value = self.throttle_feature("max_end")
+        if value:
+            return int(value)
+        return None
 
     def avg_apex(self, n=0):
         return self.avg_feature(n=n, feature="max_end", type="throttle")
@@ -245,7 +257,7 @@ class Segment:
 
     def feature_values(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
         if type not in self.live_features:
-            self.history.log_debug(f"no {type} features")
+            self.log_debug(f"no {type} features")
             return []
         features = self.live_features[type]
         if n and len(features) <= n:
@@ -265,19 +277,29 @@ class Segment:
 
     def avg_feature(self, n=0, feature="feature_to_query", type="type_of_feature_set"):
         values = self.feature_values(n=n, feature=feature, type=type)
-        self.history.log_debug(f"{type} {feature} values: {values}")
+        self.log_debug(f"{type} {feature} values: {values}")
 
         if len(values) == 0:
             return None
 
-        # Create pandas series from the data
-        data = pd.Series(values)
-        # Compute EMA
-        ema = data.ewm(span=3, adjust=False).mean()
-        return ema.iloc[-1]
+        # 1. Using Z-score to remove outliers
+        z_scores = zscore(values)
+        threshold = 1  # ChatGPT suggested 3
+        values = [x for x, z in zip(values, z_scores) if abs(z) < threshold]
 
-        # return median gear
-        # return statistics.median(gears)
+        # 2. Using IQR to remove outliers
+        # Q1 = np.percentile(values, 25)
+        # Q3 = np.percentile(values, 75)
+        # IQR = Q3 - Q1
+        # lower_bound = Q1 - (1.5 * IQR)
+        # upper_bound = Q3 + (1.5 * IQR)
+        # values = [x for x in values if x >= lower_bound and x <= upper_bound]
+
+        self.log_debug(f"{type} {feature} values wo/outliers: {values}")
+        if feature == "max_end":
+            self.log_debug("sd")
+        # return mean gear
+        return statistics.mean(values)
 
     def session_laps(self):
         return len(self.live_telemetry_frames)
@@ -288,3 +310,36 @@ class Segment:
         if bp and a_bp:
             return abs(a_bp - bp)
         return 99_999
+
+    def apex_diff(self):
+        value = self.apex()
+        avg_value = self.avg_apex()
+        self.log_debug(f"apex: {value} avg: {avg_value}")
+        if value and avg_value:
+            return abs(avg_value - value)
+        return 99_999
+
+    def gear_diff(self):
+        value = self.gear()
+        avg_value = self.avg_gear()
+        self.log_debug(f"gear: {value} avg: {avg_value}")
+        if value and avg_value:
+            return abs(avg_value - value)
+        return 99_999
+
+    def coach_brake_force(self):
+        last_brake_force = self.avg_brake_force()
+        if last_brake_force is None:
+            return False
+        force_diff = last_brake_force - self.brake_force()
+        force_diff_abs = abs(force_diff)
+        if force_diff_abs > 0.3:
+            return False
+
+        # no more coaching needed
+        return True
+        #     new_fragments.append(force_fragment)
+        # elif force_diff > 0.1:
+        #     new_fragments.append("a bit less")
+        # elif force_diff < -0.1:
+        #     new_fragments.append("a bit harder")
