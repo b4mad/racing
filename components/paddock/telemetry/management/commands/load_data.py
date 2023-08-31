@@ -60,6 +60,10 @@ class Command(BaseCommand):
                 if not data["at"].strip():
                     data.pop("at")
 
+                if not row["segment"].strip():
+                    logging.debug(f"!!! segement empty - skip line: '{row}' for track {track}")
+                    continue
+
                 # check if segment is just numbers
                 if row["segment"].isnumeric():
                     data["segment"] = int(data["segment"])
