@@ -61,13 +61,14 @@ class Coach(LoggingMixin):
         self.topic = topic
         self.log_debug("new session %s", topic)
         filter = self.filter_from_topic(topic)
-        self.history.set_filter(filter)
         self.session_id = filter.get("SessionId", "NO_SESSION")
         self.messages = []
         self._next_messages = []
         self.responses = {}
         self.db_coach.refresh_from_db()
         self.mode = self.db_coach.mode
+        self.history.set_filter(filter)
+        self.history.set_coach_mode(self.mode)
         self.focus_on_turns = []
 
     def ready(self):

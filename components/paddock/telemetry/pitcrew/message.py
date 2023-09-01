@@ -441,8 +441,8 @@ class MessageTrackGuideNotes(Message):
         self.note_scores = {}
 
     def response_hot_lap(self, distance, telemetry):
-        # at the start of the segment score all notes
-        if distance == self.segment.start:
+        # at the start of the previous segment score all notes
+        if distance == self.segment.previous_segment.start:
             self.score_notes()
 
         if distance == self.at:
@@ -540,6 +540,8 @@ class MessageTrackGuideNotes(Message):
             if type(at) is int:
                 if evaluated == "finish_at":
                     at = self.finish_at(at)
+                else:
+                    self.max_distance = at + self.max_distance_delta()
                 self.at = at
             else:
                 self.msg = f"{at}"

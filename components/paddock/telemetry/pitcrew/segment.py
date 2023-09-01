@@ -151,6 +151,8 @@ class Segment:
         return None
 
     def gear_distance(self, gear_n=None):
+        if gear_n and gear_n > 10:
+            return None
         gear_n = gear_n or self.gear()
         if gear_n:
             distance_gear = self.gear_feature("distance_gear")
@@ -158,6 +160,7 @@ class Segment:
             for distance, gear in distance_gear.items():
                 if gear == gear_n:
                     return int(distance)
+            return self.gear_distance(gear_n + 1)
         return None
 
     def gear(self):
@@ -167,7 +170,7 @@ class Segment:
         return None
 
     def turn_in(self):
-        return self.brake_feature("max_end")
+        return int(self.brake_feature("max_end"))
 
     def brake_force(self):
         self.brake_feature("force")
