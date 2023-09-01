@@ -441,14 +441,14 @@ class MessageTrackGuideNotes(Message):
         self.note_scores = {}
 
     def response_hot_lap(self, distance, telemetry):
+        # at the start of the segment score all notes
+        if distance == self.segment.start:
+            self.score_notes()
+
         if distance == self.at:
             # increase note play counter
             self.note_play_counter[self.current_note] += 1
             return self.resp(self.at, self.msg)
-
-        # at the start of the segment score all notes
-        if distance == self.segment.start:
-            self.score_notes()
 
     def score_notes(self):
         # score every note
@@ -481,11 +481,11 @@ class MessageTrackGuideNotes(Message):
                     lowest_play_counter = self.note_play_counter[note]
                     self.current_note = note
 
-        [self.log_debug(log) for log in score_logs]
-        self.log_debug(f"highest_score: {highest_score:02.2f} {self.current_note}")
-
         # set at and build message
         self.build_msg()
+
+        [self.log_debug(log) for log in score_logs]
+        self.log_debug(f"segment {self.current_note.segment}: s: {highest_score:02.2f} : at {self.at}: {self.msg}")
 
     def set_notes(self, notes, mode="segment"):
         if mode == "segment":
