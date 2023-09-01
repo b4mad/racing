@@ -213,8 +213,19 @@ class FastLapAnalyzer:
 
     def gear_features(self, df):
         gear = df["Gear"].min()
+        # get all gear changes
+        gear_changes = df[df["Gear"] != df["Gear"].shift(1)]
+        # now get the value of DistanceRoundTrack for each gear change
+        distances = gear_changes["DistanceRoundTrack"].tolist()
+        # round the values to integer
+        distances = [int(round(x)) for x in distances]
+        gears = gear_changes["Gear"].tolist()
+        gears = [int(x) for x in gears]
+        # create a dict which maps the distance to the gear
+        distance_gear = dict(zip(distances, gears))
         return {
-            "gear": gear,
+            "gear": int(gear),
+            "distance_gear": distance_gear,
         }
 
     def extract_segment(self, sector):

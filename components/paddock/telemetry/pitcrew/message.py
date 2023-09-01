@@ -510,31 +510,40 @@ class MessageTrackGuideNotes(Message):
         self.current_note = self.notes[0]
         self.build_msg()
 
-    def next_note(self):
-        if self.current_note_index == len(self.notes) - 1:
-            return self.current_note
-        else:
-            self.current_note_index += 1
-        nn = self.notes[self.current_note_index]
-        if len(nn.eval.strip()) == 0:
-            return self.next_note()
-        return nn
+    # def next_note(self):
+    #     if self.current_note_index == len(self.notes) - 1:
+    #         return self.current_note
+    #     else:
+    #         self.current_note_index += 1
+    #     nn = self.notes[self.current_note_index]
+    #     if len(nn.eval.strip()) == 0:
+    #         return self.next_note()
+    #     return nn
 
     def build_msg(self, msg=None):
         self.msg = msg or self.current_note.message
-        if self.current_note.at:
-            at = self.eval(self.current_note.at)
+        evaluated = False
+        if self.current_note.at_start:
+            evaluated = "at"
+            at = self.eval_at(self.current_note.at_start)
+        elif self.current_note.at:
+            evaluated = "finish_at"
+            at = self.eval_at(self.current_note.at)
+        else:
+            self.at = self.finish_at(self.brake_or_throttle_point)
+
+        if evaluated:
             if type(at) is str and at.isnumeric():
                 at = int(at)
             if type(at) is int or type(at) is float:
                 at = int(at)
             if type(at) is int:
-                self.at = self.finish_at(at)
+                if evaluated == "finish_at":
+                    at = self.finish_at(at)
+                self.at = at
             else:
                 self.msg = f"{at}"
                 self.log_debug(f"eval at error: {self.msg}")
-        else:
-            self.at = self.finish_at(self.brake_or_throttle_point)
 
     # def needs_coaching(self):
     #     # eval current note
@@ -556,6 +565,15 @@ class MessageTrackGuideNotes(Message):
             "brake_force": self.segment.score_brake_force,
             "turn_in": self.segment.score_turn_in,
             "throttle_force": self.segment.score_throttle_force,
+        }
+        return self.eval(snippet, globals)
+
+    def eval_at(self, snippet):
+        globals = {
+            "brake_point": self.segment.brake_point,
+            "apex": self.segment.apex,
+            "gear": self.segment.gear_distance,
+            "turn_in": self.segment.turn_in,
         }
         return self.eval(snippet, globals)
 
