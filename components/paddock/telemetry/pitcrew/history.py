@@ -4,7 +4,7 @@ import pandas as pd
 
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
-from telemetry.models import Driver, FastLap, Game
+from telemetry.models import Coach, Driver, FastLap, Game
 from telemetry.pitcrew.logging import LoggingMixin
 from telemetry.pitcrew.segment import Segment
 from telemetry.racing_stats import RacingStats
@@ -28,6 +28,7 @@ class History(LoggingMixin):
         self.process_segments = []
         self.threaded = False
         self.session_id = "NO_SESSION"
+        self.coach_mode = Coach.MODE_DEFAULT
 
     def disconnect(self):
         self.do_run = False
@@ -47,6 +48,9 @@ class History(LoggingMixin):
         self.filter = filter
         self.session_id = filter.get("SessionId", "NO_SESSION")
         self._do_init = True
+
+    def set_coach_mode(self, coach_mode):
+        self.coach_mode = coach_mode
 
     def is_initializing(self):
         return self._do_init
@@ -134,7 +138,8 @@ class History(LoggingMixin):
         empty_segment = Segment()
         for segment in self.segments:
             driver_segment = driver_segments.get(segment.turn, empty_segment)
-            segment.init_live_features_from_segment(driver_segment)
+            if self.coach_mode != Coach.MODE_TRACK_GUIDE:
+                segment.init_live_features_from_segment(driver_segment)
 
         return True
 
