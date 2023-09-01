@@ -263,6 +263,7 @@ class TrackGuideNote(TimeStampedModel):
     message = models.TextField(default="")
     eval = models.TextField(default="")
     notes = models.TextField(default="")
+    score = models.CharField(max_length=64, default="")
 
     def __str__(self):
         where = self.landmark or self.segment

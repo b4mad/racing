@@ -285,7 +285,7 @@ class Segment:
         # 1. Using Z-score to remove outliers
         z_scores = zscore(values)
         threshold = 1  # ChatGPT suggested 3
-        values = [x for x, z in zip(values, z_scores) if abs(z) < threshold]
+        values_clean = [x for x, z in zip(values, z_scores) if abs(z) < threshold]
 
         # 2. Using IQR to remove outliers
         # Q1 = np.percentile(values, 25)
@@ -293,13 +293,15 @@ class Segment:
         # IQR = Q3 - Q1
         # lower_bound = Q1 - (1.5 * IQR)
         # upper_bound = Q3 + (1.5 * IQR)
-        # values = [x for x in values if x >= lower_bound and x <= upper_bound]
+        # values_clean = [x for x in values if x >= lower_bound and x <= upper_bound]
 
-        self.log_debug(f"{type} {feature} values wo/outliers: {values}")
-        if feature == "max_end":
-            self.log_debug("sd")
+        self.log_debug(f"{type} {feature} values wo/outliers: {values_clean}")
         # return mean gear
-        return statistics.mean(values)
+        if values_clean:
+            return statistics.mean(values_clean)
+        else:
+            # if values_clean is empty, either all values are the same or there is only one value
+            return values[0]
 
     def session_laps(self):
         return len(self.live_telemetry_frames)
@@ -345,10 +347,11 @@ class Segment:
         #     new_fragments.append("a bit harder")
 
     def coach_turn_in(self):
+        value = self.brake_feature("max_end")
         avg_value = self.avg_feature(n=0, feature="max_end", type=self.type)
-        if avg_value is None:
+        if avg_value is None or value is None:
             return False
-        diff = avg_value - self.brake_feature("max_end")
+        diff = avg_value - value
         diff_abs = abs(diff)
         if diff_abs > 20:
             return False
@@ -381,3 +384,74 @@ class Segment:
 
         # no more coaching needed
         return True
+
+    def score_generic(self, avg_value, value, range={}):
+        range = range or {
+            0.3: 0,
+            0.2: 0.5,
+            0.1: 0.75,
+        }
+        if avg_value is None or value is None:
+            return 0
+        diff = avg_value - value
+        diff_abs = abs(diff)
+        for key, score in range.items():
+            if diff_abs > key:
+                return score
+        return 1
+
+    def score_brake_point(self):
+        avg_value = self.avg_brake_start()
+        value = self.brake_point()
+        range = {
+            30: 0,
+            20: 0.5,
+            10: 0.75,
+        }
+        return self.score_generic(avg_value, value, range)
+
+    def score_brake_force(self):
+        avg_value = self.avg_brake_force()
+        value = self.brake_force()
+        return self.score_generic(avg_value, value)
+
+    def score_gear(self):
+        avg_value = self.avg_gear()
+        value = self.gear()
+        range = {
+            1: 0,
+            0.5: 0.5,
+            0.1: 0.75,
+        }
+        return self.score_generic(avg_value, value, range)
+
+    def score_turn_in(self):
+        value = self.brake_feature("max_end")
+        avg_value = self.avg_feature(n=0, feature="max_end", type=self.type)
+
+        range = {
+            20: 0,
+            10: 0.5,
+            5: 0.75,
+        }
+        return self.score_generic(avg_value, value, range)
+
+    def score_throttle_force(self):
+        avg_value = self.avg_throttle_force()
+        value = self.throttle_force()
+        range = {
+            0.3: 0,
+            0.2: 0.5,
+            0.1: 0.75,
+        }
+        return self.score_generic(avg_value, value, range)
+
+    def score_apex(self):
+        avg_value = self.avg_apex()
+        value = self.apex()
+        range = {
+            20: 0,
+            10: 0.5,
+            5: 0.75,
+        }
+        return self.score_generic(avg_value, value, range)

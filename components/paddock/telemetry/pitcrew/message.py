@@ -437,6 +437,55 @@ class MessageTrackGuideNotes(Message):
         self.notes = []
         self.current_note = None
         self.current_note_index = 0
+        self.note_play_counter = {}
+        self.note_scores = {}
+
+    def response_hot_lap(self, distance, telemetry):
+        if distance == self.at:
+            # increase note play counter
+            self.note_play_counter[self.current_note] += 1
+            return self.resp(self.at, self.msg)
+
+        # at the start of the segment score all notes
+        if distance == self.segment.start:
+            self.score_notes()
+
+    def score_notes(self):
+        # score every note
+        score_logs = []
+        for note in self.notes:
+            # 0 = lowest, 1 = highest
+            if note.score.strip() == "":
+                score = 0.5
+            else:
+                score = float(self.eval_score(note.score))
+            if score is None or score == 0.0:
+                self.log_debug(f"score is {score} -> 0.1: {note}")
+                score = 0.1
+            priority = note.priority or 1
+            counter = self.note_play_counter[note]
+            final_score = (1 / score) * priority * (1 / counter)
+            self.note_scores[note] = final_score
+            score_logs.append(f"{final_score:02.2f} - s: {score:.2f} p: {priority} c: {counter} - {note}")
+
+        # find the highest score
+        highest_score = -1
+        lowest_play_counter = 1
+        for note, score in self.note_scores.items():
+            if score > highest_score:
+                highest_score = score
+                lowest_play_counter = self.note_play_counter[note]
+                self.current_note = note
+            elif score == highest_score:
+                if self.note_play_counter[note] < lowest_play_counter:
+                    lowest_play_counter = self.note_play_counter[note]
+                    self.current_note = note
+
+        [self.log_debug(log) for log in score_logs]
+        self.log_debug(f"highest_score: {highest_score:02.2f} {self.current_note}")
+
+        # set at and build message
+        self.build_msg()
 
     def set_notes(self, notes, mode="segment"):
         if mode == "segment":
@@ -453,6 +502,7 @@ class MessageTrackGuideNotes(Message):
                 self.eval_notes[note.ref_id].append(note)
             else:
                 self.notes.append(note)
+                self.note_play_counter[note] = 1
 
         # sort notes by priority
         self.notes.sort(key=lambda x: x.priority)
@@ -486,20 +536,31 @@ class MessageTrackGuideNotes(Message):
         else:
             self.at = self.finish_at(self.brake_or_throttle_point)
 
-    def needs_coaching(self):
-        # eval current note
-        rv = self.eval(self.current_note.eval)
-        if type(rv) is str:
-            self.build_msg(rv)
-        else:
-            self.build_msg()
-        if rv:
-            self.current_note = self.next_note()
+    # def needs_coaching(self):
+    #     # eval current note
+    #     rv = self.eval(self.current_note.eval)
+    #     if type(rv) is str:
+    #         self.build_msg(rv)
+    #     else:
+    #         self.build_msg()
+    #     if rv:
+    #         self.current_note = self.next_note()
 
-        return True
+    #     return True
 
-    def eval(self, snippet):
+    def eval_score(self, snippet):
         globals = {
+            "brake_point": self.segment.score_brake_point,
+            "apex": self.segment.score_apex,
+            "gear": self.segment.score_gear,
+            "brake_force": self.segment.score_brake_force,
+            "turn_in": self.segment.score_turn_in,
+            "throttle_force": self.segment.score_throttle_force,
+        }
+        return self.eval(snippet, globals)
+
+    def eval(self, snippet, globals=None):
+        globals = globals or {
             "segment": self.segment,
             "brake_point": self.segment.brake_point,
             "apex": self.segment.apex,
