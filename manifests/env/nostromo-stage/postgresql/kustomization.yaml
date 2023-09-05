@@ -3,3 +3,24 @@ kind: Kustomization
 
 resources:
   - ../../../base/postgresql
+<<<<<<< HEAD
+=======
+
+patches:
+  - target:
+      kind: PostgresCluster
+      name: db
+    patch: |-
+      - op: replace
+        path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
+        value: 12Gi
+      - op: replace
+        path: /spec/backups/pgbackrest/repos/0/s3/bucket
+        value: "b4mad-racing-stage-psql"
+      - op: replace
+        path: /spec/backups/pgbackrest/repos/0/s3/endpoint
+        value: "https://minio.b4mad-racing-stage.svc.cluster.local"
+      - op: replace
+        path: /spec/backups/pgbackrest/repos/0/s3/region
+        value: "emea-b4mad-erdgeschoss"
+>>>>>>> 6230905 (update pg-backrest config)
