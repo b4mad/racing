@@ -38,6 +38,7 @@ scipy = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
+fontawesomefree = "*"
 
 [dev-packages]
 black = "*"
