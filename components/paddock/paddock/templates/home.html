@@ -1,4 +1,7 @@
-{%extends "base.html"%} {% load socialaccount %}
+{%extends "base.html"%}
+
+{% load socialaccount %}
+{% load login_extras %}
 
 {%block title%}Paddock{%endblock%}
 
@@ -14,12 +17,15 @@
           <br /><br />
           <a href="{% url 'account_logout' %}" class="btn btn-danger">Logout</a>
           {% else %}
-          <!-- GitHub button starts here -->
           <a href="{% provider_login_url 'github' %}" class="btn btn-secondary">
-            <i class="fa fa-github fa-fw"></i>
-            <span>Login with GitHub</span>
+            <i class="fa-brands fa-github"></i> <span>Login with GitHub</span>
           </a>
-          <!-- GitHub button ends here -->
+          <a href="{% provider_login_url 'discord' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-discord"></i> <span>Login with Discord</span>
+          </a>
+          <a href="{% provider_login_url 'reddit' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-reddit"></i> <span>Login with Reddit</span>
+          </a>
           {% endif %}
           <hr />
           <h3>🏁</h3>
