@@ -1,6 +1,8 @@
 import logging
 import statistics
 
+import numpy as np
+
 from .analyzer import Analyzer
 from .influx import Influx
 from .models import FastLap
@@ -224,7 +226,7 @@ class FastLapAnalyzer:
         # create a dict which maps the distance to the gear
         distance_gear = dict(zip(distances, gears))
         return {
-            "gear": int(gear),
+            "gear": int(gear) if not np.isnan(gear) else 0,
             "distance_gear": distance_gear,
         }
 
