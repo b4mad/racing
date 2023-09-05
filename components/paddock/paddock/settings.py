@@ -308,4 +308,25 @@ SOCIALACCOUNT_PROVIDERS = {
             "key": "",
         }
     },
+    "steam": {
+        "APP": {
+            "client_id": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
+            "secret": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
+            "key": "",
+        }
+    },
+    "microsoft": {
+        "APP": {
+            "client_id": os.getenv("SOCIALACCOUNT_MICROSOFT_CLIENTID", ""),
+            "secret": os.getenv("SOCIALACCOUNT_MICROSOFT_SECRET", ""),
+            "key": "",
+        }
+    },
+    "google": {
+        "APP": {
+            "client_id": os.getenv("SOCIALACCOUNT_GOOGLE_CLIENTID", ""),
+            "secret": os.getenv("SOCIALACCOUNT_GOOGLE_SECRET", ""),
+            "key": "",
+        }
+    },
 }
