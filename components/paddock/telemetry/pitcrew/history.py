@@ -43,10 +43,11 @@ class History(LoggingMixin):
                 self.init()
                 self._do_init = False
 
-    def set_filter(self, filter):
+    def set_filter(self, filter, coach_mode=Coach.MODE_DEFAULT):
         self._ready = False
         self.filter = filter
         self.session_id = filter.get("SessionId", "NO_SESSION")
+        self.coach_mode = coach_mode
         self._do_init = True
 
     def set_coach_mode(self, coach_mode):

@@ -5,6 +5,7 @@ import time
 from telemetry.models import Coach, Driver
 
 from .coach import Coach as PitCrewCoach
+from .coach_app import CoachApp
 from .history import History
 from .mqtt import Mqtt
 
@@ -64,9 +65,12 @@ class CoachWatcher:
         self.active_coaches[driver_name][1].disconnect()
         del self.active_coaches[driver_name]
 
-    def start_coach(self, driver_name, coach, debug=False):
+    def start_coach(self, driver_name, coach_model, debug=False):
         history = History()
-        coach = PitCrewCoach(history, coach, debug=debug)
+        if coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
+            coach = CoachApp(history, coach_model, debug=debug)
+        else:
+            coach = PitCrewCoach(history, coach_model, debug=debug)
 
         topic = f"crewchief/{driver_name}/#"
         mqtt = Mqtt(coach, topic, replay=self.replay, debug=debug)
