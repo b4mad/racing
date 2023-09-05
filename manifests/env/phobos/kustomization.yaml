@@ -16,6 +16,7 @@ resources:
   - namespace.yaml
   - postgresql
   - secrets/paddock-settings.sealed.yaml
+  - secrets/paddock-socialaccounts.yaml
   - secrets/secret.sealed.yaml
   - telegraf
 
