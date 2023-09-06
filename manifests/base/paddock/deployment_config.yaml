@@ -60,6 +60,7 @@ spec:
             - name: PADDOCK_POD_IP
               valueFrom:
                 fieldRef:
+                  apiVersion: v1
                   fieldPath: status.podIP
           envFrom:
             - secretRef:
