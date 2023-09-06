@@ -4,7 +4,7 @@ authors = [
 description = "This is the #B4mad Racing Paddock."
 license = "GPL-3.0-or-later"
 name = "b4mad-racing-paddock"
-version = "0.5.0"
+version = "0.6.0"
 
 [tool.isort]
 default_section = "THIRDPARTY"
