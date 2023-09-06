@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.edit import FormView
 
-import paddock.fastlap_app  # noqa: F401
+import paddock.metrics as metrics
 import paddock.pitcrew_app  # noqa: F401
 from telemetry.models import Coach, Driver
 
@@ -117,6 +117,7 @@ class CoachView(LoginRequiredMixin, FormView):
 
     def get_initial(self) -> Dict[str, Any]:
         user_name = self.request.user.first_name
+        metrics.loggedin_drivers.labels(user_name).set(1)
 
         self.coach = None
         coach_enabled = False
