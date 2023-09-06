@@ -1,0 +1,10 @@
+{% load socialaccount %}
+
+<ul>
+{% for provider in providers %}
+<a href="{% provider_login_url provider %}" class="btn btn-secondary">
+  <i class="fa-brands fa-discord"></i> <span>Login with Discord</span>
+</a>
+{% endfor %}
+
+</ul>

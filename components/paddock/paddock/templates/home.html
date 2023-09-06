@@ -1,4 +1,7 @@
-{%extends "base.html"%} {% load socialaccount %}
+{%extends "base.html"%}
+
+{% load socialaccount %}
+{% load login_extras %}
 
 {%block title%}Paddock{%endblock%}
 
@@ -14,12 +17,28 @@
           <br /><br />
           <a href="{% url 'account_logout' %}" class="btn btn-danger">Logout</a>
           {% else %}
-          <!-- GitHub button starts here -->
+          <h3>use our social logins</h3>
+          <div class="btn-group btn-group-sm" role="group" aria-label="social logins">
           <a href="{% provider_login_url 'github' %}" class="btn btn-secondary">
-            <i class="fa fa-github fa-fw"></i>
-            <span>Login with GitHub</span>
+            <i class="fa-brands fa-github"></i> <span>GitHub</span>
           </a>
-          <!-- GitHub button ends here -->
+          <a href="{% provider_login_url 'discord' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-discord"></i> <span>Discord</span>
+          </a>
+          <a href="{% provider_login_url 'reddit' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-reddit"></i> <span>Reddit</span>
+          </a>
+          <!--
+          <a href="{% provider_login_url 'steam' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-steam"></i> <span>Steam</span>
+          </a>
+          <a href="{% provider_login_url 'microsoft' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-microsoft"></i> <span>Microsoft</span>
+          </a>
+          -->
+          <a href="{% provider_login_url 'google' %}" class="btn btn-secondary">
+            <i class="fa-brands fa-google"></i> <span>Google</span>
+          </a></div>
           {% endif %}
           <hr />
           <h3>🏁</h3>
