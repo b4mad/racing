@@ -1,12 +1,12 @@
-FROM quay.io/fedora/python-310@sha256:6875e96d2b8f6897e26d578c75e5a0c8efcdbe6a492f22448ff48a98a6d7d2ae
+FROM quay.io/fedora/python-310@sha256:430446ef4ea844de1b49e691a9f5da20b2194d6420463dd21e762bacbf713b66
 
 LABEL \
-    org.opencontainers.image.source=https://github.com/b4mad/racing \
+    org.opencontainers.image.source="https://github.com/b4mad/racing" \
     org.opencontainers.image.description="This is the #B4mad Racing Paddock component" \
     org.opencontainers.image.licenses="GPL-3.0-or-later" \
     org.opencontainers.image.base.name="quay.io/fedora/python-310" \
+    org.opencontainers.image.url="https://github.com/b4mad/racing/" \
     io.openshift.non-scalable=true
-
 
 ENV \
     DISABLE_SETUP_PY_PROCESSING=1 \
