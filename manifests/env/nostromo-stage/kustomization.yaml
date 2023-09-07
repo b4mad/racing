@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 commonLabels:
-  app.kubernetes.io/name: b4mad-racing-stage
+  app.kubernetes.io/name: b4mad-racing
 
 resources:
   - namespace.yaml
@@ -25,6 +25,7 @@ resources:
 
   - paddock/
   - secrets/paddock-settings.yaml
+  - secrets/paddock-socialaccounts.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
