@@ -2,10 +2,10 @@ import json
 
 import django.utils.timezone
 
-from telemetry.models import Coach, TrackGuide
+from telemetry.models import Coach, SessionType
 from telemetry.pitcrew.logging import LoggingMixin
 
-from .application.response import Response, ResponseInstant
+from .application.response import ResponseInstant
 from .application.session import Session
 from .application.track_guide_application import TrackGuideApplication
 from .history import History
@@ -32,12 +32,14 @@ class CoachApp(LoggingMixin):
         game = frags[3]
         track = frags[4]
         car = frags[5]
+        session_type = frags[6]
         filter = {
             "Driver": driver,
             "GameName": game,
             "TrackCode": track,
             "CarModel": car,
             "SessionId": session,
+            "SessionType": session_type,
         }
         return filter
 
@@ -47,6 +49,7 @@ class CoachApp(LoggingMixin):
         self.topic = topic
         filter = self.filter_from_topic(topic)
         self.session_id = filter["SessionId"]
+        self.session_type = SessionType.objects.get(type=filter["SessionType"])
         self.log_debug("new session %s", topic)
         self.history.set_filter(filter, self.coach_model.mode)
 
@@ -75,6 +78,9 @@ class CoachApp(LoggingMixin):
     def init_app(self):
         self.session = Session()
         self.session.track = self.history.track
+        self.session.car = self.history.car
+        self.session.game = self.history.game
+        self.session.session_type = self.session_type
         self.track_guide_app = TrackGuideApplication(self.session)
 
     def respond(self, response):
@@ -89,6 +95,7 @@ class CoachApp(LoggingMixin):
     def return_messages(self):
         if self.responses:
             responses = [json.dumps(resp.response()) for resp in self.responses]
+            self.responses = []
             return (self.response_topic, responses)
 
     def notify(self, topic, telemetry, now=None):

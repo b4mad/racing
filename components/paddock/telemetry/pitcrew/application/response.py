@@ -4,7 +4,7 @@ class Response:
     AT = "at"
     MAX_DISTANCE = "max_distance"
 
-    def __init__(self, message, priority=0, max_distance=None, at=None):
+    def __init__(self, message, priority=5, max_distance=None, at=None):
         self.message = message
         self.at = at
         self.priority = priority
