@@ -6,14 +6,6 @@ resources:
 
 patches:
   - target:
-      kind: ServiceMonitor
-      name: paddock
-    patch: |
-      - op: replace
-        path: /spec/namespaceSelector/matchNames/0
-        value: b4mad-racing-stage
-
-  - target:
       kind: Ingress
       name: paddock
     patch: |-
@@ -33,13 +25,13 @@ patches:
     patch: |-
       - op: remove
         path: /spec/triggers
-
-  - target:
-      kind: DeploymentConfig
-      name: paddock
-    patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:
           name: ALLOWED_HOST
           value: paddock-nostromo-stage.b4mad.racing
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: PROMETHEUS_MULTIPROC_DIR
+          value: /tmp/django-metrics

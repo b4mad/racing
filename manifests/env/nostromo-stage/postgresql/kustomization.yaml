@@ -3,18 +3,3 @@ kind: Kustomization
 
 resources:
   - ../../../base/postgresql
-
-patches:
-  - target:
-      kind: PostgresCluster
-      name: db
-    patch: |-
-      - op: replace
-        path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
-        value: 12Gi
-      - op: replace
-        path: /spec/backups/pgbackrest/repos/0/volume/volumeClaimSpec/resources/requests/storage
-        value: 50Gi
-      - op: add
-        path: /spec/backups/pgbackrest/repos/0/volume/volumeClaimSpec/storageClassName
-        value: lvms-vg1

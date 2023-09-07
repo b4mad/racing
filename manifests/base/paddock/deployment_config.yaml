@@ -87,6 +87,9 @@ spec:
               memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          volumeMounts:
+            - name: django-metrics-dir
+              mountPath: /tmp/django-metrics
         - env:
             - name: DB_HOST
               valueFrom:
@@ -190,3 +193,8 @@ spec:
           args:
             - python /opt/app-root/src/manage.py migrate --noinput;
               python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
+      volumes:
+        - name: django-metrics-dir
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
