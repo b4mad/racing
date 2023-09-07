@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    labels:
+        app.kubernetes.io/managed-by: humans
+        app.kubernetes.io/name: b4mad-racing
+        app.kubernetes.io/version: v0.1.0-dev
+    name: pgo-s3-creds
+type: Opaque
+stringData:
+    s3.conf: |-
+        [global]
+        repo1-s3-key=LbiQpcGlhV2TnvYaZ2Jk
+        repo1-s3-key-secret=mbtGtSfl2fopHjlKP5IJ2fO1MhoPrpMH0cuNslV2
+        repo1-s3-uri-style=path
+        repo1-storage-verify-tls=n

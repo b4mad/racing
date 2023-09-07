@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: pgo-reader
+type: Opaque
+stringData:
+    user: reader
+    password: reader-password-for-grafana-data-source
