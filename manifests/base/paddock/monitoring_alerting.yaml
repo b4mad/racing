@@ -1,0 +1,29 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paddock
+spec:
+  endpoints:
+    - interval: 15s
+      port: django-web
+      scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paddock
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: paddock
+spec:
+  groups:
+    - name: controller
+      rules:
+        - alert: PaddockWebsiteDown
+          annotations:
+            description: "Paddock {{ $labels.namespace }}/{{ $labels.pod }} is down."
+            summary: website is down
+          expr: 'up{job="paddock-django-web"} < 1'
+          labels:
+            severity: critical
