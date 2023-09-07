@@ -3,13 +3,13 @@ kind: DeploymentConfig
 metadata:
   labels:
     app: paddock
-    app.kubernetes.io/component: paddock
   name: paddock
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     app: paddock
+    app.kubernetes.io/name: b4mad-racing
     app.kubernetes.io/component: paddock
   triggers:
     - type: ConfigChange
@@ -26,6 +26,7 @@ spec:
     metadata:
       labels:
         app: paddock
+        app.kubernetes.io/name: b4mad-racing
         app.kubernetes.io/component: paddock
       name: paddock
     spec:
