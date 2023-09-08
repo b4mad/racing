@@ -7,8 +7,8 @@ from .application import Application
 
 class TrackGuideApplication(Application):
     def init(self):
-        self.log_debug("TrackGuide: init")
         self.speed_pct_history = deque(maxlen=100)
+        self.speed_pct_sum = 0.0
         self.avg_speed_pct = 0
         self.recon_laps = True
 
@@ -35,11 +35,14 @@ class TrackGuideApplication(Application):
         if race_pace_speed:
             speed_pct = self.speed / race_pace_speed
             # Add current speed pct to history
-            self.speed_pct_history.append(speed_pct)
-
             if len(self.speed_pct_history) == self.speed_pct_history.maxlen:
-                # Queue is full, can calculate rolling average
-                self.avg_speed_pct = sum(self.speed_pct_history) / len(self.speed_pct_history)
+                # Remove the oldest value from the sum
+                self.speed_pct_sum -= self.speed_pct_history[0]
+            self.speed_pct_history.append(speed_pct)
+            # Add the new value to the sum
+            self.speed_pct_sum += speed_pct
+
+            self.avg_speed_pct = self.speed_pct_sum / len(self.speed_pct_history)
 
     def is_recon_laps(self):
         return self.recon_laps
