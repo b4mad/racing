@@ -39,6 +39,7 @@ sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
 fontawesomefree = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"
