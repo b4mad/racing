@@ -196,12 +196,16 @@ class Coach(ExportModelOperationsMixin("coach"), TimeStampedModel):
 
     MODE_DEFAULT = "default"
     MODE_TRACK_GUIDE = "track_guide"
+    MODE_TRACK_GUIDE_APP = "track_guide_app"
+    MODE_DEBUG_APP = "debug_app"
     MODE_DEBUG = "debug"
     MODE_ONLY_BRAKE = "only_brake"
     MODE_ONLY_BRAKE_DEBUG = "only_brake_debug"
     MODE_CHOICES = [
         (MODE_DEFAULT, "Default"),
         (MODE_TRACK_GUIDE, "Track Guide"),
+        (MODE_TRACK_GUIDE_APP, "Track Guide Application"),
+        (MODE_DEBUG_APP, "Debug Application"),
         (MODE_DEBUG, "Debug"),
         (MODE_ONLY_BRAKE, "Only Brakepoints"),
         (MODE_ONLY_BRAKE_DEBUG, "Only Brakepoints (Debug))"),
