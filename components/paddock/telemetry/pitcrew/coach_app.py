@@ -81,7 +81,8 @@ class CoachApp(LoggingMixin):
         self.session.car = self.history.car
         self.session.game = self.history.game
         self.session.session_type = self.session_type
-        self.track_guide_app = TrackGuideApplication(self.session)
+        self.session.id = self.session_id
+        self.track_guide_app = TrackGuideApplication(self.session, self.history)
 
     def respond(self, response):
         self.responses.append(response)

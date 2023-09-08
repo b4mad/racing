@@ -4,6 +4,10 @@ class Response:
     AT = "at"
     MAX_DISTANCE = "max_distance"
 
+    # response has a timeout of 10 seconds
+    # i.e. it will be discarded by CrewChief if it is not played within 10 seconds
+    # so we need to make sure that we send the response at least 10 seconds before the event
+
     def __init__(self, message, priority=5, max_distance=None, at=None):
         self.message = message
         self.at = at

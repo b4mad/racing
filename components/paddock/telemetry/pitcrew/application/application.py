@@ -1,19 +1,24 @@
+from telemetry.pitcrew.history import History
+from telemetry.pitcrew.logging import LoggingMixin
+
 from .response import Response, ResponseInstant
 from .session import Session
 
 
-class Application:
-    def __init__(self, session: Session):
+class Application(LoggingMixin):
+    def __init__(self, session: Session, history: History):
         self.session = session
+        self.session_id = session.id
         self.responses = []
+        self.history = history
+        self.distance = -1
         self.init()
-
-    def log(self, message):
-        pass
 
     def notify(self, distance: int, telemetry: dict):
         self.telemetry = telemetry
-        self.tick(distance)
+        self.distance = distance
+        self.speed = telemetry["SpeedMs"]
+        self.tick()
 
         # return messages
         for response in self.responses:
@@ -32,10 +37,13 @@ class Application:
 
         self.responses.append(response)
 
+    def race_pace_speed_at(self, distance):
+        return self.history.map_distance_speed.get(distance, 0)
+
     def init(self):
         pass
 
-    def tick(self, distance: int):
+    def tick(self):
         # get's called by super class
         pass
 

@@ -130,7 +130,6 @@ class TestTrackGuideApp(TransactionTestCase):
 
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")
-        topic = row["topic"].replace("Mazda MX-5 Cup", "no car")
         coach.notify(topic, row)
         history.init()
         history._do_init = False
