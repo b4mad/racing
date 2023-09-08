@@ -5,6 +5,7 @@ import django.utils.timezone
 from telemetry.models import Coach, SessionType
 from telemetry.pitcrew.logging import LoggingMixin
 
+from .application.debug_application import DebugApplication
 from .application.response import ResponseInstant
 from .application.session import Session
 from .application.track_guide_application import TrackGuideApplication
@@ -82,7 +83,10 @@ class CoachApp(LoggingMixin):
         self.session.game = self.history.game
         self.session.session_type = self.session_type
         self.session.id = self.session_id
-        self.track_guide_app = TrackGuideApplication(self.session, self.history)
+        if self.coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
+            self.track_guide_app = TrackGuideApplication(self.session, self.history)
+        else:
+            self.track_guide_app = DebugApplication(self.session, self.history)
 
     def respond(self, response):
         self.responses.append(response)
@@ -124,7 +128,7 @@ class CoachApp(LoggingMixin):
         for distance in range(start, stop):
             if distance % 100 == 0:
                 self.log_debug(f"distance: {distance} ({self.distance})")
-            for response in self.track_guide_app.notify(distance, telemetry):
+            for response in self.track_guide_app.notify(distance, telemetry, now):
                 self.respond(response)
 
         self.previous_distance = self.distance

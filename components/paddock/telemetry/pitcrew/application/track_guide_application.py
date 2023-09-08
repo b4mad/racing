@@ -1,5 +1,3 @@
-from collections import deque
-
 from telemetry.models import TrackGuide
 
 from .application import Application
@@ -7,9 +5,6 @@ from .application import Application
 
 class TrackGuideApplication(Application):
     def init(self):
-        self.speed_pct_history = deque(maxlen=100)
-        self.speed_pct_sum = 0.0
-        self.avg_speed_pct = 0
         self.recon_laps = True
 
         # get all notes for track and car
@@ -29,20 +24,6 @@ class TrackGuideApplication(Application):
 
         if self.is_recon_laps():
             self.log_debug(f"recon laps - avg_speed_pct {self.avg_speed_pct}")
-
-    def calculate_avg_speed(self):
-        race_pace_speed = self.race_pace_speed_at(self.distance)
-        if race_pace_speed:
-            speed_pct = self.speed / race_pace_speed
-            # Add current speed pct to history
-            if len(self.speed_pct_history) == self.speed_pct_history.maxlen:
-                # Remove the oldest value from the sum
-                self.speed_pct_sum -= self.speed_pct_history[0]
-            self.speed_pct_history.append(speed_pct)
-            # Add the new value to the sum
-            self.speed_pct_sum += speed_pct
-
-            self.avg_speed_pct = self.speed_pct_sum / len(self.speed_pct_history)
 
     def is_recon_laps(self):
         return self.recon_laps

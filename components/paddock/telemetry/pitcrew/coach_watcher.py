@@ -67,7 +67,7 @@ class CoachWatcher:
 
     def start_coach(self, driver_name, coach_model, debug=False):
         history = History()
-        if coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
+        if coach_model.mode == Coach.MODE_TRACK_GUIDE_APP or coach_model.mode == Coach.MODE_DEBUG_APP:
             coach = CoachApp(history, coach_model, debug=debug)
         else:
             coach = PitCrewCoach(history, coach_model, debug=debug)
