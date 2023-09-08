@@ -96,5 +96,3 @@ Only send messages that dont overlap.
 
 
 * get's called every meter on the track to check if it's applicable now
-
-
