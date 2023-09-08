@@ -1,1 +1,1 @@
-[]
+[('/coach/durandom', ['{"message": "Let\'s start the track guide.", "priority": 5}']), ('/coach/durandom', ['{"message": "You are driving race pace", "priority": 5}'])]

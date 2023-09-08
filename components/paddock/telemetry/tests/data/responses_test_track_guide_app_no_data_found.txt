@@ -1,1 +1,1 @@
-[('/coach/durandom', ['{"message": "no data found for game iRacing on track okayama short in car Ferrari 488 GT3 Evo 2020", "priority": 0}'])]
+[('/coach/durandom', ['{"message": "no data found for game iRacing on track okayama short in car Ferrari 488 GT3 Evo 2020", "priority": 5}'])]

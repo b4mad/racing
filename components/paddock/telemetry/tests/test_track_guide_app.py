@@ -27,6 +27,8 @@ class TestTrackGuideApp(TransactionTestCase):
     ]
     maxDiff = None
 
+    do_save_responses = False
+
     def test_no_trackguide(self):
         # iRacing / Mazda MX-5 Cup / okayama short
 
@@ -66,7 +68,8 @@ class TestTrackGuideApp(TransactionTestCase):
 
         responses_file = "test_track_guide_app_no_trackguide"
         expected_responses = read_responses(responses_file)
-        # save_responses(captured_responses, responses_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, responses_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
@@ -108,7 +111,8 @@ class TestTrackGuideApp(TransactionTestCase):
 
         responses_file = "test_track_guide_app_no_data_found"
         expected_responses = read_responses(responses_file)
-        # save_responses(captured_responses, responses_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, responses_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
@@ -147,8 +151,10 @@ class TestTrackGuideApp(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-        expected_responses = read_responses("test_track_guide_app_iracing")
-        # save_responses(captured_responses, "test_track_guide_app_iracing")
+        responses_file = "test_track_guide_app_iracing"
+        expected_responses = read_responses(responses_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, responses_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)

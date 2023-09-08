@@ -1,1 +1,1 @@
-[('/coach/durandom', ['{"message": "TrackGuide: no track guide found", "priority": 5}'])]
+[('/coach/durandom', ['{"message": "TrackGuide: no track guide found", "priority": 5}']), ('/coach/durandom', ['{"message": "You are driving race pace", "priority": 5}'])]
