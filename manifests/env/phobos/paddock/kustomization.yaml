@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: b4mad-racing
+
+resources:
+  - ../../../base/paddock/
+  - ../../../base/paddock/cronjobs
+
+patches:
+  - target:
+      kind: DeploymentConfig
+      name: paddock
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 6Gi
+      - op: replace
+        path: /spec/template/spec/containers/1/resources/limits/memory
+        value: 2Gi
+  - target:
+      kind: Ingress
+      name: paddock
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: paddock.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: paddock.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-paddock.b4mad.racing

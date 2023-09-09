@@ -1,15 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 labels:
-- pairs:
-    app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing
-    app.kubernetes.io/version: v0.1.0-dev
-namespace: b4mad-racing
+  - pairs:
+      app.kubernetes.io/name: b4mad-racing
+
 resources:
-- ../../../base/telegraf
+  - ../../../base/telegraf
+
 generatorOptions:
   disableNameSuffixHash: true
+
 patches:
   - target:
       kind: Deployment
@@ -21,3 +22,11 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/3/valueFrom/secretKeyRef/key
         value: token
+
+  - target:
+      kind: Route
+      name: telemetry
+    patch: |-
+      - op: replace
+        path: /spec/host
+        value: telemetry.b4mad.racing

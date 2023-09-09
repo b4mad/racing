@@ -1,24 +1,25 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 labels:
   - pairs:
       app.kubernetes.io/name: b4mad-racing
-      app.kubernetes.io/version: v0.1.0-dev
 
 namespace: b4mad-racing
 
 resources:
   - ../../base/mosquitto
-  - ../../base/paddock
-  - ../../base/paddock/cronjobs
-  - grafana
-  - influxdb
+
+  - grafana/
+  - influxdb/
   - namespace.yaml
-  - postgresql
+  - paddock/
+  - postgresql/
+  - telegraf/
+
   - secrets/paddock-settings.sealed.yaml
   - secrets/paddock-socialaccounts.yaml
   - secrets/secret.sealed.yaml
-  - telegraf
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -31,46 +32,6 @@ patches:
       - op: replace
         path: /spec/ports/0/nodePort
         value: 31883
-  - target:
-      kind: Route
-      name: telemetry
-    patch: |-
-      - op: replace
-        path: /spec/host
-        value: telemetry.b4mad.racing
-  - target:
-      kind: DeploymentConfig
-      name: paddock
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/resources/limits/memory
-        value: 6Gi
-      - op: replace
-        path: /spec/template/spec/containers/1/resources/limits/memory
-        value: 2Gi
-  - target:
-      kind: Ingress
-      name: paddock
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: paddock.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/hosts/0
-        value: paddock.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/secretName
-        value: https-cert-paddock.b4mad.racing
-  - target:
-      kind: Ingress
-      name: grafana
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: pitwall.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/hosts/0
-        value: pitwall.b4mad.racing
 
 images:
   - name: paddock
