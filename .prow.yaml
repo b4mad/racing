@@ -17,7 +17,7 @@ presubmits:
     context: op1st/prow/pre-commit
     spec:
       containers:
-        - image: quay.io/thoth-station/pre-commit:v0.16.8
+        - image: quay.io/thoth-station/pre-commit:v0.17.0
           command:
             - "prow-job-precommit"
   - name: e2e-telemetry
