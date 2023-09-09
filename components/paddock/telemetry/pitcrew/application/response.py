@@ -23,6 +23,21 @@ class Response:
     def discard(self):
         self._discarded = True
 
+    # One commonly used average reading speed for English is around 150 words per minute
+    # when spoken. This translates to 2.5 words per second. So you can estimate the time
+    # it takes to read a phrase out loud by counting the words and dividing by 2.5.
+    # or check https://github.com/alanhamlett/readtime
+    def read_time(self):
+        words = len(self.message.split(" "))
+        # r_time = words / 1.5
+        r_time = words / 2.2
+        # delta_add = 2.0
+        delta_add = 0.2
+        # self.log_debug(f"read_time: '{msg}' ({words}) {r_time:.1f} seconds + {delta_add:.1f} seconds")
+        # return words * 0.8  # avg ms per word
+        # return words / 2.5  # avg ms per word
+        return r_time + delta_add
+
     def response(self):
         response_dict = {self.MESSAGE: self.message, self.PRIORITY: self.priority}
 

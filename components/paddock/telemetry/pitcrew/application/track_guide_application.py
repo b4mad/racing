@@ -8,11 +8,22 @@ class TrackGuideApplication(Application):
         self.recon_laps = True
 
         # get all notes for track and car
-        self.track_guide = TrackGuide.objects.filter(car=self.session.car, track=self.session.track).first()
+        self.track_guide: TrackGuide | None = TrackGuide.objects.filter(
+            car=self.session.car, track=self.session.track
+        ).first()
         if not self.track_guide:
             self.send_response("TrackGuide: no track guide found")
         else:
             self.send_response("Let's start the track guide.")
+            self.init_notes()
+
+    def init_notes(self):
+        for note in self.track_guide.notes.all():
+            if note.segment:
+                self.get_segment(turn=note.segment)
+
+        # build a dict of DistanceRoundTrack -> [ notes ]
+        pass
 
     def tick(self):
         self.calculate_avg_speed()
@@ -23,7 +34,7 @@ class TrackGuideApplication(Application):
                 self.send_response("You are driving race pace")
 
         if self.is_recon_laps():
-            self.log_debug(f"recon laps - avg_speed_pct {self.avg_speed_pct}")
+            self.respond_recon()
 
     def is_recon_laps(self):
         return self.recon_laps
@@ -36,6 +47,16 @@ class TrackGuideApplication(Application):
             self.recon_laps = True
             return True
         return False
+
+    def respond_recon(self):
+        distance = self.distance_add(20)
+        if self.message_playing_at(distance):
+            return
+        # get all available notes for the current segment
+        # get the note for the current distance + some meters ahead
+        #
+        #
+        pass
 
     def on_reset_to_pits(self):
         self.send_response("TrackGuide: on_reset_to_pits")

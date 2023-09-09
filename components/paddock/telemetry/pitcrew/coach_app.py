@@ -25,6 +25,8 @@ class CoachApp(LoggingMixin):
         self.session_id = ""
         self.distance = 0
         self.previous_distance = -1
+        self.playing_at = {}  # distance -> bool
+        self.track_length = 1
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -54,9 +56,6 @@ class CoachApp(LoggingMixin):
         self.log_debug("new session %s", topic)
         self.history.set_filter(filter, self.coach_model.mode)
 
-    def track_length(self):
-        return self.history.track_length
-
     def ready(self):
         if self._new_session_starting:
             if not self.history.is_ready():
@@ -83,10 +82,11 @@ class CoachApp(LoggingMixin):
         self.session.game = self.history.game
         self.session.session_type = self.session_type
         self.session.id = self.session_id
+        self.track_length = self.session.track_length()
         if self.coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
-            self.track_guide_app = TrackGuideApplication(self.session, self.history)
+            self.track_guide_app = TrackGuideApplication(self.session, self.history, self)
         else:
-            self.track_guide_app = DebugApplication(self.session, self.history)
+            self.track_guide_app = DebugApplication(self.session, self.history, self)
 
     def respond(self, response):
         self.responses.append(response)
@@ -97,11 +97,23 @@ class CoachApp(LoggingMixin):
             self._error = None
             return error
 
-    def return_messages(self):
+    def return_messages(self, store_play_at=True):
         if self.responses:
-            responses = [json.dumps(resp.response()) for resp in self.responses]
+            responses = []
+            for resp in self.responses:
+                responses.append(json.dumps(resp.response()))
+                if store_play_at:
+                    start = resp.at or self.distance
+                    end = self.history.distance_add(start, resp.read_time())
+                    for distance in range(start, end):
+                        play_at_distance = distance % self.track_length
+                        self.playing_at[play_at_distance] = True
+
             self.responses = []
             return (self.response_topic, responses)
+
+    def message_playing_at(self, distance):
+        return self.playing_at.get(distance, False)
 
     def notify(self, topic, telemetry, now=None):
         now = now or django.utils.timezone.now()
@@ -109,7 +121,7 @@ class CoachApp(LoggingMixin):
             self.new_session(topic)
 
         if not self.ready():
-            return self.return_messages()
+            return self.return_messages(store_play_at=False)
 
         self.distance = int(telemetry["DistanceRoundTrack"])
         if self.distance == self.previous_distance:
@@ -122,10 +134,11 @@ class CoachApp(LoggingMixin):
         start = self.previous_distance + 1
         stop = self.distance + 1
         if start > stop:
-            stop += self.track_length()
+            stop += self.track_length
             self.log_debug(f"distance: wrap around: {start} -> {stop}")
 
         for distance in range(start, stop):
+            self.playing_at[distance] = False
             if distance % 100 == 0:
                 self.log_debug(f"distance: {distance} ({self.distance})")
             for response in self.track_guide_app.notify(distance, telemetry, now):

@@ -1,6 +1,8 @@
 import time
 
+import numpy as np
 import pandas as pd
+from scipy.interpolate import interp1d
 
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
@@ -233,16 +235,81 @@ class History(LoggingMixin):
 
     def build_lookup_tables(self):
         """Build lookup tables for fast lap data."""
-        distance_time = self.fast_lap.data.get("distance_time")
-        # distance_time is a pandas dataframe with CurrentLapTime, SpeedMs and DistanceRoundTrack as columns
+        df = self.fast_lap.data.get("distance_time")
+        # df is a pandas dataframe with CurrentLapTime, SpeedMs and DistanceRoundTrack as columns
         # 1. round DistanceRoundTrack to integer
         # 2. create a dictionary with DistanceRoundTrack as key and SpeedMs as value
 
+        min_distance = 0
+        max_distance = self.track_length
+        target_rows = max_distance + 1
+
+        new_distance_round_track = np.linspace(min_distance, max_distance, target_rows)
+        new_distance_round_track = np.round(new_distance_round_track, decimals=0).astype(int)
+
+        resampled_df = pd.DataFrame({"DistanceRoundTrack": new_distance_round_track})
+
+        for column in ["CurrentLapTime", "SpeedMs"]:
+            interp = interp1d(
+                df["DistanceRoundTrack"], df[column], kind="nearest", bounds_error=False, fill_value="extrapolate"
+            )
+            interpolated_values = interp(new_distance_round_track)
+
+            if np.issubdtype(df[column].dtype, np.integer):
+                interpolated_values = np.round(interpolated_values).astype(int)
+
+            resampled_df[column] = interpolated_values
+
+        df = resampled_df
         # Round DistanceRoundTrack column to integer
-        distance_time["DistanceRoundTrack"] = distance_time["DistanceRoundTrack"].round().astype(int)
+        # df["DistanceRoundTrack"] = df["DistanceRoundTrack"].round().astype(int)
 
         # Create dictionary with DistanceRoundTrack as key and SpeedMs as value
-        self.map_distance_speed = dict(zip(distance_time["DistanceRoundTrack"], distance_time["SpeedMs"]))
+        self.map_distance_speed = dict(zip(df["DistanceRoundTrack"], df["SpeedMs"]))
+        # Create dictionary with DistanceRoundTrack as key and CurrentLapTime as value
+        self.map_distance_time = dict(zip(df["DistanceRoundTrack"], df["CurrentLapTime"]))
+        # Create dictionary with CurrentLapTime as key and DistanceRoundTrack as value
+        self.map_time_distance = dict(zip(df["CurrentLapTime"], df["DistanceRoundTrack"]))
+
+        # fill gaps
+        # max_distance = self.track_length
+        # TODO interpolate
+        # for distance in range(0, max_distance):
+        #     for map in [self.map_distance_speed, self.map_distance_time, self.map_time_distance]:
+        #         if distance not in map:
+        #             # look back
+        #             prev_distance = distance - 1
+        #             found_distance = -1
+        #             while prev_distance >= 0:
+        #                 if prev_distance in map:
+        #                     found_distance = prev_distance
+        #                     break
+        #                 prev_distance -= 1
+        #             if found_distance < 0:
+        #                 # look ahead
+        #                 next_distance = distance + 1
+        #                 while
+
+        self.map_time_distance_max = max(self.map_time_distance.keys())
+
+    def lap_time_at_distance(self, distance):
+        return self.map_distance_time[distance]
+
+    def distance_at_lap_time(self, lap_time):
+        distance = self.map_time_distance.get(lap_time, None)
+        if distance is None:
+            keys = self.map_time_distance.keys()
+            # get the closest key
+            # FIXME: this is probably too expensive, maybe have multiple lookup tables,
+            #        with different resolutions, 3 decimals, 2 decimals, 1 decimal, integer
+            closest_key = min(keys, key=lambda x: abs(x - lap_time))
+            distance = self.map_time_distance[closest_key]
+        return distance
+
+    def distance_add(self, distance, seconds):
+        time_at_distance = self.lap_time_at_distance(distance)
+        target_time = (time_at_distance + seconds) % self.map_time_distance_max
+        return self.distance_at_lap_time(target_time)
 
     def offset_distance(self, distance, seconds=0.0):
         self.log_debug(f"offset_distance from {distance} {seconds:.2f}")

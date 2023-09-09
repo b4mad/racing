@@ -120,7 +120,15 @@ class TestTrackGuideApp(TransactionTestCase):
     def test_track_guide_iracing(self):
         # iRacing / Mazda MX-5 Cup / okayama short
 
-        session_id = "1690362827"
+        # session by durandom
+        # first 2 laps are slow
+        # 3rd lap has a spin in the first turn
+        # reset to pits
+        # fast out of pits
+        # spin at turn 2
+        # continue at fast pace for one more lap
+        # then slow down after finish line
+        session_id = "1694266648"
         driver = Driver.objects.get(name="durandom")
         coach = driver.coach
         coach.mode = Coach.MODE_TRACK_GUIDE_APP
@@ -130,7 +138,7 @@ class TestTrackGuideApp(TransactionTestCase):
 
         coach = CoachApp(history, coach)
 
-        session_df = get_session_df(session_id, measurement="fast_laps", bucket="fast_laps")
+        session_df = get_session_df(session_id, measurement="laps_cc", bucket="racing")
 
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")

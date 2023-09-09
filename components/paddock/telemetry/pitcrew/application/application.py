@@ -9,13 +9,14 @@ from .session import Session
 
 
 class Application(LoggingMixin):
-    def __init__(self, session: Session, history: History):
+    def __init__(self, session: Session, history: History, coach):
         self.session = session
         self.session_id = session.id
         self.responses = []
         self.history = history
+        self.coach = coach
         self.distance = -1
-        self.speed_pct_history = deque(maxlen=100)
+        self.speed_pct_history = deque(maxlen=500)
         self.speed_pct_sum = 0.0
         self.avg_speed_pct = 0
         self.init()
@@ -32,6 +33,15 @@ class Application(LoggingMixin):
             yield response
 
         self.responses = []
+
+    def distance_add(self, meters):
+        return (self.distance + meters) % self.session.track_length()
+
+    def message_playing_at(self, distance):
+        return self.coach.message_playing_at(distance)
+
+    def get_segment(self, turn):
+        pass
 
     def send_response(self, message, priority=5, max_distance=None, at=None):
         # from CrewChiefV4.audio.SoundMetaData

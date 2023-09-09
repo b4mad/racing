@@ -27,10 +27,12 @@ class TestDebugApp(TransactionTestCase):
     ]
     maxDiff = None
 
+    do_save_responses = False
+
     def test_debug(self):
         # iRacing / Mazda MX-5 Cup / okayama short
 
-        session_id = "1690362827"
+        session_id = "1694266648"
         driver = Driver.objects.get(name="durandom")
         coach = driver.coach
         coach.mode = Coach.MODE_DEBUG_APP
@@ -40,7 +42,7 @@ class TestDebugApp(TransactionTestCase):
 
         coach = CoachApp(history, coach)
 
-        session_df = get_session_df(session_id, measurement="fast_laps", bucket="fast_laps")
+        session_df = get_session_df(session_id, measurement="laps_cc", bucket="racing")
 
         row = session_df.iloc[0].to_dict()
         topic = row["topic"].replace("Jim", "durandom")
@@ -63,7 +65,8 @@ class TestDebugApp(TransactionTestCase):
 
         responses_file = "test_debug_app"
         expected_responses = read_responses(responses_file)
-        # save_responses(captured_responses, responses_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, responses_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
