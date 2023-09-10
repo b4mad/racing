@@ -16,16 +16,60 @@ class TrackGuideApplication(Application):
         else:
             self.send_response("Let's start the track guide.")
             self.init_notes()
+            self.init_recon_laps()
 
     def init_notes(self):
+        self.distance_notes = {}
         for note in self.track_guide.notes.all():
-            if note.segment:
-                self.get_segment(turn=note.segment)
+            data = {
+                "note": note,
+                "segments": [],
+                "at": None,
+                "finish_at": None,
+            }
 
-        # build a dict of DistanceRoundTrack -> [ notes ]
-        pass
+            if note.segment:
+                segment = self.get_segment(turn=note.segment)
+                data["segments"].append(segment)
+            else:
+                data["segments"] = self.segments_for_landmark(note.landmark)
+                segment = data["segments"][0]
+
+            if note.at_start:
+                snippet = note.at_start
+            elif note.at:
+                snippet = note.at
+            else:
+                snippet = "brake_point()"
+
+            distance = self.eval_at(snippet, segment)
+
+            if note.at_start:
+                data["at"] = distance
+            else:
+                data["finish_at"] = distance
+
+            if distance not in self.distance_notes:
+                self.distance_notes[distance] = []
+            self.distance_notes[distance].append(data)
+
+    def init_recon_laps(self):
+        self.recon_notes = {}
+        for distance, notes in self.distance_notes.items():
+            self.recon_notes[distance] = notes.copy()
+
+    def get_recon_note(self, distance):
+        notes = self.distance_notes.get(distance, [])
+        note = None
+        if notes:
+            note = notes.pop(0)
+            if not notes:
+                del self.distance_notes[distance]
+        return note
 
     def tick(self):
+        if not self.track_guide:
+            return
         self.calculate_avg_speed()
         if self.changed_coaching_style():
             if self.is_recon_laps():
@@ -49,14 +93,19 @@ class TrackGuideApplication(Application):
         return False
 
     def respond_recon(self):
-        distance = self.distance_add(20)
+        distance = self.distance_add(self.distance, 300)
         if self.message_playing_at(distance):
             return
-        # get all available notes for the current segment
-        # get the note for the current distance + some meters ahead
-        #
-        #
-        pass
+        note_info = self.get_recon_note(distance)
+        if note_info:
+            note = note_info["note"]
+            if note_info["finish_at"]:
+                response = self.send_response(note.message, finish_at=note_info["finish_at"])
+            else:
+                response = self.send_response(note.message, at=note_info["at"])
+
+            if response.at < self.distance:
+                self.log_error(f"response {response} cant be played")
 
     def on_reset_to_pits(self):
         self.send_response("TrackGuide: on_reset_to_pits")

@@ -17,6 +17,9 @@ class Response:
         self._sent = False
         self._discarded = False
 
+    def __str__(self) -> str:
+        return f"At {self.at}: {self.message}"
+
     def send(self):
         self._sent = True
 

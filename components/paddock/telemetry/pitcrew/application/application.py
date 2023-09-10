@@ -19,6 +19,9 @@ class Application(LoggingMixin):
         self.speed_pct_history = deque(maxlen=500)
         self.speed_pct_sum = 0.0
         self.avg_speed_pct = 0
+        self.segments_by_turn = {}
+        for segment in self.history.segments:
+            self.segments_by_turn[segment.turn] = segment
         self.init()
 
     def notify(self, distance: int, telemetry: dict, now: datetime.datetime):
@@ -34,25 +37,34 @@ class Application(LoggingMixin):
 
         self.responses = []
 
-    def distance_add(self, meters):
-        return (self.distance + meters) % self.session.track_length()
+    def distance_add(self, distance, meters):
+        return (distance + meters) % self.session.track_length()
 
     def message_playing_at(self, distance):
         return self.coach.message_playing_at(distance)
 
     def get_segment(self, turn):
-        pass
+        return self.segments_by_turn[turn]
 
-    def send_response(self, message, priority=5, max_distance=None, at=None):
+    def finish_at(self, at, response):
+        read_time = response.read_time()
+        respond_at = self.history.distance_add(at, seconds=-1 * read_time)
+        return int(respond_at)
+
+    def send_response(self, message, priority=5, max_distance=None, at=None, finish_at=None):
         # from CrewChiefV4.audio.SoundMetaData
         # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
         # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
-        if at is None:
+        if at is None and finish_at is None:
             response = ResponseInstant(message, priority=priority)
         else:
-            response = Response(message, priority=priority, at=at)
+            distance = at or finish_at
+            response = Response(message, priority=priority, at=distance)
+            if finish_at:
+                response.at = self.finish_at(finish_at, response)
 
         self.responses.append(response)
+        return response
 
     def race_pace_speed_at(self, distance):
         return self.history.map_distance_speed.get(distance, 0)
@@ -70,6 +82,48 @@ class Application(LoggingMixin):
             self.speed_pct_sum += speed_pct
 
             self.avg_speed_pct = self.speed_pct_sum / len(self.speed_pct_history)
+
+    def eval_at(self, snippet, segment):
+        globals = {
+            "brake_point": segment.brake_point,
+            "apex": segment.apex,
+            "gear": segment.gear_distance,
+            "turn_in": segment.turn_in,
+        }
+        return self.eval(snippet, segment, globals)
+
+    def eval(self, snippet, segment, globals=None):
+        globals = globals or {
+            "segment": segment,
+            "brake_point": segment.brake_point,
+            "apex": segment.apex,
+            "brake_point_diff": segment.brake_point_diff,
+            "apex_diff": segment.apex_diff,
+            "gear_diff": segment.gear_diff,
+            "coach_brake_force": segment.coach_brake_force,
+            "coach_turn_in": segment.coach_turn_in,
+            "coach_brake_point": segment.coach_brake_point,
+            "coach_gear": segment.coach_gear,
+            "coach_apex": segment.coach_apex,
+            "coach_throttle_force": segment.coach_throttle_force,
+        }
+        try:
+            rv = eval(snippet, globals)  # nosec
+            self.log_debug(f"eval: {snippet} -> {rv}")
+            return rv
+        except Exception as e:
+            error = f"eval error: {snippet} -> {e}"
+            self.log_debug(error)
+            return error
+
+    def segments_for_landmark(self, landmark):
+        segments = []
+        for segment in self.history.segments:
+            if segment.start <= landmark.start <= segment.end:
+                segments.append(segment)
+            if segment.start <= landmark.end <= segment.end:
+                segments.append(segment)
+        return segments
 
     def init(self):
         pass

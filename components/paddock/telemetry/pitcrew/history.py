@@ -261,8 +261,6 @@ class History(LoggingMixin):
             resampled_df[column] = interpolated_values
 
         df = resampled_df
-        # Round DistanceRoundTrack column to integer
-        # df["DistanceRoundTrack"] = df["DistanceRoundTrack"].round().astype(int)
 
         # Create dictionary with DistanceRoundTrack as key and SpeedMs as value
         self.map_distance_speed = dict(zip(df["DistanceRoundTrack"], df["SpeedMs"]))
@@ -270,26 +268,6 @@ class History(LoggingMixin):
         self.map_distance_time = dict(zip(df["DistanceRoundTrack"], df["CurrentLapTime"]))
         # Create dictionary with CurrentLapTime as key and DistanceRoundTrack as value
         self.map_time_distance = dict(zip(df["CurrentLapTime"], df["DistanceRoundTrack"]))
-
-        # fill gaps
-        # max_distance = self.track_length
-        # TODO interpolate
-        # for distance in range(0, max_distance):
-        #     for map in [self.map_distance_speed, self.map_distance_time, self.map_time_distance]:
-        #         if distance not in map:
-        #             # look back
-        #             prev_distance = distance - 1
-        #             found_distance = -1
-        #             while prev_distance >= 0:
-        #                 if prev_distance in map:
-        #                     found_distance = prev_distance
-        #                     break
-        #                 prev_distance -= 1
-        #             if found_distance < 0:
-        #                 # look ahead
-        #                 next_distance = distance + 1
-        #                 while
-
         self.map_time_distance_max = max(self.map_time_distance.keys())
 
     def lap_time_at_distance(self, distance):
