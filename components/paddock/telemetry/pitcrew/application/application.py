@@ -52,7 +52,28 @@ class Application(LoggingMixin):
         respond_at = self.history.distance_add(at, seconds=-1 * read_time)
         return int(respond_at)
 
-    def send_response(self, message, priority=5, max_distance=None, at=None, finish_at=None):
+    def max_distance_delta(self, segment):
+        approach_speed = segment.approach_speed()
+        if approach_speed is None:
+            return 10
+
+        # The formula for the slope of a line when you have two points
+        # (x1, y1) and (x2, y2) is m = (y2 - y1) / (x2 - x1).
+        # So the slope m for your points (30,10) and (60,15) is (15-10) / (60-30) = 5 / 30 = 1/6.
+        # Then, once we have the slope, we can find the y-intercept, b,
+        # using the equation b = y - mx, using one of our points.
+        # I will use the point (30,10): b = 10 - (1/6)*30 = 10 - 5 = 5
+        # So the equation of the line that goes through these two points is:
+        # y = (1/6)x + 5
+
+        slope = 1 / 6
+        intercept = 7
+
+        max_distance = slope * approach_speed + intercept
+        self.log_debug(f"max_distance: {max_distance:.1f} approach_speed: {approach_speed:.1f}")
+        return int(max_distance)
+
+    def send_response(self, message, priority=5, max_distance=None, max_distance_delta=None, at=None, finish_at=None):
         # from CrewChiefV4.audio.SoundMetaData
         # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
         # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
@@ -63,6 +84,9 @@ class Application(LoggingMixin):
             response = Response(message, priority=priority, at=distance)
             if finish_at:
                 response.at = self.finish_at(finish_at, response)
+
+        if max_distance_delta:
+            response.max_distance = self.distance_add(response.at, max_distance_delta)
 
         self.responses.append(response)
         return response

@@ -101,10 +101,14 @@ class TrackGuideApplication(Application):
         note_info = self.get_recon_note(distance)
         if note_info:
             note = note_info["note"]
+            segment = note_info["segments"][0]
+            max_distance_delta = self.max_distance_delta(segment)
             if note_info["finish_at"]:
-                response = self.send_response(note.message, finish_at=note_info["finish_at"])
+                response = self.send_response(
+                    note.message, finish_at=note_info["finish_at"], max_distance_delta=max_distance_delta
+                )
             else:
-                response = self.send_response(note.message, at=note_info["at"])
+                response = self.send_response(note.message, at=note_info["at"], max_distance_delta=max_distance_delta)
 
             if response.at < self.distance:
                 self.log_error(f"response {response} cant be played")
