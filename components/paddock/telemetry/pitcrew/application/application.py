@@ -31,6 +31,7 @@ class Application(LoggingMixin):
         self.now = now
         self.tick()
 
+    def yield_responses(self):
         # return messages
         for response in self.responses:
             yield response
@@ -132,5 +133,11 @@ class Application(LoggingMixin):
         # get's called by super class
         pass
 
-    def on_session_start(self):
+    def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
+        pass
+
+    def on_new_lap(self, distance: int, telemetry: dict, now: datetime.datetime):
+        pass
+
+    def on_crash(self, distance: int, telemetry: dict, now: datetime.datetime):
         pass

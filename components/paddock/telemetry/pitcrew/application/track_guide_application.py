@@ -1,3 +1,5 @@
+import datetime
+
 from telemetry.models import TrackGuide
 
 from .application import Application
@@ -84,10 +86,10 @@ class TrackGuideApplication(Application):
         return self.recon_laps
 
     def changed_coaching_style(self):
-        if self.is_recon_laps() and self.avg_speed_pct > 0.8:
+        if self.is_recon_laps() and self.avg_speed_pct > 0.9:
             self.recon_laps = False
             return True
-        elif not self.is_recon_laps() and self.avg_speed_pct < 0.8:
+        elif not self.is_recon_laps() and self.avg_speed_pct < 0.9:
             self.recon_laps = True
             return True
         return False
@@ -107,8 +109,11 @@ class TrackGuideApplication(Application):
             if response.at < self.distance:
                 self.log_error(f"response {response} cant be played")
 
-    def on_reset_to_pits(self):
-        self.send_response("TrackGuide: on_reset_to_pits")
+    def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
+        self.send_response("You reset to pits - I reset messages")
 
-    def on_new_lap(self):
-        self.send_response("TrackGuide: on_new_lap")
+    def on_new_lap(self, distance: int, telemetry: dict, now: datetime.datetime):
+        pass
+
+    def on_crash(self, distance: int, telemetry: dict, now: datetime.datetime):
+        self.send_response("You crashed - drive a bit slower")
