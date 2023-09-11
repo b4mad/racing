@@ -40,7 +40,9 @@ def generate_metrics():
     global social_accounts
 
     try:
-        git_version = subprocess.check_output(["git", "describe"]).strip().decode("utf-8")
+        git_version = (
+            subprocess.check_output(["git", "describe"]).strip().decode("utf-8")
+        )
     except subprocess.CalledProcessError:
         git_version = "v0.0.0+error_in_git_describe"
 
