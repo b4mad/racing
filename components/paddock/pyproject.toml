@@ -1,12 +1,12 @@
+[project]
 authors = [
   "Marcel Hild <durandom@b4mad.net>",
 ]
 description = "This is the #B4mad Racing Paddock."
-license = "GPL-3.0-or-later"
-
-[project]
+license = {text = "GPL-3.0-or-later"}
 name = "paddock"
-version = "0.6.1-rc1"
+readme = "README.md"
+version = "0.6.0"
 
 [tool.isort]
 default_section = "THIRDPARTY"
