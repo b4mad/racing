@@ -3,8 +3,10 @@ authors = [
 ]
 description = "This is the #B4mad Racing Paddock."
 license = "GPL-3.0-or-later"
-name = "b4mad-racing-paddock"
-version = "0.6.0"
+
+[project]
+name = "paddock"
+version = "0.6.1-rc1"
 
 [tool.isort]
 default_section = "THIRDPARTY"
@@ -23,5 +25,5 @@ major_version_zero = true
 name = "cz_conventional_commits"
 tag_format = "v$version"
 update_changelog_on_bump = true
-version_provider = "scm"
+version_provider = "pep621"
 version_scheme = "semver"
