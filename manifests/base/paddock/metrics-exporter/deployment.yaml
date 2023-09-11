@@ -8,7 +8,8 @@ spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    app.kubernetes.io/component: paddock-metrics-exporter
+    matchLabels:
+      app.kubernetes.io/component: paddock-metrics-exporter
   template:
     metadata:
       labels:
