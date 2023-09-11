@@ -3,12 +3,12 @@ kind: Grafana
 metadata:
   name: grafana
   labels:
-    dashboards: "grafana"
+    dashboards: grafana
 spec:
   persistentVolumeClaim:
     spec:
       accessModes:
-        - "ReadWriteOnce"
+        - ReadWriteOnce
       resources:
         requests:
           storage: "1Gi"
