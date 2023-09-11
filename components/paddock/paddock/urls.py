@@ -8,7 +8,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
-from kpi import views as kpi_views
 
 from . import views
 from .views import CoachView
@@ -16,7 +15,6 @@ from .views import CoachView
 urlpatterns = [
     # path("", views.index, name="home"),
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
-    path("", include("django_prometheus.urls")),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
     # path("fastlap/<str:game>/<str:track>/<str:car>", views.fastlap_index, name="fastlap_index"),
     # path("fastlap/<str:game>/<str:track>>", views.fastlap_index, name="fastlap_index"),
@@ -31,7 +29,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("explorer/", include("explorer.urls")),
-    path("kpi/", kpi_views.index, name="kpi-index"),
     path("django_plotly_dash/", include("django_plotly_dash.urls")),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATIC_ROOT

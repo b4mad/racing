@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/component: paddock-metrics-exporter
+
+resources:
+  - deployment.yaml
+  - ingress.yaml
+  - monitoring_alerting.yaml
+  - service.yaml
+
+patches:
+  - target:
+      kind: Ingress
+      name: paddock-metrics-exporter
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: paddock-metrics-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: paddock-metrics-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-paddock-metrics-nostromo-stage.b4mad.racing
