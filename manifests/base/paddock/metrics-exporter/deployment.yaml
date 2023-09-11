@@ -55,7 +55,7 @@ spec:
           envFrom:
             - secretRef:
                 name: paddock-settings
-          image: quay.io/b4mad/paddock@sha256:7f605608860a25291488771222ded9fd9eb3c4d0ece4b0123779c8cd48387077
+          image: quay.io/b4mad/paddock:41a7b33e47e4f9692a85efa4f7766e1661f09e74
           imagePullPolicy: Always
           name: paddock-paddock-metrics-exporter
           command: ["/bin/sh", "-c"]
