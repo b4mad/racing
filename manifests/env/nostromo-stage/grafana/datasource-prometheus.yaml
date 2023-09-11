@@ -1,0 +1,28 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  annotations:
+    operate-first.cloud/comment: "This is targeting the Thanos Querier in the OpenShift Monitoring namespace on the Nostromo cluster, project b4mad-nostromo-stage."
+  name: prometheus-b4mad-nostromo-stage
+spec:
+  valuesFrom:
+    - targetPath: secureJsonData.httpHeaderValue1
+      valueFrom:
+        secretKeyRef:
+          name: grafana-prometheus-auth
+          key: PROMETHEUS_TOKEN
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  datasource:
+    name: Prometheus
+    access: proxy
+    editable: false
+    isDefault: false
+    type: prometheus
+    url: https://thanos-querier-openshift-monitoring.apps.nostromo.erdgeschoss.b4mad.emea.operate-first.cloud
+    secureJsonData:
+      httpHeaderValue1: "Bearer ${PROMETHEUS_TOKEN}"
+    jsonData:
+      tlsSkipVerify: true
+      timeInterval: 5s
