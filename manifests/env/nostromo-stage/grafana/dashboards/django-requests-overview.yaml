@@ -1,0 +1,10 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: django-requests-overview
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: General
+  url: https://raw.githubusercontent.com/goern/racing/main/manifests/env/nostromo-stage/grafana/dashboards/django-requests-overview.json

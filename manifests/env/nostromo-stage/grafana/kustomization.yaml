@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ../../../base/grafana-v5
   - datasource-prometheus.yaml
+  - dashboards/
 
 generatorOptions:
   disableNameSuffixHash: true

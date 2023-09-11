@@ -2,7 +2,9 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
   annotations:
-    operate-first.cloud/comment: "This is targeting the Thanos Querier in the OpenShift Monitoring namespace on the Nostromo cluster, project b4mad-nostromo-stage."
+    operate-first.cloud/comment: >-
+      This is targeting the Thanos Querier in the OpenShift Monitoring namespace
+      on the Nostromo cluster, project b4mad-nostromo-stage.
   name: prometheus-b4mad-nostromo-stage
 spec:
   valuesFrom:
