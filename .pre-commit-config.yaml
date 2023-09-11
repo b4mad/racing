@@ -30,12 +30,6 @@ repos:
       - id: black
         args: ["--line-length=120"]
 
-  - repo: https://github.com/tomcatling/black-nb
-    rev: "0.7"
-    hooks:
-      - id: black-nb
-        args: ["--line-length=120"]
-
   - repo: https://github.com/PyCQA/flake8
     rev: "6.1.0"
     hooks:
