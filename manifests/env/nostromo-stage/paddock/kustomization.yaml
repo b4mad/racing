@@ -2,7 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../../base/paddock
+  - ../../../base/paddock/
+  - ../../../base/paddock/metrics-exporter/
 
 patches:
   - target:
@@ -18,6 +19,20 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: https-cert-paddock-nostromo-stage.b4mad.racing
+
+  - target:
+      kind: Ingress
+      name: paddock-metrics-exporter
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: paddock-metrics-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: paddock-metrics-nostromo-stage.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-paddock-metrics-nostromo-stage.b4mad.racing
 
   - target:
       kind: DeploymentConfig

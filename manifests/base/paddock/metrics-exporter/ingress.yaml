@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    haproxy.router.openshift.io/timeout: 120s
+  name: paddock-metrics-exporter
+spec:
+  ingressClassName: openshift-default
+  rules:
+    - host: paddock-metrics.b4mad.racing
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: paddock-metrics-exporter
+                port:
+                  name: paddock-metrics
+  tls:
+    - hosts:
+        - paddock-metrics.b4mad.racing
+      secretName: https-cert-paddock-metrics.b4mad.racing

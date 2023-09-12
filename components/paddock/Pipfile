@@ -40,6 +40,8 @@ uwsgi = "*"
 whitenoise = "*"
 fontawesomefree = "*"
 gunicorn = "*"
+prometheus-flask-exporter = "*"
+apscheduler = "*"
 
 [dev-packages]
 black = "*"

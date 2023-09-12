@@ -1,0 +1,29 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paddock-metrics-exporter
+spec:
+  endpoints:
+    - interval: 15s
+      port: paddock-metrics
+      scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paddock-metrics-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: paddock-metrics-exporter
+spec:
+  groups:
+    - name: controller
+      rules:
+        - alert: PaddockMetricsDown
+          annotations:
+            description: "Paddock Metrics {{ $labels.namespace }}/{{ $labels.pod }} is down."
+            summary: metrics is down
+          expr: 'up{job="paddock-metrics-exporter-paddock-metricks"} < 1'
+          labels:
+            severity: critical

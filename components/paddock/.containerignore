@@ -5,3 +5,4 @@ db.sqlite3
 venv/
 .vscode/
 .thoth_last_analysis_id
+.gitignore

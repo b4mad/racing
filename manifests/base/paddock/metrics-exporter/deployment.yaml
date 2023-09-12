@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: paddock-metrics-exporter
+  name: paddock-metrics-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paddock-metrics-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: paddock-metrics-exporter
+      name: paddock
+    spec:
+      containers:
+        - env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
+            - name: PADDOCK_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: PYTHONPATH
+              value: "."
+            - name: DJANGO_SETTINGS_MODULE
+              value: settings
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          image: quay.io/b4mad/paddock@sha256:2a14f147e0475129310d7d8b0aa264f9fa47c53afde3a147e8c3aa0b2c060b33
+          imagePullPolicy: Always
+          name: paddock-paddock-metrics-exporter
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/paddock/metrics_exporter.py
+          ports:
+            - containerPort: 8081
+              name: paddock-metrics
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      serviceAccount: paddock
+      serviceAccountName: paddock
