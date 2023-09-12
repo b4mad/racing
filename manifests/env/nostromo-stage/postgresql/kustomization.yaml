@@ -3,8 +3,6 @@ kind: Kustomization
 
 resources:
   - ../../../base/postgresql
-<<<<<<< HEAD
-=======
 
 patches:
   - target:
@@ -23,4 +21,3 @@ patches:
       - op: replace
         path: /spec/backups/pgbackrest/repos/0/s3/region
         value: "emea-b4mad-erdgeschoss"
->>>>>>> 6230905 (update pg-backrest config)
