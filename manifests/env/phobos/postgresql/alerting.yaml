@@ -7,24 +7,32 @@ spec:
     - name: BackupAlertRules
       rules:
         - alert: DiffBackupTimeout
-          expr: time() - max( kube_job_status_start_time * ON(job_name) GROUP_RIGHT() kube_job_labels{job_name=~"db-repo1-diff.*"} * ON(job_name) GROUP_RIGHT() label_replace(kube_pod_labels, "job_name", "$1", "label_job_name", "(.*)") * ON(pod) GROUP_RIGHT() kube_pod_status_phase{job="kube-state-metrics",phase=~"Succeeded"}) BY (job_name,label_postgres_operator_crunchydata_com_pgbackrest_cronjob) > 86400
+          expr: >-
+            time() - max( kube_job_status_start_time * ON(job_name)
+            GROUP_RIGHT() kube_job_labels{job_name=~"db-repo1-diff.*"} *
+            ON(job_name) GROUP_RIGHT() label_replace(kube_pod_labels,
+            "job_name", "$1", "label_job_name", "(.*)") * ON(pod) GROUP_RIGHT()
+            kube_pod_status_phase{job="kube-state-metrics",phase=~"Succeeded"})
+            BY
+            (job_name,label_postgres_operator_crunchydata_com_pgbackrest_cronjob)
+            > 86400
           labels:
             severity: critical
         - alert: FailedBackupPods
-          expr: kube_pod_status_phase{namespace="b4mad-racing",phase="Failed"} * ON(pod) GROUP_RIGHT() kube_pod_labels{label_postgres_operator_crunchydata_com_pgbackrest_cronjob="diff",namespace="b4mad-racing"} > 0
+          expr: >-
+            kube_pod_status_phase{namespace="b4mad-racing",phase="Failed"} *
+            ON(pod) GROUP_RIGHT()
+            kube_pod_labels{label_postgres_operator_crunchydata_com_pgbackrest_cronjob="diff",namespace="b4mad-racing"}
+            > 0
           labels:
             severity: critical
-      for: 10m
-      annotations:
-        message: "Backup job {{ $labels.job_name }} has NOT been running for more than 24 hours."
     - name: PersistenVolumeFullAlertRule
       rules:
         - alert: PostgresqlPersistenVolumeFull
-          expr: kubelet_volume_stats_available_bytes{job="kubelet", persistentvolumeclaim=~"db-instance.*"} / kubelet_volume_stats_capacity_bytes{job="kubelet",persistentvolumeclaim=~"db-instance.*"} < 0.2
+          expr: >-
+            kubelet_volume_stats_available_bytes{job="kubelet",
+            persistentvolumeclaim=~"db-instance.*"} /
+            kubelet_volume_stats_capacity_bytes{job="kubelet",persistentvolumeclaim=~"db-instance.*"}
+            < 0.2
           labels:
             severity: critical
-      for: 5m
-      labels:
-        secerity: critical
-      annotations:
-        message: The Postgresql PersistentVolume claimed is under 20 percent free.
