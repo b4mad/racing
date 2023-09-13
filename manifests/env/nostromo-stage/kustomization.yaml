@@ -35,7 +35,7 @@ images:
   - name: telegraf
     newTag: "1.28.1"
   - name: paddock
-    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-stage/paddock
-    newTag: latest
+    newName: ghcr.io/b4mad/paddock
+    newTag: v0.6.1-rc2
   - name: docker.io/eclipse-mosquitto
     newTag: 2.0.17-openssl
