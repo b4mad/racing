@@ -1,16 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 labels:
   - pairs:
-      app.kubernetes.io/managed-by: humans
       app.kubernetes.io/name: b4mad-racing
-      app.kubernetes.io/version: v0.1.0-dev
-namespace: b4mad-racing
+
 resources:
+  - alerting.yaml
   - ../../../base/postgresql
-  # - pgo-s3-creds.sealed.yaml
   - ../../../base/postgresql/pgo-s3-creds
   - pgo-reader.sealed.yaml
+
 patches:
   - target:
       kind: PostgresCluster
