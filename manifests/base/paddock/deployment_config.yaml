@@ -2,14 +2,12 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    app: paddock
     app.kubernetes.io/component: paddock
   name: paddock
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    app: paddock
     app.kubernetes.io/component: paddock
   triggers:
     - type: ConfigChange
@@ -26,7 +24,6 @@ spec:
   template:
     metadata:
       labels:
-        app: paddock
         app.kubernetes.io/component: paddock
       name: paddock
     spec:
