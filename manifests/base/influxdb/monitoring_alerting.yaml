@@ -1,0 +1,36 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: influxdb2
+spec:
+  endpoints:
+    - interval: 15s
+      port: http
+      scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: influxdb
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: influxdb2
+spec:
+  groups:
+    - name: InfluxDB2PersistentVolumes
+      rules:
+        - alert: influxdb2
+          annotations:
+            description: InfluxDB2 data volume is full.
+            summary: InfluxDB2 data volume is full.
+          expr: 'kubelet_volume_stats_available_bytes{job="kubelet",persistentvolumeclaim="influxdb2"} / kubelet_volume_stats_capacity_bytes{job="kubelet",persistentvolumeclaim="influxdb2"} < 0.2'
+          labels:
+            severity: critical
+        # - alert: influxdb2-backup
+        #   annotations:
+        #     description: InfluxDB2 backup volume is full.
+        #     summary: InfluxDB2 backup volume is full.
+        #   expr: 'kubelet_volume_stats_available_bytes{job="kubelet",persistentvolumeclaim="influxdb2"} / kubelet_volume_stats_capacity_bytes{job="kubelet",persistentvolumeclaim="influxdb2"} < 0.2'
+        #   labels:
+        #     severity: critical
