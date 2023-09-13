@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v0.6.1-rc1 (2023-09-13)
+
+### Feat
+
+- add alerting for pgsql diff backup cronjob execution and pvc usage
+
+### Fix
+
+- paddock labels normalized
+- paddock job name for 'up' metric
+
 ## v0.6.1-rc0 (2023-09-11)
 
 ### Fix
