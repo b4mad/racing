@@ -1,61 +1,67 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 labels:
-- pairs:
-    app.kubernetes.io/managed-by: humans
-    app.kubernetes.io/name: b4mad-racing
-    app.kubernetes.io/version: v0.1.0-dev
-namespace: b4mad-racing
+  - pairs:
+      app.kubernetes.io/managed-by: humans
+      app.kubernetes.io/name: b4mad-racing
+      app.kubernetes.io/version: v0.1.0-dev
+
 resources:
-- ../../../base/influxdb
-- influxdb2-auth.sealed.yml
-- influxdb2-backup.sealed.yaml
-patchesStrategicMerge:
-- configmap-backup.yaml
+  - ../../../base/influxdb
+  - influxdb2-auth.sealed.yml
+  - influxdb2-backup.sealed.yaml
+
 generatorOptions:
   disableNameSuffixHash: true
+
 patches:
-- target:
-    kind: PersistentVolumeClaim
-    name: influxdb2-backups
-  patch: |-
-    - op: add
-      path: /spec/storageClassName
-      value: "synostorage-smb"
-- target:
-    kind: PersistentVolumeClaim
-    name: influxdb2
-  patch: |-
-    - op: replace
-      path: /spec/resources/requests/storage
-      value: "80Gi"
-- target:
-    kind: Deployment
-    name: influxdb2
-  patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/resources/limits/cpu
-      value: "2000m"
-    - op: replace
-      path: /spec/template/spec/containers/0/resources/limits/memory
-      value: "16Gi"
-- target:
-    kind: Ingress
-    name: influx
-  patch: |-
-    - op: replace
-      path: /spec/rules/0/host
-      value: telemetry.b4mad.racing
-    - op: replace
-      path: /spec/tls/0/hosts/0
-      value: telemetry.b4mad.racing
-    - op: replace
-      path: /spec/tls/0/secretName
-      value: https-cert-telemetry.b4mad.racing
-- target:
-    kind: PersistentVolumeClaim
-    name: influxdb2-backups
-  patch: |-
-    - op: replace
-      path: /spec/resources/requests/storage
-      value: "500Gi"
+  - patch: |-
+      - op: add
+        path: /spec/storageClassName
+        value: "synostorage-smb"
+    target:
+      kind: PersistentVolumeClaim
+      name: influxdb2-backups
+
+  - patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: "86Gi"
+    target:
+      kind: PersistentVolumeClaim
+      name: influxdb2
+
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "2000m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "16Gi"
+    target:
+      kind: Deployment
+      name: influxdb2
+
+  - patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: telemetry.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: telemetry.b4mad.racing
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: https-cert-telemetry.b4mad.racing
+    target:
+      kind: Ingress
+      name: influx
+
+  - patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: "500Gi"
+    target:
+      kind: PersistentVolumeClaim
+      name: influxdb2-backups
+  - path: configmap-backup.yaml

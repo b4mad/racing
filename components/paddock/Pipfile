@@ -47,6 +47,7 @@ black = "*"
 factory-boy = "*"
 isort = "*"
 mypy = "*"
+commitizen = "*"
 
 [requires]
 python_version = "3.10"
