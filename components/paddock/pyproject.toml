@@ -6,7 +6,7 @@ description = "This is the #B4mad Racing Paddock."
 license = {text = "GPL-3.0-or-later"}
 name = "paddock"
 readme = "README.md"
-version = "0.6.1-rc1"
+version = "0.6.1-rc2"
 
 [tool.isort]
 default_section = "THIRDPARTY"

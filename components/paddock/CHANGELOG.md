@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v0.6.1-rc2 (2023-09-13)
+
+### Feat
+
+- add influxdb pvc monitoring
+- ✨ add a tag-release pipeline publishing to quay
+
+### Fix
+
+- little reformatting of pgsql altertrule
+
 ## v0.6.1-rc1 (2023-09-13)
 
 ### Feat
