@@ -1,16 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 commonLabels:
   app.kubernetes.io/component: telegraf
+
 generatorOptions:
   disableNameSuffixHash: true
+
 configMapGenerator:
   - name: telegraf-config
     files:
       - telegraf.conf
+
 resources:
   - deployment.yaml
   - service_account.yaml
-  - service_monitor.yaml
+  - monitoring_alerting.yaml
   - services.yaml
-  # - secret.yaml # will be created by setup script

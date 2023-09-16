@@ -1,14 +1,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: mosquitto-tcp
+  name: mosquitto-mqtt
 spec:
   externalTrafficPolicy: Cluster
   type: NodePort
   selector:
     app: mosquitto
   ports:
-    - name: mosquitto-tcp
+    - name: mqtt
       nodePort: 31880
       port: 1883
       protocol: TCP

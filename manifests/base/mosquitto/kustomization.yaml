@@ -1,15 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 commonLabels:
   app.kubernetes.io/component: mosquitto
+
+generatorOptions:
+  disableNameSuffixHash: true
+
 resources:
   - deployment.yaml
-  - services.yaml
+  - monitoring_alerting.yaml
   - service_account.yaml
+  - services.yaml
+
 configMapGenerator:
   - name: mosquitto-config
     files:
       - dynamic-security.json
       - mosquitto.conf
-generatorOptions:
-  disableNameSuffixHash: true
