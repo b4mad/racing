@@ -6,11 +6,8 @@ metadata:
 spec:
   endpoints:
     - interval: 15s
-      port: mqtt
+      port: metrics
       scheme: http
-  namespaceSelector:
-    matchNames:
-      - b4mad-racing
   selector:
     matchLabels:
       app.kubernetes.io/component: mosquitto
@@ -23,10 +20,10 @@ spec:
   groups:
     - name: service
       rules:
-        - alert: MosquittoServiceDown
+        - alert: MosquittoMetricsDown
           annotations:
             description: "Mosquitto {{ $labels.namespace }}/{{ $labels.pod }} is down."
             summary: mosquitto is down
-          expr: 'up{job="mosquitto",endpoint="mqtt"} < 1'
+          expr: 'up{job="mosquitto-metrics",endpoint="metrics"} < 1'
           labels:
             severity: critical

@@ -1,3 +1,4 @@
+---
 kind: Service
 apiVersion: v1
 metadata:
@@ -13,3 +14,16 @@ spec:
       port: 1883
       protocol: TCP
       targetPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-metrics
+spec:
+  selector:
+    app.kubernetes.io/component: mosquitto
+  ports:
+    - name: metrics
+      port: 9234
+      protocol: TCP
+      targetPort: 9234
