@@ -368,7 +368,9 @@ class Analyzer:
         resampled_df = pd.DataFrame({"DistanceRoundTrack": new_distance_round_track})
 
         for column in columns:
-            interp = interp1d(df["DistanceRoundTrack"], df[column], kind=method)
+            interp = interp1d(
+                df["DistanceRoundTrack"], df[column], kind=method, bounds_error=False, fill_value="extrapolate"
+            )
             interpolated_values = interp(new_distance_round_track)
 
             if np.issubdtype(df[column].dtype, np.integer):
