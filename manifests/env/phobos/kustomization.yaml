@@ -27,7 +27,7 @@ generatorOptions:
 patches:
   - target:
       kind: Service
-      name: mosquitto-tcp
+      name: mosquitto-mqtt
     patch: |-
       - op: replace
         path: /spec/ports/0/nodePort
