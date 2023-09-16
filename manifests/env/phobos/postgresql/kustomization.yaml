@@ -6,7 +6,6 @@ labels:
       app.kubernetes.io/name: b4mad-racing
 
 resources:
-  - alerting.yaml
   - ../../../base/postgresql
   - ../../../base/postgresql/pgo-s3-creds
   - pgo-reader.sealed.yaml
