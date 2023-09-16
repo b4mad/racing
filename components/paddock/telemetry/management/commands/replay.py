@@ -17,8 +17,8 @@ from telemetry.models import Lap
 from telemetry.pitcrew.firehose import Firehose
 from telemetry.pitcrew.session_saver import SessionSaver
 
-B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing")
-B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
+B4MAD_RACING_MQTT_HOST = os.environ.get("MOSQUITTO_MQTT_SERVICE_HOST", "telemetry.b4mad.racing")
+B4MAD_RACING_MQTT_PORT = int(os.environ.get("MOSQUITTO_MQTT_SERVICE_PORT", 31883))
 B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
 B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
 
