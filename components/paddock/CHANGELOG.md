@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.6.1-rc3 (2023-09-16)
+
+### Feat
+
+- ✨ add mosquitto-exporter
+- ✨ add mosquitto-exporter
+- ✨ move postgresql alerting to base manifests
+- ✨ move postgresql alerting to base manifests
+
 ## v0.6.1-rc2 (2023-09-13)
 
 ### Feat
