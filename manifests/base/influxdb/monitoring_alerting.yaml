@@ -20,7 +20,7 @@ spec:
   groups:
     - name: InfluxDB2PersistentVolumes
       rules:
-        - alert: influxdb2
+        - alert: InfluxDB2PersistentVolumeFull
           annotations:
             description: InfluxDB2 data volume is full.
             summary: InfluxDB2 data volume is full.
