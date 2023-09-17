@@ -56,7 +56,7 @@
  ('/coach/durandom', ['{"distance": 1151, "message": "flat out up to 3rd before the apex", "priority": 9, "max_distance": 1162}']),
  ('/coach/durandom', ['{"distance": 1475, "message": "Exit wide using all of green area", "priority": 9, "max_distance": 1488}']),
  ('/coach/durandom', ['{"distance": 0, "message": "turn in just before the marshals shack", "priority": 9, "max_distance": 15}']),
- ('/coach/durandom', ['{"distance": 440, "message": "Down shift to first", "priority": 9, "max_distance": 453}']),
+ ('/coach/durandom', ['{"distance": 440, "message": "Down shift to second", "priority": 9, "max_distance": 453}']),
  ('/coach/durandom', ['{"distance": 504, "message": "Turn-in as soon as you straighten car", "priority": 9, "max_distance": 515}']),
  ('/coach/durandom', ['{"distance": 776, "message": "brake just after 50 marker", "priority": 9, "max_distance": 789}']),
  ('/coach/durandom', ['{"distance": 1040, "message": "Aggressive full-throttle before apex", "priority": 9, "max_distance": 1051}']),

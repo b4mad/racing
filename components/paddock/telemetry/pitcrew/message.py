@@ -523,12 +523,12 @@ class MessageTrackGuideNotes(Message):
     def build_msg(self, msg=None):
         self.msg = msg or self.current_note.message
         evaluated = False
-        if self.current_note.at_start:
+        if self.current_note.at:
             evaluated = "at"
-            at = self.eval_at(self.current_note.at_start)
-        elif self.current_note.at:
-            evaluated = "finish_at"
             at = self.eval_at(self.current_note.at)
+        elif self.current_note.finish_at:
+            evaluated = "finish_at"
+            at = self.eval_at(self.current_note.finish_at)
         else:
             self.at = self.finish_at(self.brake_or_throttle_point)
 

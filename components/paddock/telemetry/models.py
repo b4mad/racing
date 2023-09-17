@@ -258,8 +258,8 @@ class TrackGuideNote(TimeStampedModel):
 
     landmark = models.ForeignKey(Landmark, on_delete=models.CASCADE, related_name="notes", null=True)
     segment = models.IntegerField(default=0)
-    at = models.TextField(null=True)
-    at_start = models.CharField(max_length=64, default="")
+    finish_at = models.TextField(null=True)
+    at = models.CharField(max_length=64, default="")
 
     priority = models.IntegerField(default=0)
     ref_id = models.CharField(max_length=64, default="")
@@ -271,6 +271,5 @@ class TrackGuideNote(TimeStampedModel):
     score = models.CharField(max_length=64, default="")
 
     def __str__(self):
-        where = self.landmark or self.segment
-        repr = f"{where}: {self.message}"
+        repr = f"{self.segment or self.landmark} - at {self.at or self.finish_at}: {self.message}"
         return repr

@@ -13,21 +13,25 @@ class TrackGuideApplication(Application):
         self.track_guide: TrackGuide | None = TrackGuide.objects.filter(
             car=self.session.car, track=self.session.track
         ).first()
+
         if not self.track_guide:
             self.send_response("TrackGuide: no track guide found")
         else:
             self.send_response("Let's start the track guide.")
             self.init_notes()
-            self.init_recon_laps()
+            self.init_recon_notes()
 
     def init_notes(self):
         self.distance_notes = {}
+        self.segement_notes = {}
+        # store notes by segment / landmarks
         for note in self.track_guide.notes.all():
+            finish_at = False
             data = {
                 "note": note,
                 "segments": [],
                 "at": None,
-                "finish_at": None,
+                "finish_at": finish_at,
             }
 
             if note.segment:
@@ -37,36 +41,55 @@ class TrackGuideApplication(Application):
                 data["segments"] = self.segments_for_landmark(note.landmark)
                 segment = data["segments"][0]
 
-            if note.at_start:
-                snippet = note.at_start
-            elif note.at:
+            if note.at:
                 snippet = note.at
+            elif note.finish_at:
+                snippet = note.finish_at
+                finish_at = True
             else:
-                snippet = "brake_point()"
+                snippet = "brake_point() or throttle_point()"
+                finish_at = True
 
-            distance = self.eval_at(snippet, segment)
+            data["at"] = self.eval_at(snippet, segment)
 
-            if note.at_start:
-                data["at"] = distance
-            else:
-                data["finish_at"] = distance
+            if not data["at"]:
+                # FIXME bubble up to UI
+                self.log_error(f"DISCARDING NOTE: note {note} has no at - data {data}")
+                continue
 
+            distance = data["at"]
             if distance not in self.distance_notes:
                 self.distance_notes[distance] = []
             self.distance_notes[distance].append(data)
 
-    def init_recon_laps(self):
-        self.recon_notes = {}
+            for segment in data["segments"]:
+                if segment not in self.segement_notes:
+                    self.segement_notes[segment] = []
+                self.segement_notes[segment].append(data)
+
+    def init_recon_notes(self):
+        self.recon_segment_notes = {}
+        for segment, notes in self.segement_notes.items():
+            self.recon_segment_notes[segment] = notes.copy()
+
+        self.recon_distance_notes = {}
         for distance, notes in self.distance_notes.items():
-            self.recon_notes[distance] = notes.copy()
+            self.recon_distance_notes[distance] = notes.copy()
 
     def get_recon_note(self, distance):
-        notes = self.distance_notes.get(distance, [])
+        notes = self.recon_distance_notes.get(distance, [])
         note = None
         if notes:
             note = notes.pop(0)
             if not notes:
-                del self.distance_notes[distance]
+                # notes are empty at this distance
+                # remove from dict
+                del self.recon_distance_notes[distance]
+            if len(self.recon_distance_notes) == 0:
+                # FIXME: reset notes for segment, once the segment is empty
+                self.log_debug("reset recon notes")
+                self.init_recon_notes()
+            # segment = self.get_segment_at(distance)
         return note
 
     def tick(self):
@@ -103,14 +126,13 @@ class TrackGuideApplication(Application):
             note = note_info["note"]
             segment = note_info["segments"][0]
             max_distance_delta = self.max_distance_delta(segment)
+            at = note_info["at"]
             if note_info["finish_at"]:
-                response = self.send_response(
-                    note.message, finish_at=note_info["finish_at"], max_distance_delta=max_distance_delta
-                )
+                response = self.send_response(note.message, finish_at=at, max_distance_delta=max_distance_delta)
             else:
-                response = self.send_response(note.message, at=note_info["at"], max_distance_delta=max_distance_delta)
+                response = self.send_response(note.message, at=at, max_distance_delta=max_distance_delta)
 
-            if response.at < self.distance:
+            if -100 < (response.at - self.distance) < 0:
                 self.log_error(f"response {response} cant be played")
 
     def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):

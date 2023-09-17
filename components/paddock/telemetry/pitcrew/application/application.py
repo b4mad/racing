@@ -22,7 +22,23 @@ class Application(LoggingMixin):
         self.segments_by_turn = {}
         for segment in self.history.segments:
             self.segments_by_turn[segment.turn] = segment
+        self.init_distance_to_segment()
         self.init()
+
+    def init_distance_to_segment(self):
+        self.distance_to_segment = {}
+        for segment in self.history.segments:
+            for distance in range(segment.start, segment.end + 1):
+                if distance in self.distance_to_segment:
+                    self.log_debug(f"Distance {distance} assigned twice")
+                else:
+                    self.distance_to_segment[distance] = segment
+        for distance in range(self.history.track_length):
+            if distance not in self.distance_to_segment:
+                self.log_debug(f"Distance {distance} not set")
+
+    def get_segment_at(self, distance):
+        return self.distance_to_segment.get(distance, None)
 
     def notify(self, distance: int, telemetry: dict, now: datetime.datetime):
         self.telemetry = telemetry
@@ -111,6 +127,7 @@ class Application(LoggingMixin):
     def eval_at(self, snippet, segment):
         globals = {
             "brake_point": segment.brake_point,
+            "throttle_point": segment.throttle_point,
             "apex": segment.apex,
             "gear": segment.gear_distance,
             "turn_in": segment.turn_in,

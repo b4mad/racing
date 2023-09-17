@@ -29,6 +29,8 @@ class TestCoach(TransactionTestCase):
     ]
     maxDiff = None
 
+    do_save_responses = False
+
     def test_coach(self):
         # iRacing fuji nochicane - Ferrari 488 GT3 Evo 2020
         session_id = "1681897871"
@@ -74,8 +76,10 @@ class TestCoach(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-        expected_responses = read_responses("test_coach")
-        # save_responses(captured_responses, "test_coach")
+        response_file = "test_coach"
+        expected_responses = read_responses(response_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, response_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
@@ -120,8 +124,10 @@ class TestCoach(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-        expected_responses = read_responses("test_track_guide")
-        # save_responses(captured_responses, "test_track_guide")
+        response_file = "test_track_guide"
+        expected_responses = read_responses(response_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, response_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
@@ -160,8 +166,10 @@ class TestCoach(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-        expected_responses = read_responses("test_track_guide_iracing")
-        # save_responses(captured_responses, "test_track_guide_iracing")
+        response_file = "test_track_guide_iracing"
+        expected_responses = read_responses(response_file)
+        if self.do_save_responses:
+            save_responses(captured_responses, response_file)
 
         # pprint(captured_responses, width=200)
         self.assertEqual(captured_responses, expected_responses)
