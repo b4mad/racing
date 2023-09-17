@@ -157,7 +157,7 @@ class History(LoggingMixin):
 
     def update_telemetry(self, meters, data, depth=0):
         if depth > len(self.segments):
-            self.log_error(f"update_telemetry: meters: {meters} no segment found")
+            self.log_debug(f"update_telemetry: meters: {meters} no segment found")
             return
 
         segment = self.segments[0]

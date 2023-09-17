@@ -24,7 +24,6 @@ class CoachApp(LoggingMixin):
         self.topic = ""
         self.session_id = ""
         self.distance = 0
-        self.previous_distance = -1
         self.playing_at = {}  # distance -> bool
         self.track_length = 1
         self._crashed = False
@@ -119,6 +118,7 @@ class CoachApp(LoggingMixin):
     def notify(self, topic, telemetry, now=None):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
+            self.previous_distance = int(telemetry["DistanceRoundTrack"])
             self.new_session(topic)
 
         if not self.ready():
@@ -137,7 +137,7 @@ class CoachApp(LoggingMixin):
 
     def tick(self, topic, telemetry, now=None):
         distance_diff = self.previous_distance - self.distance
-        if self.track_length - 10 > distance_diff >= 1:
+        if (self.track_length - 10 > distance_diff >= 1) or distance_diff < -10:
             # we jumped at least 1 meters back
             # unless we crossed the start finish line
             # we might have gone off the track or reset the car to the pits
@@ -164,6 +164,9 @@ class CoachApp(LoggingMixin):
         if start > stop:
             stop += self.track_length
             self.log_debug(f"distance: wrap around: {start} -> {stop}")
+
+        if (stop - start) > 50:
+            self.log_debug(f"{start} to {stop} > 50")
 
         for distance in range(start, stop):
             self.playing_at[distance] = False
