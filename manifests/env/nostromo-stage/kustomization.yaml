@@ -36,6 +36,6 @@ images:
     newTag: "1.28.1"
   - name: paddock
     newName: ghcr.io/b4mad/paddock
-    newTag: v0.6.1-rc2
+    newTag: 96fa853f23dde44156cd04452a60de4775ed04be
   - name: docker.io/eclipse-mosquitto
     newTag: 2.0.17-openssl
