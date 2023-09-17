@@ -67,8 +67,8 @@ class TrackGuideApplication(Application):
 
             for segment in note.segments:
                 if segment not in self.segment_notes:
-                    self.segment_notes[segment] = set()
-                self.segment_notes[segment].add(note)
+                    self.segment_notes[segment] = []
+                self.segment_notes[segment].append(note)
 
     def init_recon_notes(self, segment=None):
         if segment is None:
@@ -94,7 +94,7 @@ class TrackGuideApplication(Application):
         if notes:
             note = notes.pop(0)
             for segment in note.segments:
-                self.recon_segment_notes[segment].discard(note)
+                self.recon_segment_notes[segment].remove(note)
                 if len(self.recon_distance_notes) == 0:
                     self.log_debug(f"reset recon notes for segment {segment}")
                     self.init_recon_notes(segment=segment)

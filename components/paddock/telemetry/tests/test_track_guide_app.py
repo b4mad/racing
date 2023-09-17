@@ -27,7 +27,7 @@ class TestTrackGuideApp(TransactionTestCase):
     ]
     maxDiff = None
 
-    do_save_responses = False
+    do_save_responses = True
 
     def test_no_trackguide(self):
         # iRacing / Mazda MX-5 Cup / okayama short
