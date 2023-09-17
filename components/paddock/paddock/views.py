@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.edit import FormView
 
+import paddock.fastlap_app  # noqa: F401
 import paddock.pitcrew_app  # noqa: F401
 from telemetry.models import Coach, Driver
 
