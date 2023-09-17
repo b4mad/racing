@@ -12,6 +12,8 @@ from dateutil import parser
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 from influxdb_client.client.warnings import MissingPivotFunction
 
+from paddock.exceptions import RuntimeEnvironmentConfigurationIncompleteError
+
 warnings.simplefilter("ignore", MissingPivotFunction)
 
 
@@ -19,11 +21,29 @@ class Influx:
     def __init__(self):
         # configure influxdb client
         self.org = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
-        self.token = os.environ.get(
-            "B4MAD_RACING_INFLUX_TOKEN",
-            "A4Wyqh-I6rYc-HD9frSpx66gHZRfwdwCqDLoNUnIaGNK1sXScMSIiob2JTfvBt3kyrXByZ_DnECs8IhYNHwoVg==",
-        )
-        self.url = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
+
+        _INFLUXDB2_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN")  # noqa: N806
+
+        if _INFLUXDB2_TOKEN is None:
+            raise RuntimeEnvironmentConfigurationIncompleteError(
+                missing_env_vars=[
+                    "B4MAD_RACING_INFLUX_TOKEN",
+                ]
+            )
+
+        self.token = _INFLUXDB2_TOKEN
+
+        _INFLUXDB2_SERVICE_HOST = os.environ.get("INFLUXDB2_SERVICE_HOST")  # noqa: N806
+        _INFLUXDB2_SERVICE_PORT = os.environ.get("INFLUXDB2_SERVICE_PORT", 8086)  # noqa: N806
+
+        if _INFLUXDB2_SERVICE_HOST is None:
+            raise RuntimeEnvironmentConfigurationIncompleteError(
+                missing_env_vars=[
+                    "INFLUXDB2_SERVICE_HOST",
+                ]
+            )
+
+        self.url = f"https://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}"
 
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
