@@ -1,3 +1,5 @@
+import datetime
+
 import django.utils.timezone
 
 from telemetry.models import TrackGuide
@@ -25,8 +27,8 @@ class DebugApplication(Application):
             self.send_response(f"pace {pct} percent")
             self.previous_pace_notification = self.now
 
-    def on_reset_to_pits(self):
+    def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
         self.send_response("TrackGuide: on_reset_to_pits")
 
-    def on_new_lap(self):
+    def on_new_lap(self, distance: int, telemetry: dict, now: datetime.datetime):
         self.send_response("TrackGuide: on_new_lap")

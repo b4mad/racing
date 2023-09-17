@@ -151,8 +151,6 @@ class Segment:
         return None
 
     def gear_distance(self, gear_n=None):
-        if gear_n and gear_n > 10:
-            return None
         gear_n = gear_n or self.gear()
         if gear_n:
             distance_gear = self.gear_feature("distance_gear")
@@ -160,7 +158,7 @@ class Segment:
             for distance, gear in distance_gear.items():
                 if gear == gear_n:
                     return int(distance)
-            return self.gear_distance(gear_n + 1)
+        self.log_debug(f"no gear distance for gear {gear_n} - {self.gear_feature('distance_gear')}")
         return None
 
     def gear(self):

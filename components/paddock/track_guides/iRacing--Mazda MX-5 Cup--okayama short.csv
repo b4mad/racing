@@ -1,4 +1,4 @@
-segment,priority,at,at_start,ref_id,ref_eval,message,eval,score,notes
+segment,priority,finish_at,at,ref_id,ref_eval,message,eval,score,notes
 1,5,,,,,brake briefly before the tire mark,True,,"if this evaluates to True, we'll move to the next message"
 1,20,brake_point(),,,,brake,brake_point_diff() < 30,brake_point(),
 1,15,,,,,brake 80 %,coach_brake_force(),brake_force(),
@@ -21,7 +21,7 @@ segment,priority,at,at_start,ref_id,ref_eval,message,eval,score,notes
 2,1,turn_in(),,,,minimum Trailbrake,True,,could coach based on length of TB
 2,5,apex(),,,,Apex just past white line,coach_apex(),apex(),
 2,1,apex(),,,,Clip curb,True,,
-2,10,gear(1),,,,Down shift to first,coach_gear(),gear(),
+2,10,gear(2),,,,Down shift to second,coach_gear(),gear(),
 2,1,,apex(),,,Exit middle and continue to rotate,True,,
 2,1,,apex(),,,Control throttle to 75% then full,True,,
 2,5,,apex(),,,Very late 2nd apex - full curb,coach_apex(),apex(),"this is a double apex, need more specific features to handle that"
