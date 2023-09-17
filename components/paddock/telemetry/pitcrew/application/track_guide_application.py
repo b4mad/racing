@@ -23,7 +23,7 @@ class TrackGuideApplication(Application):
 
     def init_notes(self):
         self.distance_notes = {}
-        self.segement_notes = {}
+        self.segment_notes = {}
         # store notes by segment / landmarks
         for note in self.track_guide.notes.all():
             finish_at = False
@@ -63,13 +63,13 @@ class TrackGuideApplication(Application):
             self.distance_notes[distance].append(data)
 
             for segment in data["segments"]:
-                if segment not in self.segement_notes:
-                    self.segement_notes[segment] = []
-                self.segement_notes[segment].append(data)
+                if segment not in self.segment_notes:
+                    self.segment_notes[segment] = []
+                self.segment_notes[segment].append(data)
 
     def init_recon_notes(self):
         self.recon_segment_notes = {}
-        for segment, notes in self.segement_notes.items():
+        for segment, notes in self.segment_notes.items():
             self.recon_segment_notes[segment] = notes.copy()
 
         self.recon_distance_notes = {}
