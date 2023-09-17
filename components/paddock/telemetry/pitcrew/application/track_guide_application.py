@@ -48,10 +48,10 @@ class TrackGuideApplication(Application):
                 snippet = track_note.at
             elif track_note.finish_at:
                 snippet = track_note.finish_at
-                finish_at = True
+                note.finish_at = True
             else:
                 snippet = "brake_point() or throttle_point()"
-                finish_at = True
+                note.finish_at = True
 
             note.at = self.eval_at(snippet, segment)
 
