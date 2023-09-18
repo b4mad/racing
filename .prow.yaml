@@ -43,3 +43,6 @@ presubmits:
         - image: quay.io/sclorg/python-311-c9s:20230913
           command:
             - components/paddock/scripts/pytest.sh
+          env:
+            - name: SECRET_KEY
+              value: abcd1ac34873c54e158d38e7f1283977f202abcd

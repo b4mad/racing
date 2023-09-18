@@ -12,6 +12,7 @@ p=$(mktemp -d)
 python3.10 -m venv $p/venv
 source $p/venv/bin/activate
 micropipenv install --dev
+cd ..
 
 # run the actual pytests
 pytest -v
