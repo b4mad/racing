@@ -45,12 +45,12 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       key: GF_SECURITY_ADMIN_USER
-                      name: credentials
+                      name: grafana-admin-credentials
                 - name: GF_SECURITY_ADMIN_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: GF_SECURITY_ADMIN_PASSWORD
-                      name: credentials
+                      name: grafana-admin-credentials
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
