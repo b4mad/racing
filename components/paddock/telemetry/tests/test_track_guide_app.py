@@ -152,7 +152,8 @@ class TestTrackGuideApp(TransactionTestCase):
                 row = row.to_dict()
                 response = coach.notify(topic, row, row["_time"])
                 if response:
-                    captured_responses.append(response)
+                    distance_response = (row["DistanceRoundTrack"], response)
+                    captured_responses.append(distance_response)
         except Exception as e:
             raise e
         finally:
