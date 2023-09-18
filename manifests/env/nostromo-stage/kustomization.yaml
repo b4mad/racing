@@ -7,8 +7,6 @@ resources:
   - telegraf/
 
   - mosquitto/
-  - secrets/mosquitto.yaml
-  - secrets/mosquitto-exporter.yaml
 
   - influxdb/
   - secrets/influxdb2-auth.yaml

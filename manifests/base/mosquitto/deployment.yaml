@@ -52,10 +52,6 @@ spec:
               name: config
             - mountPath: /mosquitto/password
               name: password
-          envFrom:
-            - prefix: MQTT_
-              secretRef:
-                name: mosquitto-exporter
       volumes:
         - configMap:
             defaultMode: 420
@@ -63,7 +59,7 @@ spec:
           name: config
         - secret:
             defaultMode: 420
-            secretName: mosquitto
+            secretName: mosquitto-password
           name: password
       serviceAccount: mosquitto
       serviceAccountName: mosquitto
