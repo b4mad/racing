@@ -9,12 +9,3 @@ configMapGenerator:
     behavior: replace
     files:
       - telegraf.conf
-
-patches:
-  - target:
-      kind: ServiceMonitor
-      name: telegraf
-    patch: |-
-      - op: replace
-        path: /spec/namespaceSelector/matchNames/0
-        value: b4mad-racing-stage
