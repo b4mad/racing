@@ -5,7 +5,7 @@ metadata:
   annotations:
     pipelinesascode.tekton.dev/on-event: "[pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "main"
-    pipelinesascode.tekton.dev/task: "[git-clone, buildah, .tekton/tasks/e2e-telemetry-test.yaml]"
+    pipelinesascode.tekton.dev/task: "[git-clone, buildah, .tekton/tasks/e2e-telemetry-test.yaml, .tekton/tasks/unit-pytest.yaml]"
     pipelinesascode.tekton.dev/max-keep-runs: "5"
 
 spec:
@@ -47,17 +47,27 @@ spec:
           - name: source
             workspace: source
 
+      - name: unit-tests
+        runAfter:
+          - fetch-repository
+        taskRef:
+          name: unit-pytest
+        workspaces:
+          - name: source
+            workspace: source
+
       - name: build
         taskRef:
           name: buildah-as-userid-1000
           kind: ClusterTask
         runAfter:
-          - fetch-repository
+          - e2e-tests
+          - unit-tests
         params:
           - name: IMAGE
             value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/paddock:$(params.revision)
           - name: BUILDER_IMAGE
-            value: quay.io/buildah/stable:v1.31.0
+            value: registry.access.redhat.com/ubi9/buildah@sha256:8b1144b8534507a4b7e71d11174b483c373906828fca669978a3aa63b63af6e3
           - name: DOCKERFILE
             value: Containerfile
           - name: CONTEXT
@@ -72,7 +82,6 @@ spec:
           name: skopeo-copy
         runAfter:
           - build
-          - e2e-tests
         params:
           - name: srcImageURL
             value: docker://image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/paddock:$(params.revision)
