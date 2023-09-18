@@ -12,13 +12,16 @@ class Response:
         self.message = message
         self.at = at
         self.priority = priority
-        self.max_distance = None
+        self.max_distance = max_distance
 
         self._sent = False
         self._discarded = False
 
     def __str__(self) -> str:
         return f"At {self.at}: {self.message}"
+
+    def copy(self):
+        return Response(self.message, priority=self.priority, max_distance=self.max_distance, at=self.at)
 
     def send(self):
         self._sent = True
