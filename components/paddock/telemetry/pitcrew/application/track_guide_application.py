@@ -98,14 +98,24 @@ class TrackGuideApplication(Application):
                 self.recon_distance_notes[distance] = []
             self.recon_distance_notes[distance].append(note)
 
-    def get_recon_note(self, distance):
+    def get_recon_note(self, distance, blast=1):
+        for blast_distance in range(distance - blast, distance + blast + 1):
+            blast_distance = self.distance_add(blast_distance, 0)
+
+            note = self.get_recon_note_at(blast_distance)
+            if note:
+                return note
+
+    def get_recon_note_at(self, distance):
         notes = self.recon_distance_notes.get(distance, [])
         note = None
         if notes:
             note = notes.pop(0)
+            # self.log_error(f"LEN seg: {len(note.segments)}")
             for segment in note.segments:
-                self.recon_segment_notes[segment].remove(note)
                 # self.log_error(f"LEN: {len(self.recon_segment_notes[segment])}")
+                if note in self.recon_segment_notes[segment]:
+                    self.recon_segment_notes[segment].remove(note)
                 if len(self.recon_segment_notes[segment]) == 0:
                     self.log_debug(f"reset recon notes for segment {segment}")
                     self.init_recon_notes(segment=segment)
@@ -142,13 +152,14 @@ class TrackGuideApplication(Application):
         pass
 
     def respond_recon(self):
-        # FIXME a dynamic lookahead means, we could miss some messages
         seconds_lookahead = 3  # 10 is the timeout for a queued message
         add_distance = int(self.telemetry.get("SpeedMs", 50) * seconds_lookahead)
         distance = self.distance_add(self.distance, add_distance)
-        self.log_debug(f"respond_recon: {self.distance} -> {distance} (+{add_distance})")
+        # self.log_debug(f"respond_recon: {self.distance} -> {distance} (+{add_distance})")
         if self.message_playing_at(distance):
             return
+        # a dynamic lookahead means, we could miss some messages
+        # therefore we have a blast radius at self.get_recon_note
         note = self.get_recon_note(distance)
         if note:
             self.send_response(note.response)
