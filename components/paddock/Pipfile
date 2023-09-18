@@ -38,17 +38,18 @@ rich = "*"
 sanitize-filename = "*"
 scikit-learn = "*"
 scipy = "*"
+sentry-sdk = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
-sentry-sdk = "*"
 
 [dev-packages]
 black = "*"
+commitizen = "*"
 factory-boy = "*"
 isort = "*"
 mypy = "*"
-commitizen = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.10"

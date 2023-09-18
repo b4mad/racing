@@ -1,6 +1,5 @@
 import csv
 import logging
-import os
 import sys
 import warnings
 from datetime import datetime, timedelta
@@ -12,7 +11,7 @@ from dateutil import parser
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 from influxdb_client.client.warnings import MissingPivotFunction
 
-from paddock.exceptions import RuntimeEnvironmentConfigurationIncompleteError
+from .utils import get_influxdb2_config
 
 warnings.simplefilter("ignore", MissingPivotFunction)
 
@@ -20,30 +19,7 @@ warnings.simplefilter("ignore", MissingPivotFunction)
 class Influx:
     def __init__(self):
         # configure influxdb client
-        self.org = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
-
-        _INFLUXDB2_TOKEN = os.environ.get("B4MAD_RACING_INFLUX_TOKEN")  # noqa: N806
-
-        if _INFLUXDB2_TOKEN is None:
-            raise RuntimeEnvironmentConfigurationIncompleteError(
-                missing_env_vars=[
-                    "B4MAD_RACING_INFLUX_TOKEN",
-                ]
-            )
-
-        self.token = _INFLUXDB2_TOKEN
-
-        _INFLUXDB2_SERVICE_HOST = os.environ.get("INFLUXDB2_SERVICE_HOST")  # noqa: N806
-        _INFLUXDB2_SERVICE_PORT = os.environ.get("INFLUXDB2_SERVICE_PORT", 8086)  # noqa: N806
-
-        if _INFLUXDB2_SERVICE_HOST is None:
-            raise RuntimeEnvironmentConfigurationIncompleteError(
-                missing_env_vars=[
-                    "INFLUXDB2_SERVICE_HOST",
-                ]
-            )
-
-        self.url = f"https://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}"
+        (self.org, self.token, self.url) = get_influxdb2_config()
 
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)
