@@ -26,9 +26,9 @@ generatorOptions:
 
 images:
   - name: telegraf
-    newTag: "1.27.3"
+    newTag: "1.28.1"
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-stage/paddock
     newTag: latest
   - name: docker.io/eclipse-mosquitto
-    newTag: "2.0.16-openssl"
+    newTag: 2.0.17-openssl
