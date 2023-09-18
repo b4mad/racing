@@ -1,7 +1,7 @@
 class Response:
     MESSAGE = "message"
     PRIORITY = "priority"
-    AT = "at"
+    AT = "distance"
     MAX_DISTANCE = "max_distance"
 
     # response has a timeout of 10 seconds

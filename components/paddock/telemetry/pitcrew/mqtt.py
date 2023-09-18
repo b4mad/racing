@@ -83,9 +83,8 @@ class Mqtt:
                 payloads = [r_payload]
 
             for r_payload in payloads:
-                if self.debug:
-                    meters = payload.get("DistanceRoundTrack", 0)
-                    logging.debug("r-->: %s: %s : %s", meters, r_topic, r_payload)
+                meters = payload.get("DistanceRoundTrack", 0)
+                logging.debug("r-->: %s: %s : %s", meters, r_topic, r_payload)
                 mqttc.publish(r_topic, r_payload)
 
     def on_connect(self, mqttc, obj, flags, rc):
