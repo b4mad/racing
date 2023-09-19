@@ -16,7 +16,7 @@ class Application(LoggingMixin):
         self.history = history
         self.coach = coach
         self.distance = -1
-        self.speed_pct_history = deque(maxlen=500)
+        self.speed_pct_history = deque(maxlen=800)
         self.speed_pct_sum = 0.0
         self.avg_speed_pct = 0
         self.segments_by_turn = {}
@@ -89,7 +89,7 @@ class Application(LoggingMixin):
         self.log_debug(f"max_distance: {max_distance:.1f} approach_speed: {approach_speed:.1f}")
         return int(max_distance)
 
-    def send_response(self, message, priority=5, max_distance=None, max_distance_delta=None, at=None, finish_at=None):
+    def build_response(self, message, priority=5, max_distance=None, max_distance_delta=None, at=None, finish_at=None):
         # from CrewChiefV4.audio.SoundMetaData
         # this affects the queue insertion order. Higher priority items are inserted at the head of the queue
         # public int priority = DEFAULT_PRIORITY;  // 0 = lowest, 5 = default, 10 = spotter
@@ -103,7 +103,20 @@ class Application(LoggingMixin):
 
         if max_distance_delta:
             response.max_distance = self.distance_add(response.at, max_distance_delta)
+        return response
 
+    def send_response(self, message, priority=5, max_distance=None, max_distance_delta=None, at=None, finish_at=None):
+        if isinstance(message, str):
+            response = self.build_response(
+                message,
+                priority=priority,
+                max_distance=max_distance,
+                max_distance_delta=max_distance_delta,
+                at=at,
+                finish_at=finish_at,
+            )
+        else:
+            response = message.copy()
         self.responses.append(response)
         return response
 

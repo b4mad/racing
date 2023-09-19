@@ -6,11 +6,11 @@ from .application import Application
 
 
 class Note:
-    def __init__(self, note, finish_at):
+    def __init__(self, note):
         self.note = note
         self.segments = []
         self.at = None
-        self.finish_at = finish_at
+        self.response = None
 
 
 class TrackGuideApplication(Application):
@@ -34,13 +34,14 @@ class TrackGuideApplication(Application):
         self.segment_notes = {}
         # store notes by segment / landmarks
         for track_note in self.track_guide.notes.all():
+            note = Note(track_note)
             finish_at = False
-            note = Note(track_note, finish_at)
 
             if track_note.segment:
                 segment = self.get_segment(turn=track_note.segment)
                 note.segments.append(segment)
             else:
+                # FIXME: doesnt seem to work
                 note.segments = self.segments_for_landmark(track_note.landmark)
                 segment = note.segments[0]
 
@@ -48,19 +49,28 @@ class TrackGuideApplication(Application):
                 snippet = track_note.at
             elif track_note.finish_at:
                 snippet = track_note.finish_at
-                note.finish_at = True
+                finish_at = True
             else:
                 snippet = "brake_point() or throttle_point()"
-                note.finish_at = True
+                finish_at = True
 
-            note.at = self.eval_at(snippet, segment)
+            at = self.eval_at(snippet, segment)
 
-            if not note.at:
+            if not at:
                 # FIXME bubble up to UI
                 self.log_error(f"DISCARDING NOTE: note {track_note} has no at - data {note}")
                 continue
 
-            distance = note.at
+            # build the response
+            max_distance_delta = self.max_distance_delta(segment)
+            if finish_at:
+                response = self.build_response(track_note.message, finish_at=at, max_distance_delta=max_distance_delta)
+            else:
+                response = self.build_response(track_note.message, at=at, max_distance_delta=max_distance_delta)
+            note.response = response
+            note.at = response.at
+
+            distance = response.at
             if distance not in self.distance_notes:
                 self.distance_notes[distance] = []
             self.distance_notes[distance].append(note)
@@ -88,14 +98,25 @@ class TrackGuideApplication(Application):
                 self.recon_distance_notes[distance] = []
             self.recon_distance_notes[distance].append(note)
 
-    def get_recon_note(self, distance):
+    def get_recon_note(self, distance, blast=1):
+        for blast_distance in range(distance - blast, distance + blast + 1):
+            blast_distance = self.distance_add(blast_distance, 0)
+
+            note = self.get_recon_note_at(blast_distance)
+            if note:
+                return note
+
+    def get_recon_note_at(self, distance):
         notes = self.recon_distance_notes.get(distance, [])
         note = None
         if notes:
             note = notes.pop(0)
+            # self.log_error(f"LEN seg: {len(note.segments)}")
             for segment in note.segments:
-                self.recon_segment_notes[segment].remove(note)
-                if len(self.recon_distance_notes) == 0:
+                # self.log_error(f"LEN: {len(self.recon_segment_notes[segment])}")
+                if note in self.recon_segment_notes[segment]:
+                    self.recon_segment_notes[segment].remove(note)
+                if len(self.recon_segment_notes[segment]) == 0:
                     self.log_debug(f"reset recon notes for segment {segment}")
                     self.init_recon_notes(segment=segment)
         return note
@@ -112,6 +133,8 @@ class TrackGuideApplication(Application):
 
         if self.is_recon_laps():
             self.respond_recon()
+        else:
+            self.respond_pace()
 
     def is_recon_laps(self):
         return self.recon_laps
@@ -125,24 +148,24 @@ class TrackGuideApplication(Application):
             return True
         return False
 
+    def respond_pace(self):
+        pass
+
     def respond_recon(self):
-        distance = self.distance_add(self.distance, 300)
+        seconds_lookahead = 3  # 10 is the timeout for a queued message
+        add_distance = int(self.telemetry.get("SpeedMs", 50) * seconds_lookahead)
+        distance = self.distance_add(self.distance, add_distance)
+        # self.log_debug(f"respond_recon: {self.distance} -> {distance} (+{add_distance})")
         if self.message_playing_at(distance):
             return
+        # a dynamic lookahead means, we could miss some messages
+        # therefore we have a blast radius at self.get_recon_note
         note = self.get_recon_note(distance)
         if note:
-            track_note = note.note
-            message = track_note.message
-            segment = note.segments[0]
-            max_distance_delta = self.max_distance_delta(segment)
-            at = note.at
-            if note.finish_at:
-                response = self.send_response(message, finish_at=at, max_distance_delta=max_distance_delta)
-            else:
-                response = self.send_response(message, at=at, max_distance_delta=max_distance_delta)
+            self.send_response(note.response)
 
-            if -100 < (response.at - self.distance) < 0:
-                self.log_error(f"response {response} cant be played")
+            # if -100 < (response.at - self.distance) < 0:
+            #     self.log_error(f"response {response} cant be played")
 
     def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
         self.send_response("You reset to pits - I reset messages")
