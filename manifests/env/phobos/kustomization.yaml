@@ -8,16 +8,15 @@ labels:
 namespace: b4mad-racing
 
 resources:
-  - ../../base/mosquitto
+  - namespace.yaml
 
   - grafana/
   - influxdb/
-  - namespace.yaml
+  - mosquitto/
   - paddock/
   - postgresql/
   - telegraf/
 
-  - secrets/mosquitto-exporter.yaml
   - secrets/paddock-settings.sealed.yaml
   - secrets/paddock-socialaccounts.yaml
   - secrets/secret.sealed.yaml
