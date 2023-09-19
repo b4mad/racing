@@ -27,6 +27,7 @@ class CoachApp(LoggingMixin):
         self.playing_at = {}  # distance -> bool
         self.track_length = 1
         self._crashed = False
+        self.telemetry = {}
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -103,8 +104,15 @@ class CoachApp(LoggingMixin):
             for resp in self.responses:
                 responses.append(json.dumps(resp.response()))
                 if store_play_at:
-                    start = resp.at or self.distance
-                    end = self.history.distance_add(start, resp.read_time())
+                    # FIXME: make this speed dependent
+                    start = self.history.distance_add(resp.at or self.distance, 1)
+                    read_time = resp.read_time()
+                    speed_at = self.history.speed_at_distance(start)
+                    speed_now = self.telemetry.get("SpeedMs", 1)
+                    if speed_at > 1:
+                        ratio = speed_now / speed_at
+                        read_time *= ratio
+                    end = self.history.distance_add_seconds(start, read_time)
                     for distance in range(start, end):
                         play_at_distance = distance % self.track_length
                         self.playing_at[play_at_distance] = True
@@ -113,7 +121,10 @@ class CoachApp(LoggingMixin):
             return (self.response_topic, responses)
 
     def message_playing_at(self, distance):
-        return self.playing_at.get(distance, False)
+        is_playing_at = self.playing_at.get(distance, False)
+        if is_playing_at:
+            return True
+        return False
 
     def notify(self, topic, telemetry, now=None):
         now = now or django.utils.timezone.now()
@@ -128,6 +139,7 @@ class CoachApp(LoggingMixin):
         if self.distance == self.previous_distance:
             return None
 
+        self.telemetry = telemetry
         self.tick(topic, telemetry, now)
 
         for response in self.app.yield_responses():

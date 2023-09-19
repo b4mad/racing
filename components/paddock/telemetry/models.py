@@ -265,6 +265,9 @@ class TrackGuideNote(TimeStampedModel):
     ref_id = models.CharField(max_length=64, default="")
     ref_eval = models.CharField(max_length=64, default="")
 
+    sort_key = models.CharField(max_length=64, default="")
+    mode = models.CharField(max_length=64, default="")
+
     message = models.TextField(default="")
     eval = models.TextField(default="")
     notes = models.TextField(default="")

@@ -1,4 +1,5 @@
 import datetime
+from collections import deque
 
 from telemetry.models import TrackGuide
 
@@ -11,6 +12,86 @@ class Note:
         self.segments = []
         self.at = None
         self.response = None
+
+
+class Turn:
+    def __init__(self, id, app: Application):
+        self.id = id
+        self.start = 0
+        self.end = 0
+        self.notes = []
+        self.app = app
+        self.segment = None
+        self.responses = deque()
+        self._current_response = None
+
+    def is_in_turn(self, distance):
+        return True
+        return self.start <= distance <= self.end
+
+    def get_response(self, distance):
+        # if distance > self._current_response.at:
+        #     return self.set_next_response(distance)
+        if self._current_response and self._current_response.at == distance:
+            response = self._current_response
+            self.set_next_response(distance)
+            return response
+
+    def set_next_response(self, distance):
+        self.responses.rotate(-1)
+        self._current_response = self.responses[0]
+
+    def build_response(self, note):
+        finish_at = False
+        if note.at:
+            snippet = note.at
+        elif note.finish_at:
+            snippet = note.finish_at
+            finish_at = True
+        else:
+            snippet = "brake_point() or throttle_point()"
+            finish_at = True
+
+        at = self.app.eval_at(snippet, self.segment)
+
+        if not at:
+            raise Exception(f"DISCARDING NOTE: note {note} has no at - data {note}")
+
+        # build the response
+        max_distance_delta = self.app.max_distance_delta(self.segment)
+        if finish_at:
+            response = self.app.build_response(note.message, finish_at=at, max_distance_delta=max_distance_delta)
+        else:
+            response = self.app.build_response(note.message, at=at, max_distance_delta=max_distance_delta)
+        response.sort_at = at
+        return response
+
+    def add_note(self, note):
+        if note.mode != "recon":
+            return
+
+        if not self.notes:
+            self.init_from_note(note)
+
+        response = self.build_response(note)
+        response.sort_key = f"{note.sort_key}"
+        responses = list(self.responses)
+        responses.append(response)
+        responses.sort(key=lambda x: (x.sort_key, x.sort_at))
+        self.responses = deque(responses)
+        self._current_response = self.responses[0]
+
+    def init_from_note(self, note):
+        if note.segment:
+            self.segment = self.app.get_segment(note.segment)
+            self.start = self.segment.start
+            self.end = self.segment.end
+        elif note.landmark:
+            self.segment = self.app.get_segment_at(note.landmark.start)
+            self.start = note.landmark.start
+            self.end = note.landmark.end
+        else:
+            raise Exception("No segment or landmark")
 
 
 class TrackGuideApplication(Application):
@@ -26,8 +107,21 @@ class TrackGuideApplication(Application):
             self.send_response("TrackGuide: no track guide found")
         else:
             self.send_response("Let's start the track guide.")
-            self.init_notes()
-            self.init_recon_notes()
+            self.init_turns()
+
+    def init_turns(self):
+        self.turns = {}
+        for note in self.track_guide.notes.all():
+            turn_id = note.segment or note.landmark.name
+            turn = self.turns.get(turn_id, None)
+            if not turn:
+                turn = Turn(turn_id, self)
+                self.turns[turn_id] = turn
+
+            try:
+                turn.add_note(note)
+            except Exception as e:
+                self.log_error(e)
 
     def init_notes(self):
         self.distance_notes = {}
@@ -42,6 +136,7 @@ class TrackGuideApplication(Application):
                 note.segments.append(segment)
             else:
                 # FIXME: doesnt seem to work
+                # we'll also play notes for other segments...
                 note.segments = self.segments_for_landmark(track_note.landmark)
                 segment = note.segments[0]
 
@@ -152,6 +247,20 @@ class TrackGuideApplication(Application):
         pass
 
     def respond_recon(self):
+        add_distance = 100
+        distance = self.distance_add(self.distance, add_distance)
+        if self.message_playing_at(distance):
+            return
+
+        for turn in self.turns.values():
+            if turn.is_in_turn(distance):
+                response = turn.get_response(distance)
+                if response:
+                    self.send_response(response)
+                    break
+
+    def respond_recon_old(self):
+        # FIXME: seconds_lookahead should be constant, but depend on recon or pace
         seconds_lookahead = 3  # 10 is the timeout for a queued message
         add_distance = int(self.telemetry.get("SpeedMs", 50) * seconds_lookahead)
         distance = self.distance_add(self.distance, add_distance)
@@ -162,6 +271,8 @@ class TrackGuideApplication(Application):
         # therefore we have a blast radius at self.get_recon_note
         note = self.get_recon_note(distance)
         if note:
+            if note.response.message.startswith("Exit wide to the grass - be careful of"):
+                pass
             self.send_response(note.response)
 
             # if -100 < (response.at - self.distance) < 0:
