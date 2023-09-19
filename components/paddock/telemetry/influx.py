@@ -1,6 +1,5 @@
 import csv
 import logging
-import os
 import sys
 import warnings
 from datetime import datetime, timedelta
@@ -12,18 +11,15 @@ from dateutil import parser
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 from influxdb_client.client.warnings import MissingPivotFunction
 
+from .utils import get_influxdb2_config
+
 warnings.simplefilter("ignore", MissingPivotFunction)
 
 
 class Influx:
     def __init__(self):
         # configure influxdb client
-        self.org = os.environ.get("B4MAD_RACING_INFLUX_ORG", "b4mad")
-        self.token = os.environ.get(
-            "B4MAD_RACING_INFLUX_TOKEN",
-            "A4Wyqh-I6rYc-HD9frSpx66gHZRfwdwCqDLoNUnIaGNK1sXScMSIiob2JTfvBt3kyrXByZ_DnECs8IhYNHwoVg==",
-        )
-        self.url = os.environ.get("B4MAD_RACING_INFLUX_URL", "https://telemetry.b4mad.racing/")
+        (self.org, self.token, self.url) = get_influxdb2_config()
 
         self.influx = influxdb_client.InfluxDBClient(
             url=self.url, token=self.token, org=self.org, timeout=(10_000, 600_000)

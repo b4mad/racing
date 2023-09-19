@@ -2,18 +2,20 @@
 
 import json
 import logging
-import os
 import threading
 
 import paho.mqtt.client as mqtt
 
+from telemetry.utils import get_mqtt_config
+
 _LOGGER = logging.getLogger(__name__)
 
-
-B4MAD_RACING_MQTT_HOST = os.environ.get("B4MAD_RACING_MQTT_HOST", "telemetry.b4mad.racing")
-B4MAD_RACING_MQTT_PORT = int(os.environ.get("B4MAD_RACING_MQTT_PORT", 31883))
-B4MAD_RACING_MQTT_USER = os.environ.get("B4MAD_RACING_MQTT_USER", "crewchief")
-B4MAD_RACING_MQTT_PASSWORD = os.environ.get("B4MAD_RACING_MQTT_PASSWORD", "crewchief")
+(
+    B4MAD_RACING_MQTT_HOST,
+    B4MAD_RACING_MQTT_PORT,
+    B4MAD_RACING_MQTT_USER,
+    B4MAD_RACING_MQTT_PASSWORD,
+) = get_mqtt_config()
 
 
 class Mqtt:
