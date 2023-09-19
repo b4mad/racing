@@ -341,7 +341,7 @@ if sentry_dsn and sentry_dsn.startswith("http"):
     sentry_sdk.init(
         dsn=sentry_dsn,
         default_integrations=False,
-        integrations=[DjangoIntegration(), LoggingIntegration(level=logging.CRITICAL)],
+        integrations=[DjangoIntegration(), LoggingIntegration(level=logging.CRITICAL, event_level=logging.CRITICAL)],
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
