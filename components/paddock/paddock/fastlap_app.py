@@ -212,14 +212,18 @@ def update_graph(n_clicks, game, car, track, session_state=None):
             # graphs.append(header)
             brake_features = segment.brake_features()
             throttle_features = segment.throttle_features()
-            gear_features = segment.gear_features()
-            data = [brake_features, throttle_features, gear_features]
-            df = pd.DataFrame.from_records(data, index=["brake", "throttle", "gear"])
+            data = [brake_features, throttle_features]
+            df = pd.DataFrame.from_records(data, index=["brake", "throttle"])
             table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True, size="sm")
+            graphs.append(table)
+            gear_features = segment.gear_features()
+            data = [gear_features["distance_gear"]]
+            df = pd.DataFrame.from_records(data, index=["gear"])
+            table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True, size="sm")
+            graphs.append(table)
             # tb = html.Div(f"tb: {segment.trail_brake()} - {segment._tb_reason}")
             # sector from {segment.start} to {segment.end}
             # graphs.append(tb)
-            graphs.append(table)
 
             if driver is not None:
                 graphs.append(html.Hr())
