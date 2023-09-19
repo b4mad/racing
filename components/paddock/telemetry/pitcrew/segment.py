@@ -168,7 +168,7 @@ class Segment:
         return None
 
     def turn_in(self):
-        return int(self.brake_feature("max_end"))
+        return int(self.brake_feature("max_end") or self.throttle_feature("max_end"))
 
     def brake_force(self):
         self.brake_feature("force")

@@ -65,7 +65,7 @@ class Application(LoggingMixin):
 
     def finish_at(self, at, response):
         read_time = response.read_time()
-        respond_at = self.history.distance_add(at, seconds=-1 * read_time)
+        respond_at = self.history.distance_add_seconds(at, seconds=-1 * read_time)
         return int(respond_at)
 
     def max_distance_delta(self, segment):

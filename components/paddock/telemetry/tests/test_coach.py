@@ -29,7 +29,7 @@ class TestCoach(TransactionTestCase):
     ]
     maxDiff = None
 
-    do_save_responses = False
+    do_save_responses = True
 
     def test_coach(self):
         # iRacing fuji nochicane - Ferrari 488 GT3 Evo 2020

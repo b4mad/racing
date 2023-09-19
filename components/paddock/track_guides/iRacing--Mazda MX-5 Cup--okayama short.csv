@@ -1,17 +1,17 @@
-segment,priority,finish_at,at,ref_id,ref_eval,message,eval,score,notes
-1,5,,,,,brake briefly before the tire mark,True,,"if this evaluates to True, we'll move to the next message"
-1,20,brake_point(),,,,brake,brake_point_diff() < 30,brake_point(),
-1,15,,,,,brake 80 %,coach_brake_force(),brake_force(),
-1,10,gear(2),,,,down shift to 2nd gear,gear_diff() < 0.5,gear(),
-1,2,,,,,turn in just before the marshals shack,coach_turn_in(),turn_in(),
-1,5,apex(),,,,Full-throttle at the dirt patch,apex_diff() < 10,apex(),
-1,5,apex(),,,,very late apex,apex_diff() < 10,apex(),
-1,5,apex(),,,,full curb,apex_diff() < 10,apex(),
-1,20,,brake_point(),,,brake,coach_brake_point(),brake_point(),"this is the last message, which gets always repeated"
-1,1,apex(),,,,Exit wide using all the curb,True,,
-1,1,,apex(),,,back on track by the end of the green,True,,
-1,1,gear(3),,,,UP-shift to 3rd,True,,
+segment,priority,finish_at,at,sort_key,mode,message,eval,score,notes
+1,5,brake_point(),,1,recon,brake briefly before the tire mark,True,,"if this evaluates to True, we'll move to the next message"
+1,5,apex(),,1,recon,very late apex,apex_diff() < 10,apex(),
+1,1,,apex() + 10,1,recon,Exit wide using all the curb,True,,
+1,20,brake_point(),,2,recon,brake,brake_point_diff() < 30,brake_point(),
+1,10,turn_in(),,2,recon,down shift to 2nd gear,gear_diff() < 0.5,gear(),
+1,5,apex(),,2,recon,Full-throttle at the dirt patch,apex_diff() < 10,apex(),
+1,1,,apex() + 10,2,recon,back on track by the end of the green,True,,
+1,15,brake_point(),,3,recon,brake 80 %,coach_brake_force(),brake_force(),
+1,2,turn_in(),,3,recon,turn in just before the marshals shack,coach_turn_in(),turn_in(),
+1,5,apex(),,3,recon,full curb,apex_diff() < 10,apex(),
+1,20,,brake_point(),,pace,brake,coach_brake_point(),brake_point(),"this is the last message, which gets always repeated"
 2,5,,,,,brake at the end of the dirt 65 %,True,,
+2,1,brake_point() - 30,,,pace,UP-shift to 3rd,True,,
 2,1,,,,,approach far left,True,,
 2,3,,,,,turn in at the end of the dirt,coach_turn_in(),turn_in(),
 2,20,,brake_point(),,,brake now,coach_brake_point(),brake_point(),
@@ -57,8 +57,8 @@ segment,priority,finish_at,at,ref_id,ref_eval,message,eval,score,notes
 5,,,apex(),,,Exit wide using all of curb,True,,
 5,,gear(2),,,,Up shift to 2nd and stay left,coach_gear(),gear(),
 mike_knight_corner  ,5,,,,,flat out up to 3rd before the apex,True,,a landmark can have multiple segments
-mike_knight_corner  ,,,,,,Approach far left flat out,True,,
-mike_knight_corner  ,2,,,,,Turn-in at the marshal station on the left,True,,
+mike_knight_corner  ,,,,,,Approach far left flat out,True,,start: 1266
+mike_knight_corner  ,2,,,,,Turn-in at the marshal station on the left,True,,end: 1406
 mike_knight_corner  ,3,,,,,Up shift to 3rd before the apex,True,,
 mike_knight_corner  ,,,,,,Late apex - clip the curb,True,,
 mike_knight_corner  ,2,,,,,Exit wide to the grass - be careful of 1x,True,,

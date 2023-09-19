@@ -271,7 +271,16 @@ class History(LoggingMixin):
         self.map_time_distance_max = max(self.map_time_distance.keys())
 
     def lap_time_at_distance(self, distance):
-        return self.map_distance_time[distance]
+        lap_time = self.map_distance_time.get(distance, 0.0)
+        if lap_time == 0.0:
+            self.log_error(f"no lap_time at {distance} - map: {self.map_distance_time}")
+        return lap_time
+
+    def speed_at_distance(self, distance):
+        speed = self.map_distance_speed.get(distance, 0.0)
+        if speed == 0.0:
+            self.log_error(f"no speed at {distance} - map: {self.map_distance_speed}")
+        return speed
 
     def distance_at_lap_time(self, lap_time):
         distance = self.map_time_distance.get(lap_time, None)
@@ -284,7 +293,10 @@ class History(LoggingMixin):
             distance = self.map_time_distance[closest_key]
         return distance
 
-    def distance_add(self, distance, seconds):
+    def distance_add(self, distance, meters):
+        return (distance + meters) % self.track_length
+
+    def distance_add_seconds(self, distance, seconds):
         time_at_distance = self.lap_time_at_distance(distance)
         target_time = (time_at_distance + seconds) % self.map_time_distance_max
         return self.distance_at_lap_time(target_time)
