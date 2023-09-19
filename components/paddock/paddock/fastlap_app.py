@@ -221,6 +221,18 @@ def update_graph(n_clicks, game, car, track, session_state=None):
             df = pd.DataFrame.from_records(data, index=["gear"])
             table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True, size="sm")
             graphs.append(table)
+            data = [
+                {
+                    "brake / throttle": segment.brake_point() or segment.throttle_point(),
+                    "force": segment.brake_force() or segment.throttle_force(),
+                    "turn_in": segment.turn_in(),
+                    "apex": segment.apex(),
+                    "gear": segment.gear(),
+                }
+            ]
+            df = pd.DataFrame.from_records(data, index=["markers"])
+            table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, index=True, size="sm")
+            graphs.append(table)
             # tb = html.Div(f"tb: {segment.trail_brake()} - {segment._tb_reason}")
             # sector from {segment.start} to {segment.end}
             # graphs.append(tb)
