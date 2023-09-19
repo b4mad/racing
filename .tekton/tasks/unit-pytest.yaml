@@ -1,19 +1,19 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: e2e-telemetry-test
+  name: unit-pytest
   labels:
     app.kubernetes.io/version: "0.1.0"
   annotations:
     tekton.dev/pipelines.minVersion: "0.12.1"
-    tekton.dev/displayName: "#B4mad Racing Telemetry e2e test"
+    tekton.dev/displayName: "#B4mad Racing pytest-based unit tests"
 spec:
   steps:
     - image: quay.io/sclorg/python-311-c9s:20230531
       name: run-e2e-test-in-venv
       workingDir: $(workspaces.source.path)
       command:
-        - components/paddock/scripts/e2e-test.sh
+        - components/paddock/scripts/pytest.sh
       env:
         - name: SECRET_KEY
           value: abcd1ac34873c54e158d38e7f1283977f202abcd

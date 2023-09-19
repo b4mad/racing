@@ -126,7 +126,7 @@ WSGI_APPLICATION = "paddock.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if TESTING:
+if TESTING or ("pytest" in sys.modules):
     DATABASES = {
         "default": {
             "ENGINE": "django_prometheus.db.backends.sqlite3",
