@@ -3,6 +3,11 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[[source]]
+name = "codeberg"
+url = "https://codeberg.org/api/packages/goern/pypi/simple/"
+verify_ssl = true
+
 [packages]
 apscheduler = "*"
 celery = "*"
@@ -42,7 +47,6 @@ sentry-sdk = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
-pytest = "*"
 
 [dev-packages]
 black = "*"
@@ -50,7 +54,9 @@ commitizen = "*"
 factory-boy = "*"
 isort = "*"
 mypy = "*"
+pytest = "*"
 pytest-django = "*"
+sops2sealedsecret = {version = "*", index = "codeberg"}
 
 [requires]
 python_version = "3.10"
