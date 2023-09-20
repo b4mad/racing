@@ -9,9 +9,4 @@ export const options = {
 export default () => {
     const res = http.get('https://paddock.b4mad.racing/');
     sleep(1);
-    // MORE STEPS
-    // Here you can have more steps or complex script
-    // Step1
-    // Step2
-    // etc.
 };
