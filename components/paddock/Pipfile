@@ -47,6 +47,7 @@ sentry-sdk = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
+pytest = "*"
 
 [dev-packages]
 black = "*"
