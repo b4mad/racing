@@ -24,12 +24,12 @@ def get_influxdb2_config() -> tuple[str, str, str] | RuntimeEnvironmentConfigura
             "INFLUXDB2_SERVICE_HOST",
         )
 
-    url = f"https://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}"
+    url = f"http://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}/"
 
     return (org, token, url)
 
 
-def get_mqtt_config() -> tuple[str, str, str, str] | RuntimeEnvironmentConfigurationIncompleteError:
+def get_mqtt_config() -> tuple[str, int, str, str] | RuntimeEnvironmentConfigurationIncompleteError:
     """Get MQTT configuration from environment variables."""
     _B4MAD_RACING_MQTT_HOST = os.environ.get("MOSQUITTO_MQTT_SERVICE_HOST")  # noqa: N806
     _B4MAD_RACING_MQTT_PORT = int(os.environ.get("MOSQUITTO_MQTT_SERVICE_PORT", 1883))  # noqa: N806
