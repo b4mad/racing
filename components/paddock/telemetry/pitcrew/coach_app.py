@@ -171,19 +171,23 @@ class CoachApp(LoggingMixin):
         if work_to_do and not self.history.threaded:
             self.history.do_work()
 
-        start = self.previous_distance + 1
-        stop = self.distance + 1
-        if start > stop:
-            stop += self.track_length
-            self.log_debug(f"distance: wrap around: {start} -> {stop}")
+        # start = self.previous_distance + 1
+        # stop = self.distance + 1
+        # if start > stop:
+        #     stop += self.track_length
+        #     self.log_debug(f"distance: wrap around: {start} -> {stop}")
 
-        if (stop - start) > 50:
-            self.log_debug(f"{start} to {stop} > 50")
+        # if (stop - start) > 50:
+        #     self.log_debug(f"{start} to {stop} > 50")
 
-        for distance in range(start, stop):
+        # for distance in range(start, stop):
+        distance = self.history.distance_add(self.previous_distance, 1)
+        stop = self.history.distance_add(self.distance, 1)
+        while distance != stop:
             self.playing_at[distance] = False
             if distance % 100 == 0:
                 self.log_debug(f"distance: {distance} ({self.distance})")
             self.app.notify(distance, telemetry, now)
+            distance = self.history.distance_add(distance, 1)
 
         self.previous_distance = self.distance
