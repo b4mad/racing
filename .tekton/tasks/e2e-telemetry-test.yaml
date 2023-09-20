@@ -9,7 +9,7 @@ metadata:
     tekton.dev/displayName: "#B4mad Racing Telemetry e2e test"
 spec:
   steps:
-    - image: quay.io/sclorg/python-311-c9s:20230531
+    - image: quay.io/fedora/python-310@sha256:430446ef4ea844de1b49e691a9f5da20b2194d6420463dd21e762bacbf713b66
       name: run-e2e-test-in-venv
       workingDir: $(workspaces.source.path)
       command:
