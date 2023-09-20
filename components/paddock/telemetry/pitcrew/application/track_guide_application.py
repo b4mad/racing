@@ -69,6 +69,7 @@ class Turn:
         else:
             response = self.app.build_response(note.message, at=at, max_distance_delta=max_distance_delta)
         response.sort_at = at
+        response.note = note
         return response
 
     def add_note(self, note):
@@ -202,14 +203,17 @@ class TrackGuideApplication(Application):
 
     def respond_recon(self):
         distance = self.distance_add(self.distance, self.RECON_ADD_DISTANCE)
-        # if self.message_playing_at(distance):
-        #     return
 
         for turn in self.turns.values():
             if turn.is_in_turn(distance):
                 response = turn.get_response(distance)
                 if response:
-                    self.send_response(response)
+                    discard = False
+                    if self.message_playing_at(distance):
+                        discard = True
+                    self.log_debug(f"({response.at}) - {'not playing' if discard else 'playing'} note: {response.note}")
+                    if True or not discard:
+                        self.send_response(response)
                     break
 
     def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
