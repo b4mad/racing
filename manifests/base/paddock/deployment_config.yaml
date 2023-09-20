@@ -81,7 +81,7 @@ spec:
               memory: 1Gi
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 1Gi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -128,7 +128,7 @@ spec:
               memory: 1Gi
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 512Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           livenessProbe:
@@ -190,6 +190,13 @@ spec:
           args:
             - python /opt/app-root/src/manage.py migrate --noinput;
               python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
       volumes:
         - name: django-metrics-dir
           emptyDir:
