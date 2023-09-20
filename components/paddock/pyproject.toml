@@ -22,7 +22,7 @@ line-length = 128
 
 [tool.commitizen]
 major_version_zero = true
-name = "cz_conventional_commits"
+name = "cz_emoji"
 tag_format = "v$version"
 update_changelog_on_bump = true
 version_provider = "pep621"

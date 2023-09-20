@@ -50,7 +50,6 @@ whitenoise = "*"
 
 [dev-packages]
 black = "*"
-commitizen = "*"
 factory-boy = "*"
 isort = "*"
 mypy = "*"
