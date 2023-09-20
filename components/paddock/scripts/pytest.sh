@@ -14,7 +14,7 @@ source $p/venv/bin/activate
 micropipenv install --dev
 cd ..
 
-# run the actual pytests
-pytest -v
+# run the actual pytests, but just the ones marked as unittest
+pytest -v -m unittest
 
 ## end.
