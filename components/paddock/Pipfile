@@ -47,10 +47,10 @@ sentry-sdk = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
+toml = "*"
 
 [dev-packages]
 black = "*"
-commitizen = "*"
 factory-boy = "*"
 isort = "*"
 mypy = "*"
@@ -58,6 +58,7 @@ pytest = "*"
 pytest-django = "*"
 sops2sealedsecret = {version = "*", index = "codeberg"}
 types-python-dateutil = "*"
+types-toml = "*"
 
 [requires]
 python_version = "3.10"
