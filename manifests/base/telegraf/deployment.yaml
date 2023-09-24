@@ -20,12 +20,12 @@ spec:
             - name: USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: mosquitto
+                  name: mosquitto-password
                   key: crewchief-username
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mosquitto
+                  name: mosquitto-password
                   key: crewchief-password
             - name: INFLUX_TOKEN
               # create this via the influx UI as a writer token for the racing bucket
