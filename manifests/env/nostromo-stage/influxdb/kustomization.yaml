@@ -24,14 +24,14 @@ patches:
     patch: |-
       - op: replace
         path: /spec/resources/requests/storage
-        value: "100Gi"
+        value: "10Gi"
   - target:
       kind: PersistentVolumeClaim
       name: influxdb2
     patch: |-
       - op: replace
         path: /spec/resources/requests/storage
-        value: "20Gi"
+        value: "8Gi"
   - target:
       kind: Ingress
       name: influx
