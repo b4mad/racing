@@ -5,6 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
   name: grafana
 spec:
+  ingressClassName: openshift-default
   rules:
     - host: pitwall.dev.b4mad.racing
       http:
