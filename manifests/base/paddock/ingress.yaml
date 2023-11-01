@@ -6,6 +6,7 @@ metadata:
     haproxy.router.openshift.io/timeout: 120s
   name: paddock
 spec:
+  ingressClassName: openshift-default
   rules:
     - host: paddock.dev.b4mad.racing
       http:
