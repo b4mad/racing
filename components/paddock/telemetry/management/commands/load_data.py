@@ -1,9 +1,12 @@
 import csv
 import json
 import logging
+from io import BytesIO
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
+from openai import OpenAI
+from pydub import AudioSegment
 
 # from telemetry.factories import DriverFactory
 from telemetry.models import Game, Landmark, TrackGuide
@@ -16,6 +19,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--landmarks", action="store_true")
+        parser.add_argument("--tts", action="store_true")
         parser.add_argument("--track-guide", nargs="?", type=str)
 
     def handle(self, *args, **options):
@@ -23,6 +27,27 @@ class Command(BaseCommand):
             self.landmarks()
         if options["track_guide"]:
             self.trackguide(options["track_guide"])
+        if options["tts"]:
+            self.generate_tts()
+
+    def generate_tts(self):
+        client = OpenAI()
+
+        response = client.audio.speech.create(
+            model="tts-1",
+            voice="alloy",
+            response_format="mp3",
+            input="Today is a wonderful day to build something people love!",
+        )
+
+        # Store the output in a buffer
+        buffer = BytesIO(response.audio)
+
+        # Load mp3 from buffer
+        audio = AudioSegment.from_file(buffer, format="mp3")
+
+        # Convert mp3 to wav
+        audio.export("speech.wav", format="wav")
 
     def trackguide(self, filename):
         # https://simracing.wiki/BMW_M4_GT4_(iRacing)
