@@ -28,6 +28,7 @@ class CoachApp(LoggingMixin):
         self.track_length = 1
         self._crashed = False
         self.telemetry = {}
+        self.apps = []
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -72,11 +73,11 @@ class CoachApp(LoggingMixin):
 
                 return False
             # History is ready
-            self.init_app()
+            self.init_apps()
             self._new_session_starting = False
         return True
 
-    def init_app(self):
+    def init_apps(self):
         self.session = Session()
         self.session.track = self.history.track
         self.session.car = self.history.car
@@ -85,9 +86,9 @@ class CoachApp(LoggingMixin):
         self.session.id = self.session_id
         self.track_length = self.session.track_length()
         if self.coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
-            self.app = TrackGuideApplication(self.session, self.history, self)
+            self.apps.append(TrackGuideApplication(self.session, self.history, self))
         else:
-            self.app = DebugApplication(self.session, self.history, self)
+            self.apps.append(DebugApplication(self.session, self.history, self))
 
     def respond(self, response):
         self.responses.append(response)
@@ -142,8 +143,9 @@ class CoachApp(LoggingMixin):
         self.telemetry = telemetry
         self.tick(topic, telemetry, now)
 
-        for response in self.app.yield_responses():
-            self.respond(response)
+        for app in self.apps:
+            for response in app.yield_responses():
+                self.respond(response)
 
         return self.return_messages()
 
@@ -156,10 +158,12 @@ class CoachApp(LoggingMixin):
             # hence we reset the messages
             self.log_debug(f"distance: _diff: {distance_diff} -> reset responses")
             if telemetry["SpeedMs"] < 1:
-                self.app.on_reset_to_pits(self.distance, telemetry, now)
+                for app in self.apps:
+                    app.on_reset_to_pits(self.distance, telemetry, now)
             else:
                 if not self._crashed:
-                    self.app.on_crash(self.distance, telemetry, now)
+                    for app in self.apps:
+                        app.on_crash(self.distance, telemetry, now)
                     self._crashed = True
             self.previous_distance = self.distance
             return
@@ -187,7 +191,9 @@ class CoachApp(LoggingMixin):
             self.playing_at[distance] = False
             if distance % 100 == 0:
                 self.log_debug(f"distance: {distance} ({self.distance})")
-            self.app.notify(distance, telemetry, now)
+            # notify all registered apps
+            for app in self.apps:
+                app.notify(distance, telemetry, now)
             distance = self.history.distance_add(distance, 1)
 
         self.previous_distance = self.distance
