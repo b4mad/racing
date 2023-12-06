@@ -48,6 +48,8 @@ sqlalchemy = "*"
 uwsgi = "*"
 whitenoise = "*"
 toml = "*"
+openai = "*"
+pydub = "*"
 
 [dev-packages]
 black = "*"
