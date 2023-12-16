@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: pytest
+  annotations:
+    tekton.dev/displayName: "pytest tests"
+spec:
+  steps:
+    - image: quay.io/fedora/python-310@sha256:430446ef4ea844de1b49e691a9f5da20b2194d6420463dd21e762bacbf713b66
+      name: pytest
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/sh
+        shopt -s extglob
+        pip install micropipenv[toml]
+        p=$(mktemp -d)
+        python3.10 -m venv $p/venv
+        source $p/venv/bin/activate
+        micropipenv install --dev
+        pytest -v
+      env:
+        - name: SECRET_KEY
+          value: abcd1ac34873c54e158d38e7f1283977f202abcd
+        - name: ENVIRONMENT
+          value: test
+        - name: SMTP_HOSTNAME
+          value: smtp.example.com
+        - name: SMTP_PORT
+          value: "587"
+        - name: SMTP_USERNAME
+          value: smtp_username
+        - name: SMTP_PASSWORD
+          value: smtp_password
+  sidecars:
+    - name: postgresql
+      image: docker.io/library/postgres:14
+      env:
+        - name: POSTGRES_USER
+          value: paddock
+        - name: POSTGRES_PASSWORD
+          value: paddock
+        - name: POSTGRES_DB
+          value: paddock
+  workspaces:
+    - name: source
+      mountPath: /workspace/src
+      description: >-
+        The workspace containing the source code which needs to be released.

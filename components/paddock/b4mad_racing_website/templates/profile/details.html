@@ -1,0 +1,120 @@
+{% extends "site/base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% load racing_tags %}
+
+{% block title %}#B4mad Racing Profile{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Profile of <em>{{ profile.user.username }}</em></h1>
+        </div>
+        <div class="col">
+            <div class="float-end">
+                {% if user.is_authenticated %}
+                {% if is_myself %}
+                {% if profile.initial_transport_test_passed %}
+                <span class="text-success">{% bs_icon 'lightbulb' %}</span>
+                {% else %}
+                <span class="text-danger">{% bs_icon 'lightbulb-off' %}</span>
+                {% endif %}
+                {% if profile.publicly_visible %}
+                {% bs_icon 'eye' %}
+                {% else %}
+                {% bs_icon 'eye-slash' %}
+                {% endif %}
+                <a href="{% url 'profile-edit' user %}"> {% bs_icon 'pencil' %} </a>
+                {% else %}
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {% if is_myself %}
+            <h3>Hello, {{ user.username }}! This is your personal profile!</h3>
+            <p>
+            <ul>
+                <li>mqtt driver name: {{ profile.mqtt_drivername|default:"<b>not set!!</b>" }}</li>
+            </ul>
+            </p>
+            {% else %}
+            <h3>This is {{ profile.user.username }}!</h3>
+            {% endif %}
+            <p>... a member since {{ profile.user.date_joined|date }} </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h2>copilots in use</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        {% for subscription in profile.subscriptions.all %}
+                        <tr>
+                            <td><a href="{% url 'copilot-details' subscription.id %}">{{ subscription.name }}</a></td>
+                            <td>{{ subscription.description }}</td>
+                            <td>{{ subscription.published_at|date }}</td>
+                            <td><small>{{ svc.subscribers.count }}</small></td>
+                            <th scope="row">
+                                {% if user.is_authenticated %}
+                                <small>
+                                    <div class="form-check form-switch">
+                                    </div>
+                                </small>
+                                {% endif %}
+                            </th>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>
+                                <div>No Copilots are enabled.</div>
+                                <div>Have a look at <a href="{% url 'copilots-overview' %}">all our copilots</a> </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% if driver and is_myself %}
+    <div class="row">
+        <div class="col">
+            <h2>your last 5 sessions</h2>
+            <div class="table-responsive">
+                <!-- lets display the sessions in a table -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">session</th>
+                            <th scope="col">driver</th>
+                            <th scope="col">created</th>
+                            <th scope="col">game</th>
+                            <th scope="col">type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                        <tr>
+                            <th scope="row">{{ session.session_id }}</th>
+                            <td>{{ session.driver.name|no_jim }}</td>
+                            <td>{{ session.created|date }} {{ session.created|time }}</td>
+                            <td>{{ session.game }}</td>
+                            <td>{{ session.session_type_id|to_session_type }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

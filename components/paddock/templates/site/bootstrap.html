@@ -1,0 +1,10 @@
+{% extends "django_bootstrap5/bootstrap5.html" %}
+{% load static %}
+
+{% block bootstrap5_title %}{% block title %}{% endblock title %}{% endblock bootstrap5_title %}
+
+{% block bootstrap5_extra_head %}
+<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+{% endblock bootstrap5_extra_head %}

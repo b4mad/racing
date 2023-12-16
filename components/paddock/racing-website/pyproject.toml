@@ -1,0 +1,92 @@
+[tool.poetry]
+authors = ["Christoph Görn <goern@b4mad.net>"]
+description = "the #B4mad Racing application"
+license = "GPL-3.0-or-later"
+name = "b4mad-racing"
+readme = "README.md"
+version = "0.3.0"
+
+[tool.poetry.dependencies]
+Django = "^5.0.0"
+django-allauth = "^0.58.2"
+django-bootstrap-icons = "^0.8.6"
+django-bootstrap5 = "^23.3"
+django-environ = "^0.11.2"
+psycopg = "^3.1.13"
+pytest-cov = "^4.1.0"
+python = "^3.10"
+uvicorn = "^0.24.0.post1"
+fontawesomefree = "^6.5.1"
+b4mad-racing-telemetry = "^0.3.0"
+django-extensions = "^3.2.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+factory-boy = "^3.3.0"
+mypy = "^1.7.1"
+pylint-django = "^2.5.5"
+pytest-django = "^4.7.0"
+pytest-xdist = "^3.5.0"
+
+
+[[tool.poetry.source]]
+name = "codeberg-b4mad"
+url = "https://codeberg.org/api/packages/b4mad/pypi/simple/"
+priority = "supplemental"
+
+[tool.commitizen]
+major_version_zero = true
+name = "cz_conventional_commits"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version_provider = "poetry"
+version_scheme = "semver"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.isort]
+combine_as_imports = true
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+profile = "django"
+
+[tool.black]
+include = '\.pyi?$'
+line-length = 120
+target-version = ['py39']
+
+[tool.djlint]
+ignore = "H031"
+profile = "django"
+
+[tool.ruff]
+line-length = 120
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "b4mad_racing.settings"
+addopts = "--cov --cov-report=term-missing --cov-report=html --cov-report=xml --cov-branch --cov-config=pyproject.toml"
+python_files = "tests.py test_*.py *_tests.py"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+  # Don't complain about missing debug-only code:
+  "def __repr__",
+  "if self\\.debug", # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError", # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if __name__ == .__main__.:", # Don't complain about abstract methods, they aren't run:
+  "@(abc\\.)?abstractmethod",
+]
+
+ignore_errors = true
+
+[tool.coverage.html]
+directory = "coverage_report"

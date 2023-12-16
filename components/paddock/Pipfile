@@ -50,6 +50,8 @@ whitenoise = "*"
 toml = "*"
 openai = "*"
 pydub = "*"
+django-bootstrap5 = "*"
+django-bootstrap-icons = "*"
 
 [dev-packages]
 black = "*"

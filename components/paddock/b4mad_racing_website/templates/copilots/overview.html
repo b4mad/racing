@@ -1,0 +1,89 @@
+{% extends "site/base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+
+{% block title %}#B4mad Racing Copilots{% endblock title %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% endif %}
+<!-- lets give some information, that this is the list of copilots, and users need to login to enable them for their profile -->
+<div class="row">
+    <div class="col">
+        <h4 class="alert-heading">Welcome to the #B4mad Racing Copilots!</h4>
+        <p>Here you can find all the copilots, that are available for you to enable them for your profile.</p>
+        {% if not user.is_authenticated %}
+        <p class="mb-0">You need to be logged in to enable a copilot for your profile.</p>
+        {% endif %}
+    </div>
+    <div class="col">
+        <div class="float-end">
+            <form class="d-flex" action="{ % url 'copilot-search' % }" method="get">
+                <input class="form-control me-2" type="search" placeholder="what you want?" aria-label="Search" name="q">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="table-responsive">
+    <table class="table">
+        <tbody>
+            {% for svc in object_list %}
+            <tr>
+                <td><a href="{% url 'copilot-details' svc.id %}">{{ svc.name }}</a></td>
+                <td>{{ svc.description }}</td>
+                <td>{{ svc.published_at|date }}</td>
+                <td><small>{{ svc.subscribers.count }}</small></td>
+                <th scope="row">
+                    {% if user.is_authenticated %}
+                    <small>
+                        <div class="form-check form-switch">
+                            <!-- WARNING this is nasty: html layout autoformatted will break tests!!! FIXME -->
+                            {# djlint:off #}
+                            <input class="form-check-input" type="checkbox" id="enable-copilot-{{ svc.id }}" {% if svc in user.profile.subscriptions.all %} checked{% endif %}>
+                            <span id="enable-copilot-{{ svc.id }}-response" style="visibility: hidden;">{% bs_icon 'check' %}</span>
+                            {# djlint:on #}
+                        </div>
+                    </small>
+                    {% endif %}
+                </th>
+            </tr>
+            {% empty %}
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% if user.is_authenticated %}
+<script>
+    $(document).ready(function () {
+        $('.form-check-input').change(function () {
+            var isChecked = $(this).is(':checked');
+            var copilotId = $(this).attr('id').split('-')[2];
+            var ajaxType = isChecked ? 'put' : 'delete';
+
+            $.ajax({
+                url: "{% url 'profile-subscriptions' user %}",
+                type: ajaxType,
+                headers: { "X-CSRFToken": '{{ csrf_token }}', "Content-Type": "application/json" },
+                data: JSON.stringify({ 'copilot_id': copilotId }),
+                success: function (response) {
+                    $('#enable-copilot-' + copilotId + '-response').css('background-color', 'lightgreen').css('visibility', 'visible');
+                    setTimeout(function () {
+                        $('#enable-copilot-' + copilotId + '-response').css('background-color', '').css('visibility', 'hidden');
+                    }, 250);
+                },
+                error: function (response) {
+                    $('#enable-copilot-' + copilotId + '-response').css('background-color', 'red').css('visibility', 'visible');
+                    setTimeout(function () {
+                        $('#enable-copilot-' + copilotId + '-response').css('background-color', '').css('visibility', 'hidden');
+                    }, 250);
+                }
+            });
+        });
+    });
+</script>
+{% endif %}
+{% endblock content %}

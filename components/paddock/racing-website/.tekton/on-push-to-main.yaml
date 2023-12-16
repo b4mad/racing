@@ -1,0 +1,137 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: on-push-to-main
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[push]"
+    pipelinesascode.tekton.dev/on-target-branch: "main"
+    pipelinesascode.tekton.dev/task: "[git-clone, buildah, .tekton/tasks/update-kustomize-image-tag.yaml, .tekton/tasks/pytest.yaml, argocd-task-sync-and-wait]"
+    pipelinesascode.tekton.dev/max-keep-runs: "5"
+
+spec:
+  params:
+    - name: repo_url
+      value: "{{ repo_url }}"
+    - name: revision
+      value: "{{ revision }}"
+  taskRunSpecs:
+    - pipelineTaskName: build
+      taskServiceAccountName: pipelines-as-uid-1000
+    - pipelineTaskName: push-to-codeberg
+      taskServiceAccountName: pipelines-as-uid-1000
+  pipelineSpec:
+    params:
+      - name: repo_url
+      - name: revision
+    tasks:
+      - name: fetch-source-repository
+        taskRef:
+          name: git-clone
+        workspaces:
+          - name: output
+            workspace: source
+        params:
+          - name: url
+            value: $(params.repo_url)
+          - name: revision
+            value: $(params.revision)
+      - name: pytest
+        taskRef:
+          name: pytest
+        runAfter:
+          - build
+        workspaces:
+          - name: source
+            workspace: source
+      - name: fetch-manifests-repository
+        taskRef:
+          name: git-clone
+        workspaces:
+          - name: output
+            workspace: manifests-repo
+        params:
+          - name: url
+            value: git@codeberg.org:b4mad/racing-website-manifests.git
+          - name: revision
+            value: HEAD
+      - name: build
+        taskRef:
+          name: buildah-as-userid-1000
+          kind: ClusterTask
+        runAfter:
+          - fetch-source-repository
+        params:
+          - name: IMAGE
+            value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/website:$(params.revision)
+          - name: BUILDER_IMAGE
+            value: registry.access.redhat.com/ubi9/buildah@sha256:8b1144b8534507a4b7e71d11174b483c373906828fca669978a3aa63b63af6e3
+          - name: DOCKERFILE
+            value: Containerfile
+        workspaces:
+          - name: source
+            workspace: source
+      - name: push-to-codeberg
+        taskRef:
+          kind: ClusterTask
+          name: skopeo-copy
+        runAfter:
+          - build
+          - pytest
+        params:
+          - name: srcImageURL
+            value: docker://image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/website:$(params.revision)
+          - name: destImageURL
+            value: docker://codeberg.org/b4mad/racing-website:$(params.revision)
+          - name: srcTLSverify
+            value: "false"
+        workspaces:
+          - name: images-url
+            workspace: images-url
+      - name: update-manifests-repository
+        taskRef:
+          name: update-kustomize-image-tag
+        runAfter:
+          - fetch-manifests-repository
+          - push-to-codeberg
+        params:
+          - name: gitRepoUrl
+            value: $(params.repo_url)
+          - name: gitRevision
+            value: $(params.revision)
+          - name: imageName
+            value: racing-website
+          - name: newTag
+            value: $(params.revision)
+        workspaces:
+          - name: manifests
+            workspace: manifests-repo
+      - name: deploy-to-dev
+        taskRef:
+          name: argocd-task-sync-and-wait
+        runAfter:
+          - update-manifests-repository
+        params:
+          - name: application-name
+            value: b4mad-racing-website-dev
+          - name: revision
+            value: "$(tasks.update-manifests-repository.results.commit)"
+
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    - name: manifests-repo
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    - name: images-url
+      emptyDir: {}
