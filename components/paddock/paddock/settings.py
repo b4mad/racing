@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     "django_plotly_dash.apps.DjangoPlotlyDashConfig",
     "django.contrib.admin",
     "django_admin_listfilter_dropdown",
+    "django_bootstrap5",
+    "django_bootstrap_icons",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
@@ -81,6 +83,8 @@ INSTALLED_APPS = [
     "explorer",
     "django_prometheus",
     "telemetry.apps.TelemetryConfig",
+    "b4mad_racing_website.apps.B4madRacingWebsiteConfig",
+    "frontpage.apps.FrontpageConfig",
 ]
 
 MIDDLEWARE = [
@@ -106,6 +110,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "paddock", "templates"),
+            os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {

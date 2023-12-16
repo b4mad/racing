@@ -1,15 +1,15 @@
-import toml
+# import toml
 
-from .celery import app as celery_app
-
-
-def get_version_from_pyproject():
-    with open("pyproject.toml", "r") as file:
-        pyproject = toml.load(file)
-        return pyproject["project"]["version"]
+# from .celery import app as celery_app
 
 
-__version__ = get_version_from_pyproject()
+# def get_version_from_pyproject():
+#     with open("pyproject.toml", "r") as file:
+#         pyproject = toml.load(file)
+#         return pyproject["project"]["version"]
 
 
-__all__ = ("celery_app",)
+# __version__ = get_version_from_pyproject()
+
+
+# __all__ = ("celery_app",)

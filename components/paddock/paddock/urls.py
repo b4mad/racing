@@ -8,13 +8,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
+from frontpage.views import HomePageView
 
 from . import views
 from .views import CoachView
 
 urlpatterns = [
     # path("", views.index, name="home"),
+    path("", include("b4mad_racing_website.urls")),
+    path("", include("frontpage.urls")),
     path("", include("django_prometheus.urls")),
+    path("new", HomePageView.as_view(), name="home"),
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
     # path("fastlap/<str:game>/<str:track>/<str:car>", views.fastlap_index, name="fastlap_index"),
