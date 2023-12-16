@@ -1,0 +1,9 @@
+db.sqlite3
+.tekton
+.env
+.env.example
+.mypy_cache/
+venv/
+.vscode/
+.thoth_last_analysis_id
+.gitignore

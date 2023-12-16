@@ -1,0 +1,59 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-kustomize-image-tag
+spec:
+  params:
+    - name: gitRepoUrl
+      type: string
+      description: URL of the GitOps git repository
+    - name: imageName
+      type: string
+      description: Name of the image to edit in the kustomization file
+    - name: newTag
+      type: string
+      description: New image tag
+  results:
+    - description: The precise commit SHA that was pushed by this Task.
+      name: commit
+      type: string
+  workspaces:
+    - description: |
+        A .ssh directory with private key, known_hosts, config, etc. Copied to
+        the user's home before git commands are executed. Used to authenticate
+        with the git remote when performing the clone. Binding a Secret to this
+        Workspace is strongly recommended over other volume types.
+      name: ssh-directory
+      optional: true
+    - name: manifests
+      description: Source of the kustomize manifests, the GitOps repository.
+  steps:
+    - name: kustomize-edit
+      image: quay.io/goern/opf-toolbox:v0.13.0
+      script: |
+        #!/bin/sh
+        cd /workspace/manifests/environments/dev
+        kustomize edit set image $(params.imageName)=codeberg.org/b4mad/$(params.imageName):$(params.newTag)
+    - name: commit-changes
+      image: quay.io/goern/opf-toolbox:v0.13.0
+      script: |
+        #!/bin/sh
+        cd /workspace/manifests/environments/dev
+        git config --global --add safe.directory /workspace/manifests
+        git config user.email codeberg.bagel881@passmail.net
+        git config user.name op1st-gitops
+        git add kustomization.yaml
+        git commit -m "Update $(params.imageName) reference to $(params.newTag)"
+    - name: push-changes
+      image: quay.io/goern/opf-toolbox:v0.13.0
+      script: |
+        #!/bin/sh
+        cd /workspace/manifests/environments/dev
+        git config --global --add safe.directory /workspace/manifests
+        RESULT_SHA="$(git log --format=%H -n 1)"
+        git push origin HEAD:main
+        printf "%s" "${RESULT_SHA}" > "$(results.commit.path)"
+  volumes:
+    - name: git-ssh-key
+      secret:
+        secretName: codeberg-op1st-gitops

@@ -1,0 +1,77 @@
+[
+    {
+        "model": "b4mad_racing_website.profile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "slug": "admin",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z",
+            "mqtt_drivername": "",
+            "initial_transport_test_passed": false,
+            "publicly_visible": true,
+            "subscriptions": []
+        }
+    },
+    {
+        "model": "b4mad_racing_website.profile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "slug": "hank",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z",
+            "mqtt_drivername": "hank",
+            "initial_transport_test_passed": false,
+            "publicly_visible": true,
+            "subscriptions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "b4mad_racing_website.profile",
+        "pk": 3,
+        "fields": {
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z",
+            "user": 3,
+            "slug": "honk",
+            "mqtt_drivername": "",
+            "initial_transport_test_passed": false,
+            "publicly_visible": true,
+            "subscriptions": []
+        }
+    },
+    {
+        "model": "b4mad_racing_website.profile",
+        "pk": 4,
+        "fields": {
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z",
+            "user": 4,
+            "slug": "hunk",
+            "mqtt_drivername": "hunk",
+            "initial_transport_test_passed": true,
+            "publicly_visible": true,
+            "subscriptions": [
+                3,
+                1
+            ]
+        }
+    },
+    {
+        "model": "b4mad_racing_website.profile",
+        "pk": 5,
+        "fields": {
+            "user": 5,
+            "slug": "hink",
+            "mqtt_drivername": "",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z",
+            "initial_transport_test_passed": false,
+            "publicly_visible": false,
+            "subscriptions": []
+        }
+    }
+]

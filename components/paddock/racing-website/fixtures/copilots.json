@@ -1,0 +1,46 @@
+[
+    {
+        "model": "b4mad_racing_website.copilot",
+        "pk": 1,
+        "fields": {
+            "name": "braker",
+            "description": "This copilot will help you train how to brake",
+            "published": "2023-12-07T07:33:41Z",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z"
+        }
+    },
+    {
+        "model": "b4mad_racing_website.copilot",
+        "pk": 2,
+        "fields": {
+            "name": "ding 1",
+            "description": "This is one Ding",
+            "published": "2023-12-07T07:33:57Z",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z"
+        }
+    },
+    {
+        "model": "b4mad_racing_website.copilot",
+        "pk": 3,
+        "fields": {
+            "name": "Ding Zwei",
+            "description": "The second thing",
+            "published": "2023-12-07T07:34:16Z",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z"
+        }
+    },
+    {
+        "model": "b4mad_racing_website.copilot",
+        "pk": 4,
+        "fields": {
+            "name": "AMS2-career uploader",
+            "description": "Ding Drei",
+            "published": "2023-12-07T07:34:35Z",
+            "created": "2023-12-15T06:06:47.479Z",
+            "modified": "2023-12-15T06:06:56.688Z"
+        }
+    }
+]

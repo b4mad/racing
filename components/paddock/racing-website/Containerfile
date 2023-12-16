@@ -1,0 +1,26 @@
+FROM quay.io/fedora/python-311:b8b63928c27e8131a404fd2f3013cff9047c5910
+
+ENV \
+    DISABLE_SETUP_PY_PROCESSING=1 \
+    ENABLE_MICROPIPENV=1 \
+    SUMMARY="#B4mad Racing website" \
+    DESCRIPTION="This is the #B4mad Racing website, a central place to get your sim racing copilot!"
+
+LABEL \
+    summary="$SUMMARY" \
+    description="$DESCRIPTION" \
+    io.k8s.description="$DESCRIPTION" \
+    io.k8s.display-name="$SUMMARY" \
+    io.openshift.expose-services="8080:http" \
+    io.openshift.tags="b4mad,website,python" \
+    name="b4mad-racing-website" \
+    version="1.0.0-dev" \
+    maintainer="codeberg.org/b4mad" \
+    license="GPL-3.0-or-later"
+
+USER 0
+ADD . /tmp/src
+RUN /usr/bin/fix-permissions /tmp/src
+USER 1001
+
+RUN /usr/libexec/s2i/assemble
