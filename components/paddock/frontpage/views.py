@@ -1,5 +1,6 @@
-from b4mad_racing_telemetry.models import Session
 from django.views.generic.base import TemplateView
+
+from telemetry.models import Session
 
 
 class HomePageView(TemplateView):
