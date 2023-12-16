@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class B4madReacingWebsiteConfig(AppConfig):
+class B4madRacingWebsiteConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "b4mad_racing_website"
 

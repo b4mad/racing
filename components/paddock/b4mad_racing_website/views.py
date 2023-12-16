@@ -1,7 +1,6 @@
 import json
 import logging
 
-from b4mad_racing_telemetry.models import Driver, Session
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponseNotAllowed, JsonResponse
@@ -11,6 +10,8 @@ from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
+
+from telemetry.models import Driver, Session
 
 from .models import Copilot, Profile
 
