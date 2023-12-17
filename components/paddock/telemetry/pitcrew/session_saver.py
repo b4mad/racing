@@ -8,9 +8,10 @@ from telemetry.models import Driver, Game, SessionType
 
 
 class SessionSaver:
-    def __init__(self, firehose):
+    def __init__(self, firehose, save=True):
         self.firehose = firehose
         self.sleep_time = 10
+        self.save = save
 
         self._stop_event = threading.Event()
         self.ready = False
@@ -23,7 +24,8 @@ class SessionSaver:
 
     def save_sessions_loop(self):
         while True and not self.stopped():
-            self.save_sessions()
+            if self.save:
+                self.save_sessions()
             self.ready = True
             time.sleep(self.sleep_time)
 

@@ -13,11 +13,12 @@ from .session_saver import SessionSaver
 
 
 class Crew:
-    def __init__(self, debug=False, replay=False):
+    def __init__(self, debug=False, replay=False, save=True):
         self._ready = False
         self._live = False
         self.debug = debug
         self.replay = replay
+        self.save = save
 
         topic = "crewchief/#"
 
@@ -27,7 +28,7 @@ class Crew:
         self.coach_watcher = CoachWatcher(self.firehose, replay=replay)
         self.coach_watcher.sleep_time = 3
 
-        self.session_saver = SessionSaver(self.firehose)
+        self.session_saver = SessionSaver(self.firehose, save=save)
         self.session_saver.sleep_time = 5
 
         self._stop_event = threading.Event()
