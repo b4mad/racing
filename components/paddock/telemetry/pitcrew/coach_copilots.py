@@ -1,6 +1,7 @@
 import json
 
 import django.utils.timezone
+from b4mad_racing_website.models import CopilotInstance
 
 from telemetry.models import Coach, SessionType
 from telemetry.pitcrew.logging import LoggingMixin
@@ -29,6 +30,7 @@ class CoachCopilots(LoggingMixin):
         self._crashed = False
         self.telemetry = {}
         self.apps = []
+        self.driver_name = self.coach_model.driver.name
 
     def filter_from_topic(self, topic):
         frags = topic.split("/")
@@ -85,10 +87,18 @@ class CoachCopilots(LoggingMixin):
         self.session.session_type = self.session_type
         self.session.id = self.session_id
         self.track_length = self.session.track_length()
-        if self.coach_model.mode == Coach.MODE_TRACK_GUIDE_APP:
-            self.apps.append(TrackGuideApplication(self.session, self.history, self))
-        else:
-            self.apps.append(DebugApplication(self.session, self.history, self))
+
+        # find all copilot instances for this driver
+        # where the mqtt_drivername on the driver relation matches self.driver_name
+        copilot_instances = CopilotInstance.objects.filter(driver__mqtt_drivername=self.driver_name)
+        for copilot_instance in copilot_instances:
+            if copilot_instance.enabled() or True:
+                copilot = copilot_instance.copilot
+                self.log_debug(f"adding copilot: {copilot}")
+                if copilot.name == "debug":
+                    self.apps.append(DebugApplication(self.session, self.history, self))
+                elif copilot.name == "track_guide":
+                    self.apps.append(TrackGuideApplication(self.session, self.history, self))
 
     def respond(self, response):
         self.responses.append(response)

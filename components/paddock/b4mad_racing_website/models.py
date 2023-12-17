@@ -87,3 +87,6 @@ class CopilotInstance(TimeStampedModel):
         choices=Status.choices,
         default=Status.MISCONFIGURED,  # we assume, that the mqtt_drivername is not set
     )
+
+    def enabled(self):
+        return self.status == CopilotInstance.Status.ENABLED
