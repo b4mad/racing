@@ -6,6 +6,7 @@ from telemetry.models import Coach, Driver
 
 from .coach import Coach as PitCrewCoach
 from .coach_app import CoachApp
+from .coach_copilots import CoachCopilots
 from .history import History
 from .mqtt import Mqtt
 
@@ -69,6 +70,8 @@ class CoachWatcher:
         history = History()
         if coach_model.mode == Coach.MODE_TRACK_GUIDE_APP or coach_model.mode == Coach.MODE_DEBUG_APP:
             coach = CoachApp(history, coach_model, debug=debug)
+        elif coach_model.mode == Coach.MODE_COPILOTS:
+            coach = CoachCopilots(history, coach_model, debug=debug)
         else:
             coach = PitCrewCoach(history, coach_model, debug=debug)
 
