@@ -18,13 +18,14 @@ def get_influxdb2_config() -> tuple[str, str, str] | RuntimeEnvironmentConfigura
 
     _INFLUXDB2_SERVICE_HOST = os.environ.get("INFLUXDB2_SERVICE_HOST")  # noqa: N806
     _INFLUXDB2_SERVICE_PORT = os.environ.get("INFLUXDB2_SERVICE_PORT", 8086)  # noqa: N806
+    _INFLUXDB2_SERVICE_PROTOCOL = os.environ.get("INFLUXDB2_SERVICE_PROTOCOL", "http")  # noqa: N806
 
     if _INFLUXDB2_SERVICE_HOST is None:
         raise RuntimeEnvironmentConfigurationIncompleteError(
             "INFLUXDB2_SERVICE_HOST",
         )
 
-    url = f"http://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}/"
+    url = f"{_INFLUXDB2_SERVICE_PROTOCOL}://{_INFLUXDB2_SERVICE_HOST}:{_INFLUXDB2_SERVICE_PORT}/"
 
     return (org, token, url)
 

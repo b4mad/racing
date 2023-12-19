@@ -24,7 +24,7 @@ class Command(BaseCommand):
             FastLap.objects.filter(driver__isnull=False).delete()
             return
 
-        crew = Crew(debug=options["no_save"], replay=options["replay"])
+        crew = Crew(save=(not options["no_save"]), replay=options["replay"])
         if options["coach"]:
             driver, created = Driver.objects.get_or_create(name=options["coach"])
             coach, created = Coach.objects.get_or_create(driver=driver)

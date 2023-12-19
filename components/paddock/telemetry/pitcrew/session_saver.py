@@ -4,13 +4,14 @@ import time
 
 from django.db import IntegrityError
 
-from telemetry.models import Driver, Game, SessionType
+from telemetry.models import Driver, Game, Session, SessionType
 
 
 class SessionSaver:
-    def __init__(self, firehose):
+    def __init__(self, firehose, save=True):
         self.firehose = firehose
         self.sleep_time = 10
+        self.save = save
 
         self._stop_event = threading.Event()
         self.ready = False
@@ -23,9 +24,41 @@ class SessionSaver:
 
     def save_sessions_loop(self):
         while True and not self.stopped():
-            self.save_sessions()
+            if self.save:
+                self.save_sessions()
+            else:
+                self.fetch_sessions()
             self.ready = True
             time.sleep(self.sleep_time)
+
+    def fetch_sessions(self):
+        session_ids = list(self.firehose.sessions.keys())
+        for session_id in session_ids:
+            session = self.firehose.sessions.get(session_id)
+            if not session.record:
+                try:
+                    session.driver = Driver.objects.get(name=session.driver)
+                    session.game = Game.objects.get(name=session.game_name)
+                    session.session_type = SessionType.objects.get(type=session.session_type)
+                    session.car = session.game.cars.get(name=session.car)
+                    session.car.car_class = session.game.car_classes.get(name=session.car_class)
+                    session.track = session.game.tracks.get(name=session.track)
+                    session.record = session.driver.sessions.filter(
+                        session_id=session.session_id,
+                        session_type=session.session_type,
+                        game=session.game,
+                    ).first() or Session(
+                        session_id=session.session_id,
+                        session_type=session.session_type,
+                        game=session.game,
+                        start=session.start,
+                        end=session.end,
+                    )
+                    logging.debug(f"{session.session_id}: Fetched session {session_id}")
+                except Exception as e:
+                    # TODO add error to session to expire
+                    logging.error(f"{session.session_id}: Error fetching session {session_id}: {e}")
+                    continue
 
     def save_sessions(self):
         session_ids = list(self.firehose.sessions.keys())
