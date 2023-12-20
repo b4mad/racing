@@ -3,7 +3,7 @@ import json
 import django.utils.timezone
 
 from telemetry.models import Coach, SessionType
-from telemetry.pitcrew.logging import LoggingMixin
+from telemetry.pitcrew.logging_mixin import LoggingMixin
 
 from .application.debug_application import DebugApplication
 from .application.response import ResponseInstant

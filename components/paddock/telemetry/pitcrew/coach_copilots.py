@@ -4,7 +4,7 @@ import django.utils.timezone
 from b4mad_racing_website.models import CopilotInstance
 
 from telemetry.models import Coach, SessionType
-from telemetry.pitcrew.logging import LoggingMixin
+from telemetry.pitcrew.logging_mixin import LoggingMixin
 
 from .application.debug_application import DebugApplication
 from .application.response import ResponseInstant

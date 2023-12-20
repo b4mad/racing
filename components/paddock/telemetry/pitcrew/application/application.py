@@ -2,7 +2,7 @@ import datetime
 from collections import deque
 
 from telemetry.pitcrew.history import History
-from telemetry.pitcrew.logging import LoggingMixin
+from telemetry.pitcrew.logging_mixin import LoggingMixin
 
 from .response import Response, ResponseInstant
 from .session import Session
