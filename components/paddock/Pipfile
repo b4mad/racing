@@ -52,6 +52,7 @@ openai = "*"
 pydub = "*"
 django-bootstrap5 = "*"
 django-bootstrap-icons = "*"
+django-markdown-deux = "*"
 
 [dev-packages]
 black = "*"

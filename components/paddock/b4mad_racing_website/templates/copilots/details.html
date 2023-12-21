@@ -1,5 +1,6 @@
 {% extends "site/base.html" %}
 {% load django_bootstrap5 %}
+{% load markdown_deux_tags %}
 
 {% block title %}#B4mad Racing Copilot - {{ copilot.name }}{% endblock title %}
 
@@ -7,7 +8,10 @@
 
 <div class="container">
     <h1>{{ copilot.name }}</h1>
-    <p>{{ copilot.description }}</p>
+    <h4>{{ copilot.description }}</h4>
+    <div class="markdown-content">
+        {{ copilot.long_description | markdown }}
+    </div>
 </div>
 
 {% endblock content %}

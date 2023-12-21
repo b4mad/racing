@@ -95,9 +95,9 @@ class CoachCopilots(LoggingMixin):
             if copilot_instance.enabled() or True:
                 copilot = copilot_instance.copilot
                 self.log_debug(f"adding copilot: {copilot}")
-                if copilot.name == "debug":
+                if copilot.slug == "debug":
                     self.apps.append(DebugApplication(self.session, self.history, self))
-                elif copilot.name == "track_guide":
+                elif copilot.slug == "track_guide":
                     self.apps.append(TrackGuideApplication(self.session, self.history, self))
 
     def respond(self, response):
