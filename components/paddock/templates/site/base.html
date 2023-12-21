@@ -1,4 +1,5 @@
 {% extends "site/bootstrap.html" %}
+{% load static %}
 
 {% load django_bootstrap5 %}
 
@@ -6,39 +7,49 @@
 <main>
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded" aria-label="Twelfth navbar example">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarsExample10" aria-controls="navbarsExample10" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <div class="d-flex flex-grow-1">
+                <span class="w-100 d-lg-none d-block">
+                    <!-- hidden spacer to center brand on mobile --></span>
 
-                <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample10">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">frontpage</a>
-                        </li>
-
-                        {% if user.is_authenticated %}
-
-                        <li class="nav-item"><a class="nav-link"
-                                href="{% url 'profile' request.user.username %}">profile</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'copilots-overview' %}">copilots</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">logout</a></li>
-                        {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'copilots-overview' %}">copilots</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">signup</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">login</a></li>
-                        {% endif %}
-
-                    </ul>
+                    <a class="navbar-brand d-none d-lg-inline-block" href="{%url 'home' %}">
+                        <img class="dpd-logo" height="50px" src="{%static "logo-main-black.png"%}" alt="Logo"/>
+                        </a>
+                <a class="navbar-brand-two mx-auto d-lg-none d-inline-block" href="#">
+                </a>
+                <div class="w-100 text-right">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                 </div>
             </div>
-        </nav>
+            <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
+                <ul class="navbar-nav ms-auto flex-nowrap">
+                    <li class="nav-item">
+                        <a href="{% url 'copilots-overview' %}" class="nav-link m-2 menu-item">copilots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'fastlap' %}" class="nav-link m-2 menu-item">tracks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://github.com/b4mad/racing#installation" class="nav-link m-2 menu-item">help</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'profile' request.user.username %}" class="nav-link m-2 menu-item nav-active">profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'account_logout' %}" class="nav-link m-2 menu-item">logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'account_login' %}" class="nav-link m-2 menu-item">login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
 
-        <h1>{% block title %}(no title){% endblock title %}</h1>
+
+        </nav>
 
         {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 

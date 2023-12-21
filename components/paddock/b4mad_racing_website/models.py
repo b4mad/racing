@@ -9,6 +9,8 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 
+from telemetry.models import Driver
+
 copilot_enabled = Signal()
 copilot_disabled = Signal()
 
@@ -32,6 +34,7 @@ class Profile(TimeStampedModel):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     slug = models.SlugField(default=None)
     mqtt_drivername = models.CharField(max_length=64, default="", null=True, blank=True)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, null=True, blank=True)
     initial_transport_test_passed = models.BooleanField(default=False)
     publicly_visible = models.BooleanField(default=True)
     newsletter_allowed = models.BooleanField(default=True)

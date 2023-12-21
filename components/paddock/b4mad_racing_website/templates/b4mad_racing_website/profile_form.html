@@ -1,6 +1,7 @@
 {% extends "site/base.html" %}
 {% load django_bootstrap5 %}
 {% load bootstrap_icons %}
+{% load crispy_forms_tags %}
 
 {% block title %}#B4mad Racing Profile{% endblock title %}
 
@@ -16,7 +17,7 @@
                                 <h3>Hello, {{ user.username }}, please edit your profile!</h3>
                                 <form class="mx-1 mx-md-4" method="post">
                                     {% csrf_token %}
-                                    {{ form.as_div }}
+                                    {{ form|crispy }}
                                     <div class="d-flex mx-4 mb-3 mb-lg-4">
                                         <button type="submit" class="btn btn-primary btn-lg">save</button>
                                     </div>

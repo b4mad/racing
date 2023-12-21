@@ -318,20 +318,22 @@ SOCIALACCOUNT_PROVIDERS = {
             "key": "",
         }
     },
-    "steam": {
-        "APP": {
-            "client_id": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
-            "secret": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
-            "key": "",
-        }
-    },
-    "microsoft": {
-        "APP": {
-            "client_id": os.getenv("SOCIALACCOUNT_MICROSOFT_CLIENTID", ""),
-            "secret": os.getenv("SOCIALACCOUNT_MICROSOFT_SECRET", ""),
-            "key": "",
-        }
-    },
+    # Doesnt seem to work
+    # "steam": {
+    #     "APP": {
+    #         "client_id": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
+    #         "secret": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
+    #         "key": "",
+    #     }
+    # },
+    # Doesnt seem to work
+    # "microsoft": {
+    #     "APP": {
+    #         "client_id": os.getenv("SOCIALACCOUNT_MICROSOFT_CLIENTID", ""),
+    #         "secret": os.getenv("SOCIALACCOUNT_MICROSOFT_SECRET", ""),
+    #         "key": "",
+    #     }
+    # },
     "google": {
         "APP": {
             "client_id": os.getenv("SOCIALACCOUNT_GOOGLE_CLIENTID", ""),
