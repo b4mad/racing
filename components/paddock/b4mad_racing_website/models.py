@@ -18,8 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 class Copilot(TimeStampedModel):
+    slug = models.SlugField(default=None, null=True, blank=True)
     name = models.CharField(max_length=127)
     description = models.CharField(max_length=255)
+    long_description = models.TextField(default="")
     published = models.DateTimeField("publishing date")
 
     class Meta:

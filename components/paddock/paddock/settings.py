@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "telemetry.apps.TelemetryConfig",
     "b4mad_racing_website.apps.B4madRacingWebsiteConfig",
     "frontpage.apps.FrontpageConfig",
+    "markdown_deux",
 ]
 
 MIDDLEWARE = [
