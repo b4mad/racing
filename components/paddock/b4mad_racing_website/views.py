@@ -3,7 +3,8 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404, HttpResponseNotAllowed, JsonResponse
+from django.forms.models import BaseModelForm
+from django.http import Http404, HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic.base import RedirectView
@@ -11,8 +12,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
-from telemetry.models import Driver, Session
+from telemetry.models import Coach, Driver, Session
 
+from .forms import ProfileForm
 from .models import Copilot, Profile
 
 logger = logging.getLogger(__name__)
@@ -48,7 +50,11 @@ class ProfileDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         # if the profile cant be found, redirect to the home page
         try:
-            self.object = self.get_object()
+            # if the user is logged in, create a profile if it doesn't exist
+            if request.user.is_authenticated:
+                self.object, _created = Profile.objects.get_or_create(user=request.user)
+            else:
+                raise Http404
         except Http404:
             return redirect(reverse("home"))
 
@@ -78,7 +84,23 @@ class ProfileDetailView(DetailView):
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
-    fields = ["newsletter_allowed", "publicly_visible", "mqtt_drivername"]
+    # fields = ["newsletter_allowed", "publicly_visible", "mqtt_drivername"]
+    form_class = ProfileForm
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        # This method is called when valid form data has been POSTed.
+
+        # FIXME: this has to be done in the model instead of the view
+        # enable the coach and set it to copilots mode
+        mqtt_drivername = self.object.mqtt_drivername
+        driver = Driver.objects.filter(name=mqtt_drivername).first()
+        self.object.driver = driver
+        self.object.save()
+        coach = Coach.objects.get_or_create(driver=driver)[0]
+        coach.enabled = True
+        coach.mode = Coach.MODE_COPILOTS
+        coach.save()
+        return super().form_valid(form)
 
 
 class ProfileSubscriptionsUpdateView(LoginRequiredMixin, UpdateView):

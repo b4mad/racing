@@ -4,7 +4,7 @@ import django.utils.timezone
 
 from telemetry.models import Coach as DbCoach
 from telemetry.models import TrackGuide
-from telemetry.pitcrew.logging import LoggingMixin
+from telemetry.pitcrew.logging_mixin import LoggingMixin
 
 from .history import History
 from .message import (

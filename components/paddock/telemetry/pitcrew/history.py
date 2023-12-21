@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 from telemetry.analyzer import Analyzer
 from telemetry.fast_lap_analyzer import FastLapAnalyzer
 from telemetry.models import Coach, Driver, FastLap, Game
-from telemetry.pitcrew.logging import LoggingMixin
+from telemetry.pitcrew.logging_mixin import LoggingMixin
 from telemetry.pitcrew.segment import Segment
 from telemetry.racing_stats import RacingStats
 
