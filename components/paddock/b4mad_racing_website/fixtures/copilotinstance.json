@@ -1,0 +1,35 @@
+[
+  {
+    "model": "b4mad_racing_website.copilotinstance",
+    "pk": "2d361fae-f122-4309-9a8a-fc5e6f460779",
+    "fields": {
+      "created": "2023-12-23T22:30:50.669Z",
+      "modified": "2023-12-23T22:30:50.669Z",
+      "driver": 7,
+      "copilot": 2,
+      "status": "CONFIGURED"
+    }
+  },
+  {
+    "model": "b4mad_racing_website.copilotinstance",
+    "pk": "3e458cb1-4fdc-431a-9c6c-636ebbf0d53f",
+    "fields": {
+      "created": "2023-12-23T22:30:50.022Z",
+      "modified": "2023-12-23T22:30:50.022Z",
+      "driver": 7,
+      "copilot": 1,
+      "status": "CONFIGURED"
+    }
+  },
+  {
+    "model": "b4mad_racing_website.copilotinstance",
+    "pk": "98ffee88-a12f-4b90-9ba2-b7ca235e072a",
+    "fields": {
+      "created": "2023-12-23T22:30:49.697Z",
+      "modified": "2023-12-23T22:30:49.697Z",
+      "driver": 7,
+      "copilot": 3,
+      "status": "CONFIGURED"
+    }
+  }
+]

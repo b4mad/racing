@@ -6,6 +6,7 @@ from b4mad_racing_website.models import CopilotInstance
 from telemetry.models import Coach, SessionType
 from telemetry.pitcrew.logging_mixin import LoggingMixin
 
+from .application.brake_application import BrakeApplication
 from .application.debug_application import DebugApplication
 from .application.response import ResponseInstant
 from .application.session import Session
@@ -99,6 +100,8 @@ class CoachCopilots(LoggingMixin):
                     self.apps.append(DebugApplication(self.session, self.history, self))
                 elif copilot.slug == "track_guide":
                     self.apps.append(TrackGuideApplication(self.session, self.history, self))
+                elif copilot.slug == "braker":
+                    self.apps.append(BrakeApplication(self.session, self.history, self))
 
     def respond(self, response):
         self.responses.append(response)

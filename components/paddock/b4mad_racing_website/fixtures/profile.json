@@ -1,0 +1,22 @@
+[
+  {
+    "model": "b4mad_racing_website.profile",
+    "pk": 7,
+    "fields": {
+      "created": "2023-12-21T11:21:56.804Z",
+      "modified": "2023-12-23T22:30:50.672Z",
+      "user": 3,
+      "slug": "durandom",
+      "mqtt_drivername": "durandom",
+      "driver": 10,
+      "initial_transport_test_passed": false,
+      "publicly_visible": true,
+      "newsletter_allowed": true,
+      "subscriptions": [
+        3,
+        1,
+        2
+      ]
+    }
+  }
+]
