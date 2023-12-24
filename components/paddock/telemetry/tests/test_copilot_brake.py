@@ -71,7 +71,7 @@ class TestDebugApp(TransactionTestCase):
             print("stopping history thread")
             history.disconnect()
 
-        responses_file = "test_debug_app"
+        responses_file = "test_copilot_brake"
         expected_responses = read_responses(responses_file)
         if self.do_save_responses:
             save_responses(captured_responses, responses_file)
