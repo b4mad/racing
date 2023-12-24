@@ -32,7 +32,7 @@ class TestDebugApp(TransactionTestCase):
     ]
     maxDiff = None
 
-    do_save_responses = False
+    do_save_responses = True
 
     def test_brake(self):
         # iRacing / Mazda MX-5 Cup / okayama short
@@ -64,7 +64,7 @@ class TestDebugApp(TransactionTestCase):
                 row = row.to_dict()
                 response = coach.notify(topic, row, row["_time"])
                 if response:
-                    captured_responses.append(response)
+                    captured_responses.append((row["DistanceRoundTrack"], response))
         except Exception as e:
             raise e
         finally:
