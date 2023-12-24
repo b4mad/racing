@@ -198,8 +198,8 @@ class CoachCopilots(LoggingMixin):
         #     self.log_debug(f"{start} to {stop} > 50")
 
         # for distance in range(start, stop):
-        distance = self.history.distance_add(self.previous_distance, 1)
-        stop = self.history.distance_add(self.distance, 1)
+        distance = self.history.distance_add(self.previous_distance, 10)
+        stop = self.history.distance_add(self.distance, 10)
         while distance != stop:
             self.playing_at[distance] = False
             if distance % 100 == 0:
