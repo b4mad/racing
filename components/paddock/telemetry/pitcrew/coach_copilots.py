@@ -6,6 +6,7 @@ from b4mad_racing_website.models import CopilotInstance
 from telemetry.models import Coach, SessionType
 from telemetry.pitcrew.logging_mixin import LoggingMixin
 
+from .application.brake_application import BrakeApplication
 from .application.debug_application import DebugApplication
 from .application.response import ResponseInstant
 from .application.session import Session
@@ -99,6 +100,8 @@ class CoachCopilots(LoggingMixin):
                     self.apps.append(DebugApplication(self.session, self.history, self))
                 elif copilot.slug == "track_guide":
                     self.apps.append(TrackGuideApplication(self.session, self.history, self))
+                elif copilot.slug == "braker":
+                    self.apps.append(BrakeApplication(self.session, self.history, self))
 
     def respond(self, response):
         self.responses.append(response)
@@ -195,8 +198,9 @@ class CoachCopilots(LoggingMixin):
         #     self.log_debug(f"{start} to {stop} > 50")
 
         # for distance in range(start, stop):
-        distance = self.history.distance_add(self.previous_distance, 1)
-        stop = self.history.distance_add(self.distance, 1)
+        delta = 100  # FIXME: make this speed dependent
+        distance = self.history.distance_add(self.previous_distance, delta)
+        stop = self.history.distance_add(self.distance, delta)
         while distance != stop:
             self.playing_at[distance] = False
             if distance % 100 == 0:

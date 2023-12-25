@@ -1,0 +1,41 @@
+[
+  {
+    "model": "b4mad_racing_website.copilot",
+    "pk": 1,
+    "fields": {
+      "created": "2023-12-16T09:40:34.132Z",
+      "modified": "2023-12-21T13:16:20.406Z",
+      "slug": "debug",
+      "name": "Debugger",
+      "description": "He only tells you how fast you are.",
+      "long_description": "* based on the fastest pace recorded for the track / car combo",
+      "published": "2023-12-16T09:40:32Z"
+    }
+  },
+  {
+    "model": "b4mad_racing_website.copilot",
+    "pk": 2,
+    "fields": {
+      "created": "2023-12-17T16:30:31.366Z",
+      "modified": "2023-12-21T13:26:25.201Z",
+      "slug": "track_guide",
+      "name": "Track Guide",
+      "description": "teaches you how to drive",
+      "long_description": "Tells you how to approach turns and other info.\r\n\r\nWorks currently only for those combos: \r\n\r\n* iRacing / Mazda MX-5 Cup / okayama short",
+      "published": "2023-12-17T16:30:29Z"
+    }
+  },
+  {
+    "model": "b4mad_racing_website.copilot",
+    "pk": 3,
+    "fields": {
+      "created": "2023-12-23T22:04:03.687Z",
+      "modified": "2023-12-23T22:04:03.687Z",
+      "slug": "braker",
+      "name": "Braker",
+      "description": "in_development",
+      "long_description": "in_development",
+      "published": "2023-12-23T22:04:02Z"
+    }
+  }
+]

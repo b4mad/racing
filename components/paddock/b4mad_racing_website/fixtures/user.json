@@ -1,0 +1,17 @@
+[
+    {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "last_login": "2023-12-22T12:11:10.471Z",
+      "is_superuser": true,
+      "username": "durandom",
+      "first_name": "durandom",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-05-12T05:05:50Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

@@ -61,4 +61,5 @@ coverage.xml
 docs/_build/
 
 telemetry/fixtures.all
+b4mad_racing_website/fixtures.all
 prompt*txt
