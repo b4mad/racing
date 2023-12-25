@@ -198,7 +198,7 @@ class CoachCopilots(LoggingMixin):
         #     self.log_debug(f"{start} to {stop} > 50")
 
         # for distance in range(start, stop):
-        delta = 10  # FIXME: make this speed dependent
+        delta = 100  # FIXME: make this speed dependent
         distance = self.history.distance_add(self.previous_distance, delta)
         stop = self.history.distance_add(self.distance, delta)
         while distance != stop:
