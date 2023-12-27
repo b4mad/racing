@@ -27,6 +27,7 @@ class CoachCopilots(LoggingMixin):
         self.session_id = ""
         self.distance = 0
         self.playing_at = {}  # distance -> bool
+        self.ticked_at = {}  # distance -> bool
         self.track_length = 1
         self._crashed = False
         self.telemetry = {}
@@ -144,6 +145,7 @@ class CoachCopilots(LoggingMixin):
         now = now or django.utils.timezone.now()
         if self.topic != topic:
             self.previous_distance = int(telemetry["DistanceRoundTrack"])
+            self.previous_delta = 0
             self.new_session(topic)
 
         if not self.ready():
@@ -155,6 +157,12 @@ class CoachCopilots(LoggingMixin):
 
         self.telemetry = telemetry
         self.tick(topic, telemetry, now)
+
+        ticked_at_distance = self.previous_distance
+        while ticked_at_distance != self.distance:
+            ticked_at_distance = self.history.distance_add(ticked_at_distance, 1)
+            self.ticked_at[ticked_at_distance] = False
+        self.previous_distance = self.distance
 
         for app in self.apps:
             for response in app.yield_responses():
@@ -179,6 +187,7 @@ class CoachCopilots(LoggingMixin):
                         app.on_crash(self.distance, telemetry, now)
                     self._crashed = True
             self.previous_distance = self.distance
+            self.ticked_at.clear()
             return
 
         # reset special states
@@ -198,16 +207,27 @@ class CoachCopilots(LoggingMixin):
         #     self.log_debug(f"{start} to {stop} > 50")
 
         # for distance in range(start, stop):
-        delta = 100  # FIXME: make this speed dependent
-        distance = self.history.distance_add(self.previous_distance, delta)
-        stop = self.history.distance_add(self.distance, delta)
+        delta = int(3 * int(telemetry["SpeedMs"]) + 10)
+        distance = self.history.distance_add(self.previous_distance, self.previous_delta)
+
+        stop_delta = delta
+        if delta < self.previous_delta:
+            stop_delta = self.previous_delta
+        stop = self.history.distance_add(self.distance, stop_delta)
+
+        # self.log_debug(f"start at {distance} to {stop} - delta: {delta} - speed: {telemetry['SpeedMs']} m/s {telemetry['SpeedMs'] * 3.6} km/h")
         while distance != stop:
+            # self.log_debug(f"d: {distance} ({self.distance})")
             self.playing_at[distance] = False
             if distance % 100 == 0:
                 self.log_debug(f"distance: {distance} ({self.distance})")
+
             # notify all registered apps
-            for app in self.apps:
-                app.notify(distance, telemetry, now)
+            if not self.ticked_at.get(distance):
+                for app in self.apps:
+                    app.notify(distance, telemetry, now)
+
+            self.ticked_at[distance] = True
             distance = self.history.distance_add(distance, 1)
 
-        self.previous_distance = self.distance
+        self.previous_delta = delta

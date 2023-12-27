@@ -1,3 +1,5 @@
+import datetime
+
 from .application import Application
 
 
@@ -33,3 +35,12 @@ class BrakeApplication(Application):
         msg = self.messages.get(self.distance)
         if msg:
             self.send_response(msg)
+
+    def on_reset_to_pits(self, distance: int, telemetry: dict, now: datetime.datetime):
+        self.send_response("You reset to pits")
+
+    def on_new_lap(self, distance: int, telemetry: dict, now: datetime.datetime):
+        self.send_response("new lap")
+
+    def on_crash(self, distance: int, telemetry: dict, now: datetime.datetime):
+        self.send_response("You crashed")
