@@ -19,7 +19,6 @@ class TestSession(TestCase):
 
         firehose = Firehose()
 
-        session = Session(666)
         for index, row in session_df.iterrows():
             # convert row to dict
             row = row.to_dict()
@@ -132,6 +131,26 @@ class TestSession(TestCase):
 
         session = self._test_session(session_id)
         self._assert_laps(session, expected_laps)
+
+    def test_rbr(self):
+        # measurement = "fast_laps"
+        # bucket = "fast_laps"
+        # start = "-10y"
+        session_id = "1703706617"
+
+        session = self._test_session_firehose(session_id, measurement="laps_cc", bucket="racing")
+
+        # lap time: 3:30.60
+        # at 1:00 pressed paused
+        # at 1:30 pressed call for help
+        # For this session the following laps are valid:
+        expected_lap = Lap(1, time=210.600174, valid=True, length=4834.398, finished=True)
+        lap = session.laps[1]
+        self.assertEqual(lap.number, expected_lap.number)
+        self.assertEqual(lap.time, expected_lap.time)
+        self.assertEqual(lap.valid, expected_lap.valid)
+        self.assertEqual(lap.finished, expected_lap.finished)
+        self.assertAlmostEqual(int(lap.length), int(expected_lap.length), places=0)
 
     def test_car_class(self):
         session_id = "1692140843"
