@@ -3,6 +3,7 @@ import logging
 import django.utils.timezone
 
 from .session import Session
+from .session_rbr import SessionRbr
 
 
 class Firehose:
@@ -27,7 +28,11 @@ class Firehose:
                 # ignore invalid session
                 return
 
-            session = Session(topic, start=now)
+            if game == "Richard Burns Rally":
+                session = SessionRbr(topic, start=now)
+            else:
+                session = Session(topic, start=now)
+
             session.driver = driver
             session.session_id = session_id
             logging.debug(f"New session: {topic}")
