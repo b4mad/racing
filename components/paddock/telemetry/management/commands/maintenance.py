@@ -40,12 +40,36 @@ class Command(BaseCommand):
             default=None,
         )
 
+        parser.add_argument(
+            "--fix-rbr-sessions",
+            help="fix data",
+            action="store_true",
+        )
+
     def handle(self, *args, **options):
         self.influx = Influx()
         if options["delete_influx"]:
             self.delete_influx(options["start"], options["end"])
         elif options["delete_sessions"]:
             self.delete_sessions(options["start"], options["end"])
+        elif options["fix_rbr_sessions"]:
+            self.fix_rbr_sessions()
+
+    def fix_rbr_sessions(self):
+        # get all sessions for Richard Burns Rally
+        sessions = Session.objects.filter(game__name="Richard Burns Rally")
+        for session in sessions:
+            # get all laps for this session
+            laps = session.laps.all()
+            # iterate over all laps
+            for lap in laps:
+                print(f"fixing lap {lap.id} end: {lap.end}")
+                # set the end time of the lap to the start + the lap time
+                lap.end = lap.start + datetime.timedelta(seconds=lap.time + 60)
+                print(f"--> {lap.end}")
+                lap.number = 0
+                # save the lap
+                lap.save()
 
     def delete_sessions(self, start, end):
         Session.objects.all().delete()

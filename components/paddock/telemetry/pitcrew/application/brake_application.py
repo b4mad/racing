@@ -6,7 +6,7 @@ from .application import Application
 class BrakeApplication(Application):
     def init(self):
         self.init_messages()
-        self.send_response("Starting debug app")
+        self.send_response("This is your brake copilot speaking")
 
     def init_messages(self):
         self.messages = {}
