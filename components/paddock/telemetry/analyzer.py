@@ -67,9 +67,10 @@ class Analyzer:
             logging.error(f"No sectors found threshold: {threshold} min_length: {min_length_throttle_below_threshold}")
             return one_sector
 
-        if len(start) != len(end):
-            logging.error(f"start and end are not the same length: {len(start)} {len(end)}")
-            return one_sector
+        # FIXME: not sure why this is needed
+        # if len(start) != len(end):
+        #     logging.error(f"start and end are not the same length: {len(start)} {len(end)}")
+        #     return one_sector
 
         # combine start and end into sector dicts
         start_idx = 0

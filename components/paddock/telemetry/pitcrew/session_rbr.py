@@ -26,7 +26,7 @@ class SessionRbr(Session):
 
         if not self.current_lap:
             # RBR has only one lap
-            self.new_lap(now, 1)
+            self.new_lap(now, current_lap)
             self.previous_tick_time = -1
             self.previous_tick_distance = 100_000_000
             self.counter_time_not_updated = 0
@@ -51,6 +51,7 @@ class SessionRbr(Session):
 
         if self.counter_time_not_updated > 10 and self.counter_distance_updated > 10:
             self.current_lap.finished = True
+            self.current_lap.end = now
 
         self.previous_tick_time = lap_time
         self.previous_tick_distance = distance

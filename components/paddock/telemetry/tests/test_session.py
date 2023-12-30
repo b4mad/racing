@@ -144,8 +144,8 @@ class TestSession(TestCase):
         # at 1:00 pressed paused
         # at 1:30 pressed call for help
         # For this session the following laps are valid:
-        expected_lap = Lap(1, time=210.600174, valid=True, length=4834.398, finished=True)
-        lap = session.laps[1]
+        expected_lap = Lap(0, time=210.600174, valid=True, length=4834.398, finished=True)
+        lap = session.laps[0]
         self.assertEqual(lap.number, expected_lap.number)
         self.assertEqual(lap.time, expected_lap.time)
         self.assertEqual(lap.valid, expected_lap.valid)
