@@ -6,7 +6,11 @@ from .application import Application
 class BrakeApplication(Application):
     def init(self):
         self.init_messages()
-        self.send_response("This is your brake copilot speaking")
+        if self.game.name == "Richard Burns Rally":
+            self.send_response("Brake copilot is not available for Richard Burns Rally")
+        else:
+            self.send_response("This is your brake copilot speaking")
+            self.ready = True
 
     def init_messages(self):
         self.messages = {}

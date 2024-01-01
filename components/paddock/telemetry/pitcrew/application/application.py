@@ -14,6 +14,7 @@ class Application(LoggingMixin):
         self.session_id = session.id
         self.responses = []
         self.history = history
+        self.game = history.game
         self.coach = coach
         self.distance = -1
         self.speed_pct_history = deque(maxlen=800)
@@ -23,6 +24,7 @@ class Application(LoggingMixin):
         for segment in self.history.segments:
             self.segments_by_turn[segment.turn] = segment
         self.init_distance_to_segment()
+        self.ready = False
         self.init()
 
     def init_distance_to_segment(self):
