@@ -16,6 +16,7 @@ class FastLapAnalyzer:
         self.bucket = bucket
         self.influx_client = None
         self.same_sectors = False
+        self.columns = ["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime", "SteeringAngle", "Time"]
 
     def influx(self):
         if not self.influx_client:
@@ -274,6 +275,6 @@ class FastLapAnalyzer:
         df = self.analyzer.resample(
             df,
             freq=1,
-            columns=["Brake", "SpeedMs", "Throttle", "Gear", "CurrentLapTime", "SteeringAngle", "Time"],
+            columns=self.columns,
         )
         return df

@@ -1,4 +1,4 @@
-[(1.25722647, ('/coach/durandom', ['{"message": "Starting debug app", "priority": 5}'])),
+[(1.25722647, ('/coach/durandom', ['{"message": "This is your brake copilot speaking", "priority": 5}'])),
  (18.398037, ('/coach/durandom', ['{"message": "60 percent", "priority": 5, "distance": 67}'])),
  (53.4113121, ('/coach/durandom', ['{"message": "brake", "priority": 5, "distance": 122}'])),
  (308.132751, ('/coach/durandom', ['{"message": "60 percent", "priority": 5, "distance": 389}'])),
