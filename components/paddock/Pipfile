@@ -11,13 +11,11 @@ verify_ssl = true
 [packages]
 apscheduler = "*"
 celery = "*"
-crispy-bootstrap4 = "*"
 dash-bootstrap-components = "*"
 django = "*"
 django-admin-list-filter-dropdown = "*"
 django-admin-relation-links = "*"
 django-allauth = "*"
-django-bootstrap4 = "*"
 django-crispy-forms = "*"
 django-dirtyfields = "*"
 django-environ = "*"
@@ -53,6 +51,8 @@ pydub = "*"
 django-bootstrap5 = "*"
 django-bootstrap-icons = "*"
 django-markdown-deux = "*"
+crispy-bootstrap5 = "*"
+django-bootstrap4 = "*"
 
 [dev-packages]
 black = "*"

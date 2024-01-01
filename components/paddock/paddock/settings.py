@@ -63,9 +63,11 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.steam",
     "allauth.socialaccount.providers.twitch",
     "allauth.socialaccount",
+    # plotly dash still needs bootstrap4, maybe it can be hacked away with
+    # https://github.com/GibbsConsulting/django-plotly-dash/issues/359
     "bootstrap4",
     "fontawesomefree",
-    "crispy_bootstrap4",
+    "crispy_bootstrap5",
     "crispy_forms",
     "django_extensions",
     "django_plotly_dash.apps.DjangoPlotlyDashConfig",
@@ -124,8 +126,8 @@ TEMPLATES = [
         },
     },
 ]
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 WSGI_APPLICATION = "paddock.wsgi.application"
 
