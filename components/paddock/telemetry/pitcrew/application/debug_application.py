@@ -11,6 +11,7 @@ class DebugApplication(Application):
         self.send_response("I'll notify you on your average race pace percentage every 10 seconds")
 
         self.previous_pace_notification = django.utils.timezone.now()
+        self.ready = True
 
     def tick(self):
         self.calculate_avg_speed()
