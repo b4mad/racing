@@ -10,7 +10,8 @@ from django.urls import include, path
 from frontpage.views import HomePageView
 
 from . import views
-from .views import CoachView
+
+# from .views import CoachView
 
 urlpatterns = [
     # path("", views.index, name="home"),
@@ -29,7 +30,7 @@ urlpatterns = [
     # path("fastlap/", views.fastlap_index, name="fastlap_index"),
     # path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     # path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
-    path("coach/", CoachView.as_view(), name="coach"),
+    # path("coach/", CoachView.as_view(), name="coach"),
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("explorer/", include("explorer.urls")),

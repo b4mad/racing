@@ -94,12 +94,13 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         # enable the coach and set it to copilots mode
         mqtt_drivername = self.object.mqtt_drivername
         driver = Driver.objects.filter(name=mqtt_drivername).first()
-        self.object.driver = driver
-        self.object.save()
-        coach = Coach.objects.get_or_create(driver=driver)[0]
-        coach.enabled = True
-        coach.mode = Coach.MODE_COPILOTS
-        coach.save()
+        if driver:
+            self.object.driver = driver
+            self.object.save()
+            coach = Coach.objects.get_or_create(driver=driver)[0]
+            coach.enabled = True
+            coach.mode = Coach.MODE_COPILOTS
+            coach.save()
         return super().form_valid(form)
 
 

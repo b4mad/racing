@@ -45,23 +45,6 @@ class CoachForm(forms.Form):
         # self.fields['members'].queryset = Member.objects.filter(
         #     user=self.request.user)
 
-    def clean(self):
-        cleaned_data = super().clean()
-        driver_name = cleaned_data.get("driver_name").strip()
-
-        # try to get the driver
-        driver = Driver.objects.filter(name__iexact=driver_name).first()
-        if not driver:
-            self.add_error("driver_name", "Driver name does not exist. Drive some laps first.")
-        else:
-            # find a user with this name, case insensitive
-            user = User.objects.filter(first_name__iexact=driver_name).first()
-            # user = User.objects.filter(first_name=driver_name).first()
-            if user and user != self.request.user:
-                self.add_error("driver_name", "This name is already taken.")
-            if driver_name.lower() == "jim":
-                self.add_error("driver_name", "No Jim allowed.")
-
 
 class CoachView(LoginRequiredMixin, FormView):
     template_name = "coach.html"
