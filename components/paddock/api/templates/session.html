@@ -1,0 +1,25 @@
+{%extends "site/base.html"%}
+{%block title%}Pit Crew{%endblock%}
+{%load static%}
+
+{%block content%}
+
+<h1>Session View</h1>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <select id="lap-selector"></select>
+          <input type="range" id="distance-slider" step="1"></input>
+          <div id="map"></div>
+          <div id="speed-graph"></div>
+          <div id="throttle-graph"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{% static 'session.js' %}"></script>
+{%endblock%}

@@ -175,6 +175,10 @@ def fastlap(request, template_name="fastlap.html", fastlap_id="", **kwargs):
     return render(request, template_name=template_name, context=context)
 
 
+def session(request, template_name="session.html", **kwargs):
+    return render(request, template_name=template_name, context={})
+
+
 def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs):
     "Example view that inserts content into the dash context passed to the dash application"
 
