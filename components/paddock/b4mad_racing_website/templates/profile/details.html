@@ -103,7 +103,7 @@
                     <tbody>
                         {% for session in sessions %}
                         <tr>
-                            <th scope="row">{{ session.session_id }}</th>
+                            <th scope="row"><a href="{% url 'session' session.session_id %}">{{ session.session_id }}</a></th>
                             <td>{{ session.driver.name|no_jim }}</td>
                             <td>{{ session.created|date }} {{ session.created|time }}</td>
                             <td>{{ session.game }}</td>

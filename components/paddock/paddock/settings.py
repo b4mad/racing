@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     "telemetry.apps.TelemetryConfig",
     "b4mad_racing_website.apps.B4madRacingWebsiteConfig",
     "frontpage.apps.FrontpageConfig",
+    "api.apps.ApiConfig",
     "markdown_deux",
 ]
 
