@@ -7,6 +7,7 @@ import pandas as pd
 from django.http import JsonResponse
 from django.views import View
 
+from telemetry.analyzer import Analyzer
 from telemetry.influx import Influx
 
 
@@ -28,7 +29,7 @@ class SessionView(View):
     def get_session_df(self, session_id, measurement="laps_cc", bucket="racing"):
         file_path = f"{self.temp_dir}/session_{session_id}_df.csv.gz"
 
-        if os.path.exists(file_path):
+        if os.path.exists(file_path) or False:
             session_df = self.read_dataframe(file_path)
         else:
             influx = Influx()
@@ -41,9 +42,13 @@ class SessionView(View):
         df = self.get_session_df(session_id)
 
         # only return the columns we need: "SpeedMs", "Throttle", "Brake", "DistanceRoundTrack"
-        df = df[["SpeedMs", "Throttle", "Brake", "DistanceRoundTrack", "CurrentLap"]]
+        columns = ["SpeedMs", "Throttle", "Brake", "DistanceRoundTrack", "CurrentLap"]
+        df = df[columns]
 
-        df = df.sample(frac=0.1)  # Sample 10% of the data
+        # resample df to 1 meter intervals
+        # FIXME this resampling is based on just one lap
+        analyzer = Analyzer()
+        df = analyzer.resample(df, columns=columns, freq=1)
 
         # Compression:
         # Compress the JSON response. Django can be configured to gzip responses, which can significantly reduce the response size.
