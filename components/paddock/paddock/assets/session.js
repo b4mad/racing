@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 DistanceRoundTrack: item[distanceIndex],
                 SpeedMs: item[speedIndex],
                 Throttle: item[throttleIndex],
-                CurrentLap: item[lapIndex]
+                CurrentLap: parseInt(item[lapIndex])
             }));
             laps = [...new Set(data.data.map(item => item[lapIndex]))];
 
@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const option = document.createElement('option');
                 option.value = lap;
                 option.text = `Lap ${lap}`;
+                // if it's the first lap, select it
+                if (lap === laps[0]) {
+                    option.selected = true;
+                }
                 lapSelector.appendChild(option);
             });
 
@@ -78,9 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
             distanceSlider.min = telemetry[0].DistanceRoundTrack;
             distanceSlider.max = telemetry[telemetry.length - 1].DistanceRoundTrack;
 
-            // select the first lap and update the graphs
-            lapSelector.value = 1;
             updateLap();
+            updateDistance();
         });
 
         function updateLap() {
