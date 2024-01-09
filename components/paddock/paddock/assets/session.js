@@ -10,93 +10,152 @@ document.addEventListener('DOMContentLoaded', function() {
     let telemetry = [];
     let laps = [];
 
+    var mapDataAvailable = false;
+
     // get the session_id from the url
     const url = new URL(window.location.href);
     // the session id is the last part of the url
     const session_id = url.pathname.split('/').pop();
 
+    // Create empty plots
+    Plotly.newPlot(speedGraphDiv, []);
+    Plotly.newPlot(throttleGraphDiv, []);
+    Plotly.newPlot(mapDiv, []);
+
+    function parseTelemetryData(data) {
+        // Get column indexes
+        const distanceIndex = data.columns.indexOf('DistanceRoundTrack');
+        const speedIndex = data.columns.indexOf('SpeedMs');
+        const throttleIndex = data.columns.indexOf('Throttle');
+        const lapIndex = data.columns.indexOf('CurrentLap');
+        const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
+        const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
+        const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
+
+        const laps = [...new Set(data.data.map(item => item[lapIndex]))];
+        laps.sort((a, b) => a - b);
+
+        const telemetryData = data.data.map(item => ({
+            DistanceRoundTrack: item[distanceIndex],
+            SpeedMs: item[speedIndex],
+            Throttle: item[throttleIndex],
+            CurrentLap: parseInt(item[lapIndex]),
+            WorldPositionX: item[worldPositionXIndex],
+            WorldPositionY: item[worldPositionYIndex],
+            WorldPositionZ: item[worldPositionZIndex]
+        }));
+
+        if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
+            mapDataAvailable = true;
+        }
+
+        return { laps, telemetryData };
+    }
+
     // Fetch Data from Django and Initialize Graphs
     fetch('/api/session/' + session_id)
         .then(response => response.json())
         .then(data => {
-            // Get column indexes
-            const distanceIndex = data.columns.indexOf('DistanceRoundTrack');
-            const speedIndex = data.columns.indexOf('SpeedMs');
-            const throttleIndex = data.columns.indexOf('Throttle');
-            const lapIndex = data.columns.indexOf('CurrentLap');
+            const { laps, telemetryData } = parseTelemetryData(data);
 
-            // Assuming data is an array of arrays with the relevant fields
-            telemetry = data.data.map(item => ({
-                DistanceRoundTrack: item[distanceIndex],
-                SpeedMs: item[speedIndex],
-                Throttle: item[throttleIndex],
-                CurrentLap: parseInt(item[lapIndex])
-            }));
-            laps = [...new Set(data.data.map(item => item[lapIndex]))];
-
-            // order laps
-            laps.sort((a, b) => a - b);
+            laps.forEach(lap => {
+                telemetry[lap] = telemetryData.filter(item => item.CurrentLap === lap);
+            });
 
             // Populate lap selector options
+            // add an option for all laps
+            const option = document.createElement('option');
+            option.value = 'all';
+            option.text = 'All Laps';
+            option.selected = true;
+            lapSelector.appendChild(option);
             laps.forEach(lap => {
                 const option = document.createElement('option');
                 option.value = lap;
                 option.text = `Lap ${lap}`;
-                // if it's the first lap, select it
-                if (lap === laps[0]) {
-                    option.selected = true;
-                }
                 lapSelector.appendChild(option);
             });
 
-            // order the telemetry data by distance
-            telemetry.sort((a, b) => a.DistanceRoundTrack - b.DistanceRoundTrack);
+            laps.forEach(lap => {
+                d = telemetry[lap];
+                speedTrace = {
+                    x: d.map(t => t.DistanceRoundTrack),
+                    y: d.map(t => t.SpeedMs),
+                    mode: 'lines',
+                    name: 'Lap ' + lap,
+                    'marker.color': 'red',
 
-            // Initialize Plotly Graphs
-            Plotly.newPlot(speedGraphDiv,
-                [
-                    {
-                        x: telemetry.map(d => d.DistanceRoundTrack),
-                        y: telemetry.map(d => d.SpeedMs),
-                        mode: 'line',
-                        type: 'line'
-                    }
-                ],
-                {
-                    title: 'Speed Data Over Distance',
-                });
+                };
+                Plotly.addTraces(speedGraphDiv, speedTrace);
 
-            Plotly.newPlot(throttleGraphDiv,
-                [
-                    {
-                        x: telemetry.map(d => d.DistanceRoundTrack),
-                        y: telemetry.map(d => d.Throttle),
-                        mode: 'line',
-                        type: 'line'
-                    }
-                ],
-                {
-                    title: 'Throttle Data Over Distance'
-                });
-            // set the min and max values of the distance slider
-            distanceSlider.min = telemetry[0].DistanceRoundTrack;
-            distanceSlider.max = telemetry[telemetry.length - 1].DistanceRoundTrack;
+                throttleTrace = {
+                    x: d.map(t => t.DistanceRoundTrack),
+                    y: d.map(t => t.Throttle),
+                    mode: 'lines',
+                    name: 'Lap ' + lap,
+                    'marker.color': 'red',
+                };
+                Plotly.addTraces(throttleGraphDiv, throttleTrace);
+
+                if (mapDataAvailable) {
+                    // Extract WorldPositionX and WorldPositionY from telemetry
+                    const xValues = d.map(d => d.WorldPositionX);
+                    const yValues = d.map(d => d.WorldPositionY);
+
+                    // Create a 2D scatter plot with Plotly
+                    const trace = {
+                        x: xValues,
+                        y: yValues,
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: 'Lap ' + lap,
+                        'marker.color': 'red',
+                    };
+                    Plotly.addTraces(mapDiv, trace);
+                }
+            });
 
             updateLap();
             updateDistance();
         });
 
         function updateLap() {
+            if (mapDataAvailable) {
+                mapDiv.style.display = 'block';
+            } else {
+                mapDiv.style.display = 'none';
+            }
+
+            // if the selected lap is 'all', show all traces
+            if (lapSelector.value === 'all') {
+                for (let i = 0; i < laps.length; i++) {
+                    Plotly.restyle(speedGraphDiv, 'visible', true, i);
+                    Plotly.restyle(throttleGraphDiv, 'visible', true, i);
+                }
+                return;
+            }
+
             const selectedLap = parseInt(lapSelector.value);
 
             // Filter data for the selected lap
-            const filteredTelemetry = telemetry.filter(item => item.CurrentLap === selectedLap);
+            // const filteredTelemetry = telemetry.filter(item => item.CurrentLap === selectedLap);
+            const filteredTelemetry = telemetry[selectedLap];
 
-            // Update Plotly Graphs
-            Plotly.restyle(speedGraphDiv, 'x', [filteredTelemetry.map(d => d.DistanceRoundTrack)]);
-            Plotly.restyle(speedGraphDiv, 'y', [filteredTelemetry.map(d => d.SpeedMs)]);
-            Plotly.restyle(throttleGraphDiv, 'x', [filteredTelemetry.map(d => d.DistanceRoundTrack)]);
-            Plotly.restyle(throttleGraphDiv, 'y', [filteredTelemetry.map(d => d.Throttle)]);
+            // hide all traces except the selected lap
+            for (let i = 0; i < laps.length; i++) {
+                if (laps[i] === selectedLap) {
+                    Plotly.restyle(speedGraphDiv, 'visible', true, i);
+                    Plotly.restyle(throttleGraphDiv, 'visible', true, i);
+                } else {
+                    Plotly.restyle(speedGraphDiv, 'visible', false, i);
+                    Plotly.restyle(throttleGraphDiv, 'visible', false, i);
+                }
+            }
+
+            // set the min and max values of the distance slider
+            distanceSlider.min = filteredTelemetry[0].DistanceRoundTrack;
+            distanceSlider.max = filteredTelemetry[filteredTelemetry.length - 1].DistanceRoundTrack;
+
         }
 
         function updateDistance() {
