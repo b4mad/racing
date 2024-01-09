@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create empty plots
     Plotly.newPlot(speedGraphDiv, []);
     Plotly.newPlot(throttleGraphDiv, []);
+    Plotly.newPlot(mapDiv, []);
+    // hide the map
+    mapDiv.style.display = 'none';
 
     // Fetch Data from Django and Initialize Graphs
     fetch('/api/session/' + session_id)
@@ -86,24 +89,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     'marker.color': 'red',
                 };
                 Plotly.addTraces(throttleGraphDiv, throttleTrace);
+
+                if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1) {
+                    // Extract WorldPositionX and WorldPositionY from telemetry
+                    const xValues = d.map(d => d.WorldPositionX);
+                    const yValues = d.map(d => d.WorldPositionY);
+
+                    // Create a 2D scatter plot with Plotly
+                    const trace = {
+                        x: xValues,
+                        y: yValues,
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: 'Lap ' + lap,
+                        'marker.color': 'red',
+                    };
+                    Plotly.addTraces(mapDiv, trace);
+                    // show the map
+                    mapDiv.style.display = 'block';
+                }
             });
-
-            // Extract WorldPositionX and WorldPositionY from telemetry
-            const xValues = telemetry.map(d => d.WorldPositionX);
-            const yValues = telemetry.map(d => d.WorldPositionY);
-
-            // Create a 2D scatter plot with Plotly
-            const trace = {
-                x: xValues,
-                y: yValues,
-                mode: 'markers',
-                type: 'scatter'
-            };
-
-            const layout = {autosize: true, title: '2D Map of Points'};
-            if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1) {
-                Plotly.newPlot(mapDiv, [trace], layout);
-            }
 
             updateLap();
             updateDistance();
