@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let telemetry = [];
     let laps = [];
 
+    var mapDataAvailable = false;
+
     // get the session_id from the url
     const url = new URL(window.location.href);
     // the session id is the last part of the url
@@ -19,40 +21,45 @@ document.addEventListener('DOMContentLoaded', function() {
     Plotly.newPlot(speedGraphDiv, []);
     Plotly.newPlot(throttleGraphDiv, []);
     Plotly.newPlot(mapDiv, []);
-    // hide the map
-    mapDiv.style.display = 'none';
+
+    function parseTelemetryData(data) {
+        // Get column indexes
+        const distanceIndex = data.columns.indexOf('DistanceRoundTrack');
+        const speedIndex = data.columns.indexOf('SpeedMs');
+        const throttleIndex = data.columns.indexOf('Throttle');
+        const lapIndex = data.columns.indexOf('CurrentLap');
+        const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
+        const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
+        const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
+
+        const laps = [...new Set(data.data.map(item => item[lapIndex]))];
+        laps.sort((a, b) => a - b);
+
+        const telemetryData = data.data.map(item => ({
+            DistanceRoundTrack: item[distanceIndex],
+            SpeedMs: item[speedIndex],
+            Throttle: item[throttleIndex],
+            CurrentLap: parseInt(item[lapIndex]),
+            WorldPositionX: item[worldPositionXIndex],
+            WorldPositionY: item[worldPositionYIndex],
+            WorldPositionZ: item[worldPositionZIndex]
+        }));
+
+        if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
+            mapDataAvailable = true;
+        }
+
+        return { laps, telemetryData };
+    }
 
     // Fetch Data from Django and Initialize Graphs
     fetch('/api/session/' + session_id)
         .then(response => response.json())
         .then(data => {
-            // Get column indexes
-            const distanceIndex = data.columns.indexOf('DistanceRoundTrack');
-            const speedIndex = data.columns.indexOf('SpeedMs');
-            const throttleIndex = data.columns.indexOf('Throttle');
-            const lapIndex = data.columns.indexOf('CurrentLap');
-            const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
-            const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
-            const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
-
-            laps = [...new Set(data.data.map(item => item[lapIndex]))];
-            laps.sort((a, b) => a - b);
-
-            telemetry_data = data.data.map(item => ({
-                DistanceRoundTrack: item[distanceIndex],
-                SpeedMs: item[speedIndex],
-                Throttle: item[throttleIndex],
-                CurrentLap: parseInt(item[lapIndex]),
-                WorldPositionX: item[worldPositionXIndex],
-                WorldPositionY: item[worldPositionYIndex],
-                WorldPositionZ: item[worldPositionZIndex]
-            }));
-            // order the telemetry data by distance
-            // telemetry_data.sort((a, b) => a.DistanceRoundTrack - b.DistanceRoundTrack);
-
+            const { laps, telemetryData } = parseTelemetryData(data);
 
             laps.forEach(lap => {
-                telemetry[lap] = telemetry_data.filter(item => item.CurrentLap === lap);
+                telemetry[lap] = telemetryData.filter(item => item.CurrentLap === lap);
             });
 
             // Populate lap selector options
@@ -90,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 Plotly.addTraces(throttleGraphDiv, throttleTrace);
 
-                if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1) {
+                if (mapDataAvailable) {
                     // Extract WorldPositionX and WorldPositionY from telemetry
                     const xValues = d.map(d => d.WorldPositionX);
                     const yValues = d.map(d => d.WorldPositionY);
@@ -105,8 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         'marker.color': 'red',
                     };
                     Plotly.addTraces(mapDiv, trace);
-                    // show the map
-                    mapDiv.style.display = 'block';
                 }
             });
 
@@ -115,6 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         function updateLap() {
+            if (mapDataAvailable) {
+                mapDiv.style.display = 'block';
+            } else {
+                mapDiv.style.display = 'none';
+            }
+
             // if the selected lap is 'all', show all traces
             if (lapSelector.value === 'all') {
                 for (let i = 0; i < laps.length; i++) {
