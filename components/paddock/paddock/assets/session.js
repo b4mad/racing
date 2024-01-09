@@ -24,13 +24,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const speedIndex = data.columns.indexOf('SpeedMs');
             const throttleIndex = data.columns.indexOf('Throttle');
             const lapIndex = data.columns.indexOf('CurrentLap');
+            const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
+            const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
+            const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
 
             // Assuming data is an array of arrays with the relevant fields
             telemetry = data.data.map(item => ({
                 DistanceRoundTrack: item[distanceIndex],
                 SpeedMs: item[speedIndex],
                 Throttle: item[throttleIndex],
-                CurrentLap: parseInt(item[lapIndex])
+                CurrentLap: parseInt(item[lapIndex]),
+                WorldPositionX: item[worldPositionXIndex],
+                WorldPositionY: item[worldPositionYIndex],
+                WorldPositionZ: item[worldPositionZIndex]
             }));
             laps = [...new Set(data.data.map(item => item[lapIndex]))];
 
@@ -78,6 +84,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     title: 'Throttle Data Over Distance'
                 });
+
+            // Extract WorldPositionX and WorldPositionY from telemetry
+            const xValues = telemetry.map(d => d.WorldPositionX);
+            const yValues = telemetry.map(d => d.WorldPositionY);
+
+            // Create a 2D scatter plot with Plotly
+            const trace = {
+                x: xValues,
+                y: yValues,
+                mode: 'markers',
+                type: 'scatter'
+            };
+
+            const layout = {autosize: true, title: '2D Map of Points'};
+            Plotly.newPlot(mapDiv, [trace], layout);
             // set the min and max values of the distance slider
             distanceSlider.min = telemetry[0].DistanceRoundTrack;
             distanceSlider.max = telemetry[telemetry.length - 1].DistanceRoundTrack;

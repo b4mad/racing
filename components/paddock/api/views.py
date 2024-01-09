@@ -43,6 +43,9 @@ class SessionView(View):
 
         # only return the columns we need: "SpeedMs", "Throttle", "Brake", "DistanceRoundTrack"
         columns = ["SpeedMs", "Throttle", "Brake", "DistanceRoundTrack", "CurrentLap"]
+        # add WorldPosition_x, WorldPosition_y, WorldPosition_z to columns
+        columns += ["WorldPosition_x", "WorldPosition_y", "WorldPosition_z"]
+
         df = df[columns]
 
         # resample df to 1 meter intervals
