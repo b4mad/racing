@@ -98,7 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             const layout = {autosize: true, title: '2D Map of Points'};
-            Plotly.newPlot(mapDiv, [trace], layout);
+            if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1) {
+                Plotly.newPlot(mapDiv, [trace], layout);
+            }
             // set the min and max values of the distance slider
             distanceSlider.min = telemetry[0].DistanceRoundTrack;
             distanceSlider.max = telemetry[telemetry.length - 1].DistanceRoundTrack;
