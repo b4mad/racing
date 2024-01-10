@@ -2,10 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Elements
     const speedGraphDiv = document.getElementById('speed-graph');
     const throttleGraphDiv = document.getElementById('throttle-graph');
-    const lapSelector = document.getElementById('lap-selector');
-    // const distanceSlider = document.getElementById('distance-slider');
+    const lapSelector1 = document.getElementById('lap-selector-1');
+    const lapSelector2 = document.getElementById('lap-selector-2');
+    var lap1index = 0;
+    var lap2index = 0;
     const mapDiv = document.getElementById('map');
     const speedValue1 = document.getElementById('speed-value-1');
+    const speedValue2 = document.getElementById('speed-value-2');
 
     // Initial Telemetry Data
     let telemetry = [];
@@ -121,15 +124,35 @@ document.addEventListener('DOMContentLoaded', function() {
             option.value = 'all';
             option.text = 'All Laps';
             option.selected = true;
-            lapSelector.appendChild(option);
-            laps.forEach(lap => {
-                const option = document.createElement('option');
-                option.value = lap;
-                option.text = `Lap ${lap}`;
-                lapSelector.appendChild(option);
-            });
+            lapSelector1.appendChild(option);
 
-            laps.forEach(lap => {
+            // add a none option to the second lap selector
+            const option2 = document.createElement('option');
+            option2.value = 'none';
+            option2.text = 'None';
+            option2.selected = true;
+            lapSelector2.appendChild(option2);
+
+            // Assuming `laps` is an array of your laps
+            laps.forEach((lap, index) => {
+                const option1 = document.createElement('option');
+                option1.value = index;
+                option1.text = `Lap ${index + 1}`;
+                lapSelector1.appendChild(option1);
+
+                const option2 = option1.cloneNode(true);
+                lapSelector2.appendChild(option2);
+            });
+            // laps.forEach(lap => {
+            //     const option = document.createElement('option');
+            //     option.value = lap;
+            //     option.text = `Lap ${lap}`;
+            //     lapSelector.appendChild(option);
+            // });
+
+            laps.forEach((lap, index) => {
+                // Store the mapping of lap to trace index
+
                 d = telemetry[lap];
                 speedTrace = {
                     x: d.map(t => t.DistanceRoundTrack),
@@ -173,45 +196,38 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             updateLap();
-            // updateDistance(0);
         });
 
         function updateLap() {
-            // if (mapDataAvailable) {
-            //     mapDiv.style.display = 'block';
-            // } else {
-            //     mapDiv.style.display = 'none';
-            // }
-
             // if the selected lap is 'all', show all traces
-            if (lapSelector.value === 'all') {
+            if (lapSelector1.value === 'all') {
                 for (let i = 0; i < laps.length; i++) {
                     Plotly.restyle(speedGraphDiv, 'visible', true, i);
                     Plotly.restyle(throttleGraphDiv, 'visible', true, i);
                 }
+                lap1index = 0;
+                lap2index = 0;
                 return;
             }
 
-            const selectedLap = parseInt(lapSelector.value);
-
-            // hide all traces except the selected lap
+            // hide all traces
             for (let i = 0; i < laps.length; i++) {
-                if (laps[i] === selectedLap) {
-                    Plotly.restyle(speedGraphDiv, 'visible', true, i);
-                    Plotly.restyle(throttleGraphDiv, 'visible', true, i);
-                } else {
-                    Plotly.restyle(speedGraphDiv, 'visible', false, i);
-                    Plotly.restyle(throttleGraphDiv, 'visible', false, i);
-                }
+                Plotly.restyle(speedGraphDiv, 'visible', false, i);
+                Plotly.restyle(throttleGraphDiv, 'visible', false, i);
             }
 
-            // Filter data for the selected lap
-            // const filteredTelemetry = telemetry.filter(item => item.CurrentLap === selectedLap);
-            const filteredTelemetry = telemetry[selectedLap];
+            lap1index = parseInt(lapSelector1.value);
+            // show only the selected lap using the mapping
+            Plotly.restyle(speedGraphDiv, 'visible', true, lap1index);
+            Plotly.restyle(throttleGraphDiv, 'visible', true, lap1index);
 
-            // set the min and max values of the distance slider
-            // distanceSlider.min = filteredTelemetry[0].DistanceRoundTrack;
-            // distanceSlider.max = filteredTelemetry[filteredTelemetry.length - 1].DistanceRoundTrack;
+            // if the selected lap is 'none'
+            if (lapSelector2.value !== 'none') {
+                lap2index = parseInt(lapSelector2.value);
+                Plotly.restyle(speedGraphDiv, 'visible', true, lap2index);
+                Plotly.restyle(throttleGraphDiv, 'visible', true, lap2index);
+            }
+
 
         }
 
@@ -249,65 +265,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 ]
             });
 
-            // set speedValue1 to the speed at the selected distance
-            // get the closest telemetry item to the selected distance
-            // get the first trace from the speed graph
-            const trace = speedGraphDiv.data[0];
-            // get the y value of the closest point to the selected distance
-            const yValue = trace.y[trace.x.indexOf(distance)];
-            // set the speedValue1 to the y value
-            speedValue1.innerHTML = yValue;
-
-
+            if (point.curveNumber === lap1index) {
+                // set speedValue1 to the speed at the selected distance
+                // get the closest telemetry item to the selected distance
+                // get the first trace from the speed graph
+                const trace = speedGraphDiv.data[lap1index];
+                // get the y value of the closest point to the selected distance
+                // const yValue = trace.y[trace.x.indexOf(distance)];
+                const yValue = trace.y[point.pointIndex];
+                // set the speedValue1 to the y value
+                speedValue1.innerHTML = yValue;
+            }
+            if (point.curveNumber === lap2index) {
+                // set speedValue1 to the speed at the selected distance
+                // get the closest telemetry item to the selected distance
+                // get the first trace from the speed graph
+                const trace = speedGraphDiv.data[lap2index];
+                // get the y value of the closest point to the selected distance
+                // const yValue = trace.y[trace.x.indexOf(distance)];
+                const yValue = trace.y[point.pointIndex];
+                // set the speedValue1 to the y value
+                speedValue2.innerHTML = yValue;
+            }
         }
 
-        function updateDistanceSlider() {
-            const selectedDistance = distanceSlider.value;
 
-            // Update speed value
-            const selectedLap = parseInt(lapSelector.value);
-            const selectedTelemetry = telemetry[selectedLap];
-            const selectedTelemetryItem = selectedTelemetry.find(item => item.DistanceRoundTrack === selectedDistance);
-            if (selectedTelemetryItem) {
-                speedValue1.innerHTML = selectedTelemetryItem.SpeedMs;
-            } else {
-                speedValue1.innerHTML = '';
-            }
-
-            // Update vertical line
-            Plotly.relayout(speedGraphDiv, {
-                shapes: [
-                    {
-                        type: 'line',
-                        x0: selectedDistance,
-                        x1: selectedDistance,
-                        y0: 0,
-                        y1: 1,
-                        xref: 'x',
-                        yref: 'paper',
-                        line: { color: 'red' }
-                    }
-                ]
-            });
-
-            Plotly.relayout(throttleGraphDiv, {
-                shapes: [
-                    {
-                        type: 'line',
-                        x0: selectedDistance,
-                        x1: selectedDistance,
-                        y0: 0,
-                        y1: 1,
-                        xref: 'x',
-                        yref: 'paper',
-                        line: { color: 'red' }
-                    }
-                ]
-            });
-
-    }
 
     // Event Listeners
-    lapSelector.addEventListener('change', updateLap);
+    lapSelector1.addEventListener('change', updateLap);
+    lapSelector2.addEventListener('change', updateLap);
     // distanceSlider.addEventListener('input', updateDistance);
 });
