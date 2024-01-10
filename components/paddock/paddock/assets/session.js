@@ -48,7 +48,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     Plotly.newPlot(speedGraphDiv, [], layout);
     Plotly.newPlot(throttleGraphDiv, [], layout);
-    Plotly.newPlot(mapDiv, []);
+
+    // the map layout is the same, but without coordinates
+    mapLayout = {
+        // height and width are the same
+        height: '100%',
+        xaxis: {
+            showgrid: true,
+            zeroline: false,
+            gridcolor: '#E2E2E2',
+            aspectratio: '1:1'
+        },
+        yaxis: {
+            showline: false,
+            gridcolor: '#E2E2E2',
+            aspectratio: '1:1'
+        },
+        margin: {
+            l: 50,
+            r: 50,
+            b: 50,
+            t: 50,
+            pad: 4
+        },
+        paper_bgcolor: '#ffffff',
+        plot_bgcolor: '#ffffff'
+    };
+    Plotly.newPlot(mapDiv, [], mapLayout);
 
     const graphDivs = [speedGraphDiv, throttleGraphDiv];
     const hoverCallback = function(data) {
