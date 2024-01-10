@@ -10,7 +10,6 @@
       <div class="row">
         <div class="col-sm-12">
           <select id="lap-selector"></select>
-          <input type="range" id="distance-slider" step="1"></input>
         </div>
       </div>
       <div class="row">
@@ -19,11 +18,11 @@
         </div>
         <div class="col-sm-8">
           <div class="row">
-            <div class="col-sm-4 speed-box">
-              <div class="speed-value"><span id="speed-value-1">192</span> km/h</div>
+            <div class="col-sm-2 telemetry-box">
+              <h6 class="h6"><span id="speed-value-1">192</span> km/h</h6>
               <div class="lap-info">
-                  <div class="lap">LAP1 <span class="lap-speed">186.0 KM/H</span></div>
-                  <div class="lap">LAP2 <span class="lap-speed">184.1 KM/H</span></div>
+                  <div class="lap">LAP1 <span class="lap-telemetry">192</span> km/h</div>
+                  <div class="lap">LAP2 <span class="lap-telemetry">184</span> km/h</div>
               </div>
             </div>
             <div class="col-sm-8">
@@ -31,14 +30,15 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-2 telemetry-box">
+              <h6 class="h6"><span id="throttle-value">80</span>%</h6>
+              <div class="lap-info">
+                  <div class="lap">LAP1 <span class="lap-telemetry">80</span>%</div>
+                  <div class="lap">LAP2 <span class="lap-telemetry">75</span>%</div>
+              </div>
+            </div>
+            <div class="col-sm-8">
               <div id="throttle-graph"></div>
-            </div>
-            <div class="col-sm-4">
-              <div id="brake-gauge"></div>
-            </div>
-            <div class="col-sm-4">
-              <div id="steering-gauge"></div>
             </div>
           </div>
         </div>

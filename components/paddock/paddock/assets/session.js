@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const speedGraphDiv = document.getElementById('speed-graph');
     const throttleGraphDiv = document.getElementById('throttle-graph');
     const lapSelector = document.getElementById('lap-selector');
-    const distanceSlider = document.getElementById('distance-slider');
+    // const distanceSlider = document.getElementById('distance-slider');
     const mapDiv = document.getElementById('map');
     const speedValue1 = document.getElementById('speed-value-1');
 
@@ -44,8 +44,18 @@ document.addEventListener('DOMContentLoaded', function() {
       };
 
     Plotly.newPlot(speedGraphDiv, [], layout);
-    Plotly.newPlot(throttleGraphDiv, []);
+    Plotly.newPlot(throttleGraphDiv, [], layout);
     Plotly.newPlot(mapDiv, []);
+
+    // Attach a 'plotly_hover' event listener to the speedGraphDiv element
+    speedGraphDiv.on('plotly_hover', function(data){
+        // Get the x-coordinate of the hovered data point
+        // var hoverX = data.points[0].x;
+
+        // Call the updateDistance function with the x-coordinate
+        // updateDistance(hoverX);
+        updateDistance(data.points[0]);
+    });
 
     function parseTelemetryData(data) {
         // Get column indexes
@@ -147,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             updateLap();
-            updateDistance();
+            // updateDistance(0);
         });
 
         function updateLap() {
@@ -184,12 +194,48 @@ document.addEventListener('DOMContentLoaded', function() {
             const filteredTelemetry = telemetry[selectedLap];
 
             // set the min and max values of the distance slider
-            distanceSlider.min = filteredTelemetry[0].DistanceRoundTrack;
-            distanceSlider.max = filteredTelemetry[filteredTelemetry.length - 1].DistanceRoundTrack;
+            // distanceSlider.min = filteredTelemetry[0].DistanceRoundTrack;
+            // distanceSlider.max = filteredTelemetry[filteredTelemetry.length - 1].DistanceRoundTrack;
 
         }
 
-        function updateDistance() {
+        function updateDistance(point) {
+            distance = point.x;
+
+            // Update vertical line
+            Plotly.relayout(speedGraphDiv, {
+                shapes: [
+                    {
+                        type: 'line',
+                        x0: distance,
+                        x1: distance,
+                        y0: 0,
+                        y1: 1,
+                        xref: 'x',
+                        yref: 'paper',
+                        line: { color: 'red' }
+                    }
+                ]
+            });
+
+            Plotly.relayout(throttleGraphDiv, {
+                shapes: [
+                    {
+                        type: 'line',
+                        x0: distance,
+                        x1: distance,
+                        y0: 0,
+                        y1: 1,
+                        xref: 'x',
+                        yref: 'paper',
+                        line: { color: 'red' }
+                    }
+                ]
+            });
+
+        }
+
+        function updateDistanceSlider() {
             const selectedDistance = distanceSlider.value;
 
             // Update speed value
@@ -237,5 +283,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event Listeners
     lapSelector.addEventListener('change', updateLap);
-    distanceSlider.addEventListener('input', updateDistance);
+    // distanceSlider.addEventListener('input', updateDistance);
 });

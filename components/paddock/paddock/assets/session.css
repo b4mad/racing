@@ -1,13 +1,13 @@
-.speed-box {
+.telemetry-box {
     font-family: Arial, sans-serif;
     padding: 10px;
 }
 
-.speed-value {
+.telemetry-value {
     font-size: 24px;
     font-weight: bold;
     color: #333333;
-    margin-bottom: 10px; /* Space between main speed value and lap info */
+    margin-bottom: 10px; /* Space between main telemetry value and lap info */
     text-align: center;
 }
 
@@ -20,9 +20,8 @@
     margin-bottom: 5px; /* Space between LAP1 and LAP2 */
 }
 
-.lap-speed {
+.lap-telemetry {
     font-weight: bold;
-    float: right; /* Align the speed to the right */
 }
 
 /* Clearfix to ensure the container contains the floated elements */
