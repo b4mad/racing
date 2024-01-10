@@ -37,7 +37,9 @@ class TelemetryLoader:
             session_df = self.read_dataframe(file_path)
         else:
             influx = Influx()
-            session_df = influx.session_df(session_id, measurement=measurement, bucket=bucket, start="-10y")
+            session_df = influx.session_df(
+                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate="1s"
+            )
             if self.caching:
                 self.save_dataframe(session_df, file_path)
 

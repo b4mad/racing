@@ -161,11 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         function updateLap() {
-            if (mapDataAvailable) {
-                mapDiv.style.display = 'block';
-            } else {
-                mapDiv.style.display = 'none';
-            }
+            // if (mapDataAvailable) {
+            //     mapDiv.style.display = 'block';
+            // } else {
+            //     mapDiv.style.display = 'none';
+            // }
 
             // if the selected lap is 'all', show all traces
             if (lapSelector.value === 'all') {
