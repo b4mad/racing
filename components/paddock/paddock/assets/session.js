@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 Plotly.addTraces(throttleGraphDiv, throttleTrace);
 
-                if (mapDataAvailable) {
+                if (mapDataAvailable && index === 0) {
                     // Extract WorldPositionX and WorldPositionY from telemetry
                     const xValues = d.map(d => d.WorldPositionX);
                     const yValues = d.map(d => d.WorldPositionY);
@@ -186,10 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const trace = {
                         x: xValues,
                         y: yValues,
-                        mode: 'markers',
-                        type: 'scatter',
-                        name: 'Lap ' + lap,
-                        'marker.color': 'red',
+                        mode: 'lines',
+                        line: {},
                     };
                     Plotly.addTraces(mapDiv, trace);
                 }
@@ -269,12 +267,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 // set speedValue1 to the speed at the selected distance
                 // get the closest telemetry item to the selected distance
                 // get the first trace from the speed graph
-                const trace = speedGraphDiv.data[lap1index];
+                trace = speedGraphDiv.data[lap1index];
                 // get the y value of the closest point to the selected distance
                 // const yValue = trace.y[trace.x.indexOf(distance)];
                 const yValue = trace.y[point.pointIndex];
                 // set the speedValue1 to the y value
                 speedValue1.innerHTML = yValue;
+
+                // highlight the closest point on the map
+                if (mapDataAvailable) {
+                    // draw a circle at the x, y position of the closest point
+                    trace = mapDiv.data[0];
+                    const circleSize = 20;
+                    const circle = {
+                        type: 'circle',
+                        xref: 'x',
+                        yref: 'y',
+                        x0: trace.x[point.pointIndex] - circleSize,
+                        y0: trace.y[point.pointIndex] - circleSize,
+                        x1: trace.x[point.pointIndex] + circleSize,
+                        y1: trace.y[point.pointIndex] + circleSize,
+                        line: { color: 'red' }
+                    };
+                    console.log(circle);
+
+                    Plotly.relayout(mapDiv, {
+                        shapes: [
+                            circle
+                        ]
+                    });
+                }
             }
             if (point.curveNumber === lap2index) {
                 // set speedValue1 to the speed at the selected distance
@@ -287,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // set the speedValue1 to the y value
                 speedValue2.innerHTML = yValue;
             }
+
         }
 
 
