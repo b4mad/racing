@@ -57,10 +57,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const relayoutCallback = function(eventdata, targetDiv) {
         if (eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {
             Plotly.relayout(targetDiv, {
-                    'xaxis.range[0]': eventdata['xaxis.range[0]'],
-                    'xaxis.range[1]': eventdata['xaxis.range[1]']
-                });
+                'xaxis.range[0]': eventdata['xaxis.range[0]'],
+                'xaxis.range[1]': eventdata['xaxis.range[1]']
+            });
+
+            const trace = speedGraphDiv.data[0];
+            const minDistance = eventdata['xaxis.range[0]'];
+            const maxDistance = eventdata['xaxis.range[1]'];
+            // find the first point where the distance is greater than the minDistance
+            const maxIndex = trace.x.findIndex(x => x > maxDistance);
+            const minIndex = trace.x.findIndex(x => x > minDistance);
+
+            const mapTrace = mapDiv.data[0];
+            // in mapTrace, iterate from minIndex to maxIndex and find the smallest and largest x and y values
+            let smallestX = mapTrace.x[minIndex];
+            let largestX = mapTrace.x[minIndex];
+            let smallestY = mapTrace.y[minIndex];
+            let largestY = mapTrace.y[minIndex];
+
+            for (let i = minIndex; i <= maxIndex; i++) {
+                const x = mapTrace.x[i];
+                const y = mapTrace.y[i];
+                if (x < smallestX) {
+                    smallestX = x;
+                }
+                if (x > largestX) {
+                    largestX = x;
+                }
+                if (y < smallestY) {
+                    smallestY = y;
+                }
+                if (y > largestY) {
+                    largestY = y;
+                }
             }
+
+            Plotly.relayout(mapDiv, {
+                'xaxis.range[0]': smallestX,
+                'xaxis.range[1]': largestX,
+                'yaxis.range[0]': smallestY,
+                'yaxis.range[1]': largestY
+            });
+        }
     }
 
     graphDivs.forEach(graphDiv => {
@@ -289,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         y1: trace.y[point.pointIndex] + circleSize,
                         line: { color: 'red' }
                     };
-                    console.log(circle);
 
                     Plotly.relayout(mapDiv, {
                         shapes: [
