@@ -29,6 +29,8 @@ class TelemetryLoader:
         return df
 
     def get_session_df(self, session_id, measurement="laps_cc", bucket="racing"):
+        # make sure the session_id is an integer
+        session_id = int(session_id)
         file_path = f"{self.temp_dir}/session_{session_id}_df.csv.gz"
 
         if self.caching and os.path.exists(file_path):

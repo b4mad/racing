@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lapSelector = document.getElementById('lap-selector');
     const distanceSlider = document.getElementById('distance-slider');
     const mapDiv = document.getElementById('map');
+    const speedValue1 = document.getElementById('speed-value-1');
 
     // Initial Telemetry Data
     let telemetry = [];
@@ -18,7 +19,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const session_id = url.pathname.split('/').pop();
 
     // Create empty plots
-    Plotly.newPlot(speedGraphDiv, []);
+    var layout = {
+        height: 200, // Shorter height to make the graph similar to the one in the screenshot
+        xaxis: {
+        //   title: 'Distance/Time',
+          showgrid: true,
+          zeroline: false,
+          gridcolor: '#E2E2E2'
+        },
+        yaxis: {
+        //   title: 'Speed (km/h)',
+          showline: false,
+          gridcolor: '#E2E2E2'
+        },
+        margin: {
+          l: 50,
+          r: 50,
+          b: 50,
+          t: 50,
+          pad: 4
+        },
+        paper_bgcolor: '#ffffff',
+        plot_bgcolor: '#ffffff'
+      };
+
+    Plotly.newPlot(speedGraphDiv, [], layout);
     Plotly.newPlot(throttleGraphDiv, []);
     Plotly.newPlot(mapDiv, []);
 
@@ -32,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
         const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
 
-        const laps = [...new Set(data.data.map(item => item[lapIndex]))];
-        laps.sort((a, b) => a - b);
+        const telemetryLaps = [...new Set(data.data.map(item => item[lapIndex]))];
+        telemetryLaps.sort((a, b) => a - b);
 
         const telemetryData = data.data.map(item => ({
             DistanceRoundTrack: item[distanceIndex],
@@ -49,15 +74,17 @@ document.addEventListener('DOMContentLoaded', function() {
             mapDataAvailable = true;
         }
 
-        return { laps, telemetryData };
+        return { telemetryLaps, telemetryData };
     }
+
+
 
     // Fetch Data from Django and Initialize Graphs
     fetch('/api/session/' + session_id)
         .then(response => response.json())
         .then(data => {
-            const { laps, telemetryData } = parseTelemetryData(data);
-
+            const { telemetryLaps, telemetryData } = parseTelemetryData(data);
+            laps = telemetryLaps;
             laps.forEach(lap => {
                 telemetry[lap] = telemetryData.filter(item => item.CurrentLap === lap);
             });
@@ -83,7 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     y: d.map(t => t.SpeedMs),
                     mode: 'lines',
                     name: 'Lap ' + lap,
-                    'marker.color': 'red',
+                    line: {
+                        // dash: 'dash', // Dashed line for the data points
+                        // color: 'blue'
+                    }
+                    // 'marker.color': 'red',
 
                 };
                 Plotly.addTraces(speedGraphDiv, speedTrace);
@@ -137,10 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const selectedLap = parseInt(lapSelector.value);
 
-            // Filter data for the selected lap
-            // const filteredTelemetry = telemetry.filter(item => item.CurrentLap === selectedLap);
-            const filteredTelemetry = telemetry[selectedLap];
-
             // hide all traces except the selected lap
             for (let i = 0; i < laps.length; i++) {
                 if (laps[i] === selectedLap) {
@@ -152,6 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // Filter data for the selected lap
+            // const filteredTelemetry = telemetry.filter(item => item.CurrentLap === selectedLap);
+            const filteredTelemetry = telemetry[selectedLap];
+
             // set the min and max values of the distance slider
             distanceSlider.min = filteredTelemetry[0].DistanceRoundTrack;
             distanceSlider.max = filteredTelemetry[filteredTelemetry.length - 1].DistanceRoundTrack;
@@ -160,6 +191,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function updateDistance() {
             const selectedDistance = distanceSlider.value;
+
+            // Update speed value
+            const selectedLap = parseInt(lapSelector.value);
+            const selectedTelemetry = telemetry[selectedLap];
+            const selectedTelemetryItem = selectedTelemetry.find(item => item.DistanceRoundTrack === selectedDistance);
+            if (selectedTelemetryItem) {
+                speedValue1.innerHTML = selectedTelemetryItem.SpeedMs;
+            } else {
+                speedValue1.innerHTML = '';
+            }
 
             // Update vertical line
             Plotly.relayout(speedGraphDiv, {
