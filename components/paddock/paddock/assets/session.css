@@ -1,0 +1,32 @@
+.telemetry-box {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+}
+
+.telemetry-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px; /* Space between main telemetry value and lap info */
+    text-align: center;
+}
+
+.lap-info {
+    font-size: 14px;
+    color: #666666;
+}
+
+.lap {
+    margin-bottom: 5px; /* Space between LAP1 and LAP2 */
+}
+
+.lap-telemetry {
+    font-weight: bold;
+}
+
+/* Clearfix to ensure the container contains the floated elements */
+.lap::after {
+    content: "";
+    display: table;
+    clear: both;
+}

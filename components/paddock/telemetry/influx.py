@@ -274,6 +274,7 @@ class Influx:
         end="now()",
         measurement="laps_cc",
         bucket="racing",
+        aggregate="",
     ):
         if isinstance(start, datetime):
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -285,6 +286,15 @@ class Influx:
         |> range(start: {start}, stop: {end})
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["SessionId"] == "{session_id}")
+        """
+
+        if aggregate:
+            # downsample to 1Hz
+            query += f"""
+            |> aggregateWindow(every: {aggregate}, fn: last, createEmpty: false)
+            """
+
+        query += """
         |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
         """
 
