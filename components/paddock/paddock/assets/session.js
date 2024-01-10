@@ -47,15 +47,31 @@ document.addEventListener('DOMContentLoaded', function() {
     Plotly.newPlot(throttleGraphDiv, [], layout);
     Plotly.newPlot(mapDiv, []);
 
-    // Attach a 'plotly_hover' event listener to the speedGraphDiv element
-    speedGraphDiv.on('plotly_hover', function(data){
-        // Get the x-coordinate of the hovered data point
-        // var hoverX = data.points[0].x;
-
-        // Call the updateDistance function with the x-coordinate
-        // updateDistance(hoverX);
+    const graphDivs = [speedGraphDiv, throttleGraphDiv];
+    const hoverCallback = function(data) {
         updateDistance(data.points[0]);
+    }
+    const relayoutCallback = function(eventdata, targetDiv) {
+        if (eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {
+            Plotly.relayout(targetDiv, {
+                    'xaxis.range[0]': eventdata['xaxis.range[0]'],
+                    'xaxis.range[1]': eventdata['xaxis.range[1]']
+                });
+            }
+    }
+
+    graphDivs.forEach(graphDiv => {
+        graphDiv.on('plotly_hover', hoverCallback);
     });
+
+    speedGraphDiv.on('plotly_relayout', function(eventdata) {
+        relayoutCallback(eventdata, throttleGraphDiv);
+    });
+    // FIXME this leads to a recursion
+    // throttleGraphDiv.on('plotly_relayout', function(eventdata) {
+    //     relayoutCallback(eventdata, throttleGraphDiv);
+    // });
+
 
     function parseTelemetryData(data) {
         // Get column indexes
@@ -232,6 +248,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ]
             });
+
+            // set speedValue1 to the speed at the selected distance
+            // get the closest telemetry item to the selected distance
+            // get the first trace from the speed graph
+            const trace = speedGraphDiv.data[0];
+            // get the y value of the closest point to the selected distance
+            const yValue = trace.y[trace.x.indexOf(distance)];
+            // set the speedValue1 to the y value
+            speedValue1.innerHTML = yValue;
+
 
         }
 
