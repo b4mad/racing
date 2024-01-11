@@ -85,36 +85,8 @@
     </div>
 
     {% if driver and is_myself %}
-    <div class="row">
-        <div class="col">
-            <h2>your last 5 sessions</h2>
-            <div class="table-responsive">
-                <!-- lets display the sessions in a table -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">session</th>
-                            <th scope="col">driver</th>
-                            <th scope="col">created</th>
-                            <th scope="col">game</th>
-                            <th scope="col">type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for session in sessions %}
-                        <tr>
-                            <th scope="row"><a href="{% url 'session' session.session_id %}">{{ session.session_id }}</a></th>
-                            <td>{{ session.driver.name|no_jim }}</td>
-                            <td>{{ session.created|date }} {{ session.created|time }}</td>
-                            <td>{{ session.game }}</td>
-                            <td>{{ session.session_type_id|to_session_type }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    {% include 'sessions/overview.html' with combos=rally_combos %}
+      {% include 'sessions/overview.html' with combos=circuit_combos %}
     {% endif %}
 </div>
 {% endblock content %}

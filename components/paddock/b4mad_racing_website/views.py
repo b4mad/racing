@@ -13,6 +13,7 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from telemetry.models import Coach, Driver, Session
+from telemetry.racing_stats import RacingStats
 
 from .forms import ProfileForm
 from .models import Copilot, Profile
@@ -78,6 +79,13 @@ class ProfileDetailView(DetailView):
             # now get the last 5 sessons for this driver
             if context["driver"]:
                 context["sessions"] = Session.objects.filter(driver=context["driver"]).order_by("-created")[:5]
+
+                stats = RacingStats()
+                circuit_combos = stats.driver_combos(context["driver"])
+                context["circuit_combos"] = circuit_combos
+
+                rally_combos = stats.driver_combos(context["driver"], type="rally")
+                context["rally_combos"] = rally_combos
 
         return self.render_to_response(context)
 

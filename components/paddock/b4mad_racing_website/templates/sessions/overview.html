@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Sessions</th>
+                        <th scope="col">Game Name</th>
+                        <th scope="col">Track Name</th>
+                        <th scope="col">Car Name</th>
+                        <th scope="col">Laps</th>
+                        <th scope="col">Valid</th>
+                        <th scope="col">Since</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for combo in combos %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'sessions' game_id=combo.session__game__id track_id=combo.track__id car_id=combo.car__id %}" class="btn btn-primary">View</a>
+                        </td>
+                        <td>{{ combo.session__game__name }}</td>
+                        <td>{{ combo.track__name }}</td>
+                        <td>{{ combo.car__name }}</td>
+                        <td>{{ combo.lap_count }}</td>
+                        <td>{{ combo.valid_lap_count }}</td>
+                        <td>{{ combo.latest_lap_end|timesince }}</td>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

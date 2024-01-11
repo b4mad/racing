@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // get the session_id from the url
     const url = new URL(window.location.href);
     // the session id is the last part of the url
-    const session_id = url.pathname.split('/').pop();
+    path_parts = url.pathname.split('/');
+    const lap_numer = path_parts.pop();
+    const session_id = path_parts.pop();
 
     // Create empty plots
     var layout = {
