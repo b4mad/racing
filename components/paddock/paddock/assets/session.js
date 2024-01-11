@@ -118,11 +118,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            const margin = 50;
             Plotly.relayout(mapDiv, {
-                'xaxis.range[0]': smallestX,
-                'xaxis.range[1]': largestX,
-                'yaxis.range[0]': smallestY,
-                'yaxis.range[1]': largestY
+                'xaxis.range[0]': smallestX - margin,
+                'xaxis.range[1]': largestX + margin,
+                'yaxis.range[0]': smallestY - margin,
+                'yaxis.range[1]': largestY + margin,
             });
         }
     }
@@ -149,6 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
         const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
         const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
+        const yawIndex = data.columns.indexOf('Yaw');
+        const pitchIndex = data.columns.indexOf('Pitch');
+        const rollIndex = data.columns.indexOf('Roll');
 
         const telemetryLaps = [...new Set(data.data.map(item => item[lapIndex]))];
         telemetryLaps.sort((a, b) => a - b);
@@ -160,7 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
             CurrentLap: parseInt(item[lapIndex]),
             WorldPositionX: item[worldPositionXIndex],
             WorldPositionY: item[worldPositionYIndex],
-            WorldPositionZ: item[worldPositionZIndex]
+            WorldPositionZ: item[worldPositionZIndex],
+            Yaw: item[yawIndex],
+            Pitch: item[pitchIndex],
+            Roll: item[rollIndex],
         }));
 
         if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
@@ -250,6 +257,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const trace = {
                         x: xValues,
                         y: yValues,
+                        yaw: d.map(d => d.Yaw),
+                        pitch: d.map(d => d.Pitch),
+                        roll: d.map(d => d.Roll),
                         mode: 'lines',
                         line: {},
                     };
@@ -354,9 +364,27 @@ document.addEventListener('DOMContentLoaded', function() {
                         line: { color: 'red' }
                     };
 
+                    // add an arrow to the circle, pointing in the direction of the yaw
+                    // Convert degrees to radians
+                    function degreesToRadians(degrees) {
+                        return degrees * (Math.PI / 180);
+                    }
+
+                    const arrowLength = 100;
+                    const arrow = {
+                        type: 'line',
+                        x0: trace.x[point.pointIndex],
+                        y0: trace.y[point.pointIndex],
+                        x1: trace.x[point.pointIndex] + Math.cos(degreesToRadians(trace.yaw[point.pointIndex])) * arrowLength,
+                        y1: trace.y[point.pointIndex] + Math.sin(degreesToRadians(trace.yaw[point.pointIndex])) * arrowLength,
+                        line: { color: 'green' }
+                    };
+                    // console.log(trace.yaw[point.pointIndex]);
+
                     Plotly.relayout(mapDiv, {
                         shapes: [
-                            circle
+                            circle,
+                            arrow
                         ]
                     });
                 }
