@@ -1,5 +1,7 @@
+from datetime import datetime, timedelta
+
 from django.db import connection
-from django.db.models import Count
+from django.db.models import CharField, Count, Max, Q, Value
 
 from telemetry.models import FastLap, Game, Lap, Track
 
@@ -7,6 +9,47 @@ from telemetry.models import FastLap, Game, Lap, Track
 class RacingStats:
     def __init__(self):
         pass
+
+    def driver_combos(self, driver, range=30, type="circuit", **kwargs):
+        filter = {}
+        filter["session__driver__name"] = driver
+
+        # Calculate the start date based on the range
+        start_date = datetime.now() - timedelta(days=range)
+
+        laps = Lap.objects.filter(**filter)
+        # Filter laps based on the end time within the range
+        laps = laps.filter(session__end__gte=start_date)
+        # group by game, track, and car
+        if type == "circuit":
+            laps = laps.values(
+                "session__game__name", "track__name", "car__name", "session__game__id", "track__id", "car__id"
+            )
+            # annotate with count of laps, valid laps, and latest lap end time
+            laps = laps.annotate(
+                lap_count=Count("id"), valid_lap_count=Count("id", filter=Q(valid=True)), latest_lap_end=Max("end")
+            )
+            # exclude all rally games: Richard Burns Rally, Dirt Rally, Dirt Rally 2.0
+            laps = laps.exclude(session__game__name__in=["Richard Burns Rally", "Dirt Rally", "Dirt Rally 2.0"])
+        elif type == "rally":
+            laps = laps.values("session__game__name", "car__name", "session__game__id", "car__id", "track__game__id")
+            # add a field called track__name with a hardcoded value of "Multiple"
+            laps = laps.annotate(
+                track__name=Value("Multiple", output_field=CharField()),
+                track__id=Value(0, output_field=CharField()),
+                lap_count=Count("id"),
+                valid_lap_count=Count("id", filter=Q(valid=True)),
+                latest_lap_end=Max("end"),
+            )
+            # only include rally games: Richard Burns Rally, Dirt Rally, Dirt Rally 2.0
+            laps = laps.filter(session__game__name__in=["Richard Burns Rally", "Dirt Rally", "Dirt Rally 2.0"])
+        # order by latest lap end time
+        laps = laps.order_by("-latest_lap_end")
+
+        # show the sql of the query
+        # print(laps.query)
+
+        return list(laps)
 
     def known_combos_list(self, game=None, track=None, car=None, **kwargs):
         laps = self.known_combos(game, track, car, **kwargs)

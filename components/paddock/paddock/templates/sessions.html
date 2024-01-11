@@ -1,0 +1,51 @@
+{%extends "site/base.html"%}
+{%block title%}Pit Crew{%endblock%}
+{%load static%}
+
+{%block content%}
+<h1>Session View</h1>
+<div class="card border-dark">
+  <div class="card-body">
+    <div class="container">
+      {% for session in sessions %}
+      <div class="row">
+        <div class="col">
+          <h2>{{ session.game.name }}</h2>
+          <h5>{{ session.laps.first.track.name }}</h5>
+          <h5>{{ session.laps.first.car.name }} </h5>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Analyze</th>
+                  <th scope="col">Number</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">End</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Length</th>
+                  <th scope="col">Valid</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for lap in session.laps.all %}
+                <tr>
+                  <td>
+                    <a href="{% url 'session' session_id=session.session_id lap=lap.number %}" class="btn btn-primary">View</a>
+                  </td>
+                  <td>{{ lap.number }}</td>
+                  <td>{{ lap.start }}</td>
+                  <td>{{ lap.end }}</td>
+                  <td>{{ lap.time }}</td>
+                  <td>{{ lap.length }}</td>
+                  <td>{{ lap.valid }}</td>
+                  {% endfor %}
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{%endblock%}
