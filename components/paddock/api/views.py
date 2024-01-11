@@ -10,7 +10,7 @@ class SessionView(View):
     template_name = "session.html"
 
     def get(self, request, session_id=0, *args, **kwargs):
-        telemetry_loader = TelemetryLoader(caching=True)
+        telemetry_loader = TelemetryLoader(caching=False)
         df = telemetry_loader.get_session_df(session_id)
 
         # Compression:

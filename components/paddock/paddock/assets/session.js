@@ -48,7 +48,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     Plotly.newPlot(speedGraphDiv, [], layout);
     Plotly.newPlot(throttleGraphDiv, [], layout);
-    Plotly.newPlot(mapDiv, []);
+
+    // the map layout is the same, but without coordinates
+    mapLayout = {
+        // height and width are the same
+        height: '100%',
+        xaxis: {
+            showgrid: true,
+            zeroline: false,
+            gridcolor: '#E2E2E2',
+            aspectratio: '1:1'
+        },
+        yaxis: {
+            showline: false,
+            gridcolor: '#E2E2E2',
+            aspectratio: '1:1'
+        },
+        margin: {
+            l: 50,
+            r: 50,
+            b: 50,
+            t: 50,
+            pad: 4
+        },
+        paper_bgcolor: '#ffffff',
+        plot_bgcolor: '#ffffff'
+    };
+    Plotly.newPlot(mapDiv, [], mapLayout);
 
     const graphDivs = [speedGraphDiv, throttleGraphDiv];
     const hoverCallback = function(data) {
@@ -57,10 +83,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const relayoutCallback = function(eventdata, targetDiv) {
         if (eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {
             Plotly.relayout(targetDiv, {
-                    'xaxis.range[0]': eventdata['xaxis.range[0]'],
-                    'xaxis.range[1]': eventdata['xaxis.range[1]']
-                });
+                'xaxis.range[0]': eventdata['xaxis.range[0]'],
+                'xaxis.range[1]': eventdata['xaxis.range[1]']
+            });
+
+            const trace = speedGraphDiv.data[0];
+            const minDistance = eventdata['xaxis.range[0]'];
+            const maxDistance = eventdata['xaxis.range[1]'];
+            // find the first point where the distance is greater than the minDistance
+            const maxIndex = trace.x.findIndex(x => x > maxDistance);
+            const minIndex = trace.x.findIndex(x => x > minDistance);
+
+            const mapTrace = mapDiv.data[0];
+            // in mapTrace, iterate from minIndex to maxIndex and find the smallest and largest x and y values
+            let smallestX = mapTrace.x[minIndex];
+            let largestX = mapTrace.x[minIndex];
+            let smallestY = mapTrace.y[minIndex];
+            let largestY = mapTrace.y[minIndex];
+
+            for (let i = minIndex; i <= maxIndex; i++) {
+                const x = mapTrace.x[i];
+                const y = mapTrace.y[i];
+                if (x < smallestX) {
+                    smallestX = x;
+                }
+                if (x > largestX) {
+                    largestX = x;
+                }
+                if (y < smallestY) {
+                    smallestY = y;
+                }
+                if (y > largestY) {
+                    largestY = y;
+                }
             }
+
+            const margin = 50;
+            Plotly.relayout(mapDiv, {
+                'xaxis.range[0]': smallestX - margin,
+                'xaxis.range[1]': largestX + margin,
+                'yaxis.range[0]': smallestY - margin,
+                'yaxis.range[1]': largestY + margin,
+            });
+        }
     }
 
     graphDivs.forEach(graphDiv => {
@@ -85,6 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
         const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
         const worldPositionZIndex = data.columns.indexOf('WorldPosition_z');
+        const yawIndex = data.columns.indexOf('Yaw');
+        const pitchIndex = data.columns.indexOf('Pitch');
+        const rollIndex = data.columns.indexOf('Roll');
 
         const telemetryLaps = [...new Set(data.data.map(item => item[lapIndex]))];
         telemetryLaps.sort((a, b) => a - b);
@@ -96,7 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
             CurrentLap: parseInt(item[lapIndex]),
             WorldPositionX: item[worldPositionXIndex],
             WorldPositionY: item[worldPositionYIndex],
-            WorldPositionZ: item[worldPositionZIndex]
+            WorldPositionZ: item[worldPositionZIndex],
+            Yaw: item[yawIndex],
+            Pitch: item[pitchIndex],
+            Roll: item[rollIndex],
         }));
 
         if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
@@ -177,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 Plotly.addTraces(throttleGraphDiv, throttleTrace);
 
-                if (mapDataAvailable) {
+                if (mapDataAvailable && index === 0) {
                     // Extract WorldPositionX and WorldPositionY from telemetry
                     const xValues = d.map(d => d.WorldPositionX);
                     const yValues = d.map(d => d.WorldPositionY);
@@ -186,10 +257,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const trace = {
                         x: xValues,
                         y: yValues,
-                        mode: 'markers',
-                        type: 'scatter',
-                        name: 'Lap ' + lap,
-                        'marker.color': 'red',
+                        yaw: d.map(d => d.Yaw),
+                        pitch: d.map(d => d.Pitch),
+                        roll: d.map(d => d.Roll),
+                        mode: 'lines',
+                        line: {},
                     };
                     Plotly.addTraces(mapDiv, trace);
                 }
@@ -269,12 +341,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 // set speedValue1 to the speed at the selected distance
                 // get the closest telemetry item to the selected distance
                 // get the first trace from the speed graph
-                const trace = speedGraphDiv.data[lap1index];
+                trace = speedGraphDiv.data[lap1index];
                 // get the y value of the closest point to the selected distance
                 // const yValue = trace.y[trace.x.indexOf(distance)];
                 const yValue = trace.y[point.pointIndex];
                 // set the speedValue1 to the y value
                 speedValue1.innerHTML = yValue;
+
+                // highlight the closest point on the map
+                if (mapDataAvailable) {
+                    // draw a circle at the x, y position of the closest point
+                    trace = mapDiv.data[0];
+                    const circleSize = 20;
+                    const circle = {
+                        type: 'circle',
+                        xref: 'x',
+                        yref: 'y',
+                        x0: trace.x[point.pointIndex] - circleSize,
+                        y0: trace.y[point.pointIndex] - circleSize,
+                        x1: trace.x[point.pointIndex] + circleSize,
+                        y1: trace.y[point.pointIndex] + circleSize,
+                        line: { color: 'red' }
+                    };
+
+                    // add an arrow to the circle, pointing in the direction of the yaw
+                    // Convert degrees to radians
+                    function degreesToRadians(degrees) {
+                        return degrees * (Math.PI / 180);
+                    }
+
+                    const arrowLength = 100;
+                    const arrow = {
+                        type: 'line',
+                        x0: trace.x[point.pointIndex],
+                        y0: trace.y[point.pointIndex],
+                        x1: trace.x[point.pointIndex] + Math.cos(degreesToRadians(trace.yaw[point.pointIndex])) * arrowLength,
+                        y1: trace.y[point.pointIndex] + Math.sin(degreesToRadians(trace.yaw[point.pointIndex])) * arrowLength,
+                        line: { color: 'green' }
+                    };
+                    // console.log(trace.yaw[point.pointIndex]);
+
+                    Plotly.relayout(mapDiv, {
+                        shapes: [
+                            circle,
+                            arrow
+                        ]
+                    });
+                }
             }
             if (point.curveNumber === lap2index) {
                 // set speedValue1 to the speed at the selected distance
@@ -287,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // set the speedValue1 to the y value
                 speedValue2.innerHTML = yValue;
             }
+
         }
 
 

@@ -38,7 +38,7 @@ class TelemetryLoader:
         else:
             influx = Influx()
             session_df = influx.session_df(
-                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate="1s"
+                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate=""
             )
             if self.caching:
                 self.save_dataframe(session_df, file_path)
@@ -52,10 +52,16 @@ class TelemetryLoader:
         if "WorldPosition_x" in df.columns:
             columns += ["WorldPosition_x", "WorldPosition_y", "WorldPosition_z"]
 
+        for field in ["Yaw", "Pitch", "Roll"]:
+            if field in df.columns:
+                columns += [field]
+
         df = df[columns]
 
         # resample df to 1 meter intervals
         # FIXME this resampling is based on just one lap
         analyzer = Analyzer()
         df = analyzer.resample(df, columns=columns, freq=1)
+        # change CurrentLap to int
+        # df["CurrentLap"] = df["CurrentLap"].astype(int)
         return df
