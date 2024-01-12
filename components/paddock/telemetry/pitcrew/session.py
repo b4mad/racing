@@ -105,10 +105,13 @@ class Session(LoggingMixin):
         self.telemetry_valid = True
         # check if we're in a new lap, i.e. we're driving over the finish line
         #   ie. distance is lower than the previous distance
-        #   and below a threshold of 10 meters
+        #   and below a threshold of 100 meters
         # self.log_debug(f"distance: {distance}")
 
-        crossed_finish_line = distance < self.previous_distance and distance < 10
+        # FIXME: the "crossed_finish_line" logic is brittle
+        #  for ACC its 100 meters, for iRacing its 10 meters
+
+        crossed_finish_line = distance < self.previous_distance and distance < 100
         lap_number_increased = self.current_lap and current_lap > self.current_lap.number
 
         if crossed_finish_line and not self.current_lap:
