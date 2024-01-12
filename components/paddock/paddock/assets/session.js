@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const url = new URL(window.location.href);
     // the session id is the last part of the url
     path_parts = url.pathname.split('/');
-    const lap_numer = path_parts.pop();
+    const lap_numer = parseInt(path_parts.pop());
     const session_id = path_parts.pop();
 
     // Create empty plots
@@ -196,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const option = document.createElement('option');
             option.value = 'all';
             option.text = 'All Laps';
-            option.selected = true;
             lapSelector1.appendChild(option);
 
             // add a none option to the second lap selector
@@ -211,6 +210,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const option1 = document.createElement('option');
                 option1.value = index;
                 option1.text = `Lap ${index + 1}`;
+                if (lap === lap_numer) {
+                    option1.selected = true;
+                }
                 lapSelector1.appendChild(option1);
 
                 const option2 = option1.cloneNode(true);
