@@ -9,7 +9,7 @@ from django.views.generic.edit import FormView
 
 import paddock.fastlap_app  # noqa: F401
 import paddock.pitcrew_app  # noqa: F401
-from telemetry.models import Coach, Driver, Session
+from telemetry.models import Coach, Driver, Lap, Session
 
 # https://gist.github.com/maraujop/1838193
 # from crispy_forms.helper import FormHelper
@@ -176,7 +176,24 @@ def fastlap(request, template_name="fastlap.html", fastlap_id="", **kwargs):
 
 
 def session(request, template_name="session.html", **kwargs):
-    return render(request, template_name=template_name, context={})
+    session_id = kwargs.get("session_id", None)
+    lap = kwargs.get("lap", None)
+    session = get_object_or_404(Session, session_id=session_id)
+    # if the session has any laps
+    if session.laps.count() > 0:
+        # get all laps with the same game_id / car_id / track_id
+        track_id = session.laps.first().track_id
+        car_id = session.laps.first().car_id
+        compare_laps = Lap.objects.filter(car_id=car_id, track_id=track_id).order_by("time")[:5]
+    else:
+        compare_laps = []
+
+    context = {
+        "session": session,
+        "lap_number": lap,
+        "compare_laps": compare_laps,
+    }
+    return render(request, template_name=template_name, context=context)
 
 
 def sessions(request, template_name="sessions.html", **kwargs):

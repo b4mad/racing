@@ -32,6 +32,7 @@ urlpatterns = [
     # path("pitcrew/<str:driver_name>", views.pitcrew_view, name="pitcrew"),
     # path("pitcrew/", views.pitcrew_index, name="pitcrew_index"),
     # path("coach/", CoachView.as_view(), name="coach"),
+    path("session/<int:session_id>", views.session, name="session"),
     path("session/<int:session_id>/<int:lap>", views.session, name="session"),
     path("sessions/<int:game_id>/<int:car_id>/<int:track_id>", views.sessions, name="sessions"),
     path("admin/", admin.site.urls),
