@@ -8,10 +8,27 @@
   <div class="card-body">
     <div class="container">
       <div class="row">
-        <div class="col-sm-12">
-          <select id="lap-selector-1"></select>
-          <select id="lap-selector-2"></select>
+        <div class="col-sm-3">
+          <small id="lapHelp" class="form-text text-muted">Lap 1</small>
+          <select class="form-select form-select-sm" id="lap-selector-1">
+            {% for lap in session.laps.all %}
+              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+            {% endfor %}
+          </select>
         </div>
+        <div class="col-sm-3">
+          <small id="lapHelp" class="form-text text-muted">Lap 2</small>
+          <select class="form-select form-select-sm" id="lap-selector-2">
+            <option value="none">none</option>
+            {% for lap in session.laps.all %}
+              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+            {% endfor %}
+            {% for lap in compare_laps %}
+              <option value="{{lap.id}}">({{ lap.id }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
       </div>
       <div class="row">
         <div class="col-sm-4">
