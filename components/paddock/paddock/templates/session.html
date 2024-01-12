@@ -12,7 +12,9 @@
           <small id="lapHelp" class="form-text text-muted">Lap 1</small>
           <select class="form-select form-select-sm" id="lap-selector-1">
             {% for lap in session.laps.all %}
-              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>
+                  {{ lap.number }} - {{ lap.time|floatformat:3 }}
+                </option>
             {% endfor %}
           </select>
         </div>
@@ -21,10 +23,15 @@
           <select class="form-select form-select-sm" id="lap-selector-2">
             <option value="none">none</option>
             {% for lap in session.laps.all %}
-              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+              <option value="{{lap.number}}">
+                {{ lap.number }} - {{ lap.time|floatformat:3 }}
+              </option>
             {% endfor %}
             {% for lap in compare_laps %}
-              <option value="{{lap.id}}">({{ lap.id }})</option>
+              <option value="{{lap.id}}">
+                {{ lap.number }} - {{ lap.time|floatformat:3 }}
+                - {{ lap.session.driver.name }}
+              </option>
             {% endfor %}
           </select>
         </div>
