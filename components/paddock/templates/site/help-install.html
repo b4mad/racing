@@ -8,16 +8,38 @@
     <div class="col">
         <h2>How do I install and configure</h2>
         <p class="lead">
-            Esse esse officia quis consectetur exercitation. Sunt in est Lorem sunt duis sunt est nulla consectetur
-            ex ullamco. Non esse cupidatat eiusmod eu. Officia dolor culpa labore proident proident in sint
-            consectetur ex magna elit eiusmod sit eu. Est dolore culpa do excepteur velit et elit id anim consequat
-            sint laboris id.
+            Installation of #B4mad Racing Copilots is easy:
+        <ol>
+            <li>Install CrewChief on your gaming rig</li>
+            <li>configure CrewChief for your user</li>
+        </ol>
         </p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
-            Id labore nisi ut laboris culpa magna nisi proident ipsum ut dolore consequat ex pariatur. In occaecat
-            irure magna Lorem cillum est tempor tempor culpa proident non aliqua. Ut magna fugiat mollit sunt dolor
-            cillum tempor nulla Lorem consectetur minim.
-        </div>
+        <h3>Install CrewChief</h3>
+        <p>Install <a href="https://thecrewchief.org/">CrewChief</a> in your gaming PC.
+            Download the CrewChiefV4.msi installer <a href="https://thecrewchief.org/forum.php">via the forum</a>.
+        </p>
+        {# djlint:off #}
+        <h3>Configure CrewChief</h3>
+        <p>
+        <ol>
+            <li>Enable the telemetry collection by checking 'MQTT Telemetry enabled' in the CrewChief Properties</li>
+            <li>Choose a 'MQTT drivername' in the CrewChief Properties cc_settings_mqtt, this must be the same as
+                the one on your #B4mad Racing profile
+                <img class="img-fluid rounded float-start"
+                    src="https://raw.githubusercontent.com/b4mad/racing/main/docs/cc_settings_mqtt.png"
+                    alt="cc_settings_mqtt" />
+            </li>
+            <li>Enable text to speech
+                <img class="img-fluid rounded float-start"
+                    src="https://raw.githubusercontent.com/b4mad/racing/main/docs/cc_log.png" alt="cc_settings_tts" />
+            </li>
+        </ol>
+        If all works you should see connection messages in the CrewChief
+        <img class="img-fluid rounded float-start"
+            src="https://raw.githubusercontent.com/b4mad/racing/main/docs/cc_log.png" alt="cc_log" />
+        </p>
+        {# djlint:on #}
+        <h3>Have fun!</h3>
     </div>
 </div>
 {% endblock content %}

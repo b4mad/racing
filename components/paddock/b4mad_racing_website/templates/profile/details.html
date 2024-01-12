@@ -60,15 +60,7 @@
                             <td><a href="{% url 'copilot-details' subscription.id %}">{{ subscription.name }}</a></td>
                             <td>{{ subscription.description }}</td>
                             <td>{{ subscription.published_at|date }}</td>
-                            <td><small>{{ svc.subscribers.count }}</small></td>
-                            <th scope="row">
-                                {% if user.is_authenticated %}
-                                <small>
-                                    <div class="form-check form-switch">
-                                    </div>
-                                </small>
-                                {% endif %}
-                            </th>
+                            <th scope="row"><!-- TODO turn copilot off on profile details view --></th>
                         </tr>
                         {% empty %}
                         <tr>
