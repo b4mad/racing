@@ -25,13 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const session_id = path_parts.pop();
 
     // Create empty plots
-    const layout = {
-        height: 200, // Shorter height to make the graph similar to the one in the screenshot
+    const layout_base = {
+        height: 100,
         xaxis: {
             // title: 'Distance/Time',
             showgrid: true,
             zeroline: false,
-            gridcolor: '#E2E2E2'
+            gridcolor: '#E2E2E2',
+            side: 'top' // Add this line to position x-axis at the top
         },
         yaxis: {
             // title: 'km/h',
@@ -40,26 +41,26 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         margin: {
             l: 50,
-            r: 50,
-            b: 50,
-            t: 50,
+            r: 0,
+            b: 10,
+            t: 5,
             pad: 4
         },
         paper_bgcolor: '#ffffff',
         plot_bgcolor: '#ffffff'
     };
+    // make a deep copy of the layout
+    var layout = JSON.parse(JSON.stringify(layout_base));
+    layout.yaxis.title = 'km/h';
+    layout.margin.t = 50;
+    layout.height += 50;
+    Plotly.newPlot(speedGraphDiv, [], layout);
 
     // make a deep copy of the layout
-    speed_layout = JSON.parse(JSON.stringify(layout));
-    speed_layout.yaxis.title = 'km/h';
-    Plotly.newPlot(speedGraphDiv, [], speed_layout);
+    layout = JSON.parse(JSON.stringify(layout_base));
+    layout.yaxis.title = 'throttle';
 
-    // make a deep copy of the layout
-    throttle_layout = JSON.parse(JSON.stringify(layout));
-    throttle_layout.yaxis.title = 'throttle';
-
-    // Plotly.newPlot(throttleGraphDiv, [], throttle_layout, {displayModeBar: false});
-    Plotly.newPlot(throttleGraphDiv, [], throttle_layout);
+    Plotly.newPlot(throttleGraphDiv, [], layout, {displayModeBar: false});
 
     // the map layout is the same, but without coordinates
     mapLayout = {
