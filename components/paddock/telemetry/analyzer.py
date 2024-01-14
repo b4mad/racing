@@ -351,6 +351,63 @@ class Analyzer:
 
         return features
 
+    def resample_channels(self, df, columns=["Brake", "SpeedMs"], freq=1, max_distance=0):
+        interpolate_columns = [
+            "Brake",
+            "SpeedMs",
+            "Throttle",
+            "Clutch",
+            "Handbrake",
+            "SpeedMs",
+            "Rpms",
+            "SteeringAngle",
+            "Yaw",
+            "Pitch",
+            "Roll",
+            "CurrentLapTime",
+            "WorldPosition_x",
+            "WorldPosition_y",
+            "WorldPosition_z",
+        ]
+        backfill_columns = ["Gear", "CurrentLap"]
+
+        df_interpolate_columns = []
+        df_backfill_columns = []
+        for column in columns:
+            if column in interpolate_columns:
+                df_interpolate_columns.append(column)
+            elif column in backfill_columns:
+                df_backfill_columns.append(column)
+
+        if max_distance == 0:
+            # get the max distance from the dataframe and round it up to the next integer
+            max_distance = int(np.ceil(df["DistanceRoundTrack"].max()))
+
+        # Define the new distance range
+        # new_distance = np.arange(0, max_distance + freq, freq)
+        new_distance = np.arange(0, max_distance, freq)
+
+        # Ensure new_distance is of type float
+        new_distance = new_distance.astype(float)
+
+        # Create a new DataFrame with evenly spaced Distance
+        new_df = pd.DataFrame(new_distance, columns=["DistanceRoundTrack"])
+
+        # The pd.merge_asof() function is used for merging on near keys.
+        # The interpolate() function then fills in the missing 'Throttle' values.
+        # The interpolation method can be adjusted based on your data characteristics
+        # (e.g., linear, quadratic).
+        if df_interpolate_columns:
+            source_df = df[df_interpolate_columns + ["DistanceRoundTrack"]]
+            new_df = pd.merge_asof(new_df, source_df, on="DistanceRoundTrack", direction="nearest").interpolate(
+                "linear"
+            )
+        if df_backfill_columns:
+            source_df = df[df_backfill_columns + ["DistanceRoundTrack"]]
+            new_df = pd.merge_asof(new_df, source_df, on="DistanceRoundTrack", direction="nearest").bfill()
+
+        return new_df
+
     def resample(self, input_df, columns=["Brake", "SpeedMs"], method="nearest", freq=1):
         df = input_df.replace({None: np.nan}).dropna(subset=["DistanceRoundTrack"])
         if len(df) == 0:
