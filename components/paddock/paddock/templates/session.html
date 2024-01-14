@@ -12,7 +12,9 @@
           <small id="lapHelp" class="form-text text-muted">Lap 1</small>
           <select class="form-select form-select-sm" id="lap-selector-1">
             {% for lap in session.laps.all %}
-              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+            <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>
+              {{ lap.number }} - {{ lap.time|floatformat:3 }}
+            </option>
             {% endfor %}
           </select>
         </div>
@@ -21,41 +23,45 @@
           <select class="form-select form-select-sm" id="lap-selector-2">
             <option value="none">none</option>
             {% for lap in session.laps.all %}
-              <option value="{{lap.number}}" {% if lap_number == lap.number %}selected{% endif %}>{{ lap.number }}</option>
+            <option value="{{lap.number}}">
+              {{ lap.number }} - {{ lap.time|floatformat:3 }}
+            </option>
             {% endfor %}
             {% for lap in compare_laps %}
-              <option value="{{lap.id}}">({{ lap.id }})</option>
+            <option value="{{lap.id}}">
+              {{ lap.number }} - {{ lap.time|floatformat:3 }}
+              - {{ lap.session.driver.name }}
+            </option>
             {% endfor %}
           </select>
         </div>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="map"></div>
       </div>
-      <div class="row">
-        <div class="col-sm-4">
-          <div id="map"></div>
-        </div>
-        <div class="col-sm-8">
-          <div class="row">
-            <div class="col-sm-2 telemetry-box">
-              <div class="lap-info">
-                  <div class="lap">LAP1 <span id="speed-value-1" class="lap-telemetry">192</span> km/h</div>
-                  <div class="lap">LAP2 <span id="speed-value-2" class="lap-telemetry">184</span> km/h</div>
-              </div>
+      <div class="col-sm-8">
+        <div class="row">
+          <!-- <div class="col-sm-2 telemetry-box">
+            <div class="lap-info">
+              <div class="lap">LAP1 <span id="speed-value-1" class="lap-telemetry">192</span> km/h</div>
+              <div class="lap">LAP2 <span id="speed-value-2" class="lap-telemetry">184</span> km/h</div>
             </div>
-            <div class="col-sm-8">
-              <div id="speed-graph"></div>
-            </div>
+          </div> -->
+          <div class="col-sm-12">
+            <div id="speed-graph"></div>
           </div>
-          <div class="row">
-            <div class="col-sm-2 telemetry-box">
-              <div class="lap-info">
-                  <div class="lap">LAP1 <span class="lap-telemetry">80</span>%</div>
-                  <div class="lap">LAP2 <span class="lap-telemetry">75</span>%</div>
-              </div>
+        </div>
+        <div class="row">
+          <!-- <div class="col-sm-2 telemetry-box">
+            <div class="lap-info">
+              <div class="lap">LAP1 <span class="lap-telemetry">80</span>%</div>
+              <div class="lap">LAP2 <span class="lap-telemetry">75</span>%</div>
             </div>
-            <div class="col-sm-8">
-              <div id="throttle-graph"></div>
-            </div>
+          </div> -->
+          <div class="col-sm-12">
+            <div id="throttle-graph"></div>
           </div>
         </div>
       </div>

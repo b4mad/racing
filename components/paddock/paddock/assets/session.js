@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var lap1index = 0;
     var lap2index = 0;
     const mapDiv = document.getElementById('map');
-    const speedValue1 = document.getElementById('speed-value-1');
-    const speedValue2 = document.getElementById('speed-value-2');
+    // const speedValue1 = document.getElementById('speed-value-1');
+    // const speedValue2 = document.getElementById('speed-value-2');
 
     // Initial Telemetry Data
     let telemetry = [];
@@ -25,53 +25,64 @@ document.addEventListener('DOMContentLoaded', function() {
     const session_id = path_parts.pop();
 
     // Create empty plots
-    var layout = {
-        height: 200, // Shorter height to make the graph similar to the one in the screenshot
+    const layout_base = {
+        height: 100,
         xaxis: {
-            //   title: 'Distance/Time',
+            // title: 'Distance/Time',
             showgrid: true,
             zeroline: false,
-            gridcolor: '#E2E2E2'
+            gridcolor: '#E2E2E2',
+            side: 'top' // Add this line to position x-axis at the top
         },
         yaxis: {
-            //   title: 'Speed (km/h)',
+            // title: 'km/h',
             showline: false,
             gridcolor: '#E2E2E2'
         },
         margin: {
             l: 50,
-            r: 50,
-            b: 50,
-            t: 50,
+            r: 0,
+            b: 10,
+            t: 5,
             pad: 4
         },
         paper_bgcolor: '#ffffff',
         plot_bgcolor: '#ffffff'
     };
-
+    // make a deep copy of the layout
+    var layout = JSON.parse(JSON.stringify(layout_base));
+    layout.yaxis.title = 'km/h';
+    layout.margin.t = 50;
+    layout.height += 50;
     Plotly.newPlot(speedGraphDiv, [], layout);
-    Plotly.newPlot(throttleGraphDiv, [], layout);
+
+    // make a deep copy of the layout
+    layout = JSON.parse(JSON.stringify(layout_base));
+    layout.yaxis.title = 'throttle';
+
+    Plotly.newPlot(throttleGraphDiv, [], layout, {displayModeBar: false});
 
     // the map layout is the same, but without coordinates
     mapLayout = {
         // height and width are the same
         height: '100%',
         xaxis: {
-            showgrid: true,
+            showgrid: false,
+            showline: false,
             zeroline: false,
-            gridcolor: '#E2E2E2',
-            aspectratio: '1:1'
+            visible: false
         },
         yaxis: {
+            showgrid: false,
             showline: false,
-            gridcolor: '#E2E2E2',
-            aspectratio: '1:1'
+            zeroline: false,
+            visible: false
         },
         margin: {
-            l: 50,
-            r: 50,
-            b: 50,
-            t: 50,
+            l: 20,
+            r: 20,
+            b: 20,
+            t: 20,
             pad: 4
         },
         paper_bgcolor: '#ffffff',
@@ -162,8 +173,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const telemetryData = data.data.map(item => ({
             DistanceRoundTrack: item[distanceIndex],
-            SpeedMs: item[speedIndex],
-            Throttle: item[throttleIndex],
+            SpeedMs: Math.round(item[speedIndex] * 3.6),
+            Throttle: Math.round(item[throttleIndex] * 100),
             CurrentLap: parseInt(item[lapIndex]),
             WorldPositionX: item[worldPositionXIndex],
             WorldPositionY: item[worldPositionYIndex],
@@ -191,50 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         laps.forEach(lap => {
             telemetry[lap] = telemetryData.filter(item => item.CurrentLap === lap);
         });
-
-        // laps.forEach((lap, index) => {
-        //     d = telemetry[lap];
-        //     speedTrace = {
-        //         x: d.map(t => t.DistanceRoundTrack),
-        //         y: d.map(t => t.SpeedMs),
-        //         mode: 'lines',
-        //         name: 'Lap ' + lap,
-        //         line: {
-        //             // dash: 'dash', // Dashed line for the data points
-        //             // color: 'blue'
-        //         }
-        //         // 'marker.color': 'red',
-
-        //     };
-        //     Plotly.addTraces(speedGraphDiv, speedTrace);
-
-        //     throttleTrace = {
-        //         x: d.map(t => t.DistanceRoundTrack),
-        //         y: d.map(t => t.Throttle),
-        //         mode: 'lines',
-        //         name: 'Lap ' + lap,
-        //         'marker.color': 'red',
-        //     };
-        //     Plotly.addTraces(throttleGraphDiv, throttleTrace);
-
-        //     if (mapDataAvailable && index === 0) {
-        //         // Extract WorldPositionX and WorldPositionY from telemetry
-        //         const xValues = d.map(d => d.WorldPositionX);
-        //         const yValues = d.map(d => d.WorldPositionY);
-
-        //         // Create a 2D scatter plot with Plotly
-        //         const trace = {
-        //             x: xValues,
-        //             y: yValues,
-        //             yaw: d.map(d => d.Yaw),
-        //             pitch: d.map(d => d.Pitch),
-        //             roll: d.map(d => d.Roll),
-        //             mode: 'lines',
-        //             line: {},
-        //         };
-        //         Plotly.addTraces(mapDiv, trace);
-        //     }
-        // });
 
         lap = lapSelector1.value;
         showLap(lap);
@@ -428,10 +395,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // get the first trace from the speed graph
             trace = speedGraphDiv.data[lap1index];
             // get the y value of the closest point to the selected distance
-            // const yValue = trace.y[trace.x.indexOf(distance)];
-            const yValue = trace.y[point.pointIndex];
+            // const yValue = trace.y[point.pointIndex];
             // set the speedValue1 to the y value
-            speedValue1.innerHTML = yValue;
+            // speedValue1.innerHTML = yValue;
 
             // highlight the closest point on the map
             if (mapDataAvailable) {
@@ -474,17 +440,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         }
-        if (point.curveNumber === lap2index) {
-            // set speedValue1 to the speed at the selected distance
-            // get the closest telemetry item to the selected distance
-            // get the first trace from the speed graph
-            const trace = speedGraphDiv.data[lap2index];
-            // get the y value of the closest point to the selected distance
-            // const yValue = trace.y[trace.x.indexOf(distance)];
-            const yValue = trace.y[point.pointIndex];
-            // set the speedValue1 to the y value
-            speedValue2.innerHTML = yValue;
-        }
+        // if (point.curveNumber === lap2index) {
+        //     // set speedValue1 to the speed at the selected distance
+        //     // get the closest telemetry item to the selected distance
+        //     // get the first trace from the speed graph
+        //     const trace = speedGraphDiv.data[lap2index];
+        //     // get the y value of the closest point to the selected distance
+        //     // const yValue = trace.y[trace.x.indexOf(distance)];
+        //     const yValue = trace.y[point.pointIndex];
+        //     // set the speedValue1 to the y value
+        //     speedValue2.innerHTML = yValue;
+        // }
 
     }
 

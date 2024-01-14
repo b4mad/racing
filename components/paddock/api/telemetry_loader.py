@@ -43,6 +43,7 @@ class TelemetryLoader:
         # FIXME this resampling is based on just one lap
         analyzer = Analyzer()
         df = analyzer.resample(df, columns=columns, freq=1)
+
         # change CurrentLap to int
         # df["CurrentLap"] = df["CurrentLap"].astype(int)
 
