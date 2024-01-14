@@ -79,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
             visible: false
         },
         margin: {
-            l: 50,
-            r: 50,
-            b: 50,
-            t: 50,
+            l: 20,
+            r: 20,
+            b: 20,
+            t: 20,
             pad: 4
         },
         paper_bgcolor: '#ffffff',
