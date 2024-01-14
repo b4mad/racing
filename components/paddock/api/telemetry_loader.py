@@ -39,13 +39,21 @@ class TelemetryLoader:
 
         df = df[columns]
 
-        # resample df to 1 meter intervals
-        # FIXME this resampling is based on just one lap
         analyzer = Analyzer()
-        df = analyzer.resample(df, columns=columns, freq=1)
+        # split the dataframe into laps based on the CurrentLap field
+        unique_laps = df["CurrentLap"].unique()
+        laps = []
+        for lap in unique_laps:
+            lap_df = df[df["CurrentLap"] == lap]
+            lap_df = analyzer.resample_channels(lap_df, columns=columns, freq=1)
+            laps.append(lap_df)
+
+        # merge the laps back into a single dataframe
+        df = pd.concat(laps)
 
         # change CurrentLap to int
-        # df["CurrentLap"] = df["CurrentLap"].astype(int)
+        # otherwise the session.js frontend will not be able to parse the JSON
+        df["CurrentLap"] = df["CurrentLap"].astype(int)
 
         return df
 
@@ -71,11 +79,12 @@ class TelemetryLoader:
             session_df = self.read_dataframe(file_path)
         else:
             influx = Influx()
+            aggregate = "100ms"
             # aggregate = ""
             # if self.caching:
             #     aggregate = "1s"
             session_df = influx.session_df(
-                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate="1s"
+                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate=aggregate
             )
             if self.caching:
                 self.save_dataframe(session_df, file_path)
