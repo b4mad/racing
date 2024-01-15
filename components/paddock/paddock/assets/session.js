@@ -364,8 +364,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateLap() {
         // hide all traces
         for (let i = 0; i < speedGraphDiv.data.length; i++) {
-            Plotly.restyle(speedGraphDiv, 'visible', false, i);
-            Plotly.restyle(throttleGraphDiv, 'visible', false, i);
+            graphDivs.forEach(graphDiv => {
+                Plotly.restyle(graphDiv, 'visible', false, i);
+            });
             if (mapDataAvailable) {
                 Plotly.restyle(mapDiv, 'visible', false, i);
             }
