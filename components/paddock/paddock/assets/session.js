@@ -39,12 +39,14 @@ document.addEventListener('DOMContentLoaded', function() {
             showgrid: true,
             zeroline: false,
             gridcolor: '#E2E2E2',
-            side: 'top' // Add this line to position x-axis at the top
+            side: 'top', // Add this line to position x-axis at the top
+            fixedrange: true, // disable zoom
         },
         yaxis: {
             // title: 'km/h',
             showline: false,
-            gridcolor: '#E2E2E2'
+            gridcolor: '#E2E2E2',
+            fixedrange: true, // disable zoom
         },
         margin: {
             l: 50,
@@ -59,6 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // make a deep copy of the layout
     var layout = JSON.parse(JSON.stringify(layout_base));
     layout.yaxis.title = 'km/h';
+    layout.yaxis.fixedrange = false;
+    layout.xaxis.fixedrange = false;
     layout.margin.t = 50;
     layout.height += 50;
     Plotly.newPlot(speedGraphDiv, [], layout);
@@ -115,11 +119,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const hoverCallback = function(data) {
         updateDistance(data.points[0]);
     }
-    const relayoutCallback = function(eventdata, targetDiv) {
+    const relayoutCallback = function(eventdata) {
         if (eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {
-            Plotly.relayout(targetDiv, {
-                'xaxis.range[0]': eventdata['xaxis.range[0]'],
-                'xaxis.range[1]': eventdata['xaxis.range[1]']
+            graphDivs.forEach(graphDiv => {
+                if (graphDiv === speedGraphDiv) {
+                    return;
+                }
+                Plotly.relayout(graphDiv, {
+                    'xaxis.range[0]': eventdata['xaxis.range[0]'],
+                    'xaxis.range[1]': eventdata['xaxis.range[1]']
+                });
             });
 
             const trace = speedGraphDiv.data[0];
@@ -168,7 +177,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     speedGraphDiv.on('plotly_relayout', function(eventdata) {
-        relayoutCallback(eventdata, throttleGraphDiv);
+        relayoutCallback(eventdata);
+    });
+    speedGraphDiv.on('plotly_autoscale', function(eventdata) {
+        relayoutCallback(eventdata);
     });
     // FIXME this leads to a recursion
     // throttleGraphDiv.on('plotly_relayout', function(eventdata) {

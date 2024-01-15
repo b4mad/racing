@@ -27,7 +27,16 @@ class TelemetryLoader:
         df = df.replace(np.nan, None)
 
         # only return the columns we need: "SpeedMs", "Throttle", "Brake", "DistanceRoundTrack"
-        columns = ["SpeedMs", "Throttle", "Brake", "DistanceRoundTrack", "CurrentLap", "Gear", "SteeringAngle"]
+        columns = [
+            "SpeedMs",
+            "Throttle",
+            "Brake",
+            "DistanceRoundTrack",
+            "CurrentLap",
+            "Gear",
+            "SteeringAngle",
+            "CurrentLapTime",
+        ]
 
         # check if the session contains position data
         if "WorldPosition_x" in df.columns:
