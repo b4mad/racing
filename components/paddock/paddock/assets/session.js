@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elements
+    const timeGraphDiv = document.getElementById('time-graph');
     const speedGraphDiv = document.getElementById('speed-graph');
     const throttleGraphDiv = document.getElementById('throttle-graph');
     const brakeGraphDiv = document.getElementById('brake-graph');
     const gearGraphDiv = document.getElementById('gear-graph');
     const steerGraphDiv = document.getElementById('steer-graph');
-    const graphDivs = [speedGraphDiv, throttleGraphDiv, brakeGraphDiv, gearGraphDiv, steerGraphDiv];
+    const graphDivs = [timeGraphDiv, speedGraphDiv, throttleGraphDiv, brakeGraphDiv, gearGraphDiv, steerGraphDiv];
 
     const lapSelector1 = document.getElementById('lap-selector-1');
     const lapSelector2 = document.getElementById('lap-selector-2');
@@ -60,11 +61,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     // make a deep copy of the layout
     var layout = JSON.parse(JSON.stringify(layout_base));
-    layout.yaxis.title = 'km/h';
     layout.yaxis.fixedrange = false;
     layout.xaxis.fixedrange = false;
     layout.margin.t = 50;
     layout.height += 50;
+    layout.yaxis.title = 'time';
+    Plotly.newPlot(timeGraphDiv, [], layout, {displayModeBar: false});
+
+    // make a deep copy of the layout
+    layout = JSON.parse(JSON.stringify(layout_base));
+    layout.yaxis.title = 'km/h';
     Plotly.newPlot(speedGraphDiv, [], layout);
 
     // make a deep copy of the layout
@@ -122,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const relayoutCallback = function(eventdata) {
         if (eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {
             graphDivs.forEach(graphDiv => {
-                if (graphDiv === speedGraphDiv) {
+                if (graphDiv === timeGraphDiv) {
                     return;
                 }
                 Plotly.relayout(graphDiv, {
@@ -176,10 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         graphDiv.on('plotly_hover', hoverCallback);
     });
 
-    speedGraphDiv.on('plotly_relayout', function(eventdata) {
-        relayoutCallback(eventdata);
-    });
-    speedGraphDiv.on('plotly_autoscale', function(eventdata) {
+    timeGraphDiv.on('plotly_relayout', function(eventdata) {
         relayoutCallback(eventdata);
     });
     // FIXME this leads to a recursion
@@ -196,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const brakeIndex = data.columns.indexOf('Brake');
         const gearIndex = data.columns.indexOf('Gear');
         const steerIndex = data.columns.indexOf('SteeringAngle');
+        const currentLapTime = data.columns.indexOf('CurrentLapTime');
         const lapIndex = data.columns.indexOf('CurrentLap');
         const worldPositionXIndex = data.columns.indexOf('WorldPosition_x');
         const worldPositionYIndex = data.columns.indexOf('WorldPosition_y');
@@ -214,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Brake: Math.round(item[brakeIndex] * 100),
             Gear: item[gearIndex],
             SteeringAngle: item[steerIndex],
+            CurrentLapTime: item[currentLapTime],
             CurrentLap: parseInt(item[lapIndex]),
             WorldPositionX: item[worldPositionXIndex],
             WorldPositionY: item[worldPositionYIndex],
@@ -303,6 +308,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // get data for the selected lap
         const d = telemetry[lap];
         lapsToGraphIndex[lap] = speedGraphDiv.data.length;
+
+        timeTrace = {
+            x: d.map(t => t.DistanceRoundTrack),
+            y: d.map(t => t.CurrentLapTime),
+            mode: 'lines',
+            name: 'Lap ' + lap,
+            line: {
+                // dash: 'dash', // Dashed line for the data points
+                // color: 'blue'
+            }
+            // 'marker.color': 'red',
+        };
+        Plotly.addTraces(timeGraphDiv, timeTrace);
 
         speedTrace = {
             x: d.map(t => t.DistanceRoundTrack),
@@ -405,39 +423,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 showLap(lap);
             }
         });
-    }
-
-    function updateLapToggle() {
-        // if the selected lap is 'all', show all traces
-        if (lapSelector1.value === 'all') {
-            for (let i = 0; i < laps.length; i++) {
-                Plotly.restyle(speedGraphDiv, 'visible', true, i);
-                Plotly.restyle(throttleGraphDiv, 'visible', true, i);
-            }
-            lap1index = 0;
-            lap2index = 0;
-            return;
-        }
-
-        // hide all traces
-        for (let i = 0; i < laps.length; i++) {
-            Plotly.restyle(speedGraphDiv, 'visible', false, i);
-            Plotly.restyle(throttleGraphDiv, 'visible', false, i);
-        }
-
-        lap1index = parseInt(lapSelector1.value);
-        // show only the selected lap using the mapping
-        Plotly.restyle(speedGraphDiv, 'visible', true, lap1index);
-        Plotly.restyle(throttleGraphDiv, 'visible', true, lap1index);
-
-        // if the selected lap is 'none'
-        if (lapSelector2.value !== 'none') {
-            lap2index = parseInt(lapSelector2.value);
-            Plotly.restyle(speedGraphDiv, 'visible', true, lap2index);
-            Plotly.restyle(throttleGraphDiv, 'visible', true, lap2index);
-        }
-
-
     }
 
     function updateDistance(point) {
