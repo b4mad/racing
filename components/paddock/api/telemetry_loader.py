@@ -66,8 +66,10 @@ class TelemetryLoader:
         influx = Influx()
         lap_df = influx.telemetry_for_laps([lap], measurement=measurement, bucket=bucket)
 
-        df = self.process_dataframe(lap_df[0])
-
+        if len(lap_df) > 0:
+            df = self.process_dataframe(lap_df[0])
+        else:
+            df = pd.DataFrame()
         return df
 
     def get_session_df(self, session_id, measurement="laps_cc", bucket="racing"):
@@ -89,6 +91,8 @@ class TelemetryLoader:
             if self.caching:
                 self.save_dataframe(session_df, file_path)
 
-        df = self.process_dataframe(session_df)
-
+        if len(session_df) > 0:
+            df = self.process_dataframe(session_df)
+        else:
+            df = pd.DataFrame()
         return df

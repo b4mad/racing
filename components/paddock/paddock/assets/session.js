@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var lap1index = 0;
     var lap2index = 0;
     const mapDiv = document.getElementById('map');
+    const mapCol = document.getElementById('col-map');
+    const graphsCol = document.getElementById('col-graphs');
     // const speedValue1 = document.getElementById('speed-value-1');
     // const speedValue2 = document.getElementById('speed-value-2');
 
@@ -184,9 +186,20 @@ document.addEventListener('DOMContentLoaded', function() {
             Roll: item[rollIndex],
         }));
 
-        if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
-            mapDataAvailable = true;
-        }
+        // This is handled by the Django view now
+        // if (worldPositionXIndex !== -1 && worldPositionYIndex !== -1 && worldPositionZIndex !== -1) {
+        //     mapDataAvailable = true;
+        //     // show the map
+        //     mapCol.classList.remove('d-none');
+        //     graphsCol.classList.remove('col-12');
+        //     graphsCol.classList.add('col-8');
+        // } else {
+        //     mapDataAvailable = false;
+        //     // hide the map
+        //     mapCol.classList.add('d-none');
+        //     graphsCol.classList.remove('col-8');
+        //     graphsCol.classList.add('col-12');
+        // }
 
         return { telemetryLaps, telemetryData };
     }
@@ -243,7 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // just show the trace
             Plotly.restyle(speedGraphDiv, 'visible', true, graphIndex);
             Plotly.restyle(throttleGraphDiv, 'visible', true, graphIndex);
-            Plotly.restyle(mapDiv, 'visible', true, graphIndex);
+            if (mapDataAvailable) {
+                Plotly.restyle(mapDiv, 'visible', true, graphIndex);
+            }
             return;
         }
 
@@ -311,6 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch('/api/lap/' + lap)
                 .then(response => response.json())
                 .then(data => {
+                    if (data.data.length === 0) {
+                        alert('No data for lap ' + lap);
+                        return;
+                    }
                     const { telemetryLaps, telemetryData } = parseTelemetryData(data);
                     // telemetry[lap] = telemetryData[0].filter(item => item.CurrentLap === lap);
                     telemetry[lap] = telemetryData;
