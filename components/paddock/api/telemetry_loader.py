@@ -27,7 +27,16 @@ class TelemetryLoader:
         df = df.replace(np.nan, None)
 
         # only return the columns we need: "SpeedMs", "Throttle", "Brake", "DistanceRoundTrack"
-        columns = ["SpeedMs", "Throttle", "Brake", "DistanceRoundTrack", "CurrentLap"]
+        columns = [
+            "SpeedMs",
+            "Throttle",
+            "Brake",
+            "DistanceRoundTrack",
+            "CurrentLap",
+            "Gear",
+            "SteeringAngle",
+            "CurrentLapTime",
+        ]
 
         # check if the session contains position data
         if "WorldPosition_x" in df.columns:
@@ -66,8 +75,10 @@ class TelemetryLoader:
         influx = Influx()
         lap_df = influx.telemetry_for_laps([lap], measurement=measurement, bucket=bucket)
 
-        df = self.process_dataframe(lap_df[0])
-
+        if len(lap_df) > 0:
+            df = self.process_dataframe(lap_df[0])
+        else:
+            df = pd.DataFrame()
         return df
 
     def get_session_df(self, session_id, measurement="laps_cc", bucket="racing"):
@@ -89,6 +100,8 @@ class TelemetryLoader:
             if self.caching:
                 self.save_dataframe(session_df, file_path)
 
-        df = self.process_dataframe(session_df)
-
+        if len(session_df) > 0:
+            df = self.process_dataframe(session_df)
+        else:
+            df = pd.DataFrame()
         return df

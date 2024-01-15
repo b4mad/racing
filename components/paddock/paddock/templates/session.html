@@ -8,7 +8,7 @@
   <div class="card-body">
     <div class="container">
       <div class="row">
-        <div class="col-sm-3">
+        <div class="col-3">
           <small id="lapHelp" class="form-text text-muted">Lap 1</small>
           <select class="form-select form-select-sm" id="lap-selector-1">
             {% for lap in session.laps.all %}
@@ -18,7 +18,7 @@
             {% endfor %}
           </select>
         </div>
-        <div class="col-sm-3">
+        <div class="col-3">
           <small id="lapHelp" class="form-text text-muted">Lap 2</small>
           <select class="form-select form-select-sm" id="lap-selector-2">
             <option value="none">none</option>
@@ -38,30 +38,44 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-4 {% if not map_data %}d-none{% endif %}" id="col-map">
         <div id="map"></div>
       </div>
-      <div class="col-sm-8">
+      <div class="{% if map_data %}col-8{% else %}col-12{% endif %}" id="col-graphs">
         <div class="row">
-          <!-- <div class="col-sm-2 telemetry-box">
+          <div class="row">
+            <div class="col-12">
+              <div id="time-graph"></div>
+            </div>
+          </div>
+            <!-- <div class="col-2 telemetry-box">
             <div class="lap-info">
               <div class="lap">LAP1 <span id="speed-value-1" class="lap-telemetry">192</span> km/h</div>
               <div class="lap">LAP2 <span id="speed-value-2" class="lap-telemetry">184</span> km/h</div>
             </div>
           </div> -->
-          <div class="col-sm-12">
+          <div class="col-12">
             <div id="speed-graph"></div>
           </div>
         </div>
         <div class="row">
-          <!-- <div class="col-sm-2 telemetry-box">
-            <div class="lap-info">
-              <div class="lap">LAP1 <span class="lap-telemetry">80</span>%</div>
-              <div class="lap">LAP2 <span class="lap-telemetry">75</span>%</div>
-            </div>
-          </div> -->
-          <div class="col-sm-12">
+          <div class="col-12">
             <div id="throttle-graph"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="brake-graph"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="gear-graph"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="steer-graph"></div>
           </div>
         </div>
       </div>

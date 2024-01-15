@@ -393,6 +393,10 @@ class Analyzer:
         # Create a new DataFrame with evenly spaced Distance
         new_df = pd.DataFrame(new_distance, columns=["DistanceRoundTrack"])
 
+        # ValueError: right keys must be sorted
+        # FIXME maybe sort by time or CurrentLapTime?
+        df = df.sort_values(by="DistanceRoundTrack")
+
         # The pd.merge_asof() function is used for merging on near keys.
         # The interpolate() function then fills in the missing 'Throttle' values.
         # The interpolation method can be adjusted based on your data characteristics

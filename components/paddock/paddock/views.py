@@ -188,10 +188,17 @@ def session(request, template_name="session.html", **kwargs):
     else:
         compare_laps = []
 
+    game = session.game
+    if game.name in ["Richard Burns Rally"]:
+        map_data = True
+    else:
+        map_data = False
+
     context = {
         "session": session,
         "lap_number": lap,
         "compare_laps": compare_laps,
+        "map_data": map_data,
     }
     return render(request, template_name=template_name, context=context)
 
