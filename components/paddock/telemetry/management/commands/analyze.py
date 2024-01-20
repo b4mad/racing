@@ -114,7 +114,11 @@ class Command(BaseCommand):
             if previous_run_lap_ids == lap_ids and not force_save:
                 logging.debug("same laps as previous run, skipping")
                 return
-        result = fl.analyze(min_laps=min_laps, max_laps=max_laps)
+        try:
+            result = fl.analyze(min_laps=min_laps, max_laps=max_laps)
+        except Exception as e:
+            logging.critical(f"Exception in analyze_fast_laps ({game} / {track} / {car}): {e}", exc_info=True)
+            result = None
 
         if result:
             data = result[0]
