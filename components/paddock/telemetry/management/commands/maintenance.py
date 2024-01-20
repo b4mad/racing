@@ -4,7 +4,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from telemetry.influx import Influx
-from telemetry.models import Session
+from telemetry.models import FastLap, Lap, Session
 
 
 class Command(BaseCommand):
@@ -46,6 +46,12 @@ class Command(BaseCommand):
             action="store_true",
         )
 
+        parser.add_argument(
+            "--fix-fastlaps",
+            help="fix data",
+            action="store_true",
+        )
+
     def handle(self, *args, **options):
         self.influx = Influx()
         if options["delete_influx"]:
@@ -54,6 +60,24 @@ class Command(BaseCommand):
             self.delete_sessions(options["start"], options["end"])
         elif options["fix_rbr_sessions"]:
             self.fix_rbr_sessions()
+        elif options["fix_fastlaps"]:
+            self.fix_fastlaps()
+
+    def fix_fastlaps(self):
+        # get all primary keys for fastlaps
+        fastlap_ids = list(FastLap.objects.all().values_list("id", flat=True))
+        print(f"found {len(fastlap_ids)} fastlaps")
+
+        # get all ids for laps
+        lap_fast_laps_ids = list(Lap.objects.all().values_list("fast_lap", flat=True))
+
+        # remove all lap_fast_laps_ids from fastlap_ids
+        rm_fastlap_ids = list(set(fastlap_ids) - set(lap_fast_laps_ids))
+
+        print(f"deleting {len(rm_fastlap_ids)} fastlaps")
+
+        # delete all fastlaps that have no laps
+        FastLap.objects.filter(id__in=rm_fastlap_ids).delete()
 
     def fix_rbr_sessions(self):
         # get all sessions for Richard Burns Rally
