@@ -187,9 +187,15 @@ def session(request, template_name="session.html", **kwargs):
         lap = session.laps.first()
         track_id = lap.track_id
         car_id = lap.car_id
-        compare_laps = Lap.objects.filter(car_id=car_id, track_id=track_id).order_by("time")[:5]
         context["track"] = lap.track
         context["car"] = lap.car
+
+        compare_laps = (
+            Lap.objects.filter(car_id=car_id, track_id=track_id)
+            .filter(valid=True)
+            .filter(time__gte=0)
+            .order_by("time")[:5]
+        )
     else:
         compare_laps = []
 

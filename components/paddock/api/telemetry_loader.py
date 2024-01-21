@@ -73,7 +73,15 @@ class TelemetryLoader:
         lap = Lap.objects.get(id=lap_id)
 
         influx = Influx()
+
+        measurement = "fast_laps"
+        bucket = "fast_laps"
         lap_df = influx.telemetry_for_laps([lap], measurement=measurement, bucket=bucket)
+
+        if len(lap_df) == 0:
+            measurement = "laps_cc"
+            bucket = "racing"
+            lap_df = influx.telemetry_for_laps([lap], measurement=measurement, bucket=bucket)
 
         if len(lap_df) > 0:
             df = self.process_dataframe(lap_df[0])
