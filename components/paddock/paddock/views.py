@@ -180,12 +180,16 @@ def session(request, template_name="session.html", **kwargs):
     session_id = kwargs.get("session_id", None)
     lap = kwargs.get("lap", None)
     session = get_object_or_404(Session, session_id=session_id)
+    context = {}
     # if the session has any laps
     if session.laps.count() > 0:
         # get all laps with the same game_id / car_id / track_id
-        track_id = session.laps.first().track_id
-        car_id = session.laps.first().car_id
+        lap = session.laps.first()
+        track_id = lap.track_id
+        car_id = lap.car_id
         compare_laps = Lap.objects.filter(car_id=car_id, track_id=track_id).order_by("time")[:5]
+        context["track"] = lap.track
+        context["car"] = lap.car
     else:
         compare_laps = []
 
@@ -195,12 +199,11 @@ def session(request, template_name="session.html", **kwargs):
     else:
         map_data = False
 
-    context = {
-        "session": session,
-        "lap_number": lap,
-        "compare_laps": compare_laps,
-        "map_data": map_data,
-    }
+    context["session"] = session
+    context["lap_number"] = lap
+    context["compare_laps"] = compare_laps
+    context["map_data"] = map_data
+
     return render(request, template_name=template_name, context=context)
 
 
