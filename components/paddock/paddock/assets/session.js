@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const graphsCol = document.getElementById('col-graphs');
     // const speedValue1 = document.getElementById('speed-value-1');
     // const speedValue2 = document.getElementById('speed-value-2');
+    const loadingSpinner = document.getElementById('loading-spinner');
 
     // Initial Telemetry Data
     let telemetry = [];
@@ -251,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('/api/session/' + session_id)
     .then(response => response.json())
     .then(data => {
+        loadingSpinner.classList.add('d-none');
         const { telemetryLaps, telemetryData } = parseTelemetryData(data);
         laps = telemetryLaps;
         laps.forEach(lap => {
@@ -260,27 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
         lap = lapSelector1.value;
         showLap(lap);
     });
-
-    function updateCompareLap() {
-        // get the selected lap
-        const lap = lapSelector2.value;
-        // if the lap is not already in the telemetry array, add it
-        if (telemetry[lap] === undefined) {
-            // get the data for the selected lap
-            fetch('/api/lap/' + lap)
-            .then(response => response.json())
-            .then(data => {
-                const { telemetryLaps, telemetryData } = parseTelemetryData(data);
-                laps = telemetryLaps;
-                laps.forEach(lap => {
-                    telemetry[lap] = telemetryData.filter(item => item.CurrentLap === lap);
-                });
-                showLap(lap);
-            });
-        } else {
-            showLap(lap);
-        }
-    }
 
     function showLap(lap) {
         lap = parseInt(lap);
@@ -406,10 +387,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // check if lap is in the telemetry array
 
             if (telemetry[lap] === undefined) {
+                loadingSpinner.classList.remove('d-none');
                 // get the data for the selected lap
                 fetch('/api/lap/' + lap)
                 .then(response => response.json())
                 .then(data => {
+                    loadingSpinner.classList.add('d-none');
                     if (data.data.length === 0) {
                         alert('No data for lap ' + lap);
                         return;
