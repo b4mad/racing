@@ -194,6 +194,7 @@ def session(request, template_name="session.html", **kwargs):
             Lap.objects.filter(car_id=car_id, track_id=track_id)
             .filter(valid=True)
             .filter(time__gte=0)
+            .filter(fast_lap__isnull=False)
             .order_by("time")[:5]
         )
     else:
