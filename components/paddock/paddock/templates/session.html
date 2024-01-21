@@ -5,7 +5,15 @@
 
 <h1>Session View</h1>
 <div class="card border-dark">
+  <div class="card-header">
+    {{ session.game.name }}
+  </div>
+
   <div class="card-body">
+    <h5 class="card-title">Track: {{ track.name }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">
+      Car: {{ car.name }}
+    </h6>
     <div class="container">
       <div class="row">
         <div class="col-3">
@@ -43,17 +51,17 @@
       </div>
       <div class="{% if map_data %}col-8{% else %}col-12{% endif %}" id="col-graphs">
         <div class="row">
-          <div class="row">
-            <div class="col-12">
-              <div id="time-graph"></div>
-            </div>
+          <div class="col-12">
+            <div id="time-graph"></div>
           </div>
-            <!-- <div class="col-2 telemetry-box">
-            <div class="lap-info">
-              <div class="lap">LAP1 <span id="speed-value-1" class="lap-telemetry">192</span> km/h</div>
-              <div class="lap">LAP2 <span id="speed-value-2" class="lap-telemetry">184</span> km/h</div>
-            </div>
-          </div> -->
+        </div>
+        <!-- <div class="col-2 telemetry-box">
+          <div class="lap-info">
+            <div class="lap">LAP1 <span id="speed-value-1" class="lap-telemetry">192</span> km/h</div>
+            <div class="lap">LAP2 <span id="speed-value-2" class="lap-telemetry">184</span> km/h</div>
+          </div>
+        </div> -->
+        <div class="row">
           <div class="col-12">
             <div id="speed-graph"></div>
           </div>

@@ -275,6 +275,8 @@ class Influx:
         measurement="laps_cc",
         bucket="racing",
         aggregate="",
+        fields=[],
+        drop_tags=False,
     ):
         if isinstance(start, datetime):
             start = start.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -287,6 +289,16 @@ class Influx:
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["SessionId"] == "{session_id}")
         """
+
+        if fields:
+            query += f"""
+            |> filter(fn: (r) => r["_field"] == "{fields[0]}")
+            """
+            for field in fields[1:]:
+                query += f"""
+                or r["_field"] == "{field}"
+                """
+            query += ")\n"
 
         if aggregate:
             # downsample to 1Hz
@@ -306,6 +318,12 @@ class Influx:
         query += """
         |> sort(columns: ["_time"], desc: false)
         """
+
+        # drop columns that are not needed
+        if drop_tags:
+            query += """
+            |> drop(columns: ["_start", "_stop", "_measurement", "host", "topic", "user"])
+            """
 
         df = self.query_api.query_data_frame(query=query)
         if df.empty:

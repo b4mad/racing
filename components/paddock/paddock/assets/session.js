@@ -66,12 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
     layout.margin.t = 50;
     layout.height += 50;
     layout.yaxis.title = 'time';
-    Plotly.newPlot(timeGraphDiv, [], layout, {displayModeBar: false});
+    Plotly.newPlot(timeGraphDiv, [], layout);
 
     // make a deep copy of the layout
     layout = JSON.parse(JSON.stringify(layout_base));
     layout.yaxis.title = 'km/h';
-    Plotly.newPlot(speedGraphDiv, [], layout);
+    Plotly.newPlot(speedGraphDiv, [], layout, {displayModeBar: false});
 
     // make a deep copy of the layout
     layout = JSON.parse(JSON.stringify(layout_base));

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from django import forms
@@ -9,7 +10,7 @@ from django.views.generic.edit import FormView
 
 import paddock.fastlap_app  # noqa: F401
 import paddock.pitcrew_app  # noqa: F401
-from telemetry.models import Coach, Driver, Lap, Session
+from telemetry.models import Car, Coach, Driver, Game, Lap, Session, Track
 
 # https://gist.github.com/maraujop/1838193
 # from crispy_forms.helper import FormHelper
@@ -179,12 +180,23 @@ def session(request, template_name="session.html", **kwargs):
     session_id = kwargs.get("session_id", None)
     lap = kwargs.get("lap", None)
     session = get_object_or_404(Session, session_id=session_id)
+    context = {}
     # if the session has any laps
     if session.laps.count() > 0:
         # get all laps with the same game_id / car_id / track_id
-        track_id = session.laps.first().track_id
-        car_id = session.laps.first().car_id
-        compare_laps = Lap.objects.filter(car_id=car_id, track_id=track_id).order_by("time")[:5]
+        lap = session.laps.first()
+        track_id = lap.track_id
+        car_id = lap.car_id
+        context["track"] = lap.track
+        context["car"] = lap.car
+
+        compare_laps = (
+            Lap.objects.filter(car_id=car_id, track_id=track_id)
+            .filter(valid=True)
+            .filter(time__gte=0)
+            .filter(fast_lap__isnull=False)
+            .order_by("time")[:5]
+        )
     else:
         compare_laps = []
 
@@ -194,12 +206,11 @@ def session(request, template_name="session.html", **kwargs):
     else:
         map_data = False
 
-    context = {
-        "session": session,
-        "lap_number": lap,
-        "compare_laps": compare_laps,
-        "map_data": map_data,
-    }
+    context["session"] = session
+    context["lap_number"] = lap
+    context["compare_laps"] = compare_laps
+    context["map_data"] = map_data
+
     return render(request, template_name=template_name, context=context)
 
 
@@ -208,20 +219,33 @@ def sessions(request, template_name="sessions.html", **kwargs):
     car_id = kwargs.get("car_id", None)
     track_id = kwargs.get("track_id", None)
 
+    context = {}
+
     sessions = []
     filter = {}
     if game_id:
         filter["game_id"] = game_id
+        context["game"] = Game.objects.get(pk=game_id)
     if car_id:
         filter["laps__car_id"] = car_id
+        context["car"] = Car.objects.get(pk=car_id)
     if track_id:
         filter["laps__track_id"] = track_id
+        context["track"] = Track.objects.get(pk=track_id)
 
-    sessions = Session.objects.filter(**filter).order_by("-created")[:5]
+    # Calculate the start date based on the range
+    start_date = datetime.now() - timedelta(days=14)
 
-    context = {
-        "sessions": sessions,
-    }
+    # Filter laps based on the end time within the range
+    filter["end__gte"] = start_date
+
+    # get the sessions that are
+    # eager load laps and game
+    sessions = Session.objects.filter(**filter).order_by("-created")
+    sessions = sessions.prefetch_related("game", "laps__car", "laps__track")
+    sessions = sessions.distinct()
+
+    context["sessions"] = sessions
 
     return render(request, template_name=template_name, context=context)
 
