@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView
 
 import paddock.fastlap_app  # noqa: F401
 import paddock.pitcrew_app  # noqa: F401
-from telemetry.models import Coach, Driver, Lap, Session
+from telemetry.models import Car, Coach, Driver, Game, Lap, Session, Track
 
 # https://gist.github.com/maraujop/1838193
 # from crispy_forms.helper import FormHelper
@@ -219,17 +219,22 @@ def sessions(request, template_name="sessions.html", **kwargs):
     car_id = kwargs.get("car_id", None)
     track_id = kwargs.get("track_id", None)
 
+    context = {}
+
     sessions = []
     filter = {}
     if game_id:
         filter["game_id"] = game_id
+        context["game"] = Game.objects.get(pk=game_id)
     if car_id:
         filter["laps__car_id"] = car_id
+        context["car"] = Car.objects.get(pk=car_id)
     if track_id:
         filter["laps__track_id"] = track_id
+        context["track"] = Track.objects.get(pk=track_id)
 
     # Calculate the start date based on the range
-    start_date = datetime.now() - timedelta(days=0.25)
+    start_date = datetime.now() - timedelta(days=14)
 
     # Filter laps based on the end time within the range
     filter["end__gte"] = start_date
@@ -240,9 +245,7 @@ def sessions(request, template_name="sessions.html", **kwargs):
     sessions = sessions.prefetch_related("game", "laps__car", "laps__track")
     sessions = sessions.distinct()
 
-    context = {
-        "sessions": sessions,
-    }
+    context["sessions"] = sessions
 
     return render(request, template_name=template_name, context=context)
 

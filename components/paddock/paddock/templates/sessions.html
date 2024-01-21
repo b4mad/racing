@@ -3,15 +3,21 @@
 {%load static%}
 
 {%block content%}
+<h2>{{ game }} - {{ track }} - {{ car }}</h2>
+{% for session in sessions %}
 <div class="card border-dark">
+  <div class="card-header">
+    Session {{ session.session_id }} -
+    {{ session.laps.first.track.name }} -
+    {{ session.laps.first.car.name }}
+  </div>
   <div class="card-body">
+    <h5 class="card-title">
+      Driver {{ session.driver }}
+    </h5>
     <div class="container">
-      {% for session in sessions %}
-      <div class="row mb-5 border">
+      <div class="row mb-5">
         <div class="col">
-          <h5>{{ session.laps.first.track.name }}</h5>
-          <h5>{{ session.laps.first.car.name }} </h5>
-          <h6>{{ session.game.name }}</h6>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
@@ -37,14 +43,15 @@
                   <td>{{ lap.time }}</td>
                   <td>{{ lap.length }}</td>
                   <td>{{ lap.valid }}</td>
-                  {% endfor %}
-                </tbody>
-              </table>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
   </div>
 </div>
+{% endfor %}
 {%endblock%}
