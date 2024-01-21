@@ -95,7 +95,7 @@ class TelemetryLoader:
             # if self.caching:
             #     aggregate = "1s"
             session_df = influx.session_df(
-                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate=aggregate
+                session_id, measurement=measurement, bucket=bucket, start="-10y", aggregate=aggregate, drop_tags=True
             )
             if self.caching:
                 self.save_dataframe(session_df, file_path)
