@@ -85,8 +85,8 @@
     </div>
 
     {% if driver and is_myself %}
-    {% include 'sessions/overview.html' with combos=rally_combos %}
-      {% include 'sessions/overview.html' with combos=circuit_combos %}
+        {% include 'sessions/overview.html' with combos=rally_combos %}
+        {% include 'sessions/overview.html' with combos=circuit_combos %}
     {% endif %}
 </div>
 {% endblock content %}

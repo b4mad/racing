@@ -10,9 +10,13 @@ class RacingStats:
     def __init__(self):
         pass
 
-    def driver_combos(self, driver, range=30, type="circuit", **kwargs):
+    def combos(self, type="", **kwargs):
+        return self.driver_combos(type=type, **kwargs)
+
+    def driver_combos(self, driver=None, range=30, type="circuit", **kwargs):
         filter = {}
-        filter["session__driver__name"] = driver
+        if driver is not None:
+            filter["session__driver__name"] = driver
 
         # Calculate the start date based on the range
         start_date = datetime.now() - timedelta(days=range)
@@ -21,7 +25,7 @@ class RacingStats:
         # Filter laps based on the end time within the range
         laps = laps.filter(session__end__gte=start_date)
         # group by game, track, and car
-        if type == "circuit":
+        if type == "circuit" or type == "":
             laps = laps.values(
                 "session__game__name", "track__name", "car__name", "session__game__id", "track__id", "car__id"
             )
@@ -29,8 +33,9 @@ class RacingStats:
             laps = laps.annotate(
                 lap_count=Count("id"), valid_lap_count=Count("id", filter=Q(valid=True)), latest_lap_end=Max("end")
             )
-            # exclude all rally games: Richard Burns Rally, Dirt Rally, Dirt Rally 2.0
-            laps = laps.exclude(session__game__name__in=["Richard Burns Rally", "Dirt Rally", "Dirt Rally 2.0"])
+            if type == "circuit":
+                # exclude all rally games: Richard Burns Rally, Dirt Rally, Dirt Rally 2.0
+                laps = laps.exclude(session__game__name__in=["Richard Burns Rally", "Dirt Rally", "Dirt Rally 2.0"])
         elif type == "rally":
             laps = laps.values("session__game__name", "car__name", "session__game__id", "car__id", "track__game__id")
             # add a field called track__name with a hardcoded value of "Multiple"
@@ -49,7 +54,7 @@ class RacingStats:
         # show the sql of the query
         # print(laps.query)
 
-        return list(laps)
+        return laps
 
     def known_combos_list(self, game=None, track=None, car=None, **kwargs):
         laps = self.known_combos(game, track, car, **kwargs)
