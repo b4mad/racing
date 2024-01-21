@@ -3,16 +3,15 @@
 {%load static%}
 
 {%block content%}
-<h1>Session View</h1>
 <div class="card border-dark">
   <div class="card-body">
     <div class="container">
       {% for session in sessions %}
-      <div class="row">
+      <div class="row mb-5 border">
         <div class="col">
-          <h2>{{ session.game.name }}</h2>
           <h5>{{ session.laps.first.track.name }}</h5>
           <h5>{{ session.laps.first.car.name }} </h5>
+          <h6>{{ session.game.name }}</h6>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from django import forms
@@ -217,7 +218,17 @@ def sessions(request, template_name="sessions.html", **kwargs):
     if track_id:
         filter["laps__track_id"] = track_id
 
-    sessions = Session.objects.filter(**filter).order_by("-created")[:5]
+    # Calculate the start date based on the range
+    start_date = datetime.now() - timedelta(days=0.25)
+
+    # Filter laps based on the end time within the range
+    filter["end__gte"] = start_date
+
+    # get the sessions that are
+    # eager load laps and game
+    sessions = Session.objects.filter(**filter).order_by("-created")
+    sessions = sessions.prefetch_related("game", "laps__car", "laps__track")
+    sessions = sessions.distinct()
 
     context = {
         "sessions": sessions,
