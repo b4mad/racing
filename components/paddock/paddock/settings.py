@@ -43,6 +43,7 @@ PROMETHEUS_EXPORT_MIGRATIONS = False
 # and https://github.com/korfuri/django-prometheus/issues/81
 # ALLOWED_HOST might be set via kubernetes deployment env
 ALLOWED_HOSTS = [
+    "b4mad.racing",
     "127.0.0.1",
     "localhost",
     "paddock.b4mad.racing",
@@ -185,7 +186,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://*.b4mad.racing"]
+CSRF_TRUSTED_ORIGINS = ["https://b4mad.racing", "https://*.b4mad.racing"]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
