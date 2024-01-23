@@ -16,6 +16,16 @@ if [ -z "$MQTT_TOPIC" ]; then
   MQTT_TOPIC="crewchief/${DRIVER}#"
 fi
 
+# default to secure connection
+if [ -z "$SKIP_TLS" ]; then
+  MQTT_PORT=30883
+  TLS_CERT_OPTS="--tls-use-os-certs"
+else
+  MQTT_PORT=31883
+  TLS_CERT_OPTS=""
+fi
+
 mosquitto_sub -u crewchief -P crewchief \
-  -t $MQTT_TOPIC \
-  -p 31883 -h $MQTT_HOST -i $CLIENT_ID -d
+  -p $MQTT_PORT -h $MQTT_HOST $TLS_CERT_OPTS \
+  -i $CLIENT_ID -d \
+  -t $MQTT_TOPIC

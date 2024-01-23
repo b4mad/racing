@@ -52,6 +52,12 @@ spec:
               name: config
             - mountPath: /mosquitto/password
               name: password
+            - mountPath: /mosquitto/tls.crt
+              name: tls
+              subPath: tls.crt
+            - mountPath: /mosquitto/tls.key
+              name: tls
+              subPath: tls.key
         - name: mosquitto-exporter
           image: quay.io/b4mad/mosquitto-exporter@sha256:abe94175914684b88ca9ec9c256b4fa8a067e5bd3cec4cf9ded31586b386d1b2
           resources:
@@ -75,5 +81,9 @@ spec:
             defaultMode: 420
             secretName: mosquitto-password
           name: password
+        - secret:
+            defaultMode: 420
+            secretName: https-cert-telemetry.test.b4mad.racing
+          name: tls
       serviceAccount: mosquitto
       serviceAccountName: mosquitto

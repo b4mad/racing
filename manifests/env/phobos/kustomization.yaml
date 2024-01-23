@@ -24,15 +24,6 @@ resources:
 generatorOptions:
   disableNameSuffixHash: true
 
-patches:
-  - target:
-      kind: Service
-      name: mosquitto-mqtt
-    patch: |-
-      - op: replace
-        path: /spec/ports/0/nodePort
-        value: 31883
-
 images:
   - name: paddock
     newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing/paddock
