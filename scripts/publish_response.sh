@@ -16,7 +16,17 @@ if [ -z "$MQTT_HOST" ]; then
 fi
 CLIENT_ID=$(hostname)-$$
 
+# default to secure connection
+if [ -z "$SKIP_TLS" ]; then
+  MQTT_PORT=30883
+  TLS_CERT_OPTS="--tls-use-os-certs"
+else
+  MQTT_PORT=31883
+  TLS_CERT_OPTS=""
+fi
+
 mosquitto_pub -u crewchief -P crewchief \
   -t "$TOPIC" \
-  -p 31883 -h $MQTT_HOST -i $CLIENT_ID -d \
+  -p $MQTT_PORT -h $MQTT_HOST $TLS_CERT_OPTS \
+  -i $CLIENT_ID -d \
   -m "$T"

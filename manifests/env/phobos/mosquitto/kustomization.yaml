@@ -6,3 +6,26 @@ resources:
 
   - mosquitto-exporter.yaml
   - mosquitto-password.yaml
+
+patches:
+  - target:
+      kind: Service
+      name: mosquitto-mqtt
+    patch: |-
+      - op: replace
+        path: /spec/ports/0/nodePort
+        value: 31883
+  - target:
+      kind: Service
+      name: mosquitto-mqtt-tls
+    patch: |-
+      - op: replace
+        path: /spec/ports/0/nodePort
+        value: 30883
+  - target:
+      kind: Deployment
+      name: mosquitto
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes/2/secret/secretName
+        value: https-cert-telemetry.b4mad.racing
