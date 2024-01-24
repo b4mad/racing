@@ -1,0 +1,204 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app.kubernetes.io/component: paddock
+  name: paddock
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    app.kubernetes.io/component: paddock
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - paddock
+          - pitcrew
+        from:
+          kind: ImageStreamTag
+          name: paddock:latest
+          namespace: b4mad-racing
+      type: ImageChange
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: paddock
+      name: paddock
+    spec:
+      containers:
+        - env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
+            - name: PADDOCK_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+            - secretRef:
+                name: paddock-socialaccounts
+          image: paddock:latest
+          imagePullPolicy: Always
+          name: paddock
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py collectstatic -i "*.py" -i "*.pyc" --noinput --link;
+              uwsgi --http "0.0.0.0:8000" --module paddock.wsgi:application --master --processes 4 --threads 2 --static-map /static=/opt/app-root/src/static
+          ports:
+            - containerPort: 8000
+              name: django-http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: django-metrics-dir
+              mountPath: /tmp/django-metrics
+        - env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          image: paddock:latest
+          imagePullPolicy: Always
+          name: pitcrew
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py pitcrew
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+      serviceAccount: paddock
+      serviceAccountName: paddock
+      initContainers:
+        - name: migrate
+          image: paddock:latest
+          imagePullPolicy: Always
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-pguser-paddock
+                  key: dbname
+          envFrom:
+            - secretRef:
+                name: paddock-settings
+          command: ["/bin/sh", "-c"]
+          args:
+            - python /opt/app-root/src/manage.py migrate --noinput;
+              python /opt/app-root/src/manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL --noinput || true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: django-metrics-dir
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
