@@ -10,7 +10,6 @@ verify_ssl = true
 
 [packages]
 apscheduler = "*"
-celery = "*"
 dash-bootstrap-components = "*"
 django = "*"
 django-admin-list-filter-dropdown = "*"
