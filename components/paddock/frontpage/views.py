@@ -15,3 +15,15 @@ class HomePageView(TemplateView):
         context["combos"] = combos
 
         return context
+
+
+class AboutPageView(TemplateView):
+    template_name = "site/about.html"
+
+
+class HelpPageView(TemplateView):
+    template_name = "site/help.html"
+
+
+class HelpInstallPageView(TemplateView):
+    template_name = "site/help-install.html"

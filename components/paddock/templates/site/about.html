@@ -1,0 +1,28 @@
+{% extends "site/base.html" %} {% load django_bootstrap5 %}
+
+{% block title %}#B4mad Racing Copilots{% endblock title %}
+
+{% block content %}
+<div class="row align-items-center">
+    <div class="col">
+        <h2>What is this all about?!</h2>
+        <p class="lead">
+            #B4mad Racing is a community-driven SimRacing data collection pipeline and analysis tool. We collect data
+            from the community and provide it back to the community in a way that is easy to consume and understand. We
+            are a community of simracers, for simracers.
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+            <p>
+                The pipeline start at <a href="https://thecrewchief.org/">CrewChief</a>. This means we can take data in
+                from any simulation that CrewChief supports. CrewChief will send your simulator telemetry data to an
+                endpoint
+                hosted on the <a href="https://www.operate-first.cloud" rel="nofollow">Operate First Community
+                    Cloud</a>.
+                You can then visualize your telemetry data in our <a href="https://pitwall.b4mad.racing/">#B4mad
+                    Pitwall</a>
+                or do some <a href="https://github.com/b4mad/racing/tree/main/notebooks">data science</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
