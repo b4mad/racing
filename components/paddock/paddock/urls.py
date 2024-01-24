@@ -7,7 +7,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from frontpage.views import HomePageView
 
 from . import views
 
@@ -16,10 +15,8 @@ from . import views
 urlpatterns = [
     # path("", views.index, name="home"),
     path("", include("b4mad_racing_website.urls")),
-    path("", include("frontpage.urls")),
     path("", include("django_prometheus.urls")),
     path("", include("api.urls")),
-    path("", HomePageView.as_view(), name="home"),
     # path("", TemplateView.as_view(template_name="home.html"), name="home"),
     # path('pitcrew', TemplateView.as_view(template_name='pitcrew.html'), name="pitcrew"),
     # path("fastlap/<str:game>/<str:track>/<str:car>", views.fastlap_index, name="fastlap_index"),

@@ -7,7 +7,7 @@ from django.forms.models import BaseModelForm
 from django.http import Http404, HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
@@ -19,6 +19,32 @@ from .forms import ProfileForm
 from .models import Copilot, Profile
 
 logger = logging.getLogger(__name__)
+
+
+class HomePageView(TemplateView):
+    template_name = "site/home.html"
+
+    # add the 15 most current sessions to the context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        stats = RacingStats()
+        combos = stats.combos(range=0.25)
+        context["combos"] = combos
+
+        return context
+
+
+class AboutPageView(TemplateView):
+    template_name = "site/about.html"
+
+
+class HelpPageView(TemplateView):
+    template_name = "site/help.html"
+
+
+class HelpInstallPageView(TemplateView):
+    template_name = "site/help-install.html"
 
 
 class CopilotsOverviewView(ListView):
