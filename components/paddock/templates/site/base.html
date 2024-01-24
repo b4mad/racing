@@ -10,7 +10,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{% url 'home' %}">
-                    {# djlint:off #}<img class="dpd-logo" height="50px" src="{% static 'images/logo-main-black.png' %}"
+                    {# djlint:off #}<img class="dpd-logo" height="50px" src="{% static 'logo-main-black.png' %}"
                         alt="Logo" />{# djlint:on #}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -19,12 +19,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">home</a>
-                        </li>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a href="{% url 'copilots-overview' %}" class="nav-link">copilots</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'fastlap' %}" class="nav-link">tracks</a>
                         </li>
                         {% if user.is_authenticated %}
                         <li class="nav-item">
