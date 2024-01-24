@@ -3,7 +3,8 @@ kind: PostgresCluster
 metadata:
   name: db
 spec:
-  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.8-3
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.10-0
+  openshift: true
   postgresVersion: 14
   service:
     type: NodePort
@@ -22,7 +23,7 @@ spec:
       #     memory: 2Gi
   backups:
     pgbackrest:
-      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.45-3
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.47-2
       global:
         repo1-retention-full: "7"
         repo1-retention-full-type: count
