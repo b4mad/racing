@@ -1,18 +1,21 @@
 import json
 import logging
+from datetime import datetime, timedelta
 
+import b4mad_racing_website.fastlap_app  # noqa: F401
+import b4mad_racing_website.pitcrew_app  # noqa: F401
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import BaseModelForm
 from django.http import Http404, HttpResponse, HttpResponseNotAllowed, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
-from telemetry.models import Coach, Driver, Session
+from telemetry.models import Car, Coach, Driver, Game, Lap, Session, Track
 from telemetry.racing_stats import RacingStats
 
 from .forms import ProfileForm
@@ -204,3 +207,124 @@ class ProfileSubscriptionsUpdateView(LoginRequiredMixin, UpdateView):
 
         # Return a JSON response with status code 204
         return JsonResponse({}, status=204)
+
+
+def fastlap(request, template_name="fastlap.html", fastlap_id="", **kwargs):
+    driver_name = ""
+    if request.user.is_authenticated:
+        user_name = request.user.first_name
+        driver = Driver.objects.filter(name=user_name).first()
+        if driver:
+            driver_name = driver.name
+    context = dict()
+    dash_context = request.session.get("django_plotly_dash", dict())
+    dash_context["driver_name"] = driver_name
+    request.session["django_plotly_dash"] = dash_context
+    return render(request, template_name=template_name, context=context)
+
+
+def session(request, template_name="session.html", **kwargs):
+    session_id = kwargs.get("session_id", None)
+    lap = kwargs.get("lap", None)
+    session = get_object_or_404(Session, session_id=session_id)
+    context = {}
+    # if the session has any laps
+    if session.laps.count() > 0:
+        # get all laps with the same game_id / car_id / track_id
+        lap = session.laps.first()
+        track_id = lap.track_id
+        car_id = lap.car_id
+        context["track"] = lap.track
+        context["car"] = lap.car
+
+        compare_laps = (
+            Lap.objects.filter(car_id=car_id, track_id=track_id)
+            .filter(valid=True)
+            .filter(time__gte=0)
+            .filter(fast_lap__isnull=False)
+            .order_by("time")[:5]
+        )
+    else:
+        compare_laps = []
+
+    game = session.game
+    if game.name in ["Richard Burns Rally"]:
+        map_data = True
+    else:
+        map_data = False
+
+    context["session"] = session
+    context["lap_number"] = lap
+    context["compare_laps"] = compare_laps
+    context["map_data"] = map_data
+
+    return render(request, template_name=template_name, context=context)
+
+
+def sessions(request, template_name="sessions.html", **kwargs):
+    game_id = kwargs.get("game_id", None)
+    car_id = kwargs.get("car_id", None)
+    track_id = kwargs.get("track_id", None)
+
+    context = {}
+
+    sessions = []
+    filter = {}
+    if game_id:
+        filter["game_id"] = game_id
+        context["game"] = Game.objects.get(pk=game_id)
+    if car_id:
+        filter["laps__car_id"] = car_id
+        context["car"] = Car.objects.get(pk=car_id)
+    if track_id:
+        filter["laps__track_id"] = track_id
+        context["track"] = Track.objects.get(pk=track_id)
+
+    # Calculate the start date based on the range
+    start_date = datetime.now() - timedelta(days=14)
+
+    # Filter laps based on the end time within the range
+    filter["end__gte"] = start_date
+
+    # get the sessions that are
+    # eager load laps and game
+    sessions = Session.objects.filter(**filter).order_by("-created")
+    sessions = sessions.prefetch_related("game", "laps__car", "laps__track")
+    sessions = sessions.distinct()
+
+    context["sessions"] = sessions
+
+    return render(request, template_name=template_name, context=context)
+
+
+def pitcrew_view(request, template_name="pitcrew.html", driver_name="", **kwargs):
+    "Example view that inserts content into the dash context passed to the dash application"
+
+    # driver_name = request.GET.get("driver", None)
+    if driver_name.lower() == "jim":
+        raise Exception("no jim allowed")
+
+    driver = get_object_or_404(Driver, name=driver_name)
+    coach = Coach.objects.get_or_create(driver=driver)[0]
+
+    # https://github.com/GibbsConsulting/django-plotly-dash/issues/378
+    context = {"init_args": {"power-switch": {"value": coach.enabled}}}
+
+    # create some context to send over to Dash:
+    dash_context = request.session.get("django_plotly_dash", dict())
+    dash_context["driver_pk"] = driver.pk
+    dash_context["enabled"] = coach.enabled
+    request.session["django_plotly_dash"] = dash_context
+
+    return render(request, template_name=template_name, context=context)
+
+
+def pitcrew_index(request, template_name="pitcrew_index.html", **kwargs):
+    drivers = Driver.objects.order_by("name")
+    drivers_total = drivers.count()
+    context = {
+        "drivers": drivers,
+        "drivers_total": drivers_total,
+    }
+
+    return render(request, template_name=template_name, context=context)
