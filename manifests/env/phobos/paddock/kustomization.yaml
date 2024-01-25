@@ -9,6 +9,7 @@ resources:
   - ../../../base/paddock/
   - ../../../base/paddock/cronjobs
   - ../../../base/paddock/metrics-exporter/
+  - ingress.yaml
 
 patches:
   - target:
@@ -21,20 +22,6 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/1/resources/limits/memory
         value: 2Gi
-
-  - target:
-      kind: Ingress
-      name: paddock
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: paddock.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/hosts/0
-        value: paddock.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/secretName
-        value: https-cert-paddock.b4mad.racing
 
   - target:
       kind: Ingress
