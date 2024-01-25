@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: paddock
   name: paddock
   annotations:
-    image.openshift.io/triggers:
+    image.openshift.io/triggers: |-
       [
        {
          "from": {
@@ -13,7 +13,16 @@ metadata:
            "name": "paddock:latest",
            "namespace": "b4mad-racing"
          },
-         "fieldPath": "spec.template.spec.containers[?(@.name==\"paddock\" || @.name==\"pitcrew\")].image",
+         "fieldPath": "spec.template.spec.containers[?(@.name==\"paddock\")].image",
+         "paused": false
+       },
+       {
+         "from": {
+           "kind": "ImageStreamTag",
+           "name": "paddock:latest",
+           "namespace": "b4mad-racing"
+         },
+         "fieldPath": "spec.template.spec.containers[?(@.name==\"pitcrew\")].image",
          "paused": false
        },
       ]
