@@ -1,28 +1,32 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/component: paddock
   name: paddock
+  annotations:
+    image.openshift.io/triggers:
+      [
+       {
+         "from": {
+           "kind": "ImageStreamTag",
+           "name": "paddock:latest",
+           "namespace": "b4mad-racing"
+         },
+         "fieldPath": "spec.template.spec.containers[?(@.name==\"paddock\" || @.name==\"pitcrew\")].image",
+         "paused": false
+       },
+      ]
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    app.kubernetes.io/component: paddock
-  triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-          - paddock
-          - pitcrew
-        from:
-          kind: ImageStreamTag
-          name: paddock:latest
-          namespace: b4mad-racing
-      type: ImageChange
+    matchLabels:
+      app.kubernetes.io/component: paddock
   template:
     metadata:
+      annotations:
+        alpha.image.policy.openshift.io/resolve-names: '*'
       labels:
         app.kubernetes.io/component: paddock
       name: paddock
@@ -80,8 +84,8 @@ spec:
               cpu: "1"
               memory: 1Gi
             requests:
-              cpu: 100m
-              memory: 1Gi
+              cpu: 0
+              memory: 0
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -127,8 +131,8 @@ spec:
               cpu: "1"
               memory: 1Gi
             requests:
-              cpu: 100m
-              memory: 512Mi
+              cpu: 0
+              memory: 0
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           livenessProbe:
@@ -195,8 +199,8 @@ spec:
               cpu: 500m
               memory: 512Mi
             requests:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 0
+              memory: 0
       volumes:
         - name: django-metrics-dir
           emptyDir:

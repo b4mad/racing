@@ -7,14 +7,6 @@ resources:
 
 patches:
   - target:
-      kind: ServiceMonitor
-      name: paddock
-    patch: |
-      - op: replace
-        path: /spec/namespaceSelector/matchNames/0
-        value: b4mad-racing-test
-
-  - target:
       kind: Ingress
       name: paddock
     patch: |-

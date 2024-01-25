@@ -29,6 +29,6 @@ spec:
               cpu: "1"
               memory: 4Gi
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 0
+              memory: 0
       restartPolicy: Never

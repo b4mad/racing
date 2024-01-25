@@ -12,7 +12,7 @@ resources:
 
 patches:
   - target:
-      kind: DeploymentConfig
+      kind: Deployment
       name: paddock
     patch: |-
       - op: replace
