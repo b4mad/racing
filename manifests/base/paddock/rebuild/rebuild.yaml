@@ -37,6 +37,6 @@ spec:
               cpu: "2"
               memory: 2Gi
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 0
+              memory: 0
       restartPolicy: Never
