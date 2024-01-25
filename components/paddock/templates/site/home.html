@@ -1,6 +1,7 @@
 {% extends "site/base.html" %}
 {% load django_bootstrap5 %}
 {% load racing_tags %}
+{% load static %}
 
 {% block title %}#B4mad Racing Copilots{% endblock title %}
 
@@ -21,9 +22,7 @@
             </div>
         </div>
         <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
-            <img class="rounded-lg-3"
-                src="https://b4mad.racing/static/favpng_auto-racing-computer-file-caf47e4b14bc1bd13f389d05bc8d5ecd.png"
-                alt="" width="828" height="600">
+            <img class="rounded img-fluid float-end" src="{% static 'car.webp' %}">
         </div>
     </div>
 </div>
