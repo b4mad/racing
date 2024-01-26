@@ -5,18 +5,7 @@ metadata:
     app.kubernetes.io/component: paddock
   name: paddock
   annotations:
-    image.openshift.io/triggers: |-
-      [
-       {
-         "from": {
-           "kind": "ImageStreamTag",
-           "name": "paddock:latest",
-           "namespace": "b4mad-racing"
-         },
-         "fieldPath": "spec.template.spec.containers[?(@.name==\"paddock\")].image",
-         "paused": false
-       }
-      ]
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"paddock:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"paddock\")].image"}]'
 spec:
   replicas: 1
   revisionHistoryLimit: 2
