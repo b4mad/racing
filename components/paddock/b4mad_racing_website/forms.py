@@ -15,8 +15,8 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = [
             "mqtt_drivername",
-            "publicly_visible",
-            "newsletter_allowed",
+            # "publicly_visible",
+            # "newsletter_allowed",
         ]
         help_texts = {
             "mqtt_drivername": "The MQTT drivername in CrewChief",
