@@ -15,16 +15,7 @@ metadata:
          },
          "fieldPath": "spec.template.spec.containers[?(@.name==\"paddock\")].image",
          "paused": false
-       },
-       {
-         "from": {
-           "kind": "ImageStreamTag",
-           "name": "paddock:latest",
-           "namespace": "b4mad-racing"
-         },
-         "fieldPath": "spec.template.spec.containers[?(@.name==\"pitcrew\")].image",
-         "paused": false
-       },
+       }
       ]
 spec:
   replicas: 1
