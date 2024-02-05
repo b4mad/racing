@@ -59,11 +59,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.openid",
     "allauth.socialaccount.providers.discord",
     "allauth.socialaccount.providers.github",
-    "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.microsoft",
-    "allauth.socialaccount.providers.reddit",
     "allauth.socialaccount.providers.steam",
-    "allauth.socialaccount.providers.twitch",
     "allauth.socialaccount",
     # plotly dash still needs bootstrap4, maybe it can be hacked away with
     # https://github.com/GibbsConsulting/django-plotly-dash/issues/359
@@ -316,33 +312,10 @@ SOCIALACCOUNT_PROVIDERS = {
             "key": "",
         }
     },
-    "reddit": {
+    "steam": {
         "APP": {
-            "client_id": os.getenv("SOCIALACCOUNT_REDDIT_CLIENTID", ""),
-            "secret": os.getenv("SOCIALACCOUNT_REDDIT_SECRET", ""),
-            "key": "",
-        }
-    },
-    # Doesnt seem to work
-    # "steam": {
-    #     "APP": {
-    #         "client_id": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
-    #         "secret": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
-    #         "key": "",
-    #     }
-    # },
-    # Doesnt seem to work
-    # "microsoft": {
-    #     "APP": {
-    #         "client_id": os.getenv("SOCIALACCOUNT_MICROSOFT_CLIENTID", ""),
-    #         "secret": os.getenv("SOCIALACCOUNT_MICROSOFT_SECRET", ""),
-    #         "key": "",
-    #     }
-    # },
-    "google": {
-        "APP": {
-            "client_id": os.getenv("SOCIALACCOUNT_GOOGLE_CLIENTID", ""),
-            "secret": os.getenv("SOCIALACCOUNT_GOOGLE_SECRET", ""),
+            "client_id": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
+            "secret": os.getenv("SOCIALACCOUNT_STEAM_KEY", ""),
             "key": "",
         }
     },
