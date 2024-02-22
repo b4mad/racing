@@ -8,7 +8,6 @@ from telemetry.pitcrew.logging_mixin import LoggingMixin
 
 from .application.brake_application import BrakeApplication
 from .application.debug_application import DebugApplication
-from .application.response import ResponseInstant
 from .application.session import Session
 from .application.track_guide_application import TrackGuideApplication
 from .history import History
@@ -71,7 +70,8 @@ class CoachCopilots(LoggingMixin):
                 error = self.history.get_and_reset_error()
 
                 if error:
-                    self.respond(ResponseInstant(error))
+                    # Don't respond to the client, just store the error, the copilot can report it
+                    # self.respond(ResponseInstant(error))
                     self.coach_model.error = error
                     self.coach_model.save()
 
