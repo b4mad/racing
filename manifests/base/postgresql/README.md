@@ -21,8 +21,16 @@ pgbackrest backup --stanza=db --repo=1 --type=full
 <https://gist.github.com/axelbdt/74898d80ceee51b69a16b575345e8457>
 
 # What container images are available
-<https://www.crunchydata.com/developers/download-postgres/containers/postgresql14>
-<https://catalog.redhat.com/software/containers/crunchydata/crunchy-pgbackrest/6011d5992937381f8e956d7f>
+
+* https://catalog.redhat.com/software/containers/crunchydata/crunchy-postgres/595e65ef1fbe9833203ff782
+* https://catalog.redhat.com/software/containers/crunchydata/crunchy-pgbackrest/6011d5992937381f8e956d7f
+
+and look for `ubi8-14` images for postgres 14.
+But removing the image spec from the postgrescluster CR will use the default image.
+
+# Register the operator
+
+Crunchy Postgres for Kubernetes now requires registration for operator upgrades. Register now to be ready for your next upgrade. See https://access.crunchydata.com/register-cpk for details.
 
 ## WTF uid changes after OCP cluster upgrade
 
