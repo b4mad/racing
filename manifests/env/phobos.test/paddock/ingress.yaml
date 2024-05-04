@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    haproxy.router.openshift.io/timeout: 120s
+  name: b4mad-racing
+spec:
+  ingressClassName: openshift-default
+  rules:
+    - host: paddock.test.b4mad.racing
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: paddock
+                port:
+                  name: django-web
+  tls:
+    - hosts:
+        - paddock.test.b4mad.racing
+      secretName: https-cert-paddock.test.b4mad.racing

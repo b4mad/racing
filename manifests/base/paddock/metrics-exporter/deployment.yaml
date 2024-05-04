@@ -21,27 +21,27 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: db-pguser-paddock
+                  name: postgresql-app
                   key: host
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: db-pguser-paddock
+                  name: postgresql-app
                   key: port
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: db-pguser-paddock
+                  name: postgresql-app
                   key: user
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-pguser-paddock
+                  name: postgresql-app
                   key: password
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: db-pguser-paddock
+                  name: postgresql-app
                   key: dbname
             - name: PADDOCK_POD_IP
               valueFrom:

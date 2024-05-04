@@ -36,28 +36,28 @@ spec:
       #     requests:
       #       cpu: 200m
       repos:
-        # - name: repo1
-        #   schedules:
-        #     # Every sunday at 01:00 full backup
-        #     # full: "0 1 * * 0"
-        #     # Monday through saturday at 01:00 differential backup
-        #     full: "0 1 * * 0"
-        #     differential: "0 1 * * 1-6"
-        #   volume:
-        #     volumeClaimSpec:
-        #       accessModes:
-        #         - "ReadWriteOnce"
-        #       resources:
-        #         requests:
-        #           storage: 4Gi
         - name: repo1
           schedules:
+            # Every sunday at 01:00 full backup
+            # full: "0 1 * * 0"
+            # Monday through saturday at 01:00 differential backup
             full: "0 1 * * 0"
-            differential: "0 1 * * 1-6"
-          s3:
-            bucket: "b4mad-racing-dev-psql"
-            endpoint: "https://192.169.178.22:9000/"
-            region: "not-really-used"
+            # differential: "0 1 * * 1-6"
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 60Gi
+        # - name: repo1
+        #   schedules:
+        #     full: "0 1 * * 0"
+        #     differential: "0 1 * * 1-6"
+        #   s3:
+        #     bucket: "b4mad-racing-dev-psql"
+        #     endpoint: "https://192.169.178.22:9000/"
+        #     region: "not-really-used"
       configuration:
       - secret:
           name: pgo-s3-creds

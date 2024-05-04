@@ -4,31 +4,16 @@ kind: Kustomization
 resources:
   - ../../../base/paddock
   - ../../../base/paddock/paddock-settings
+  - ingress.yaml
 
 patches:
   - target:
-      kind: Ingress
+      kind: Deployment
       name: paddock
     patch: |-
       - op: replace
-        path: /spec/rules/0/host
-        value: paddock-test.b4mad.racing
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 6Gi
       - op: replace
-        path: /spec/tls/0/hosts/0
-        value: paddock-test.b4mad.racing
-      - op: replace
-        path: /spec/tls/0/secretName
-        value: https-cert-paddock-test.b4mad.racing
-  - target:
-      kind: DeploymentConfig
-      name: paddock
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-          name: ALLOWED_HOST
-          value: paddock-test.b4mad.racing
-images:
-  - name: paddock
-    newName: image-registry.openshift-image-registry.svc:5000/b4mad-racing-test/paddock
-    newTag: latest
+        path: /spec/template/spec/containers/1/resources/limits/memory
+        value: 2Gi

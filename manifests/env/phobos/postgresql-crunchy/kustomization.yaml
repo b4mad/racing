@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: b4mad-racing
+
+resources:
+  - ../../../base/postgresql
+  - ../../../base/postgresql/pgo-s3-creds
+  - pgo-reader.sealed.yaml
+
+patches:
+  - target:
+      kind: PostgresCluster
+      name: db
+    patch: |-
+      - op: replace
+        path: /spec/service/nodePort
+        value: 31884
+      - op: replace
+        path: /spec/instances/0/dataVolumeClaimSpec/resources/requests/storage
+        value: 80Gi
+      # - op: replace
+      #   path: /spec/backups/pgbackrest/repos/0/volume/volumeClaimSpec/resources/requests/storage
+      #   value: 100Gi
+      # - op: add
+      #   path: /spec/backups/pgbackrest/repos/0/volume/volumeClaimSpec/storageClassName
+      #   value: synostorage-smb
+      # - op: replace
+      #   path: /spec/backups/pgbackrest/global/repo1-type
+      #   value: cifs
+      # - op: replace
+      #   path: /spec/backups/pgbackrest/repos/0/s3/bucket
+      #   value: "b4mad-racing-psql"
+      # - op: replace
+      #   path: /spec/backups/pgbackrest/repos/2/s3/bucket
+      #   value: "b4mad-racing-psql"

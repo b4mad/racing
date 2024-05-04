@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres
+spec:
+  externalTrafficPolicy: Cluster
+  type: NodePort
+  selector:
+    cnpg.io/cluster: postgresql
+  ports:
+    - name: postgres
+      nodePort: 31432
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
